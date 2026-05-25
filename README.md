@@ -17,12 +17,12 @@
     ·
     <a href="https://github.com/code-yeongyu/oh-my-openagent">OmO</a>
     ·
-    <a href="https://lazycodex.dev">lazycodex.dev</a>
+    <a href="https://lazycodex.ai">lazycodex.ai</a>
   </p>
 
   <br />
 
-  <p><strong>🚧 Coming Soon</strong></p>
+  <p><strong>🚧 Coming June 2026 · Currently available for OpenCode</strong></p>
 </div>
 
 <hr />
@@ -54,7 +54,11 @@ LazyCodex is a thin distribution layer. The core engine is [oh-my-openagent (OmO
 
 ```
 lazycodex/
-├── src/          → oh-my-openagent (submodule)
+├── src/                     → oh-my-openagent (submodule)
+├── packages/
+│   └── web/                 → Next.js 15 + Tailwind v4 + opennextjs-cloudflare
+│                              (deployed to lazycodex.ai via Cloudflare Workers)
+├── .github/workflows/       → web-ci.yml + web-deploy.yml
 ├── README.md
 └── ...
 ```

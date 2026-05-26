@@ -6,52 +6,67 @@ import type { JSX } from "react"
  */
 export default function ComingSoonPage(): JSX.Element {
   return (
-    <main className="brand-canvas relative flex min-h-[100dvh] items-center justify-center overflow-hidden px-6 py-16 text-center">
+    <main className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden px-4 py-12 md:px-8 md:py-16">
       <a
         href="#content"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-[color:var(--brand-outer)] focus:px-3 focus:py-2 focus:text-sm focus:text-[color:var(--text-primary)]"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-[color:var(--card-base)] focus:px-3 focus:py-2 focus:text-sm focus:text-[color:var(--text-primary)]"
       >
         Skip to main content
       </a>
 
-      <p className="splash-reveal absolute left-[clamp(16px,3vw,32px)] top-[clamp(16px,3vw,32px)] z-10 text-[clamp(12px,1.2vw,14px)] tracking-[-0.01em] text-[color:var(--text-tertiary)]">
-        <span className="font-semibold text-[color:var(--text-primary)]">OmO</span>{" "}
+      {/* Top-left OmO branding */}
+      <p className="splash-reveal absolute left-[clamp(16px,3vw,32px)] top-[clamp(16px,3vw,32px)] z-10 text-[13px] tracking-[-0.01em] text-[color:var(--text-tertiary)]">
+        <span className="font-semibold text-[#D8D8F2]">OmO</span>{" "}
         <span>in Codex</span>
       </p>
 
+      {/* Bottom-right / Bottom-center status text */}
+      <p className="splash-reveal absolute bottom-[clamp(16px,3vw,32px)] right-[clamp(16px,3vw,32px)] z-10 text-center text-[12px] font-medium uppercase tracking-[0.18em] text-[color:var(--text-secondary)] md:text-right md:text-[13px]">
+        Coming June 2026 ·{" "}
+        <a
+          href="https://github.com/code-yeongyu/oh-my-openagent"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline decoration-[color:var(--text-tertiary)] decoration-1 underline-offset-[3px] transition-colors duration-200 hover:text-[color:var(--text-primary)] hover:decoration-[color:var(--text-primary)]"
+        >
+          Currently on OpenCode
+        </a>
+      </p>
+
+      {/* The Card */}
       <section
         id="content"
-        className="splash-reveal mx-auto flex w-full flex-col items-center"
+        className="splash-reveal relative isolate flex w-full max-w-[1200px] flex-col items-center justify-center overflow-hidden rounded-[16px] bg-[color:var(--card-base)] px-[20px] py-[60px] text-center shadow-[0_40px_120px_rgba(0,0,0,0.6)] md:px-[60px] md:py-[70px] lg:aspect-[1200/630]"
       >
-        <p className="mb-[clamp(10px,1.5vw,14px)] text-[clamp(10px,0.95vw,12px)] font-medium uppercase tracking-[0.18em] text-[color:var(--text-secondary)]">
-          Coming June 2026 ·{" "}
-          <a
-            href="https://github.com/code-yeongyu/oh-my-openagent"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline decoration-[color:var(--text-tertiary)] decoration-1 underline-offset-[3px] transition-colors duration-200 hover:text-[color:var(--text-primary)] hover:decoration-[color:var(--text-primary)]"
-          >
-            Currently on OpenCode
-          </a>
-        </p>
-        <p className="text-[clamp(11px,1.1vw,14px)] font-medium uppercase tracking-[0.22em] text-[color:var(--text-primary)]">
-          CODEX FOR NO-BRAINERS
-        </p>
-        <h1 className="mt-[clamp(34px,4vw,52px)] text-balance text-[clamp(64px,12vw,180px)] font-medium leading-[0.95] tracking-[-0.04em] text-[color:var(--text-primary)]">
-          LazyCodex
-        </h1>
-        <div className="mt-[clamp(24px,3vw,40px)] text-balance text-[clamp(18px,2.2vw,36px)] font-normal leading-[1.4] tracking-[-0.015em] text-[color:var(--text-secondary)]">
-          <p>You don't need to think.</p>
-          <p>
-            Just prompt with{" "}
-            <strong className="font-bold text-[color:var(--text-primary)]">ultrawork</strong>.
-          </p>
-        </div>
-      </section>
+        {/* Card Background Layers */}
+        <div className="card-gradient-base absolute inset-0 -z-10" />
+        <div className="card-gradient-pools absolute inset-0 -z-10" />
+        <div className="card-gradient-sheen absolute -inset-[10%] -z-10" />
+        <div className="card-gradient-beam absolute inset-0 -z-10" />
+        <div className="card-grain absolute inset-0 -z-10" />
 
-      <footer className="splash-reveal absolute bottom-[clamp(20px,4vw,60px)] left-1/2 z-10 -translate-x-1/2 font-mono text-[clamp(14px,1.4vw,18px)] font-semibold tracking-[0.08em] text-[color:var(--text-primary)]">
-        lazycodex.ai
-      </footer>
+        {/* Card Content */}
+        <div className="flex flex-col items-center justify-center gap-[30px]">
+          <p className="font-mono text-[15px] font-medium uppercase tracking-[0.32em] text-[color:var(--text-soft)] opacity-90">
+            CODEX FOR NO-BRAINERS
+          </p>
+
+          <h1 className="m-0 text-balance text-[clamp(64px,12vw,168px)] font-medium leading-[0.98] tracking-[-0.03em] text-[color:var(--text-primary)]">
+            LazyCodex
+          </h1>
+
+          <div className="m-0 max-w-[960px] text-balance text-[clamp(20px,3vw,34px)] font-normal leading-[1.35] tracking-[-0.005em] text-[color:var(--text-muted)]">
+            <p>You don't need to think.</p>
+            <p>
+              Just prompt with <strong className="font-medium text-[color:var(--text-primary)]">ultrawork</strong>.
+            </p>
+          </div>
+        </div>
+
+        <footer className="absolute bottom-[40px] left-0 right-0 text-center font-mono text-[22px] font-medium tracking-[0.02em] text-[color:var(--text-primary)] opacity-90 md:bottom-[56px]">
+          lazycodex.ai
+        </footer>
+      </section>
     </main>
   )
 }

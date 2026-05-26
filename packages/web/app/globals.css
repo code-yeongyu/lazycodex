@@ -7,13 +7,16 @@
 
 @layer base {
   :root {
-    --surface-base: #2a2dbf;
+    --surface-base: #14154d;
+    --card-base: #2a2dbf;
     --brand-core: #5a5fef;
     --brand-mid: #3236c4;
     --brand-outer: #232897;
     --text-primary: #ffffff;
     --text-secondary: #dcdcf8;
     --text-tertiary: #b9bce6;
+    --text-muted: rgba(255, 255, 255, 0.72);
+    --text-soft: #e8e8ff;
   }
 
   html {
@@ -23,27 +26,11 @@
 
   body {
     background-color: var(--surface-base);
-    background-image: radial-gradient(
-      ellipse 80% 60% at 50% 65%,
-      var(--brand-core) 0%,
-      var(--brand-mid) 60%,
-      var(--brand-outer) 100%
-    );
     color: var(--text-primary);
     font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-  }
-
-  .brand-canvas {
-    background-color: var(--surface-base);
-    background-image: radial-gradient(
-      ellipse 80% 60% at 50% 65%,
-      var(--brand-core) 0%,
-      var(--brand-mid) 60%,
-      var(--brand-outer) 100%
-    );
   }
 
   ::selection {
@@ -82,5 +69,35 @@
       opacity: 1;
       transform: none;
     }
+  }
+
+  .card-gradient-base {
+    background: radial-gradient(120% 100% at 60% 65%, #5a5fef 0%, #4a4fe0 35%, #3236c4 70%, #232897 100%);
+  }
+
+  .card-gradient-beam {
+    background: radial-gradient(55% 55% at 38% -8%, rgba(255,255,255,0.62) 0%, rgba(220,225,255,0.22) 35%, rgba(255,255,255,0) 65%),
+                radial-gradient(32% 28% at 55% -5%, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0) 70%);
+    mix-blend-mode: screen;
+  }
+
+  .card-gradient-sheen {
+    background: linear-gradient(118deg, transparent 18%, rgba(255,255,255,0.16) 26%, rgba(255,255,255,0.30) 30%, rgba(255,255,255,0.12) 35%, transparent 45%),
+                linear-gradient(112deg, transparent 8%, rgba(220,225,255,0.12) 15%, transparent 28%);
+    filter: blur(20px);
+    mix-blend-mode: screen;
+    opacity: 0.85;
+  }
+
+  .card-gradient-pools {
+    background: radial-gradient(55% 50% at 8% 95%, rgba(150,180,255,0.26), transparent 70%),
+                radial-gradient(45% 45% at 95% 40%, rgba(180,150,255,0.20), transparent 70%);
+    mix-blend-mode: screen;
+  }
+
+  .card-grain {
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   }
 }

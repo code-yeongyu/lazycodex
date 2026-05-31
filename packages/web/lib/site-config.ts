@@ -1,7 +1,7 @@
 export const SITE_CONFIG = {
   installCommand: "bunx lazycodex-ai install",
   installCommandAutonomous: "bunx lazycodex-ai install --no-tui --codex-autonomous",
-  installEquivalent: "bunx --package oh-my-openagent omo install --platform=codex",
+  installEquivalent: "bunx --package @code-yeongyu/lazycodex lazycodex install",
   githubUrl: "https://github.com/code-yeongyu/lazycodex",
   githubStarsUrl: "https://github.com/code-yeongyu/lazycodex/stargazers",
   omoUrl: "https://github.com/code-yeongyu/oh-my-openagent",

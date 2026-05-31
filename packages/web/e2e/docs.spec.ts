@@ -53,7 +53,7 @@ test.describe("docs page — structure", () => {
     ).toBeVisible()
     await expect(
       page
-        .getByText("bunx --package oh-my-openagent omo install --platform=codex", { exact: false })
+        .getByText("bunx --package @code-yeongyu/lazycodex lazycodex install", { exact: false })
         .first(),
     ).toBeVisible()
   })

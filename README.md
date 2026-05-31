@@ -35,7 +35,7 @@ One line. No global install, no `npm i -g`. Always use `bunx`:
 bunx lazycodex-ai install
 ```
 
-This is shorthand for `bunx --package oh-my-openagent omo install --platform=codex`. For a fully autonomous, no-TUI setup:
+This is shorthand for `bunx --package @code-yeongyu/lazycodex lazycodex install`, which avoids the broken unscoped `lazycodex` registry entry and the unrelated unscoped `omo` package. For a fully autonomous, no-TUI setup:
 
 ```bash
 bunx lazycodex-ai install --no-tui --codex-autonomous

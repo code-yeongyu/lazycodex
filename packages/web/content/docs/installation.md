@@ -6,7 +6,7 @@ One command gets you running. LazyCodex is currently available on OpenCode; the 
 bunx lazycodex-ai install
 ```
 
-This is exactly equivalent to `bunx --package oh-my-openagent omo install --platform=codex`.
+This is exactly equivalent to `bunx --package @code-yeongyu/lazycodex lazycodex install`, which avoids the broken unscoped `lazycodex` registry entry and the unrelated unscoped `omo` package.
 
 ### Autonomous one-liner
 

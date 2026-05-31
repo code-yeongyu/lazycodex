@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
 import { spawnSync } from "node:child_process"
-import { basename } from "node:path"
+import { existsSync, rmSync } from "node:fs"
+import { homedir } from "node:os"
+import { basename, delimiter, join } from "node:path"
 
 const args = process.argv.slice(2)
 const dryRun = args[0] === "--dry-run"
@@ -15,23 +17,36 @@ const cleanupCommands = [
   ["omx", ["uninstall", "--purge"]],
   ["npm", ["uninstall", "-g", "oh-my-codex"]],
 ]
+const residuePaths = [
+  join(process.env.CODEX_HOME ?? join(homedir(), ".codex"), "plugins", "cache", "oh-my-codex-local"),
+  join(process.cwd(), ".omx"),
+]
 
 function findCommand(command) {
-  const result = spawnSync("which", [command], {
-    encoding: "utf8",
-  })
+  const extensions = process.platform === "win32" ? (process.env.PATHEXT ?? ".EXE;.CMD;.BAT;.COM").split(";") : [""]
+  const names = extensions.map((extension) => `${command}${extension.toLowerCase() === command.toLowerCase().slice(-extension.length) ? "" : extension}`)
 
-  if (result.status !== 0) {
-    return ""
+  for (const directory of (process.env.PATH ?? "").split(delimiter)) {
+    for (const name of names) {
+      const path = join(directory, name)
+
+      if (existsSync(path)) {
+        return path
+      }
+    }
   }
 
-  return result.stdout.trim()
+  return ""
 }
 
 function runCommand(command, args) {
   return spawnSync(command, args, {
     stdio: "inherit",
   })
+}
+
+function removePath(path) {
+  rmSync(path, { recursive: true, force: true })
 }
 
 if (dryRun) {
@@ -62,21 +77,15 @@ if (isInstall) {
     }
   }
 
+  for (const path of residuePaths) {
+    removePath(path)
+  }
+
   const remainingOmxPath = findCommand("omx")
 
   if (remainingOmxPath) {
     if (basename(remainingOmxPath) === "omx") {
-      const remove = runCommand("rm", [remainingOmxPath])
-
-      if (remove.error) {
-        console.error(`oh-my-codex cleanup failed: ${remove.error.message}`)
-        process.exit(1)
-      }
-
-      if ((remove.status ?? 1) !== 0) {
-        console.error(`oh-my-codex cleanup failed: rm ${remainingOmxPath}`)
-        process.exit(1)
-      }
+      removePath(remainingOmxPath)
     }
   }
 

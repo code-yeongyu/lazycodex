@@ -1,5 +1,5 @@
 import assert from "node:assert/strict"
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { basename, join } from "node:path"
 import { tmpdir } from "node:os"
 import { spawnSync } from "node:child_process"
@@ -11,7 +11,6 @@ const binPath = join(root, "bin", "lazycodex-ai.js")
 
 function withFakeBin(files, run) {
   const tempDir = mkdtempSync(join(tmpdir(), "lazycodex-ai-test-"))
-  const commandStatePath = join(tempDir, "omx-paths")
 
   try {
     for (const [name, contents] of Object.entries(files)) {
@@ -23,7 +22,6 @@ function withFakeBin(files, run) {
       tempDir,
       PATH: tempDir,
       LAZYCODEX_TEST_LOG: join(tempDir, "commands.log"),
-      LAZYCODEX_COMMAND_STATE: commandStatePath,
     })
   } finally {
     rmSync(tempDir, { recursive: true, force: true })
@@ -44,32 +42,6 @@ const fakeNpm = `#!/bin/sh
 printf 'npm %s\n' "$*" >> "$LAZYCODEX_TEST_LOG"
 exit 0
 `
-
-const fakeRm = `#!/bin/sh
-printf 'rm %s\n' "$*" >> "$LAZYCODEX_TEST_LOG"
-/bin/rm "$@"
-`
-
-const fakeWhich = `#!/bin/sh
-if [ "$1" != "omx" ] || [ ! -f "$LAZYCODEX_COMMAND_STATE" ]; then
-  exit 1
-fi
-
-first=$(/usr/bin/sed -n '1p' "$LAZYCODEX_COMMAND_STATE")
-/usr/bin/sed '1d' "$LAZYCODEX_COMMAND_STATE" > "$LAZYCODEX_COMMAND_STATE.next"
-/bin/mv "$LAZYCODEX_COMMAND_STATE.next" "$LAZYCODEX_COMMAND_STATE"
-
-if [ -n "$first" ]; then
-  printf '%s\n' "$first"
-  exit 0
-fi
-
-exit 1
-`
-
-function setOmxLookups(env, paths) {
-  writeFileSync(env.LAZYCODEX_COMMAND_STATE, `${paths.join("\n")}\n`)
-}
 
 describe("lazycodex-ai npm package", () => {
   it("maps the package name and bin to lazycodex-ai", () => {
@@ -113,8 +85,7 @@ describe("lazycodex-ai npm package", () => {
     // given
     assert.equal(existsSync(binPath), true, "lazycodex-ai bin must exist")
 
-    withFakeBin({ bunx: fakeBunx, omx: fakeOmx, npm: fakeNpm, which: fakeWhich }, (env) => {
-      setOmxLookups(env, ["/tmp/omx", ""])
+    withFakeBin({ bunx: fakeBunx, omx: fakeOmx, npm: fakeNpm }, (env) => {
 
       // when
       const result = spawnSync(process.execPath, [binPath, "install"], {
@@ -140,8 +111,7 @@ describe("lazycodex-ai npm package", () => {
     // given
     assert.equal(existsSync(binPath), true, "lazycodex-ai bin must exist")
 
-    withFakeBin({ bunx: fakeBunx, omx: fakeOmx, npm: fakeNpm, which: fakeWhich }, (env) => {
-      setOmxLookups(env, ["/tmp/omx"])
+    withFakeBin({ bunx: fakeBunx, omx: fakeOmx, npm: fakeNpm }, (env) => {
 
       // when
       const result = spawnSync(process.execPath, [binPath, "doctor"], {
@@ -164,8 +134,7 @@ printf 'omx %s\n' "$*" >> "$LAZYCODEX_TEST_LOG"
 exit 42
 `
 
-    withFakeBin({ bunx: fakeBunx, omx: failingOmx, npm: fakeNpm, which: fakeWhich }, (env) => {
-      setOmxLookups(env, ["/tmp/omx"])
+    withFakeBin({ bunx: fakeBunx, omx: failingOmx, npm: fakeNpm }, (env) => {
 
       // when
       const result = spawnSync(process.execPath, [binPath, "install"], {
@@ -185,8 +154,7 @@ exit 42
     // given
     assert.equal(existsSync(binPath), true, "lazycodex-ai bin must exist")
 
-    withFakeBin({ bunx: fakeBunx, npm: fakeNpm, which: fakeWhich }, (env) => {
-      setOmxLookups(env, ["", ""])
+    withFakeBin({ bunx: fakeBunx, npm: fakeNpm }, (env) => {
 
       // when
       const result = spawnSync(process.execPath, [binPath, "install"], {
@@ -207,12 +175,11 @@ exit 42
     })
   })
 
-  it("aborts install when omx is still installed after cleanup", () => {
+  it("removes a leftover omx command before installing lazycodex", () => {
     // given
     assert.equal(existsSync(binPath), true, "lazycodex-ai bin must exist")
 
-    withFakeBin({ bunx: fakeBunx, omx: fakeOmx, npm: fakeNpm, which: fakeWhich }, (env) => {
-      setOmxLookups(env, ["/tmp/omx", "/tmp/stale-omx", "/tmp/stale-omx"])
+    withFakeBin({ bunx: fakeBunx, omx: fakeOmx, npm: fakeNpm }, (env) => {
 
       // when
       const result = spawnSync(process.execPath, [binPath, "install"], {
@@ -222,11 +189,10 @@ exit 42
       })
 
       // then
-      assert.equal(result.status, 1)
-      assert.match(result.stderr, /omx is still installed at \/tmp\/stale-omx/)
+      assert.equal(result.status, 0, result.stderr)
       assert.equal(
         readFileSync(env.LAZYCODEX_TEST_LOG, "utf8").trim(),
-        ["omx uninstall --purge", "npm uninstall -g oh-my-codex"].join("\n"),
+        ["omx uninstall --purge", "npm uninstall -g oh-my-codex", "bunx --package oh-my-openagent omo install --platform=codex"].join("\n"),
       )
     })
   })
@@ -235,9 +201,8 @@ exit 42
     // given
     assert.equal(existsSync(binPath), true, "lazycodex-ai bin must exist")
 
-    withFakeBin({ bunx: fakeBunx, omx: fakeOmx, npm: fakeNpm, which: fakeWhich, rm: fakeRm }, (env) => {
+    withFakeBin({ bunx: fakeBunx, omx: fakeOmx, npm: fakeNpm }, (env) => {
       const staleOmxPath = join(env.tempDir, "omx")
-      setOmxLookups(env, [staleOmxPath, staleOmxPath, ""])
 
       // when
       const result = spawnSync(process.execPath, [binPath, "install"], {
@@ -254,11 +219,44 @@ exit 42
         [
           "omx uninstall --purge",
           "npm uninstall -g oh-my-codex",
-          `rm ${staleOmxPath}`,
           "bunx --package oh-my-openagent omo install --platform=codex",
         ].join("\n"),
       )
       assert.equal(basename(staleOmxPath), "omx")
+    })
+  })
+
+  it("removes known oh-my-codex residue before installing lazycodex", () => {
+    // given
+    assert.equal(existsSync(binPath), true, "lazycodex-ai bin must exist")
+
+    withFakeBin({ bunx: fakeBunx, npm: fakeNpm }, (env) => {
+      const codexHome = join(env.tempDir, "codex-home")
+      const pluginCache = join(codexHome, "plugins", "cache", "oh-my-codex-local")
+      const projectOmx = join(env.tempDir, "project", ".omx")
+      mkdirSync(pluginCache, { recursive: true })
+      mkdirSync(projectOmx, { recursive: true })
+      writeFileSync(join(pluginCache, "marker"), "plugin cache")
+      writeFileSync(join(projectOmx, "marker"), "project state")
+
+      // when
+      const result = spawnSync(process.execPath, [binPath, "install"], {
+        cwd: join(env.tempDir, "project"),
+        encoding: "utf8",
+        env: { ...process.env, ...env, CODEX_HOME: codexHome },
+      })
+
+      // then
+      assert.equal(result.status, 0, result.stderr)
+      assert.equal(existsSync(pluginCache), false, "oh-my-codex plugin cache should be removed")
+      assert.equal(existsSync(projectOmx), false, "project .omx state should be removed")
+      assert.equal(
+        readFileSync(env.LAZYCODEX_TEST_LOG, "utf8").trim(),
+        [
+          "npm uninstall -g oh-my-codex",
+          "bunx --package oh-my-openagent omo install --platform=codex",
+        ].join("\n"),
+      )
     })
   })
 

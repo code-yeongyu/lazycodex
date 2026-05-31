@@ -7,8 +7,8 @@ const dryRun = args[0] === "--dry-run"
 const forwardedArgs = dryRun ? args.slice(1) : args
 const commandArgs =
   forwardedArgs[0] === "install"
-    ? ["--package", "oh-my-openagent", "omo", "install", "--platform=codex", ...forwardedArgs.slice(1)]
-    : ["--package", "oh-my-openagent", "omo", ...forwardedArgs]
+    ? ["--package", "@code-yeongyu/lazycodex", "lazycodex", "install", ...forwardedArgs.slice(1)]
+    : ["--package", "@code-yeongyu/lazycodex", "lazycodex", ...forwardedArgs]
 
 if (dryRun) {
   console.log(["bunx", ...commandArgs].join(" "))

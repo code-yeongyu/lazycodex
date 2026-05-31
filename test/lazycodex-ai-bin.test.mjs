@@ -7,6 +7,15 @@ import { describe, it } from "node:test"
 const root = new URL("..", import.meta.url).pathname
 const packageJsonPath = join(root, "package.json")
 const binPath = join(root, "bin", "lazycodex-ai.js")
+const installDocPaths = [
+  "README.md",
+  "packages/web/content/docs/installation.md",
+  "plugins/omo/components/comment-checker/README.md",
+  "plugins/omo/components/lsp/README.md",
+  "plugins/omo/components/rules/README.md",
+  "plugins/omo/components/ultragoal/README.md",
+  "plugins/omo/components/ultrawork/README.md",
+]
 
 describe("lazycodex-ai npm package", () => {
   it("maps the package name and bin to lazycodex-ai", () => {
@@ -23,7 +32,7 @@ describe("lazycodex-ai npm package", () => {
     assert.equal(manifest.private, undefined)
   })
 
-  it("dry-runs install through oh-my-openagent with the Codex platform default", () => {
+  it("dry-runs install through the scoped LazyCodex package", () => {
     // given
     assert.equal(existsSync(binPath), true, "lazycodex-ai bin must exist")
 
@@ -38,11 +47,11 @@ describe("lazycodex-ai npm package", () => {
     assert.equal(result.status, 0, result.stderr)
     assert.equal(
       result.stdout.trim(),
-      "bunx --package oh-my-openagent omo install --platform=codex --no-tui --codex-autonomous",
+      "bunx --package @code-yeongyu/lazycodex lazycodex install --no-tui --codex-autonomous",
     )
   })
 
-  it("dry-runs non-install commands through oh-my-openagent", () => {
+  it("dry-runs non-install commands through the scoped LazyCodex package", () => {
     // given
     assert.equal(existsSync(binPath), true, "lazycodex-ai bin must exist")
 
@@ -54,6 +63,21 @@ describe("lazycodex-ai npm package", () => {
 
     // then
     assert.equal(result.status, 0, result.stderr)
-    assert.equal(result.stdout.trim(), "bunx --package oh-my-openagent omo doctor")
+    assert.equal(result.stdout.trim(), "bunx --package @code-yeongyu/lazycodex lazycodex doctor")
+  })
+
+  it("documents the scoped package-backed install path", () => {
+    for (const docPath of installDocPaths) {
+      const text = readFileSync(join(root, docPath), "utf8")
+
+      assert.equal(text.includes("bunx lazycodex install"), false, `${docPath} must not use broken unscoped lazycodex`)
+      assert.equal(text.includes("bunx omo install"), false, `${docPath} must not use unrelated unscoped omo`)
+    }
+
+    const readme = readFileSync(join(root, "README.md"), "utf8")
+    const installationDoc = readFileSync(join(root, "packages/web/content/docs/installation.md"), "utf8")
+
+    assert.equal(readme.includes("bunx --package @code-yeongyu/lazycodex lazycodex install"), true)
+    assert.equal(installationDoc.includes("bunx --package @code-yeongyu/lazycodex lazycodex install"), true)
   })
 })

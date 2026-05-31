@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next"
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "LazyCodex",
-    short_name: "LazyCodex",
+    name: "LazyCodex AI",
+    short_name: "LazyCodex AI",
     description: "Codex for no-brainers. Just prompt with ultrawork.",
     start_url: "/",
     display: "standalone",

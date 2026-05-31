@@ -42,6 +42,21 @@ test.describe("docs page — structure", () => {
       await expect(entry.first()).toBeVisible()
     }
   })
+
+  test("documents lazycodex-ai as the npm install alias", async ({ page }) => {
+    await page.goto("/docs")
+    await expect(page.getByText("bunx lazycodex-ai install", { exact: false }).first()).toBeVisible()
+    await expect(
+      page
+        .getByText("bunx lazycodex-ai install --no-tui --codex-autonomous", { exact: false })
+        .first(),
+    ).toBeVisible()
+    await expect(
+      page
+        .getByText("bunx --package oh-my-openagent omo install --platform=codex", { exact: false })
+        .first(),
+    ).toBeVisible()
+  })
 })
 
 test.describe("docs page — navigation", () => {

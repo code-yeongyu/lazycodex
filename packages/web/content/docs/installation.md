@@ -1,17 +1,17 @@
-One command gets you running. LazyCodex is currently available on OpenCode; the Codex edition is coming June 2026.
+One command gets you running. LazyCodex AI is currently available on OpenCode; the Codex edition is coming June 2026.
 
 ### Install
 
 ```bash
-bunx lazycodex install
+bunx lazycodex-ai install
 ```
 
-This is exactly equivalent to `bunx omo install --platform=codex`.
+This is exactly equivalent to `bunx --package oh-my-openagent omo install --platform=codex`.
 
 ### Autonomous one-liner
 
 ```bash
-bunx lazycodex install --no-tui --codex-autonomous
+bunx lazycodex-ai install --no-tui --codex-autonomous
 ```
 
 ### Prerequisites

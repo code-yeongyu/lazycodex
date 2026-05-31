@@ -1,7 +1,7 @@
 export const SITE_CONFIG = {
-  installCommand: "bunx lazycodex install",
-  installCommandAutonomous: "bunx lazycodex install --no-tui --codex-autonomous",
-  installEquivalent: "bunx omo install --platform=codex",
+  installCommand: "bunx lazycodex-ai install",
+  installCommandAutonomous: "bunx lazycodex-ai install --no-tui --codex-autonomous",
+  installEquivalent: "bunx --package oh-my-openagent omo install --platform=codex",
   githubUrl: "https://github.com/code-yeongyu/lazycodex",
   githubStarsUrl: "https://github.com/code-yeongyu/lazycodex/stargazers",
   omoUrl: "https://github.com/code-yeongyu/oh-my-openagent",
@@ -9,7 +9,7 @@ export const SITE_CONFIG = {
   siteUrl: "https://lazycodex.ai",
   docsPath: "/docs",
   eyebrow: "CODEX FOR NO-BRAINERS",
-  wordmark: "LazyCodex",
+  wordmark: "LazyCodex AI",
   heroLineA: "You don't need to ultrathink.",
   heroLineB: {
     prefix: "Just prompt ",

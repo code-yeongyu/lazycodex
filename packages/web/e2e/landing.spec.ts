@@ -41,6 +41,8 @@ test.describe("landing page — install + commands", () => {
     await expect(
       page.getByText(SITE_CONFIG.installCommand, { exact: false }).first(),
     ).toBeVisible()
+    await expect(page.getByText("bunx lazycodex-ai install", { exact: false }).first()).toBeVisible()
+    await expect(page.getByText(SITE_CONFIG.installEquivalent, { exact: false }).first()).toBeVisible()
     await expect(page.getByRole("button", { name: /copy/i }).first()).toBeVisible()
   })
 

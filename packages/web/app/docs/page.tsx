@@ -8,7 +8,7 @@ import "@/app/styles/docs.css";
 
 export const metadata: Metadata = {
   title: "Documentation",
-  description: "LazyCodex documentation — install, ultrawork mode, $ulw-loop, $ulw-plan, $start-work.",
+  description: "LazyCodex AI documentation — install, ultrawork mode, $ulw-loop, $ulw-plan, $start-work.",
   alternates: {
     canonical: "/docs",
   },
@@ -27,7 +27,7 @@ export default function DocsPage() {
         <div className="docs-hero">
           <h1 className="docs-hero-title">Documentation</h1>
           <p className="docs-hero-tagline">
-            Learn how to install, configure, and use LazyCodex for ultrawork.
+            Learn how to install, configure, and use LazyCodex AI for ultrawork.
           </p>
         </div>
         <DocsShell sections={sections}>

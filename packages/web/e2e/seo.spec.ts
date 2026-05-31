@@ -4,7 +4,7 @@ test.describe("coming-soon page — SEO + metadata", () => {
   test("has a unique <title>, description, canonical, lang, viewport", async ({ page }) => {
     await page.goto("/")
 
-    await expect(page).toHaveTitle(/LazyCodex.*Coming June 2026/i)
+    await expect(page).toHaveTitle(/LazyCodex AI.*Coming June 2026/i)
 
     const description = await page.locator('meta[name="description"]').getAttribute("content")
     expect(description).toBeTruthy()
@@ -31,7 +31,7 @@ test.describe("coming-soon page — SEO + metadata", () => {
 
     await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
       "content",
-      /LazyCodex/,
+      /LazyCodex AI/,
     )
     await expect(page.locator('meta[property="og:description"]')).toHaveAttribute(
       "content",
@@ -57,7 +57,7 @@ test.describe("coming-soon page — SEO + metadata", () => {
     expect(jsonLd).toBeTruthy()
     const parsed = JSON.parse(jsonLd ?? "{}")
     expect(parsed["@type"]).toBe("SoftwareApplication")
-    expect(parsed.name).toBe("LazyCodex")
+    expect(parsed.name).toBe("LazyCodex AI")
     expect(parsed.url).toBe("https://lazycodex.ai")
   })
 
@@ -84,7 +84,7 @@ test.describe("coming-soon page — SEO + metadata", () => {
     const manifest = await request.get("/manifest.webmanifest")
     expect(manifest.status()).toBe(200)
     const parsed = await manifest.json()
-    expect(parsed.name).toBe("LazyCodex")
+    expect(parsed.name).toBe("LazyCodex AI")
     expect(parsed.start_url).toBe("/")
   })
 

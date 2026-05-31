@@ -11,7 +11,7 @@ export function SiteHeader(): JSX.Element {
           <Link
             href="/"
             className="flex items-center gap-2 transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent-cyan)]"
-            aria-label="LazyCodex home"
+            aria-label="LazyCodex AI home"
           >
             {/* Inline SVG boulder mark: zero network bytes (a real <img> of
                 the 512px icon would download ~200KB above the fold and starve

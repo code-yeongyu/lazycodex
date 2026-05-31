@@ -1,4 +1,4 @@
-# LazyCodex Design System
+# LazyCodex AI Design System
 
 ## 1. Core Philosophy
 - **Codex-tone Luminous Backdrop**: The page uses a dark navy canvas (`#14154d`) with a centered, glowing card.
@@ -64,15 +64,15 @@ The landing page is a single scrollable document with the following sections, to
    - "by Sisyphus Labs" co-brand
 
 2. **Hero navy card**
-   - Eyebrow: "LAZYCODEX"
+   - Eyebrow: "LAZYCODEX AI"
    - H1 wordmark
    - Tagline: "You don't need to ultrathink. / Just prompt {your prompt} ultrawork."
    - The `{your prompt}` placeholder uses Geist Mono and pulses subtly
 
 3. **Install block**
-   - Copyable bash snippet: `bunx lazycodex install`
+   - Copyable bash snippet: `bunx lazycodex-ai install`
    - One-line note: "No global install. Always `bunx`."
-   - Secondary line for the autonomous variant: `bunx lazycodex install --no-tui --codex-autonomous`
+   - Secondary line for the autonomous variant: `bunx lazycodex-ai install --no-tui --codex-autonomous`
 
 4. **Three command cards**
    - `$ulw-loop` — self-referential loop

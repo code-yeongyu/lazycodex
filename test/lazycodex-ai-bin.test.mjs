@@ -72,6 +72,11 @@ describe("lazycodex-ai npm package", () => {
 
       assert.equal(text.includes("bunx lazycodex install"), false, `${docPath} must not use broken unscoped lazycodex`)
       assert.equal(text.includes("bunx omo install"), false, `${docPath} must not use unrelated unscoped omo`)
+      assert.equal(
+        text.includes("bunx --package oh-my-openagent omo"),
+        false,
+        `${docPath} must not route through the unsafe unscoped omo bin`,
+      )
     }
 
     const readme = readFileSync(join(root, "README.md"), "utf8")

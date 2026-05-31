@@ -1,0 +1,44 @@
+name: NPM Registry Smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      package_version:
+        description: "lazycodex-ai npm version or dist-tag to test"
+        required: false
+        default: "latest"
+  schedule:
+    - cron: "17 9 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: npm-registry-smoke-${{ github.event.inputs.package_version || 'latest' }}
+  cancel-in-progress: false
+
+jobs:
+  published-package-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      LAZYCODEX_AI_SMOKE_VERSION: ${{ github.event.inputs.package_version || 'latest' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Use Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Smoke published lazycodex-ai
+        run: npm run smoke:published

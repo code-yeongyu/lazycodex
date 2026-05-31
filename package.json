@@ -13,7 +13,8 @@
   ],
   "scripts": {
     "test": "node --test test/lazycodex-ai-bin.test.mjs",
-    "pack:dry-run": "npm pack --dry-run"
+    "pack:dry-run": "npm pack --dry-run",
+    "smoke:published": "node scripts/smoke-published-lazycodex-ai.mjs"
   },
   "keywords": [
     "codex",

@@ -5,7 +5,7 @@
 1. Socratic interview
 2. Parallel codebase exploration
 3. Metis gap analysis
-4. Writes the plan to `plans/<slug>.md`
+4. Writes the plan to `.omo/plans/<slug>.md`
 5. Optional Momus high-accuracy review
 
 ### Output

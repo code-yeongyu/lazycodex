@@ -47,7 +47,7 @@ LazyCodex installs these as OmO commands for Codex. Invoke them with the
 | Command | Type this | What it does |
 | --- | --- | --- |
 | `$ulw-loop` | `$ulw-loop "task" [--completion-promise=TEXT] [--strategy=reset\|continue]` | Self-referential loop that runs until Oracle-verified completion. Caps at 500 iterations in ultrawork mode, 100 in normal mode. |
-| `$ulw-plan` | `$ulw-plan "what to build"` | Prometheus strategic planner. Writes a plan to `plans/<slug>.md`. Never writes product code. |
+| `$ulw-plan` | `$ulw-plan "what to build"` | Prometheus strategic planner. Writes a plan to `.omo/plans/<slug>.md`. Never writes product code. |
 | `$start-work` | `$start-work [plan-name] [--worktree <path>]` | Executes a plan until every checkbox is done. Prints **ORCHESTRATION COMPLETE**. |
 
 Full documentation lives at [lazycodex.ai/docs](https://lazycodex.ai/docs).
@@ -70,10 +70,11 @@ when the shape of the codebase changes.
 ### 2. The three command pillars stay up front
 
 Use `$ulw-plan` when the work needs decisions before implementation. It writes a
-plan to `plans/<slug>.md` and does not touch product code.
+plan to `.omo/plans/<slug>.md` and does not touch product code.
 
 Use `$start-work` when a plan is ready. It executes the checklist with durable
-Boulder progress and stops only when the plan is complete.
+Boulder progress in `.omo/boulder.json` and stops only when the plan is
+complete.
 
 Use `$ulw-loop` when the task should keep moving until the result is verified by
 evidence instead of a hopeful status update.

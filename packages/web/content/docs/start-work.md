@@ -6,7 +6,7 @@
 - A Stop-hook re-injects the next turn until the plan is complete
 - Independent sub-tasks fan out to parallel subagents
 - Strict TDD plus five evidence gates: plan reread, automated verification, manual-QA, adversarial QA, cleanup
-- Progress is recorded to a ledger
+- Progress and task timing are recorded in `.omo/boulder.json`
 
 ### Syntax
 

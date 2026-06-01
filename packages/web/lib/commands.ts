@@ -26,7 +26,7 @@ export const COMMANDS: readonly LazyCommand[] = [
     facts: [
       "Socratic interview, then parallel codebase exploration",
       "Metis gap analysis, optional Momus review",
-      "Writes plans/<slug>.md — never writes product code",
+      "Writes .omo/plans/<slug>.md — never writes product code",
     ],
   },
   {

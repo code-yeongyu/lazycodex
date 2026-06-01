@@ -13,6 +13,8 @@ test("README documents built-in LazyCodex workflows without Hangul", () => {
     "$ulw-plan",
     "$start-work",
     "$ulw-loop",
+    ".omo/plans/<slug>.md",
+    ".omo/boulder.json",
     "review-work",
     "remove-ai-slops",
     "https://lazycodex.ai",

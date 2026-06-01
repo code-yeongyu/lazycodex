@@ -8,6 +8,7 @@ import test from "node:test";
 const hookDir = dirname(fileURLToPath(import.meta.url));
 const pluginRoot = dirname(hookDir);
 const detectorPath = join(hookDir, "ultrawork-detector.py");
+const plannerAgentPath = join(pluginRoot, "agents", "plan.toml");
 
 async function runPython(scriptPath, input, env = {}) {
 	return new Promise((resolve, reject) => {
@@ -131,6 +132,29 @@ test("#given ultrawork prompt #when detector runs #then directive mandates paire
 	assert.match(result.stdout, /tmux kill-session/);
 	assert.match(result.stdout, /Leftover state from QA/);
 	assert.match(result.stdout, /means NOT done/);
+});
+
+test("#given ultrawork prompt #when detector runs #then commit footer uses omo plan path", async () => {
+	const payload = JSON.stringify({
+		hook_event_name: "UserPromptSubmit",
+		prompt: "please ultrawork",
+	});
+
+	const result = await runPython(detectorPath, payload);
+
+	assert.equal(result.code, 0);
+	assert.equal(result.stderr, "");
+	assert.match(result.stdout, /Plan: \.omo\/plans\/<slug>\.md/);
+	assert.doesNotMatch(result.stdout, /Plan: plans\/<slug>\.md/);
+});
+
+test("#given planner agent prompt #when inspected #then artifact paths stay under omo", async () => {
+	const prompt = await readFile(plannerAgentPath, "utf8");
+
+	assert.match(prompt, /\.omo\/plans\/<slug>\.md/);
+	assert.match(prompt, /\.omo\/evidence\/task-<N>-<slug>\.<ext>/);
+	assert.doesNotMatch(prompt, /(?<!\.omo\/)plans\/<slug>\.md/);
+	assert.doesNotMatch(prompt, /(?<!\.omo\/)evidence\/task-/);
 });
 
 test("#given identifier-like ulw #when detector runs #then does not emit directive", async () => {

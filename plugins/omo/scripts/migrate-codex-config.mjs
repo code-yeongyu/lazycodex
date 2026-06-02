@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
+import { lstat, mkdir, readFile, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -169,7 +169,7 @@ async function configPaths({ env, cwd }) {
 	const codexHome = resolve(env.CODEX_HOME?.trim() || join(homedir(), ".codex"));
 	const paths = new Set([join(codexHome, "config.toml")]);
 	for (const projectConfig of projectConfigPaths({ cwd, stopAt: homedir() })) {
-		if (await pathExists(projectConfig)) paths.add(projectConfig);
+		if (await isSafeProjectConfig(projectConfig)) paths.add(projectConfig);
 	}
 	return [...paths];
 }
@@ -216,12 +216,22 @@ async function writeState(statePath, state) {
 	await writeFile(statePath, `${JSON.stringify(state, null, 2)}\n`);
 }
 
-async function pathExists(path) {
+async function isSafeProjectConfig(configPath) {
+	if (!(await isRegularDirectory(dirname(configPath)))) return false;
+	const entry = await lstatIfExists(configPath);
+	return entry?.isFile() === true && !entry.isSymbolicLink();
+}
+
+async function isRegularDirectory(path) {
+	const entry = await lstatIfExists(path);
+	return entry?.isDirectory() === true && !entry.isSymbolicLink();
+}
+
+async function lstatIfExists(path) {
 	try {
-		await stat(path);
-		return true;
+		return await lstat(path);
 	} catch (error) {
-		if (error instanceof Error && "code" in error && error.code === "ENOENT") return false;
+		if (error instanceof Error && "code" in error && error.code === "ENOENT") return null;
 		throw error;
 	}
 }

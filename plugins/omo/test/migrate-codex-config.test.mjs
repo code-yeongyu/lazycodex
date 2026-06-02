@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import test from "node:test";
@@ -50,6 +50,49 @@ test("#given global and project-local stale Codex configs #when migrating #then 
 	assert.deepEqual(result.changed.sort(), [join(codexHome, "config.toml"), projectConfig].sort());
 	assert.match(await readFile(join(codexHome, "config.toml"), "utf8"), /model = "gpt-5\.5"/);
 	assert.match(await readFile(projectConfig, "utf8"), /model_context_window = 400000/);
+});
+
+test("#given project-local Codex config is a symlink #when migrating #then symlink target is not modified", async () => {
+	const root = await mkdtemp(join(tmpdir(), "lazycodex-config-symlink-"));
+	const codexHome = join(root, "codex-home");
+	const project = join(root, "project");
+	const projectConfig = join(project, ".codex", "config.toml");
+	const victim = join(root, "victim.toml");
+	await mkdir(codexHome, { recursive: true });
+	await mkdir(dirname(projectConfig), { recursive: true });
+	await writeFile(join(codexHome, "config.toml"), 'model = "gpt-5.2"\n');
+	await writeFile(victim, "");
+	await symlink(victim, projectConfig);
+
+	const result = await migrateCodexConfig({
+		env: { CODEX_HOME: codexHome, LAZYCODEX_MODEL_CATALOG_STATE_PATH: join(root, "model-state.json") },
+		cwd: project,
+	});
+
+	assert.deepEqual(result.changed, [join(codexHome, "config.toml")]);
+	assert.equal(await readFile(victim, "utf8"), "");
+});
+
+test("#given project-local .codex directory is a symlink #when migrating #then symlink target is not modified", async () => {
+	const root = await mkdtemp(join(tmpdir(), "lazycodex-config-dir-symlink-"));
+	const codexHome = join(root, "codex-home");
+	const project = join(root, "project");
+	const outsideCodex = join(root, "outside-codex");
+	const outsideConfig = join(outsideCodex, "config.toml");
+	await mkdir(codexHome, { recursive: true });
+	await mkdir(project, { recursive: true });
+	await mkdir(outsideCodex, { recursive: true });
+	await writeFile(join(codexHome, "config.toml"), 'model = "gpt-5.2"\n');
+	await writeFile(outsideConfig, "");
+	await symlink(outsideCodex, join(project, ".codex"), "dir");
+
+	const result = await migrateCodexConfig({
+		env: { CODEX_HOME: codexHome, LAZYCODEX_MODEL_CATALOG_STATE_PATH: join(root, "model-state.json") },
+		cwd: project,
+	});
+
+	assert.deepEqual(result.changed, [join(codexHome, "config.toml")]);
+	assert.equal(await readFile(outsideConfig, "utf8"), "");
 });
 
 test("#given user-customized Codex model config #when migrating #then user values are preserved", async () => {

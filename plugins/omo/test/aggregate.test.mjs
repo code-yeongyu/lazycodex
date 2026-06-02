@@ -19,6 +19,18 @@ function findSpawnAgentTypes(content) {
 	return [...agentTypes].sort();
 }
 
+function findRoleSpecificSpawnsWithoutNonFullHistoryFork(content) {
+	const missingForkTurns = [];
+	const regex = /spawn_agent\(agent_type="([^"]+)"[^)]*\)/g;
+	for (const match of content.matchAll(regex)) {
+		const call = match[0];
+		if (!call.includes('fork_turns="none"')) {
+			missingForkTurns.push(call);
+		}
+	}
+	return missingForkTurns;
+}
+
 test("#given aggregate plugin manifest #when inspected #then it owns the omo namespace", async () => {
 	// given
 	const manifest = await readJson(".codex-plugin/plugin.json");
@@ -159,4 +171,22 @@ test("#given synced skills with Codex compatibility guidance #when explorer/libr
 		assert.equal(fileStat.isFile(), true);
 		assert.equal(basename(tomlPath), `${agentType}.toml`);
 	}
+});
+
+test("#given synced skills with Codex compatibility guidance #when role-specific agents are spawned #then they use non-full-history forks", async () => {
+	const skillsDir = join(root, "skills");
+	const skillEntries = await readdir(skillsDir, { withFileTypes: true });
+	const skillFiles = skillEntries
+		.filter((entry) => entry.isDirectory())
+		.map((entry) => join(skillsDir, entry.name, "SKILL.md"));
+
+	const missingForkTurns = [];
+	for (const skillPath of skillFiles) {
+		const content = await readFile(skillPath, "utf8");
+		for (const call of findRoleSpecificSpawnsWithoutNonFullHistoryFork(content)) {
+			missingForkTurns.push(`${basename(dirname(skillPath))}: ${call}`);
+		}
+	}
+
+	assert.deepEqual(missingForkTurns, []);
 });

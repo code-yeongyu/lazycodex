@@ -212,6 +212,7 @@ describe("rule engine default source selection", () => {
 		// then
 		expect(capturedDisabledSources?.has("~/.claude/rules")).toBe(true);
 		expect(capturedDisabledSources?.has("~/.claude/CLAUDE.md")).toBe(true);
+		expect(capturedDisabledSources?.has("AGENTS.md")).toBe(true);
 		expect(capturedDisabledSources?.has("CLAUDE.md")).toBe(false);
 	});
 

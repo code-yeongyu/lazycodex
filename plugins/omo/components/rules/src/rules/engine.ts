@@ -438,7 +438,7 @@ function staticMatchReason(rule: LoadedRule): MatchReason | null {
 	return null;
 }
 
-const DEFAULT_AUTO_DISABLED_SOURCES = new Set(["~/.claude/rules", "~/.claude/CLAUDE.md"]);
+const DEFAULT_AUTO_DISABLED_SOURCES = new Set(["AGENTS.md", "~/.claude/rules", "~/.claude/CLAUDE.md"]);
 
 function disabledSourcesFor(config: PiRulesConfig): ReadonlySet<string> | undefined {
 	if (config.enabledSources === "auto") {

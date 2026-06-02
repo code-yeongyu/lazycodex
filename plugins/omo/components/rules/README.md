@@ -26,7 +26,7 @@ Project-level sources:
 - `.github/instructions/**/*.md`
 - `.github/copilot-instructions.md`
 
-User-home sources are also supported by the ported engine when available. Claude user-home sources (`~/.claude/rules`, `~/.claude/CLAUDE.md`) are not part of `auto` source selection because they usually contain Claude Code runtime instructions rather than Codex rules; opt into them explicitly with `CODEX_RULES_ENABLED_SOURCES` when you want that migration behavior.
+User-home sources are also supported by the ported engine when available. `AGENTS.md` is not part of `auto` source selection because Codex already loads it as native project instructions, so re-injecting it through hooks duplicates context; opt into it explicitly with `CODEX_RULES_ENABLED_SOURCES` if you need hook-level migration behavior. Claude user-home sources (`~/.claude/rules`, `~/.claude/CLAUDE.md`) are also excluded from `auto` because they usually contain Claude Code runtime instructions rather than Codex rules; opt into them explicitly when you want that migration behavior.
 
 Markdown rule files may use frontmatter such as:
 

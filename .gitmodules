@@ -1,3 +1,4 @@
 [submodule "src"]
 	path = src
-	url = https://github.com/code-yeongyu/oh-my-openagent.git
+	url = https://github.com/HaD0Yun/oh-my-openagent.git
+	branch = context-budget-guard

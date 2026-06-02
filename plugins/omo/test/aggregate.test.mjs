@@ -176,15 +176,16 @@ test("#given synced skills with Codex compatibility guidance #when explorer/libr
 test('#given synced skills with Codex compatibility guidance #when role-specific agents are spawned #then they set fork_turns="none"', async () => {
 	const skillsDir = join(root, "skills");
 	const skillEntries = await readdir(skillsDir, { withFileTypes: true });
-	const skillFiles = skillEntries
+	const promptFiles = skillEntries
 		.filter((entry) => entry.isDirectory())
 		.map((entry) => join(skillsDir, entry.name, "SKILL.md"));
+	promptFiles.push(join(root, "components", "rules", "bundled-rules", "hephaestus.md"));
 
 	const missingForkTurns = [];
-	for (const skillPath of skillFiles) {
-		const content = await readFile(skillPath, "utf8");
+	for (const promptPath of promptFiles) {
+		const content = await readFile(promptPath, "utf8");
 		for (const call of findRoleSpecificSpawnsWithoutForkTurnsNone(content)) {
-			missingForkTurns.push(`${basename(dirname(skillPath))}: ${call}`);
+			missingForkTurns.push(`${basename(dirname(promptPath))}/${basename(promptPath)}: ${call}`);
 		}
 	}
 

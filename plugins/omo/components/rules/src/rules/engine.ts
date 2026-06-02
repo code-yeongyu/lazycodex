@@ -10,6 +10,7 @@ import {
 	markStaticInjected as markStaticInjectedInState,
 } from "./cache.js";
 import {
+	DEFAULT_AUTO_DISABLED_SOURCES,
 	DEFAULT_MAX_RESULT_CHARS,
 	DEFAULT_MAX_RULE_CHARS,
 	PROJECT_SINGLE_FILES,
@@ -437,8 +438,6 @@ function staticMatchReason(rule: LoadedRule): MatchReason | null {
 
 	return null;
 }
-
-const DEFAULT_AUTO_DISABLED_SOURCES = new Set(["AGENTS.md", "~/.claude/rules", "~/.claude/CLAUDE.md"]);
 
 function disabledSourcesFor(config: PiRulesConfig): ReadonlySet<string> | undefined {
 	if (config.enabledSources === "auto") {

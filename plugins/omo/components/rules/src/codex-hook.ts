@@ -12,7 +12,7 @@ import {
 	persistEngineState,
 	sessionCachePath,
 } from "./persistent-cache.js";
-import { SOURCE_PRIORITY } from "./rules/constants.js";
+import { DEFAULT_AUTO_DISABLED_SOURCES, SOURCE_PRIORITY } from "./rules/constants.js";
 import { createEngine } from "./rules/engine.js";
 import { createRuleDiscoveryCache, findRuleCandidates } from "./rules/finder.js";
 import { hashContent } from "./rules/matcher.js";
@@ -422,7 +422,7 @@ function fileFingerprint(filePath: string): string {
 
 function disabledSourcesFor(config: PiRulesConfig): ReadonlySet<string> | undefined {
 	if (config.enabledSources === "auto") {
-		return undefined;
+		return DEFAULT_AUTO_DISABLED_SOURCES;
 	}
 
 	const enabledSources = new Set(config.enabledSources);

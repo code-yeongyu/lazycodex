@@ -75,6 +75,12 @@ export const SOURCE_PRIORITY: ReadonlyMap<RuleSource, number> = new Map([
 	["plugin-bundled", 200],
 ]);
 
+export const DEFAULT_AUTO_DISABLED_SOURCES: ReadonlySet<RuleSource> = new Set([
+	"AGENTS.md",
+	"~/.claude/rules",
+	"~/.claude/CLAUDE.md",
+]);
+
 /**
  * Distance value assigned to global / user-home rules.
  */

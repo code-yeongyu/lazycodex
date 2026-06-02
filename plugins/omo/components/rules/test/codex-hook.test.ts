@@ -366,6 +366,23 @@ describe("codex rules hooks", () => {
 		expect(readSessionCache(pluginData).dynamicTargetFingerprints).toEqual(cachedState.dynamicTargetFingerprints);
 	});
 
+	it("#given default auto sources #when excluded AGENTS.md changes #then PostToolUse fingerprint stays stable", async () => {
+		// given
+		const { root, pluginData } = makeTempProject();
+		const filePath = path.join(root, "src", "app.ts");
+		const input = postToolUseInput(root, filePath);
+		await runPostToolUseHook(input, { pluginDataRoot: pluginData });
+		const cachedState = readSessionCache(pluginData);
+		writeFileSync(path.join(root, "AGENTS.md"), "Native Codex instructions changed outside codex-rules auto.");
+
+		// when
+		const output = await runPostToolUseHook(input, { pluginDataRoot: pluginData });
+
+		// then
+		expect(output).toBe("");
+		expect(readSessionCache(pluginData).dynamicTargetFingerprints).toEqual(cachedState.dynamicTargetFingerprints);
+	});
+
 	it("#given dynamic context remains in transcript but cache is missing #when PostToolUse repeats #then it emits no duplicate context", async () => {
 		// given
 		const { root, pluginData } = makeTempProject();

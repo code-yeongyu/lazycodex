@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { readFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
@@ -131,6 +132,56 @@ test("#given ultrawork prompt #when detector runs #then directive mandates paire
 	assert.match(result.stdout, /tmux kill-session/);
 	assert.match(result.stdout, /Leftover state from QA/);
 	assert.match(result.stdout, /means NOT done/);
+});
+
+test("#given transcript already contains ultrawork directive #when detector sees ultrawork prompt #then it does not repeat directive", async () => {
+	const tempDir = await mkdtemp(join(tmpdir(), "ultrawork-transcript-"));
+	try {
+		const transcriptPath = join(tempDir, "transcript.jsonl");
+		await writeFile(
+			transcriptPath,
+			`${JSON.stringify({ hookSpecificOutput: { additionalContext: "<ultrawork-mode>\nexisting directive" } })}\n`,
+		);
+		const payload = JSON.stringify({
+			hook_event_name: "UserPromptSubmit",
+			prompt: "please ulw this change",
+			transcript_path: transcriptPath,
+		});
+
+		const result = await runPython(detectorPath, payload);
+
+		assert.equal(result.code, 0);
+		assert.equal(result.signal, null);
+		assert.equal(result.stdout, "");
+		assert.equal(result.stderr, "");
+	} finally {
+		await rm(tempDir, { force: true, recursive: true });
+	}
+});
+
+test("#given transcript only mentions ultrawork marker in user content #when detector sees first ultrawork prompt #then it still emits directive", async () => {
+	const tempDir = await mkdtemp(join(tmpdir(), "ultrawork-transcript-"));
+	try {
+		const transcriptPath = join(tempDir, "transcript.jsonl");
+		await writeFile(
+			transcriptPath,
+			`${JSON.stringify({ role: "user", content: "Please inspect text containing <ultrawork-mode> but do not activate yet." })}\n`,
+		);
+		const payload = JSON.stringify({
+			hook_event_name: "UserPromptSubmit",
+			prompt: "please ulw this change",
+			transcript_path: transcriptPath,
+		});
+
+		const result = await runPython(detectorPath, payload);
+
+		assert.equal(result.code, 0);
+		assert.equal(result.signal, null);
+		assert.match(result.stdout, /<ultrawork-mode>/);
+		assert.equal(result.stderr, "");
+	} finally {
+		await rm(tempDir, { force: true, recursive: true });
+	}
 });
 
 test("#given identifier-like ulw #when detector runs #then does not emit directive", async () => {

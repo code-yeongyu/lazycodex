@@ -15,11 +15,13 @@ from __future__ import annotations
 import json
 import re
 import sys
+from pathlib import Path
 from typing import cast
 
 
 # `\b(?:ultrawork|ulw)\b` — word-bounded match excludes paths and identifiers.
 ULTRAWORK_PATTERN = re.compile(r"\b(?:ultrawork|ulw)\b", re.IGNORECASE)
+TRANSCRIPT_SEARCH_BYTES = 512_000
 
 
 ULTRAWORK_DIRECTIVE = """<ultrawork-mode>
@@ -279,7 +281,45 @@ def _should_inject(payload: dict[str, object]) -> bool:
     prompt = payload.get("prompt")
     if not isinstance(prompt, str) or not prompt:
         return False
-    return ULTRAWORK_PATTERN.search(prompt) is not None
+    if ULTRAWORK_PATTERN.search(prompt) is None:
+        return False
+    return not _transcript_already_has_ultrawork(payload)
+
+
+def _transcript_already_has_ultrawork(payload: dict[str, object]) -> bool:
+    transcript_path = payload.get("transcript_path")
+    if not isinstance(transcript_path, str) or not transcript_path:
+        return False
+    try:
+        transcript_tail = _read_transcript_tail(Path(transcript_path))
+    except OSError:
+        return False
+    return _hook_context_contains_ultrawork(transcript_tail)
+
+
+def _read_transcript_tail(transcript_path: Path) -> bytes:
+    with transcript_path.open("rb") as transcript_file:
+        transcript_file.seek(0, 2)
+        size = transcript_file.tell()
+        transcript_file.seek(max(0, size - TRANSCRIPT_SEARCH_BYTES))
+        return transcript_file.read()
+
+
+def _hook_context_contains_ultrawork(transcript_tail: bytes) -> bool:
+    for line in transcript_tail.splitlines():
+        try:
+            record = json.loads(line)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            continue
+        if not isinstance(record, dict):
+            continue
+        hook_output = record.get("hookSpecificOutput")
+        if not isinstance(hook_output, dict):
+            continue
+        additional_context = hook_output.get("additionalContext")
+        if isinstance(additional_context, str) and "<ultrawork-mode>" in additional_context:
+            return True
+    return False
 
 
 def main() -> None:

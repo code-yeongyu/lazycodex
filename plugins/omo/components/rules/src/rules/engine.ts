@@ -438,9 +438,11 @@ function staticMatchReason(rule: LoadedRule): MatchReason | null {
 	return null;
 }
 
+const DEFAULT_AUTO_DISABLED_SOURCES = new Set(["~/.claude/rules", "~/.claude/CLAUDE.md"]);
+
 function disabledSourcesFor(config: PiRulesConfig): ReadonlySet<string> | undefined {
 	if (config.enabledSources === "auto") {
-		return undefined;
+		return DEFAULT_AUTO_DISABLED_SOURCES;
 	}
 
 	const enabledSources = new Set(config.enabledSources);

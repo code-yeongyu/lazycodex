@@ -19,7 +19,7 @@ function findSpawnAgentTypes(content) {
 	return [...agentTypes].sort();
 }
 
-function findRoleSpecificSpawnsWithoutNonFullHistoryFork(content) {
+function findRoleSpecificSpawnsWithoutForkTurnsNone(content) {
 	const missingForkTurns = [];
 	const regex = /spawn_agent\(agent_type="([^"]+)"[^)]*\)/g;
 	for (const match of content.matchAll(regex)) {
@@ -173,7 +173,7 @@ test("#given synced skills with Codex compatibility guidance #when explorer/libr
 	}
 });
 
-test("#given synced skills with Codex compatibility guidance #when role-specific agents are spawned #then they use non-full-history forks", async () => {
+test('#given synced skills with Codex compatibility guidance #when role-specific agents are spawned #then they set fork_turns="none"', async () => {
 	const skillsDir = join(root, "skills");
 	const skillEntries = await readdir(skillsDir, { withFileTypes: true });
 	const skillFiles = skillEntries
@@ -183,7 +183,7 @@ test("#given synced skills with Codex compatibility guidance #when role-specific
 	const missingForkTurns = [];
 	for (const skillPath of skillFiles) {
 		const content = await readFile(skillPath, "utf8");
-		for (const call of findRoleSpecificSpawnsWithoutNonFullHistoryFork(content)) {
+		for (const call of findRoleSpecificSpawnsWithoutForkTurnsNone(content)) {
 			missingForkTurns.push(`${basename(dirname(skillPath))}: ${call}`);
 		}
 	}

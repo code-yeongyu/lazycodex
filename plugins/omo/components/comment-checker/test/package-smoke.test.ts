@@ -9,10 +9,6 @@ type PackageJson = {
 	readonly optionalDependencies: Record<string, string>;
 };
 
-type PluginJson = {
-	readonly hooks: string;
-};
-
 type HookCommand = {
 	readonly command: string;
 };
@@ -31,12 +27,6 @@ function readPackageJson(path: string): PackageJson {
 	return parsed;
 }
 
-function readPluginJson(path: string): PluginJson {
-	const parsed: unknown = JSON.parse(readFileSync(path, "utf8"));
-	if (!isPluginJson(parsed)) throw new TypeError(`Invalid plugin metadata: ${path}`);
-	return parsed;
-}
-
 function readHooksJson(path: string): HooksJson {
 	const parsed: unknown = JSON.parse(readFileSync(path, "utf8"));
 	if (!isHooksJson(parsed)) throw new TypeError(`Invalid hooks metadata: ${path}`);
@@ -47,7 +37,6 @@ describe("plugin package metadata", () => {
 	it("#given packaged plugin files #when validating entrypoints #then hook command uses portable plugin root interpolation", () => {
 		// given
 		const packageJson = readPackageJson("package.json");
-		const pluginJson = readPluginJson(".codex-plugin/plugin.json");
 		const hooksJson = readHooksJson("hooks/hooks.json");
 		const cliSource = readFileSync("src/cli.ts", "utf8");
 
@@ -60,8 +49,7 @@ describe("plugin package metadata", () => {
 		expect(packageJson.packageManager).toBe("npm@11.12.1");
 		expect(packageJson.dependencies ?? {}).not.toHaveProperty("@code-yeongyu/comment-checker");
 		expect(packageJson.optionalDependencies).toHaveProperty("@code-yeongyu/comment-checker");
-		expect(packageJson.bin["codex-comment-checker"]).toBe("./dist/cli.js");
-		expect(pluginJson.hooks).toBe("./hooks/hooks.json");
+		expect(packageJson.bin["omo-comment-checker"]).toBe("./dist/cli.js");
 		expect(cliSource.startsWith("#!/usr/bin/env node")).toBe(true);
 		expect(command).toBe(`node "${pluginRoot}/dist/cli.js" hook post-tool-use`);
 	});
@@ -77,10 +65,6 @@ function isPackageJson(value: unknown): value is PackageJson {
 		isStringRecord(value["optionalDependencies"]) &&
 		(dependencies === undefined || isRecord(dependencies))
 	);
-}
-
-function isPluginJson(value: unknown): value is PluginJson {
-	return isRecord(value) && typeof value["hooks"] === "string";
 }
 
 function isHooksJson(value: unknown): value is HooksJson {

@@ -11,7 +11,7 @@
 ### Syntax
 
 ```bash
-/start-work [plan-name] [--worktree <absolute-path>]
+$start-work [plan-name] [--worktree <absolute-path>]
 ```
 
 ### Done

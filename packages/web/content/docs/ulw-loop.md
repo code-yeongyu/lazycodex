@@ -7,7 +7,7 @@ The agent works continuously and emits `<promise>DONE</promise>` when it believe
 ### Syntax
 
 ```bash
-/ulw-loop "task description" [--completion-promise=TEXT] [--strategy=reset|continue]
+$ulw-loop "task description" [--completion-promise=TEXT] [--strategy=reset|continue]
 ```
 
 ### Limits

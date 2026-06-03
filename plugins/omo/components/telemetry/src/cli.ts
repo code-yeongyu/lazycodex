@@ -9,7 +9,7 @@ const subcommand = process.argv[3];
 if (command === "hook" && subcommand === "session-start") {
 	await runHookCli();
 } else {
-	process.stderr.write("Usage: codex-telemetry hook session-start\n");
+	process.stderr.write("Usage: omo-telemetry hook session-start\n");
 	process.exitCode = 1;
 }
 

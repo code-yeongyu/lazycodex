@@ -1,27 +1,28 @@
-import { readFileSync, statSync } from "node:fs";
-import { isAbsolute, relative, resolve } from "node:path";
-
+import type { CodexRulesHookOptions } from "./codex-hook-options.js";
 import { configFromEnvironment } from "./config.js";
+import { hasContextPressureMarker, transcriptHasContextPressureMarker } from "./context-pressure.js";
 import { createHookDebugTimer } from "./debug-log.js";
+import { fingerprintDynamicTargets } from "./dynamic-target-fingerprints.js";
+import { formatAdditionalContextOutput } from "./hook-output.js";
+import { displayPath, uniqueStrings } from "./path-utils.js";
 import {
+	claimPostCompactPending,
 	clearSessionState,
 	hasPostCompactPending,
 	hydrateEngineState,
-	isPostCompactPending,
+	isPostCompactRecoveryInProgress,
 	markSessionCompacted,
 	persistEngineState,
 	sessionCachePath,
 } from "./persistent-cache.js";
-import { DEFAULT_AUTO_DISABLED_SOURCES, SOURCE_PRIORITY } from "./rules/constants.js";
-import { createEngine } from "./rules/engine.js";
-import { createRuleDiscoveryCache, findRuleCandidates } from "./rules/finder.js";
-import { hashContent } from "./rules/matcher.js";
-import { sortCandidates } from "./rules/ordering.js";
-import { findProjectRoot } from "./rules/project-root.js";
-import type { LoadedRule, PiRulesConfig, RuleCandidate } from "./rules/types.js";
+import { withPostCompactBudget } from "./post-compact-budget.js";
+import { claimedPostCompactKind, shouldSkipPostCompactClaim } from "./post-compact-claim.js";
+import { createRulesEngine } from "./rules-engine-factory.js";
+import { runStaticInjection } from "./static-injection.js";
 import { extractCodexToolPaths } from "./tool-paths.js";
+import { filterRulesAlreadyInTranscript } from "./transcript-rule-filter.js";
 
-type ContextInjectionHookEventName = "SessionStart" | "UserPromptSubmit" | "PostToolUse";
+export type { CodexRulesHookOptions } from "./codex-hook-options.js";
 
 export type CodexSessionStartInput = {
 	session_id: string;
@@ -30,7 +31,7 @@ export type CodexSessionStartInput = {
 	hook_event_name: "SessionStart";
 	model: string;
 	permission_mode: string;
-	source: "startup" | "resume" | "clear";
+	source: "startup" | "resume" | "clear" | "compact";
 };
 
 export type CodexUserPromptSubmitInput = {
@@ -68,17 +69,6 @@ export type CodexPostCompactInput = {
 	trigger: "manual" | "auto";
 };
 
-export interface CodexRulesHookOptions {
-	env?: NodeJS.ProcessEnv;
-	pluginDataRoot?: string;
-}
-
-interface DynamicTargetFingerprint {
-	targetPath: string;
-	cacheKey: string;
-	fingerprint: string;
-}
-
 export async function runSessionStartHook(
 	input: CodexSessionStartInput,
 	options: CodexRulesHookOptions = {},
@@ -86,18 +76,31 @@ export async function runSessionStartHook(
 	const cachePath = sessionCachePath(input.session_id, options.pluginDataRoot);
 	if (input.source === "clear") {
 		clearSessionState(cachePath);
-	} else if (input.source !== "resume" && !hasPostCompactPending(cachePath)) {
+	} else if (input.source !== "resume" && input.source !== "compact" && !hasPostCompactPending(cachePath)) {
 		clearSessionState(cachePath);
 	}
-	const postCompactPending = input.source !== "clear" && isPostCompactPending(cachePath, "static");
-	const transcriptPath = input.source === "clear" || postCompactPending ? null : input.transcript_path;
+	const postCompactClaim = input.source === "clear" ? "not-pending" : claimPostCompactPending(cachePath, "static");
+	const completedPostCompactKind =
+		claimedPostCompactKind(postCompactClaim, "static") ??
+		(input.source === "compact" && postCompactClaim === "not-pending" ? "static" : undefined);
+	if (
+		shouldSkipPostCompactClaim(
+			postCompactClaim,
+			input.source === "compact" && isPostCompactRecoveryInProgress(cachePath, "static"),
+		)
+	) {
+		return "";
+	}
+	const transcriptPath = input.source === "clear" ? null : input.transcript_path;
 	return runStaticInjection(
 		input.cwd,
 		transcriptPath,
 		"SessionStart",
 		cachePath,
 		options,
-		postCompactPending ? "static" : undefined,
+		completedPostCompactKind,
+		{ latestCompactedReplacementOnly: completedPostCompactKind !== undefined },
+		input.model,
 	);
 }
 
@@ -113,16 +116,27 @@ export async function runUserPromptSubmitHook(
 	input: CodexUserPromptSubmitInput,
 	options: CodexRulesHookOptions = {},
 ): Promise<string> {
+	if (hasContextPressureMarker(input.prompt)) {
+		return "";
+	}
 	const cachePath = sessionCachePath(input.session_id, options.pluginDataRoot);
-	const postCompactPending = isPostCompactPending(cachePath, "static");
-	const transcriptPath = postCompactPending ? null : input.transcript_path;
+	const postCompactClaim = claimPostCompactPending(cachePath, "static");
+	if (postCompactClaim === "not-pending" && transcriptHasContextPressureMarker(input.transcript_path)) {
+		return "";
+	}
+	const completedPostCompactKind = claimedPostCompactKind(postCompactClaim, "static");
+	if (shouldSkipPostCompactClaim(postCompactClaim, isPostCompactRecoveryInProgress(cachePath, "static"))) {
+		return "";
+	}
 	return runStaticInjection(
 		input.cwd,
-		transcriptPath,
+		input.transcript_path,
 		"UserPromptSubmit",
 		cachePath,
 		options,
-		postCompactPending ? "static" : undefined,
+		completedPostCompactKind,
+		{ latestCompactedReplacementOnly: completedPostCompactKind !== undefined },
+		input.model,
 	);
 }
 
@@ -151,9 +165,22 @@ export async function runPostToolUseHook(
 	}
 
 	const cachePath = sessionCachePath(input.session_id, options.pluginDataRoot);
-	const postCompactPending = isPostCompactPending(cachePath, "dynamic");
-	const transcriptPath = postCompactPending ? null : input.transcript_path;
-	const engine = createRulesEngine(options);
+	const postCompactClaim = claimPostCompactPending(cachePath, "dynamic");
+	if (postCompactClaim === "not-pending" && transcriptHasContextPressureMarker(input.transcript_path)) {
+		debugTimer.done({ outputBytes: 0, reason: "context-pressure-transcript" });
+		return "";
+	}
+	const completedPostCompactKind = claimedPostCompactKind(postCompactClaim, "dynamic");
+	if (shouldSkipPostCompactClaim(postCompactClaim, isPostCompactRecoveryInProgress(cachePath, "dynamic"))) {
+		debugTimer.done({ outputBytes: 0, reason: "post-compact-recovery-in-progress" });
+		return "";
+	}
+	const engine = createRulesEngine(
+		options,
+		completedPostCompactKind !== undefined
+			? withPostCompactBudget(config, { model: input.model, transcriptPath: input.transcript_path })
+			: config,
+	);
 	hydrateEngineState(engine, cachePath);
 	debugTimer.lap("hydrate", {
 		dynamicDedupScopes: engine.state.dynamicDedup.size,
@@ -167,7 +194,7 @@ export async function runPostToolUseHook(
 	);
 	debugTimer.lap("pending", { pending: pendingTargetFingerprints.length });
 	if (pendingTargetFingerprints.length === 0) {
-		persistEngineState(engine, cachePath, postCompactPending ? "dynamic" : undefined);
+		persistEngineState(engine, cachePath, completedPostCompactKind);
 		debugTimer.lap("persist", { reason: "no-pending" });
 		debugTimer.done({ outputBytes: 0, reason: "no-pending" });
 		return "";
@@ -180,17 +207,18 @@ export async function runPostToolUseHook(
 	debugTimer.lap("load", { diagnostics: loaded.diagnostics.length, loadedRules: loaded.rules.length });
 	const rules = filterRulesAlreadyInTranscript(
 		loaded.rules.filter((rule) => !engine.isStaticInjected(rule) && !engine.isDynamicInjected(rule)),
-		transcriptPath,
+		input.transcript_path,
 		(rule) => {
 			engine.markDynamicInjected(rule);
 		},
+		{ latestCompactedReplacementOnly: completedPostCompactKind !== undefined },
 	);
 	debugTimer.lap("filter", { rules: rules.length });
 	for (const target of pendingTargetFingerprints) {
 		engine.state.dynamicTargetFingerprints.set(target.cacheKey, target.fingerprint);
 	}
 	if (rules.length === 0) {
-		persistEngineState(engine, cachePath, postCompactPending ? "dynamic" : undefined);
+		persistEngineState(engine, cachePath, completedPostCompactKind);
 		debugTimer.lap("persist", { reason: "no-rules" });
 		debugTimer.done({ outputBytes: 0, reason: "no-rules" });
 		return "";
@@ -202,274 +230,9 @@ export async function runPostToolUseHook(
 	for (const rule of rules) {
 		engine.markDynamicInjected(rule);
 	}
-	persistEngineState(engine, cachePath, postCompactPending ? "dynamic" : undefined);
+	persistEngineState(engine, cachePath, completedPostCompactKind);
 	debugTimer.lap("persist", { reason: "emit" });
 	const output = formatAdditionalContextOutput("PostToolUse", block);
 	debugTimer.done({ outputBytes: Buffer.byteLength(output), reason: "emit" });
 	return output;
-}
-
-function runStaticInjection(
-	cwd: string,
-	transcriptPath: string | null,
-	eventName: "SessionStart" | "UserPromptSubmit",
-	cachePath: string,
-	options: CodexRulesHookOptions,
-	completedPostCompactChannel?: "static",
-): string {
-	const config = configFromEnvironment(options.env);
-	if (config.disabled || config.mode === "off" || config.mode === "dynamic") {
-		return "";
-	}
-
-	const engine = createRulesEngine(options);
-	hydrateEngineState(engine, cachePath);
-	engine.state.cwd = cwd;
-
-	const loaded = engine.loadStaticRules(cwd);
-	const rules = filterRulesAlreadyInTranscript(
-		loaded.rules.filter((rule) => !engine.isStaticInjected(rule)),
-		transcriptPath,
-		(rule) => {
-			engine.markStaticInjected(rule);
-		},
-	);
-	if (rules.length === 0) {
-		persistEngineState(engine, cachePath, completedPostCompactChannel);
-		return "";
-	}
-
-	const block = engine.formatStatic(rules);
-	for (const rule of rules) {
-		engine.markStaticInjected(rule);
-	}
-	persistEngineState(engine, cachePath, completedPostCompactChannel);
-	return formatAdditionalContextOutput(eventName, block);
-}
-
-function filterRulesAlreadyInTranscript(
-	rules: ReadonlyArray<LoadedRule>,
-	transcriptPath: string | null,
-	markInjected: (rule: LoadedRule) => void,
-): LoadedRule[] {
-	if (rules.length === 0 || transcriptPath === null) {
-		return [...rules];
-	}
-
-	const transcriptText = readTranscriptSearchText(transcriptPath);
-	if (transcriptText === null) {
-		return [...rules];
-	}
-
-	const pendingRules: LoadedRule[] = [];
-	for (const rule of rules) {
-		if (isRuleAlreadyInTranscript(rule, transcriptText)) {
-			markInjected(rule);
-			continue;
-		}
-
-		pendingRules.push(rule);
-	}
-	return pendingRules;
-}
-
-function isRuleAlreadyInTranscript(rule: LoadedRule, transcriptText: string): boolean {
-	const bodyNeedle = rule.body.trim().slice(0, 2_000);
-	if (bodyNeedle.length === 0 || !transcriptText.includes(bodyNeedle)) {
-		return false;
-	}
-
-	const markers = [
-		`Instructions from: ${rule.path}`,
-		`Instructions from: ${rule.realPath}`,
-		rule.relativePath.length === 0 ? null : rule.relativePath,
-	].filter((marker): marker is string => marker !== null);
-	return markers.some((marker) => transcriptText.includes(marker));
-}
-
-function readTranscriptSearchText(transcriptPath: string): string | null {
-	try {
-		const rawTranscript = readFileSync(transcriptPath, "utf8");
-		return [rawTranscript, ...collectJsonLineStrings(rawTranscript)].join("\n");
-	} catch {
-		return null;
-	}
-}
-
-function collectJsonLineStrings(rawTranscript: string): string[] {
-	const values: string[] = [];
-	for (const line of rawTranscript.split(/\r?\n/)) {
-		if (line.trim().length === 0) {
-			continue;
-		}
-
-		try {
-			const parsed: unknown = JSON.parse(line);
-			collectStrings(parsed, values);
-		} catch {
-			// Non-JSON transcript lines are still covered by the raw transcript text.
-		}
-	}
-	return values;
-}
-
-function collectStrings(value: unknown, output: string[]): void {
-	if (typeof value === "string") {
-		output.push(value);
-		return;
-	}
-
-	if (Array.isArray(value)) {
-		for (const item of value) {
-			collectStrings(item, output);
-		}
-		return;
-	}
-
-	if (typeof value !== "object" || value === null) {
-		return;
-	}
-
-	for (const item of Object.values(value)) {
-		collectStrings(item, output);
-	}
-}
-
-function createRulesEngine(options: CodexRulesHookOptions) {
-	const config = configFromEnvironment(options.env);
-	return createEngine(config, {
-		findCandidates: findRuleCandidates,
-		findProjectRoot,
-		readFile: (path) => {
-			try {
-				return readFileSync(path, "utf8");
-			} catch {
-				return null;
-			}
-		},
-	});
-}
-
-function fingerprintDynamicTargets(
-	cwd: string,
-	targetPaths: ReadonlyArray<string>,
-	config: PiRulesConfig,
-): DynamicTargetFingerprint[] {
-	const disabledSources = disabledSourcesFor(config);
-	const discoveryCache = createRuleDiscoveryCache();
-	const cwdProjectRoot = findProjectRoot(cwd);
-	const fingerprints: DynamicTargetFingerprint[] = [];
-
-	for (const targetPath of uniqueStrings(targetPaths)) {
-		const projectRoot =
-			cwdProjectRoot !== null && isSameOrChildPath(targetPath, cwdProjectRoot)
-				? cwdProjectRoot
-				: findProjectRoot(targetPath);
-		const findOptions: {
-			projectRoot: string | null;
-			targetFile: string;
-			disabledSources?: ReadonlySet<string>;
-			cache: ReturnType<typeof createRuleDiscoveryCache>;
-		} = {
-			projectRoot,
-			targetFile: targetPath,
-			cache: discoveryCache,
-		};
-		if (disabledSources !== undefined) {
-			findOptions.disabledSources = disabledSources;
-		}
-		const candidates = findRuleCandidates(findOptions);
-		const candidateFingerprint = sortCandidates(candidates).map(fingerprintCandidate).join("\u0001");
-		const cacheKey = dynamicTargetCacheKey(targetPath);
-		fingerprints.push({
-			targetPath,
-			cacheKey,
-			fingerprint: hashContent(
-				[
-					"v1",
-					config.enabledSources === "auto" ? "auto" : config.enabledSources.join(","),
-					projectRoot ?? "",
-					cacheKey,
-					candidateFingerprint,
-				].join("\u0000"),
-			),
-		});
-	}
-
-	return fingerprints;
-}
-
-function fingerprintCandidate(candidate: RuleCandidate): string {
-	return [
-		candidate.realPath,
-		candidate.relativePath,
-		candidate.source,
-		candidate.isGlobal ? "global" : "project",
-		candidate.isSingleFile ? "single" : "multi",
-		String(candidate.distance),
-		fileFingerprint(candidate.path),
-	].join("\u0000");
-}
-
-function fileFingerprint(filePath: string): string {
-	try {
-		const stats = statSync(filePath, { bigint: true });
-		return `${stats.mtimeNs}:${stats.ctimeNs}:${stats.size}`;
-	} catch {
-		return "missing";
-	}
-}
-
-function disabledSourcesFor(config: PiRulesConfig): ReadonlySet<string> | undefined {
-	if (config.enabledSources === "auto") {
-		return DEFAULT_AUTO_DISABLED_SOURCES;
-	}
-
-	const enabledSources = new Set(config.enabledSources);
-	return new Set([...SOURCE_PRIORITY.keys()].filter((source) => !enabledSources.has(source)));
-}
-
-function dynamicTargetCacheKey(targetPath: string): string {
-	return toPosixPath(resolve(targetPath));
-}
-
-function isSameOrChildPath(childPath: string, parentPath: string): boolean {
-	const childRelativePath = relative(parentPath, resolve(childPath));
-	return childRelativePath === "" || (!childRelativePath.startsWith("..") && !isAbsolute(childRelativePath));
-}
-
-function uniqueStrings(values: ReadonlyArray<string>): string[] {
-	const uniqueValues: string[] = [];
-	const seenValues = new Set<string>();
-	for (const value of values) {
-		if (seenValues.has(value)) {
-			continue;
-		}
-
-		seenValues.add(value);
-		uniqueValues.push(value);
-	}
-	return uniqueValues;
-}
-
-function formatAdditionalContextOutput(eventName: ContextInjectionHookEventName, additionalContext: string): string {
-	if (additionalContext.trim().length === 0) return "";
-	return `${JSON.stringify({
-		hookSpecificOutput: {
-			hookEventName: eventName,
-			additionalContext,
-		},
-	})}\n`;
-}
-
-function displayPath(cwd: string, filePath: string): string {
-	const rel = isAbsolute(filePath) ? relative(cwd, filePath) : filePath;
-	// Normalize to POSIX separators so injected rule context renders the same
-	// path string on Linux/macOS and Windows (Codex feeds this verbatim into
-	// the model prompt, and the existing engine already emits POSIX paths).
-	return toPosixPath(rel);
-}
-
-function toPosixPath(path: string): string {
-	return path.replaceAll("\\", "/");
 }

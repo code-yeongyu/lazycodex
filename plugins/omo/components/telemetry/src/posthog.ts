@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import os from "node:os";
 
-import { PostHog } from "posthog-node";
+import type { PostHog } from "posthog-node";
 
 import { getPostHogApiKey, getPostHogHost, hasPostHogApiKey, shouldDisablePostHog } from "./env-flags.js";
 import { getPostHogActivityCaptureState } from "./posthog-activity-state.js";
@@ -9,9 +9,9 @@ import {
 	DEFAULT_POSTHOG_API_KEY,
 	DEFAULT_POSTHOG_HOST,
 	EVENT_NAME,
+	getComponentVersion,
 	PACKAGE_NAME,
 	PRODUCT_NAME,
-	getComponentVersion,
 } from "./product-identity.js";
 
 export { DEFAULT_POSTHOG_API_KEY, DEFAULT_POSTHOG_HOST };
@@ -86,14 +86,23 @@ function getSharedProperties(): NonNullable<PostHogCaptureEvent["properties"]> {
 	};
 }
 
-export function createPluginPostHog(): PostHogClient {
+export async function createPluginPostHog(): Promise<PostHogClient> {
 	if (shouldDisablePostHog() || !hasPostHogApiKey()) {
 		return NO_OP_POSTHOG;
 	}
 
+	let PostHogClientConstructor: typeof PostHog;
+	try {
+		const module = await import("posthog-node");
+		PostHogClientConstructor = module.PostHog;
+	} catch (error) {
+		if (error instanceof Error) return NO_OP_POSTHOG;
+		throw error;
+	}
+
 	let client: PostHog;
 	try {
-		client = new PostHog(getPostHogApiKey(), {
+		client = new PostHogClientConstructor(getPostHogApiKey(), {
 			enableExceptionAutocapture: false,
 			enableLocalEvaluation: false,
 			strictLocalEvaluation: true,

@@ -12,31 +12,45 @@ type TruncatedRule = {
 	body: string;
 };
 
+type NormalizedRule = TruncatedRule & {
+	source: LoadedRule["source"];
+};
+
 function formatRule(rule: TruncatedRule): string {
-	return `Instructions from: ${rule.path}\n${rule.body}`;
+	const body = normalizeRuleBody(rule.body);
+	if (body.length === 0) {
+		return `Instructions from: ${rule.path}`;
+	}
+	return `Instructions from: ${rule.path}\n\n${body}`;
 }
 
 function truncateRules(rules: ReadonlyArray<LoadedRule>, options: FormatOptions): TruncatedRule[] {
-	const perRuleTruncated = rules.map((rule) => ({
+	const perRuleNormalized: NormalizedRule[] = rules.map((rule) => ({
 		path: rule.path,
 		relativePath: rule.relativePath,
-		// Plugin-bundled rules ship as-is. The per-rule cap exists to guard against absurd
-		// user-authored AGENTS.md files; bundled rules are author-controlled and silent
-		// mid-section truncation would break the contract that the rule landed in full.
-		// The overall maxResultChars budget still applies via truncateBudget below.
+		body: normalizeRuleBody(rule.body),
+		source: rule.source,
+	}));
+	const perRuleResultChars = Math.floor(options.maxResultChars / Math.max(1, perRuleNormalized.length));
+	const perRuleBudgeted = perRuleNormalized.map((rule) => ({
+		path: rule.path,
+		relativePath: rule.relativePath,
 		body:
 			rule.source === "plugin-bundled"
-				? rule.body
-				: truncateRule(rule.body, { maxChars: options.maxRuleChars, relativePath: rule.relativePath }).body,
+				? truncateRule(rule.body, { maxChars: perRuleResultChars, relativePath: rule.relativePath }).body
+				: truncateRule(rule.body, {
+						maxChars: Math.min(options.maxRuleChars, perRuleResultChars),
+						relativePath: rule.relativePath,
+					}).body,
 	}));
 	const budgetedRules = truncateBudget({
-		rules: perRuleTruncated.map((rule) => ({ body: rule.body, relativePath: rule.relativePath })),
+		rules: perRuleBudgeted.map((rule) => ({ body: rule.body, relativePath: rule.relativePath })),
 		maxResultChars: options.maxResultChars,
 	});
 	const truncatedRules: TruncatedRule[] = [];
 
 	for (let index = 0; index < budgetedRules.length; index += 1) {
-		const sourceRule = perRuleTruncated[index];
+		const sourceRule = perRuleBudgeted[index];
 		const budgetedRule = budgetedRules[index];
 		if (sourceRule === undefined || budgetedRule === undefined) {
 			continue;
@@ -57,7 +71,11 @@ export function formatStaticBlock(rules: ReadonlyArray<LoadedRule>, options: For
 		return "";
 	}
 
-	return `\n\n## Project Instructions\n${truncateRules(uniqueRulesByBody(rules), options).map(formatRule).join("\n\n")}`;
+	return [
+		"## Project Instructions",
+		"",
+		truncateRules(uniqueRulesByBody(rules), options).map(formatRule).join("\n\n"),
+	].join("\n");
 }
 
 function uniqueRulesByBody(rules: ReadonlyArray<LoadedRule>): LoadedRule[] {
@@ -70,7 +88,7 @@ function uniqueRulesByBody(rules: ReadonlyArray<LoadedRule>): LoadedRule[] {
 			continue;
 		}
 
-		const bodyKey = rule.body.trim();
+		const bodyKey = normalizeRuleBody(rule.body);
 		if (seenBodies.has(bodyKey)) {
 			continue;
 		}
@@ -93,7 +111,13 @@ export function formatDynamicBlock(
 		return "";
 	}
 
-	return `\n\nAdditional project instructions matched for ${targetRelativePath}:\n\n${truncateRules(rules, options)
-		.map(formatRule)
-		.join("\n\n")}`;
+	return [
+		`Additional project instructions matched for ${targetRelativePath}:`,
+		"",
+		truncateRules(rules, options).map(formatRule).join("\n\n"),
+	].join("\n");
+}
+
+function normalizeRuleBody(body: string): string {
+	return body.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
 }

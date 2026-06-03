@@ -1,8 +1,8 @@
 import {
-	type PostHogActivityReason,
-	type PostHogClient,
 	createPluginPostHog,
 	getPostHogDistinctId,
+	type PostHogActivityReason,
+	type PostHogClient,
 } from "./posthog.js";
 
 export type CodexSessionStartInput = {
@@ -16,7 +16,7 @@ export type CodexSessionStartInput = {
 };
 
 export type CodexTelemetryHookOptions = {
-	createClient?: () => PostHogClient;
+	createClient?: () => PostHogClient | Promise<PostHogClient>;
 	getDistinctId?: () => string;
 };
 
@@ -29,7 +29,7 @@ export async function runSessionStartHook(
 	const createClient = options.createClient ?? createPluginPostHog;
 	const getDistinctId = options.getDistinctId ?? getPostHogDistinctId;
 
-	const client = createClient();
+	const client = await createClient();
 	try {
 		client.trackActive(getDistinctId(), SESSION_START_REASON);
 	} catch {

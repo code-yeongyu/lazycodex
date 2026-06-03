@@ -35,7 +35,7 @@ Use Node when:
 - Production target is a Node-specific platform (some serverless platforms don't run Bun yet)
 - You're contributing to a Node-only project
 
-`npx` runs package binaries without a global install. `bun create` scaffolds projects.
+`bunx` replaces `npx`. `bun create` scaffolds projects.
 
 ## Package manager — pnpm > npm
 

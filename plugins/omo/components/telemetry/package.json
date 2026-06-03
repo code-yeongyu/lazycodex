@@ -23,7 +23,7 @@
 		"daily-active"
 	],
 	"bin": {
-		"codex-telemetry": "./dist/cli.js"
+		"omo-telemetry": "./dist/cli.js"
 	},
 	"files": [
 		"dist",

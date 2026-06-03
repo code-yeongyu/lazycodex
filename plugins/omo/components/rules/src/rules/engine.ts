@@ -10,17 +10,18 @@ import {
 	markStaticInjected as markStaticInjectedInState,
 } from "./cache.js";
 import {
-	DEFAULT_AUTO_DISABLED_SOURCES,
 	DEFAULT_MAX_RESULT_CHARS,
 	DEFAULT_MAX_RULE_CHARS,
+	DEFAULT_POST_COMPACT_MAX_RESULT_CHARS,
+	DEFAULT_POST_COMPACT_MAX_RULE_CHARS,
 	PROJECT_SINGLE_FILES,
-	SOURCE_PRIORITY,
 } from "./constants.js";
 import { createRuleDiscoveryCache, type RuleDiscoveryCache } from "./finder.js";
 import { formatDynamicBlock, formatStaticBlock } from "./formatter.js";
 import { hashContent, matchRule } from "./matcher.js";
 import { sortCandidates } from "./ordering.js";
 import { parseRule } from "./parser.js";
+import { disabledSourcesFromConfig } from "./sources.js";
 import type { LoadedRule, MatchReason, PiRulesConfig, RuleCandidate, RuleDiagnostic, SessionState } from "./types.js";
 
 interface LoadedRuleContent {
@@ -75,6 +76,8 @@ export function defaultConfig(): PiRulesConfig {
 		mode: "both",
 		maxRuleChars: DEFAULT_MAX_RULE_CHARS,
 		maxResultChars: DEFAULT_MAX_RESULT_CHARS,
+		postCompactMaxRuleChars: DEFAULT_POST_COMPACT_MAX_RULE_CHARS,
+		postCompactMaxResultChars: DEFAULT_POST_COMPACT_MAX_RESULT_CHARS,
 		enabledSources: "auto",
 	};
 }
@@ -94,7 +97,7 @@ export function createEngine(config: PiRulesConfig, deps: EngineDeps): Engine {
 			projectRoot,
 			targetFile: null,
 		};
-		const disabledSources = disabledSourcesFor(config);
+		const disabledSources = disabledSourcesFromConfig(config);
 		if (disabledSources !== undefined) {
 			findOptions.disabledSources = disabledSources;
 		}
@@ -118,7 +121,7 @@ export function createEngine(config: PiRulesConfig, deps: EngineDeps): Engine {
 		const seenRules = new Set<string>();
 		const loadedRuleContent = new Map<string, LoadedRuleContent | null>();
 		const projectMembership = new Map<string, boolean>();
-		const disabledSources = disabledSourcesFor(config);
+		const disabledSources = disabledSourcesFromConfig(config);
 		const discoveryCache = createRuleDiscoveryCache();
 		const candidateDiscoveryCache: CandidateDiscoveryCache = new Map();
 		const cwdProjectRoot = deps.findProjectRoot(cwd);
@@ -437,15 +440,6 @@ function staticMatchReason(rule: LoadedRule): MatchReason | null {
 	}
 
 	return null;
-}
-
-function disabledSourcesFor(config: PiRulesConfig): ReadonlySet<string> | undefined {
-	if (config.enabledSources === "auto") {
-		return DEFAULT_AUTO_DISABLED_SOURCES;
-	}
-
-	const enabledSources = new Set(config.enabledSources);
-	return new Set([...SOURCE_PRIORITY.keys()].filter((source) => !enabledSources.has(source)));
 }
 
 function isDedupedRootSingleFile(candidate: RuleCandidate, rootSingleFileSelected: boolean): boolean {

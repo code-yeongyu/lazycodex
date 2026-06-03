@@ -55,7 +55,15 @@ function runHookCli(input: string, subcommand = "post-tool-use", env: NodeJS.Pro
 
 const tempDirectories: string[] = [];
 const PROJECT_ONLY_ENV = {
+	CODEX_RULES_ENABLED_SOURCES: "CONTEXT.md,.omo/rules",
+};
+
+const AGENTS_AND_RULES_ENV = {
 	CODEX_RULES_ENABLED_SOURCES: "AGENTS.md,.omo/rules",
+};
+
+const CLAUDE_AND_RULES_ENV = {
+	CODEX_RULES_ENABLED_SOURCES: "CLAUDE.md,.omo/rules",
 };
 
 const RULES_ONLY_ENV = {
@@ -73,7 +81,9 @@ function makeTempProject(): { root: string; pluginData: string } {
 	const pluginData = mkdtempSync(path.join(tmpdir(), "codex-rules-data-"));
 	tempDirectories.push(root, pluginData);
 	writeFileSync(path.join(root, "package.json"), JSON.stringify({ name: "fixture" }));
-	writeFileSync(path.join(root, "AGENTS.md"), "Always wear safety goggles when refactoring.");
+	writeFileSync(path.join(root, "AGENTS.md"), "Project AGENTS.md should stay Codex-native.");
+	writeFileSync(path.join(root, "CLAUDE.md"), "Project CLAUDE.md should stay outside rules hook context.");
+	writeFileSync(path.join(root, "CONTEXT.md"), "Always wear safety goggles when refactoring.");
 	mkdirSync(path.join(root, ".omo", "rules"), { recursive: true });
 	writeFileSync(
 		path.join(root, ".omo", "rules", "typescript.md"),
@@ -223,7 +233,36 @@ describe("codex rules hooks", () => {
 		// then
 		const parsed = parseHookOutput(output);
 		expect(parsed.hookSpecificOutput?.additionalContext).toContain("## Project Instructions");
-		expect(parsed.hookSpecificOutput?.additionalContext).not.toContain("Always wear safety goggles");
+		expect(parsed.hookSpecificOutput?.additionalContext).not.toContain("Project AGENTS.md should stay Codex-native.");
+		expect(parsed.hookSpecificOutput?.additionalContext).not.toContain("Project CLAUDE.md should stay outside rules hook context.");
+	});
+
+	it("#given project AGENTS.md #when SessionStart runs #then rules hook leaves AGENTS.md to Codex native handling", async () => {
+		// given
+		const { root, pluginData } = makeTempProject();
+
+		// when
+		const output = await runSessionStartHook(sessionStartInput(root), {
+			pluginDataRoot: pluginData,
+			env: AGENTS_AND_RULES_ENV,
+		});
+
+		// then
+		expect(output).toBe("");
+	});
+
+	it("#given project CLAUDE.md #when SessionStart runs #then rules hook leaves CLAUDE.md out of context", async () => {
+		// given
+		const { root, pluginData } = makeTempProject();
+
+		// when
+		const output = await runSessionStartHook(sessionStartInput(root), {
+			pluginDataRoot: pluginData,
+			env: CLAUDE_AND_RULES_ENV,
+		});
+
+		// then
+		expect(output).toBe("");
 	});
 
 	it("#given static context already injected #when UserPromptSubmit runs #then it emits no duplicate context", async () => {
@@ -439,7 +478,7 @@ describe("codex rules hooks", () => {
 		);
 	});
 
-	it("#given cached dynamic context #when PostCompact runs #then PostToolUse can re-inject after compaction", async () => {
+	it("#given cached dynamic context #when PostCompact runs #then PostToolUse emits no duplicate dynamic context", async () => {
 		// given
 		const { root, pluginData } = makeTempProject();
 		const filePath = path.join(root, "src", "app.ts");
@@ -466,10 +505,10 @@ describe("codex rules hooks", () => {
 
 		// then
 		expect(compactOutput).toBe("");
-		expect(parseHookOutput(output).hookSpecificOutput?.additionalContext).toContain("Prefer strict TypeScript");
+		expect(output).toBe("");
 	});
 
-	it("#given compacted transcript #when static re-injects before dynamic #then dynamic still re-injects", async () => {
+	it("#given cached static and dynamic context #when static recovery runs before dynamic #then neither emits duplicate context", async () => {
 		// given
 		const { root, pluginData } = makeTempProject();
 		const filePath = path.join(root, "src", "app.ts");
@@ -502,15 +541,11 @@ describe("codex rules hooks", () => {
 		);
 
 		// then
-		expect(parseHookOutput(staticReinjectOutput).hookSpecificOutput?.additionalContext).toContain(
-			"Always wear safety goggles",
-		);
-		expect(parseHookOutput(dynamicReinjectOutput).hookSpecificOutput?.additionalContext).toContain(
-			"Prefer strict TypeScript",
-		);
+		expect(staticReinjectOutput).toBe("");
+		expect(dynamicReinjectOutput).toBe("");
 	});
 
-	it("#given compacted transcript #when dynamic re-injects before static #then static still re-injects", async () => {
+	it("#given cached static and dynamic context #when dynamic recovery runs before static #then neither emits duplicate context", async () => {
 		// given
 		const { root, pluginData } = makeTempProject();
 		const filePath = path.join(root, "src", "app.ts");
@@ -543,12 +578,8 @@ describe("codex rules hooks", () => {
 		});
 
 		// then
-		expect(parseHookOutput(dynamicReinjectOutput).hookSpecificOutput?.additionalContext).toContain(
-			"Prefer strict TypeScript",
-		);
-		expect(parseHookOutput(staticReinjectOutput).hookSpecificOutput?.additionalContext).toContain(
-			"Always wear safety goggles",
-		);
+		expect(dynamicReinjectOutput).toBe("");
+		expect(staticReinjectOutput).toBe("");
 	});
 
 	it("#given legacy session cache #when PostToolUse hydrates state #then it accepts the old shape", async () => {

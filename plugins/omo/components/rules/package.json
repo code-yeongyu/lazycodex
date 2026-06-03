@@ -23,7 +23,7 @@
 		"typescript"
 	],
 	"bin": {
-		"codex-rules": "./dist/cli.js"
+		"omo-rules": "./dist/cli.js"
 	},
 	"files": [
 		"bundled-rules",

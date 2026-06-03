@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 type PackageJson = {
@@ -7,12 +7,7 @@ type PackageJson = {
 	readonly packageManager: string;
 	readonly bin: Record<string, string>;
 	readonly dependencies: Record<string, string>;
-};
-
-type PluginJson = {
-	readonly version: string;
-	readonly hooks: string;
-	readonly mcpServers: string;
+	readonly scripts: Record<string, string>;
 };
 
 type HookCommand = {
@@ -42,12 +37,6 @@ function readPackageJson(path: string): PackageJson {
 	return parsed;
 }
 
-function readPluginJson(path: string): PluginJson {
-	const parsed: unknown = JSON.parse(readFileSync(path, "utf8"));
-	if (!isPluginJson(parsed)) throw new TypeError(`Invalid plugin metadata: ${path}`);
-	return parsed;
-}
-
 function readHooksJson(path: string): HooksJson {
 	const parsed: unknown = JSON.parse(readFileSync(path, "utf8"));
 	if (!isHooksJson(parsed)) throw new TypeError(`Invalid hooks metadata: ${path}`);
@@ -61,33 +50,45 @@ function readMcpJson(path: string): McpJson {
 }
 
 describe("plugin package metadata", () => {
-	it("#given packaged plugin files #when validating entrypoints #then hook command uses portable plugin root interpolation", () => {
+	it("#given packaged component files #when validating entrypoints #then hook command stays local and MCP command references the package", () => {
 		// given
 		const packageJson = readPackageJson("package.json");
-		const pluginJson = readPluginJson(".codex-plugin/plugin.json");
 		const hooksJson = readHooksJson("hooks/hooks.json");
 		const mcpJson = readMcpJson(".mcp.json");
 		const cliSource = readFileSync("src/cli.ts", "utf8");
+		const codexHookCliSource = readFileSync("src/codex-hook-cli.ts", "utf8");
+		const codexHookSource = readFileSync("src/codex-hook.ts", "utf8");
+		const sourceFiles = readdirSync("src");
 
 		// when
-		const command = hooksJson.hooks["PostToolUse"]?.[0]?.hooks[0]?.command;
+		const postToolUseCommand = hooksJson.hooks["PostToolUse"]?.[0]?.hooks[0]?.command;
+		const postCompactCommand = hooksJson.hooks["PostCompact"]?.[0]?.hooks[0]?.command;
 		const lspServer = mcpJson.mcpServers["lsp"];
 		const pluginRoot = ["$", "{PLUGIN_ROOT}"].join("");
 
 		// then
-		expect(pluginJson.version).toBe(packageJson.version);
 		expect(packageJson.type).toBe("module");
 		expect(packageJson.packageManager).toBe("npm@11.12.1");
 		expect(packageJson.dependencies).toEqual({
-			"@code-yeongyu/lsp-tools-mcp": "file:./packages/lsp-tools-mcp",
+			"@code-yeongyu/lsp-tools-mcp": "file:../../../../lsp-tools-mcp",
 		});
-		expect(packageJson.bin["codex-lsp"]).toBe("./dist/cli.js");
-		expect(pluginJson.hooks).toBe("./hooks/hooks.json");
-		expect(pluginJson.mcpServers).toBe("./.mcp.json");
+		expect(packageJson.bin["omo-lsp"]).toBe("./dist/cli.js");
+		expect(packageJson.bin["codex-lsp"]).toBeUndefined();
+		expect(packageJson.scripts["build"]).toBe("node scripts/clean-dist.mjs && tsc -p tsconfig.build.json");
 		expect(cliSource.startsWith("#!/usr/bin/env node")).toBe(true);
-		expect(command).toBe(`node "${pluginRoot}/dist/cli.js" hook post-tool-use`);
+		expect(cliSource).toContain("Usage: omo-lsp [mcp | hook post-tool-use | hook post-compact]");
+		expect(postToolUseCommand).toBe(`node "${pluginRoot}/dist/cli.js" hook post-tool-use`);
+		expect(postCompactCommand).toBe(`node "${pluginRoot}/dist/cli.js" hook post-compact`);
 		expect(lspServer?.command).toBe("node");
-		expect(lspServer?.args).toEqual(["./packages/lsp-tools-mcp/dist/cli.js", "mcp"]);
+		expect(lspServer?.args).toEqual(["../../../../lsp-tools-mcp/dist/cli.js", "mcp"]);
+		expect(cliSource).not.toContain("./lazy-lsp-mcp.js");
+		expect(cliSource).toContain("@code-yeongyu/lsp-tools-mcp/dist/cli.js");
+		expect(cliSource).not.toContain("../../../../../lsp-tools-mcp/dist/cli.js");
+		expect(codexHookCliSource).toContain("@code-yeongyu/lsp-tools-mcp/dist/lsp/manager.js");
+		expect(codexHookSource).toContain("@code-yeongyu/lsp-tools-mcp/dist/tools.js");
+		expect(codexHookCliSource).not.toContain("../../../../../lsp-tools-mcp/dist/lsp/manager.js");
+		expect(codexHookSource).not.toContain("../../../../../lsp-tools-mcp/dist/tools.js");
+		expect(sourceFiles.filter((name) => name.startsWith("lazy-mcp") || name === "lazy-lsp-mcp.ts")).toEqual([]);
 	});
 
 	it("#given LSP skill guidance #when validating MCP tool instructions #then tool names are not framed as shell commands", () => {
@@ -111,16 +112,8 @@ function isPackageJson(value: unknown): value is PackageJson {
 		value["type"] === "module" &&
 		value["packageManager"] === "npm@11.12.1" &&
 		isStringRecord(value["bin"]) &&
-		isStringRecord(value["dependencies"])
-	);
-}
-
-function isPluginJson(value: unknown): value is PluginJson {
-	return (
-		isRecord(value) &&
-		typeof value["version"] === "string" &&
-		typeof value["hooks"] === "string" &&
-		typeof value["mcpServers"] === "string"
+		isStringRecord(value["dependencies"]) &&
+		isStringRecord(value["scripts"])
 	);
 }
 

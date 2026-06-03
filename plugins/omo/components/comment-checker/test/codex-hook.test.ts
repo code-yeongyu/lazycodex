@@ -1,6 +1,9 @@
 import { spawn } from "node:child_process";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 
 import {
 	type CodexPostToolUseInput,
@@ -15,6 +18,13 @@ type CliResult = {
 };
 
 const CLI_PATH = fileURLToPath(new URL("../dist/cli.js", import.meta.url));
+const tempDirs: string[] = [];
+
+afterEach(() => {
+	for (const tempDir of tempDirs.splice(0)) {
+		rmSync(tempDir, { recursive: true, force: true });
+	}
+});
 
 function runHookCli(input: string): Promise<CliResult> {
 	return new Promise((resolve, reject) => {
@@ -267,6 +277,34 @@ describe("runCommentCheckerPostToolUse", () => {
 
 		expect(transcriptPath).toBe("");
 	});
+
+	it("#given Codex canonical context-window transcript and long checker warning #when hook blocks #then it caps feedback", async () => {
+		const root = mkdtempSync(path.join(tmpdir(), "codex-comment-checker-context-pressure-"));
+		tempDirs.push(root);
+		const transcriptPath = path.join(root, "transcript.jsonl");
+		writeFileSync(
+			transcriptPath,
+			[
+				"context_length_exceeded",
+				"Codex ran out of room in the model's context window. Start a new thread before retrying.",
+				"",
+			].join("\n"),
+		);
+
+		const output = await runCommentCheckerPostToolUse(postToolUseInput({ transcript_path: transcriptPath }), {
+			run: async () => ({
+				status: "warning",
+				message: `comment warning: explain less\n${"x".repeat(10_000)}`,
+			}),
+		});
+
+		const parsed: unknown = JSON.parse(output);
+		if (!isBlockingOutput(parsed)) throw new TypeError("Expected blocking output");
+
+		expect(parsed.reason.length).toBeLessThanOrEqual(1200);
+		expect(parsed.reason).toContain("comment-checker found issues in src/example.ts");
+		expect(parsed.reason).toContain("[Truncated hook output");
+	});
 });
 
 describe("runCodexHookCli", () => {
@@ -315,3 +353,16 @@ describe("runCodexHookCli", () => {
 		});
 	});
 });
+
+interface BlockingOutput {
+	readonly decision: "block";
+	readonly reason: string;
+}
+
+function isBlockingOutput(value: unknown): value is BlockingOutput {
+	return isRecord(value) && value["decision"] === "block" && typeof value["reason"] === "string";
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null && !Array.isArray(value);
+}

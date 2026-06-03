@@ -10,7 +10,7 @@ export const COMMANDS: readonly LazyCommand[] = [
   {
     name: "$ulw-loop",
     glyph: "loop",
-    syntax: '/ulw-loop "task" [--completion-promise=TEXT] [--strategy=reset|continue]',
+    syntax: '$ulw-loop "task" [--completion-promise=TEXT] [--strategy=reset|continue]',
     summary: "A self-referential loop that runs until VERIFIED completion.",
     facts: [
       "Emits <promise>DONE</promise> when it reaches a completion claim",
@@ -21,7 +21,7 @@ export const COMMANDS: readonly LazyCommand[] = [
   {
     name: "$ulw-plan",
     glyph: "plan",
-    syntax: '/ulw-plan "what to build"',
+    syntax: '$ulw-plan "what to build"',
     summary: "Prometheus strategic planner — turns an idea into a decision-complete work plan.",
     facts: [
       "Socratic interview, then parallel codebase exploration",
@@ -32,7 +32,7 @@ export const COMMANDS: readonly LazyCommand[] = [
   {
     name: "$start-work",
     glyph: "work",
-    syntax: "/start-work [plan-name] [--worktree <path>]",
+    syntax: "$start-work [plan-name] [--worktree <path>]",
     summary: "Executes a Prometheus plan until every checkbox is done.",
     facts: [
       "Durable Boulder state survives across turns",

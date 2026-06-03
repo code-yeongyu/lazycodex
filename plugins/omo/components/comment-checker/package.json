@@ -21,7 +21,7 @@
 		"typescript"
 	],
 	"bin": {
-		"codex-comment-checker": "./dist/cli.js"
+		"omo-comment-checker": "./dist/cli.js"
 	},
 	"files": [
 		"dist",

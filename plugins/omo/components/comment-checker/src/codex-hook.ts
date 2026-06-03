@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { stdin as processStdin, stdout as processStdout } from "node:process";
 
 import {
@@ -28,6 +29,18 @@ export type CodexHookOptions = {
 	run?: CommentCheckerRunner;
 };
 
+const DEFAULT_MAX_HOOK_FEEDBACK_CHARS = 8000;
+const CONTEXT_PRESSURE_MAX_HOOK_FEEDBACK_CHARS = 1200;
+const CONTEXT_PRESSURE_MARKERS = [
+	"context compacted",
+	"context_length_exceeded",
+	"skill descriptions were shortened",
+	"context_too_large",
+	"codex ran out of room in the model's context window",
+	"your input exceeds the context window",
+	"long threads and multiple compactions",
+] as const;
+
 export function extractCodexCommentCheckRequests(input: CodexPostToolUseInput): CommentCheckRequest[] {
 	return extractCommentCheckRequests(toToolResultLike(input));
 }
@@ -51,7 +64,7 @@ export async function runCommentCheckerPostToolUse(
 		const result = await runner(toHookInput(request, context));
 		if (result.status === "missing" || result.status === "pass") continue;
 		if (result.status === "error") continue;
-		const message = result.message.trim();
+		const message = normalizeHookText(result.message);
 		if (message.length > 0) {
 			warnings.push({ filePath: request.filePath, message });
 		}
@@ -61,7 +74,7 @@ export async function runCommentCheckerPostToolUse(
 
 	return JSON.stringify({
 		decision: "block",
-		reason: formatWarnings(warnings),
+		reason: limitHookText(formatWarnings(warnings), hookFeedbackLimit(input.transcript_path)),
 	});
 }
 
@@ -126,6 +139,39 @@ function formatWarnings(warnings: Array<{ filePath: string; message: string }>):
 	return warnings
 		.map((warning) => `comment-checker found issues in ${warning.filePath}:\n${warning.message}`)
 		.join("\n\n");
+}
+
+function normalizeHookText(value: string): string {
+	return value.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
+}
+
+function hookFeedbackLimit(transcriptPath: string | null): number {
+	return isContextPressureTranscript(transcriptPath)
+		? CONTEXT_PRESSURE_MAX_HOOK_FEEDBACK_CHARS
+		: DEFAULT_MAX_HOOK_FEEDBACK_CHARS;
+}
+
+function isContextPressureTranscript(transcriptPath: string | null): boolean {
+	if (transcriptPath === null) return false;
+	try {
+		return hasContextPressureMarker(readFileSync(transcriptPath, "utf8"));
+	} catch (error) {
+		if (error instanceof Error) return false;
+		throw error;
+	}
+}
+
+function hasContextPressureMarker(text: string): boolean {
+	const normalizedText = text.toLowerCase();
+	return CONTEXT_PRESSURE_MARKERS.some((marker) => normalizedText.includes(marker));
+}
+
+function limitHookText(text: string, maxChars: number): string {
+	if (text.length <= maxChars) return text;
+	const marker = `\n\n[Truncated hook output to ${maxChars} chars to avoid Codex context overflow.]`;
+	if (marker.length >= maxChars) return marker.slice(0, maxChars);
+	const head = text.slice(0, maxChars - marker.length).replace(/[ \t\r\n]+$/, "");
+	return `${head}${marker}`;
 }
 
 function isCodexPostToolUseInput(value: unknown): value is CodexPostToolUseInput {

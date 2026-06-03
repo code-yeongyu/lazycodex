@@ -1,5 +1,5 @@
 {
-	"name": "@code-yeongyu/omo-codex-plugin",
+	"name": "@sisyphuslabs/omo-codex-plugin",
 	"version": "0.1.0",
 	"description": "Aggregate Codex plugin root for OMO components.",
 	"type": "module",
@@ -7,16 +7,21 @@
 	"private": true,
 	"workspaces": [
 		"components/comment-checker",
+		"components/git-bash",
 		"components/rules",
 		"components/lsp",
-		"components/lsp/packages/lsp-tools-mcp",
 		"components/telemetry",
-		"components/ultragoal",
+		"components/start-work-continuation",
+		"components/ulw-loop",
 		"components/ultrawork"
 	],
+	"dependencies": {
+		"@oh-my-opencode/shared-skills": "file:../../shared-skills"
+	},
 	"scripts": {
-		"build": "node scripts/sync-skills.mjs && node ../scripts/sync-telemetry-component.mjs && npm run build --workspaces --if-present",
+		"build": "node scripts/sync-hook-status-messages.mjs && node scripts/build-bundled-mcp-runtimes.mjs && node scripts/sync-skills.mjs && node ../scripts/sync-telemetry-component.mjs && node scripts/build-components.mjs",
 		"check": "npm run build && npm test",
+		"sync:hooks": "node scripts/sync-hook-status-messages.mjs",
 		"sync:skills": "node scripts/sync-skills.mjs",
 		"test": "node --test test/*.test.mjs"
 	}

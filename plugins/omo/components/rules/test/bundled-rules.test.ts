@@ -192,7 +192,7 @@ describe("plugin bundled rules", () => {
 		expect(output).toBe("");
 	});
 
-	it("#given PostCompact pending flag #when UserPromptSubmit runs #then bundled static context re-injects", async () => {
+	it("#given bundled static context already injected #when UserPromptSubmit runs after PostCompact #then it emits no duplicate bundled context", async () => {
 		// given
 		const { root, pluginData } = makeFixture();
 		const firstOutput = await runSessionStartHook(sessionStartInput(root), {
@@ -210,7 +210,7 @@ describe("plugin bundled rules", () => {
 
 		// then
 		expect(compactOutput).toBe("");
-		expect(output).toContain(BUNDLED_BODY);
+		expect(output).toBe("");
 	});
 
 	it("#given bundled rule body exceeds per-rule cap #when SessionStart runs #then bundled body lands in full without truncation", async () => {
@@ -236,7 +236,7 @@ describe("plugin bundled rules", () => {
 
 		// then
 		expect(output).toContain(tailMarker);
-		expect(output).not.toContain("[Rule truncated. Read full rule:");
+		expect(output).not.toContain("[Truncated. Full:");
 	});
 
 	it("#given project rule body exceeds per-rule cap #when SessionStart runs #then project body is truncated", async () => {
@@ -262,7 +262,7 @@ describe("plugin bundled rules", () => {
 		});
 
 		// then
-		expect(output).toContain("[Rule truncated. Read full rule: .omo/rules/oversized.md]");
+		expect(output).toContain("[Truncated. Full: .omo/rules/oversized.md]");
 		expect(output).not.toContain(tailMarker);
 	});
 });

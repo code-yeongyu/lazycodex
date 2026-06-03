@@ -30,8 +30,6 @@ export const PROJECT_RULE_SUBDIRS: ReadonlyArray<readonly [string, string]> = [
  */
 export const PROJECT_SINGLE_FILES: readonly string[] = [
 	".github/copilot-instructions.md",
-	"AGENTS.md",
-	"CLAUDE.md",
 	"CONTEXT.md",
 ];
 
@@ -43,7 +41,7 @@ export const USER_HOME_RULE_SUBDIRS: readonly string[] = [".omo/rules", ".openco
 /**
  * User-home single-file rules. The first one to exist wins per "first-match" semantics.
  */
-export const USER_HOME_SINGLE_FILES: readonly string[] = [".config/opencode/AGENTS.md", ".claude/CLAUDE.md"];
+export const USER_HOME_SINGLE_FILES: readonly string[] = [];
 
 /**
  * Bundled plugin rule directory relative to the rules component root.
@@ -64,21 +62,11 @@ export const SOURCE_PRIORITY: ReadonlyMap<RuleSource, number> = new Map([
 	[".cursor/rules", 2],
 	[".github/instructions", 3],
 	[".github/copilot-instructions.md", 4],
-	["AGENTS.md", 5],
-	["CLAUDE.md", 6],
 	["CONTEXT.md", 7],
 	["~/.omo/rules", 100],
 	["~/.opencode/rules", 101],
 	["~/.claude/rules", 102],
-	["~/.config/opencode/AGENTS.md", 103],
-	["~/.claude/CLAUDE.md", 104],
 	["plugin-bundled", 200],
-]);
-
-export const DEFAULT_AUTO_DISABLED_SOURCES: ReadonlySet<RuleSource> = new Set([
-	"AGENTS.md",
-	"~/.claude/rules",
-	"~/.claude/CLAUDE.md",
 ]);
 
 /**
@@ -98,10 +86,14 @@ export const DEFAULT_MAX_SCAN_FILES = 1000;
  */
 export const DEFAULT_MAX_RESULT_CHARS = 40000;
 
+export const DEFAULT_POST_COMPACT_MAX_RULE_CHARS = 3500;
+
+export const DEFAULT_POST_COMPACT_MAX_RESULT_CHARS = 4000;
+
 /**
  * Truncation marker template. `{path}` is replaced with the relative path.
  */
-export const TRUNCATION_NOTICE = "\n\n[Rule truncated. Read full rule: {path}]";
+export const TRUNCATION_NOTICE = "\n\n[Truncated. Full: {path}]";
 
 /**
  * Directories excluded by the recursive scanner regardless of glob settings.

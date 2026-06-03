@@ -64,8 +64,8 @@ const pkg = {
   scripts: {
     dev: "bun --hot src/index.ts",
     start: "bun src/index.ts",
-    check: "npx biome check . && npx tsc --noEmit && bun test",
-    "check:fix": "npx biome check --write .",
+    check: "bunx biome check . && bunx tsc --noEmit && bun test",
+    "check:fix": "bunx biome check --write .",
     test: "bun test",
   },
   dependencies: {

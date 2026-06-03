@@ -193,7 +193,7 @@ describe("rule engine dynamic matching", () => {
 });
 
 describe("rule engine default source selection", () => {
-	it("#given auto source selection #when loading static rules #then user-home Claude sources are disabled by default", () => {
+	it("#given auto source selection #when loading static rules #then Codex-native and Claude-home sources are disabled by default", () => {
 		// given
 		let capturedDisabledSources: ReadonlySet<string> | undefined;
 		const deps = {
@@ -210,13 +210,13 @@ describe("rule engine default source selection", () => {
 		engine.loadStaticRules(projectRoot);
 
 		// then
+		expect(capturedDisabledSources?.has("AGENTS.md")).toBe(true);
 		expect(capturedDisabledSources?.has("~/.claude/rules")).toBe(true);
 		expect(capturedDisabledSources?.has("~/.claude/CLAUDE.md")).toBe(true);
-		expect(capturedDisabledSources?.has("AGENTS.md")).toBe(true);
 		expect(capturedDisabledSources?.has("CLAUDE.md")).toBe(false);
 	});
 
-	it("#given Claude home source is explicitly enabled #when loading static rules #then it is not disabled", () => {
+	it("#given removed agent-doc sources and a real source are requested #when loading static rules #then only real sources are enabled", () => {
 		// given
 		let capturedDisabledSources: ReadonlySet<string> | undefined;
 		const deps = {
@@ -228,7 +228,7 @@ describe("rule engine default source selection", () => {
 			readFile: () => null,
 		} satisfies EngineDeps;
 		const engine = createEngine(
-			configFromEnvironment({ CODEX_RULES_ENABLED_SOURCES: "~/.claude/CLAUDE.md,plugin-bundled" }),
+			configFromEnvironment({ CODEX_RULES_ENABLED_SOURCES: "AGENTS.md,~/.claude/CLAUDE.md,plugin-bundled" }),
 			deps,
 		);
 
@@ -236,8 +236,9 @@ describe("rule engine default source selection", () => {
 		engine.loadStaticRules(projectRoot);
 
 		// then
+		expect(capturedDisabledSources?.has("AGENTS.md")).toBe(false);
 		expect(capturedDisabledSources?.has("~/.claude/CLAUDE.md")).toBe(false);
 		expect(capturedDisabledSources?.has("plugin-bundled")).toBe(false);
-		expect(capturedDisabledSources?.has("AGENTS.md")).toBe(true);
+		expect(capturedDisabledSources?.has(".omo/rules")).toBe(true);
 	});
 });

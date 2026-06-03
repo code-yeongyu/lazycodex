@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { mkdtempSync, rmSync } from "node:fs";
+import { cpSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -63,8 +63,12 @@ function makeRecordingClient(): { client: PostHogClient; calls: CapturedCall[]; 
 }
 
 function runHookCli(input: string, env: NodeJS.ProcessEnv = {}): Promise<CliResult> {
+	return runHookCliAt(CLI_PATH, input, env);
+}
+
+function runHookCliAt(cliPath: string, input: string, env: NodeJS.ProcessEnv = {}): Promise<CliResult> {
 	return new Promise((resolve, reject) => {
-		const child = spawn(process.execPath, [CLI_PATH, "hook", "session-start"], {
+		const child = spawn(process.execPath, [cliPath, "hook", "session-start"], {
 			env: { ...process.env, ...env },
 			stdio: ["pipe", "pipe", "pipe"],
 		});
@@ -167,6 +171,25 @@ describe("telemetry CLI session-start hook (subprocess)", () => {
 
 			expect(result.exitCode).toBe(0);
 			expect(result.stdout).toBe("");
+		});
+
+		it("#when CLI runs from an isolated snapshot without node_modules #then exits 0 with no output", async () => {
+			const payload = JSON.stringify(makeSessionStartInput());
+			const snapshotRoot = mkdtempSync(path.join(tmpdir(), "codex-telemetry-snapshot-"));
+			const dataDir = mkdtempSync(path.join(tmpdir(), "codex-telemetry-data-"));
+			tempDirectories.push(snapshotRoot, dataDir);
+			cpSync(fileURLToPath(new URL("../dist", import.meta.url)), path.join(snapshotRoot, "dist"), {
+				recursive: true,
+			});
+
+			const result = await runHookCliAt(path.join(snapshotRoot, "dist", "cli.js"), payload, {
+				OMO_DISABLE_POSTHOG: "1",
+				XDG_DATA_HOME: dataDir,
+			});
+
+			expect(result.exitCode).toBe(0);
+			expect(result.stdout).toBe("");
+			expect(result.stderr).toBe("");
 		});
 	});
 

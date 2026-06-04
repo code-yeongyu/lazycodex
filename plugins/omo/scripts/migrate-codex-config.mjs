@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { pathToFileURL } from "node:url";
 
 const FALLBACK_CATALOG = {
-	version: "fallback.gpt-5.5-400k",
+	version: "fallback.gpt-5.5-400k-reviewer-high",
 	current: {
 		model: "gpt-5.5",
 		model_context_window: 400_000,
@@ -21,7 +21,7 @@ const FALLBACK_CATALOG = {
 			model_reasoning_effort: "high",
 			plan_mode_reasoning_effort: "xhigh",
 		},
-		verifier: { model: "gpt-5.5", model_reasoning_effort: "xhigh" },
+		verifier: { model: "gpt-5.5", model_reasoning_effort: "high" },
 		worker: { model: "gpt-5.4", model_reasoning_effort: "high" },
 	},
 	managedProfiles: [

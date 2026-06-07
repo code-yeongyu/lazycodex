@@ -33,7 +33,7 @@ export const SITE_CONFIG = {
       },
       {
         label: "Plans before edits",
-        text: "$ulw-plan turns ambiguous work into a decision-complete plan, then $start-work executes it with durable Boulder progress.",
+        text: "$ulw-plan turns ambiguous work into a decision-complete plan, then $start-work executes it with durable Boulder progress and blocks completion on the global review/debugging gate.",
       },
       {
         label: "Evidence at the end",

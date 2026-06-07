@@ -88,6 +88,32 @@ describe("start-work Stop hook", () => {
 		expect(parsed.reason).toMatch(/single `list_agents`/);
 	});
 
+	it("#given active codex work #when continuation directive is emitted #then completion requires global review and debugging", () => {
+		// given
+		const fs = createMemoryFs({
+			[BOULDER_PATH]: createBoulderJson({
+				sessionIds: ["codex:sess_abc"],
+				status: "active",
+			}),
+			[PLAN_PATH]: ["# Plan", "", "## TODOs", "- [ ] First"].join("\n"),
+		});
+
+		// when
+		const output = runStopHook(createStopInput(), fs);
+
+		// then
+		const parsed = parseBlockOutput(output);
+		expect(parsed.reason).toMatch(/Global Review and Debugging Gate/);
+		expect(parsed.reason).toMatch(/\breview-work\b/);
+		expect(parsed.reason).toMatch(/\bdebugging\b/);
+		expect(parsed.reason).toMatch(/three plausible failure hypotheses/);
+		expect(parsed.reason).toMatch(/redact|mask/i);
+		expect(parsed.reason).toMatch(/raw tokens/i);
+		expect(parsed.reason).toMatch(/PR creation/);
+		expect(parsed.reason).toMatch(/PR handoff/);
+		expect(parsed.reason).not.toMatch(/codex-ultrawork-reviewer` approved unconditionally/);
+	});
+
 	it("#given active work belongs to another harness #when hook runs #then returns empty output", () => {
 		// given
 		const fs = createMemoryFs({

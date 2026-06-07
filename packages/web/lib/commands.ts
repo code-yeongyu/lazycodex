@@ -33,11 +33,12 @@ export const COMMANDS: readonly LazyCommand[] = [
     name: "$start-work",
     glyph: "work",
     syntax: "$start-work [plan-name] [--worktree <path>]",
-    summary: "Executes a Prometheus plan until every checkbox is done.",
+    summary: "Executes a Prometheus plan through every checkbox and the final review/debugging gate.",
     facts: [
       "Durable Boulder state survives across turns",
       "Parallel subagents, strict TDD + 5 evidence gates",
-      "Prints ORCHESTRATION COMPLETE when finished",
+      "Global review + debugging gate blocks completion and PR handoff",
+      "Prints ORCHESTRATION COMPLETE only after the gate passes",
     ],
   },
 ] as const;

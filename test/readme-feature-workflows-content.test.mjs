@@ -14,6 +14,8 @@ test("README documents built-in LazyCodex workflows without Hangul", () => {
     "$start-work",
     "$ulw-loop",
     "review-work",
+    "post-implementation review",
+    "debugging gate",
     "remove-ai-slops",
     "https://lazycodex.ai",
   ]

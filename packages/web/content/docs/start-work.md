@@ -6,6 +6,7 @@
 - A Stop-hook re-injects the next turn until the plan is complete
 - Independent sub-tasks fan out to parallel subagents
 - Strict TDD plus five evidence gates: plan reread, automated verification, manual-QA, adversarial QA, cleanup
+- A final Global Review and Debugging Gate runs `review-work`, records a debugging audit, and blocks completion or PR handoff on failed or inconclusive lanes
 - Progress is recorded to a ledger
 
 ### Syntax
@@ -16,4 +17,4 @@ $start-work [plan-name] [--worktree <absolute-path>]
 
 ### Done
 
-It prints an `ORCHESTRATION COMPLETE` block when every checkbox is checked.
+It prints an `ORCHESTRATION COMPLETE` block only when every checkbox is checked and the global post-implementation review plus debugging gate has passed.

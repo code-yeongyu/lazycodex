@@ -61,7 +61,7 @@ LazyCodex installs these as OmO commands for Codex. Invoke them with the
 | --- | --- | --- |
 | `$ulw-loop` | `$ulw-loop "task" [--completion-promise=TEXT] [--strategy=reset\|continue]` | Self-referential loop that runs until Oracle-verified completion. Caps at 500 iterations in ultrawork mode, 100 in normal mode. |
 | `$ulw-plan` | `$ulw-plan "what to build"` | Prometheus strategic planner. Writes a plan to `plans/<slug>.md`. Never writes product code. |
-| `$start-work` | `$start-work [plan-name] [--worktree <path>]` | Executes a plan until every checkbox is done. Prints **ORCHESTRATION COMPLETE**. |
+| `$start-work` | `$start-work [plan-name] [--worktree <path>]` | Executes a plan until every checkbox is done, then requires the global post-implementation review and debugging gate before **ORCHESTRATION COMPLETE**. |
 
 Full documentation lives at [lazycodex.ai/docs](https://lazycodex.ai/docs).
 
@@ -86,7 +86,8 @@ Use `$ulw-plan` when the work needs decisions before implementation. It writes a
 plan to `plans/<slug>.md` and does not touch product code.
 
 Use `$start-work` when a plan is ready. It executes the checklist with durable
-Boulder progress and stops only when the plan is complete.
+Boulder progress and stops only when the plan is complete and the global
+post-implementation review plus debugging gate has passed.
 
 Use `$ulw-loop` when the task should keep moving until the result is verified by
 evidence instead of a hopeful status update.
@@ -100,9 +101,9 @@ actual work:
 | --- | --- |
 | `/init-deep` | Hierarchical project memory through `AGENTS.md` |
 | `$ulw-plan` | Decision-complete planning before code changes |
-| `$start-work` | Durable plan execution with Boulder progress |
+| `$start-work` | Durable plan execution with Boulder progress, post-implementation review, and debugging gate |
 | `$ulw-loop` | Verified completion for open-ended tasks |
-| `review-work` | Multi-angle post-implementation review |
+| `review-work` | Multi-angle post-implementation review that blocks completion when any lane fails or is inconclusive |
 | `remove-ai-slops` | Behavior-preserving cleanup of AI-looking code |
 | `frontend-ui-ux` | Polished UI surfaces |
 | `programming` | Strict TypeScript, Rust, Python, or Go discipline |

@@ -40,7 +40,17 @@ You are mid-flight on a Prometheus work plan. The turn just ended without finish
 - A top-level checkbox flipped to `- [x]` after the 5-phase QA gate (Phase 1 read, Phase 2 automated, Phase 3 channel scenario, Phase 4 adversarial-class probing, Phase 5 gate decision). Then the Stop hook will re-evaluate; if more checkboxes remain you will be continued again.
 - 3 same-failure cycles on one sub-task → escalate via `spawn_agent(agent_type="codex-ultrawork-reviewer", fork_turns="none", ...)` and stop dispatch.
 - Safety boundary (destructive command, secret exfiltration, production write) → stop and surface a safe substitute.
-- All top-level checkboxes `- [x]` AND (if gate triggered) `codex-ultrawork-reviewer` approved unconditionally → print the ORCHESTRATION COMPLETE block and end.
+- All top-level checkboxes `- [x]` AND the Global Review and Debugging Gate passed with recorded evidence → print the ORCHESTRATION COMPLETE block and end.
+
+# Final gate
+
+Before `ORCHESTRATION COMPLETE`, final response, PR creation, PR handoff, or branch handoff:
+
+1. Invoke the `review-work` skill with the final diff, changed files, user goal, constraints, run command, and verification evidence. All five lanes must PASS. Failed, timed-out, missing-deliverable, ack-only, `BLOCKED:`, or inconclusive lanes block completion.
+2. Run a debugging-oriented runtime audit against the changed surface: name at least three plausible failure hypotheses, run distinguishing checks against the actual artifact, and append the ruled-out or confirmed result to `{{LEDGER_PATH}}`.
+3. If review or debugging finds a real issue, invoke the `debugging` skill, confirm root cause with runtime evidence, add the minimal failing test or reproduction, fix it, rerun affected verification, then rerun this gate.
+4. Redact or mask secrets and sensitive user data before writing evidence to the ledger, PR body, or handoff. Never include raw tokens, credentials, auth headers, cookies, API keys, env dumps, private logs, or PII; use concise summaries, lengths, hashes, or short non-sensitive prefixes instead.
+5. For PR work, refresh `git status` and PR/branch state after the gate, then include only redacted review/debugging evidence in the PR body or handoff.
 
 # Output discipline
 

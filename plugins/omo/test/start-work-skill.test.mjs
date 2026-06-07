@@ -5,10 +5,17 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 const pluginRoot = dirname(dirname(fileURLToPath(import.meta.url)));
-const repoRoot = dirname(dirname(dirname(pluginRoot)));
 const startWorkSkillPaths = [
-	join(repoRoot, "packages", "shared-skills", "skills", "start-work", "SKILL.md"),
+	join(pluginRoot, "skills", "start-work", "SKILL.md"),
 ];
+const reviewWorkSkillPath = join(pluginRoot, "skills", "review-work", "SKILL.md");
+const hephaestusRulePath = join(
+	pluginRoot,
+	"components",
+	"rules",
+	"bundled-rules",
+	"hephaestus.md",
+);
 const stopHookPath = join(
 	pluginRoot,
 	"components",
@@ -65,6 +72,29 @@ test("#given worker done claim #when start-work contract is inspected #then adve
 
 	// then
 	assert.deepEqual(missing, []);
+});
+
+test("#given start-work completion surfaces #when inspected #then global review and debugging gate completion", async () => {
+	// given
+	const [startWorkSkill, reviewWorkSkill, hephaestusRule] = await Promise.all([
+		readFile(startWorkSkillPaths[0], "utf8"),
+		readFile(reviewWorkSkillPath, "utf8"),
+		readFile(hephaestusRulePath, "utf8"),
+	]);
+
+	// then
+	assert.match(startWorkSkill, /Global Review and Debugging Gate/);
+	assert.match(startWorkSkill, /\breview-work\b/);
+	assert.match(startWorkSkill, /\bdebugging\b/);
+	assert.match(startWorkSkill, /inconclusive/i);
+	assert.match(startWorkSkill, /redact|mask/i);
+	assert.match(startWorkSkill, /raw (?:tokens|credentials|auth headers|cookies)/i);
+	assert.match(startWorkSkill, /ORCHESTRATION COMPLETE/);
+	assert.match(reviewWorkSkill, /debugging/i);
+	assert.match(reviewWorkSkill, /inconclusive/i);
+	assert.match(hephaestusRule, /Post-implementation Global Review and Debugging Gate/);
+	assert.match(hephaestusRule, /redact|mask/i);
+	assert.match(hephaestusRule, /raw (?:tokens|credentials|auth headers|cookies)/i);
 });
 
 test("#given start-work continuation hook #when inspected #then it remains Boulder-only without planning bootstrap logic", async () => {

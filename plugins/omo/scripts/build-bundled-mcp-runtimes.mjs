@@ -36,8 +36,11 @@ function buildRuntime(runtime) {
 	}
 
 	if (!existsSync(join(runtime.packageRoot, "package.json"))) {
-		assertBundledDist(runtime);
-		console.log(`Using bundled ${runtime.label} dist`);
+		if (hasBundledDist(runtime)) {
+			console.log(`Using bundled ${runtime.label} dist`);
+			return;
+		}
+		console.warn(`Skipping optional ${runtime.label}; package source and bundled dist are absent.`);
 		return;
 	}
 
@@ -52,14 +55,4 @@ function buildRuntime(runtime) {
 
 function hasBundledDist(runtime) {
 	return runtime.requiredOutputs.every((output) => existsSync(join(runtime.packageRoot, output)));
-}
-
-function assertBundledDist(runtime) {
-	const missingOutputs = runtime.requiredOutputs.filter((output) => !existsSync(join(runtime.packageRoot, output)));
-	if (missingOutputs.length === 0) return;
-	console.error(`Missing bundled ${runtime.label} outputs:`);
-	for (const output of missingOutputs) {
-		console.error(`  ${join(runtime.packageRoot, output)}`);
-	}
-	process.exit(1);
 }

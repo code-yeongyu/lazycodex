@@ -1,0 +1,13 @@
+import { type PostCompactPendingKind } from "./post-compact-state.js";
+import type { Engine } from "./rules/engine.js";
+export type PostCompactClaimResult = "claimed" | "not-pending" | "contended";
+export declare function hydrateEngineState(engine: Engine, cachePath: string): void;
+export declare function persistEngineState(engine: Engine, cachePath: string, completedPostCompactKind?: PostCompactPendingKind): void;
+export declare function clearSessionState(cachePath: string): void;
+export declare function markSessionCompacted(cachePath: string): void;
+export declare function hasPostCompactPending(cachePath: string): boolean;
+export declare function isPostCompactPending(cachePath: string, kind: PostCompactPendingKind): boolean;
+export declare function claimPostCompactPending(cachePath: string, kind: PostCompactPendingKind): PostCompactClaimResult;
+export declare function isPostCompactRecoveryInProgress(cachePath: string, kind: PostCompactPendingKind): boolean;
+export declare function completePostCompactRecovery(cachePath: string, kind: PostCompactPendingKind): void;
+export declare function sessionCachePath(sessionId: string, pluginDataRoot: string | undefined): string;

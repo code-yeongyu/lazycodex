@@ -84,7 +84,8 @@ describe("plugin package metadata", () => {
 		expect(cliSource).not.toContain("./lazy-lsp-mcp.js");
 		expect(cliSource).toContain("@code-yeongyu/lsp-tools-mcp/dist/cli.js");
 		expect(cliSource).not.toContain("../../../../../lsp-tools-mcp/dist/cli.js");
-		expect(codexHookCliSource).toContain("@code-yeongyu/lsp-tools-mcp/dist/lsp/manager.js");
+		expect(codexHookCliSource).toContain("disposeLspBackend");
+		expect(codexHookSource).toContain("@code-yeongyu/lsp-tools-mcp/dist/lsp/manager.js");
 		expect(codexHookSource).toContain("@code-yeongyu/lsp-tools-mcp/dist/tools.js");
 		expect(codexHookCliSource).not.toContain("../../../../../lsp-tools-mcp/dist/lsp/manager.js");
 		expect(codexHookSource).not.toContain("../../../../../lsp-tools-mcp/dist/tools.js");

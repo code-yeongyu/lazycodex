@@ -32,3 +32,12 @@ test("#given aggregate build scripts #when inspected #then npm subprocesses reso
 	assert.match(installTimeBuildScripts, /shell: process\.platform === "win32"/);
 	assert.doesNotMatch(installTimeBuildScripts, /npm\.cmd/);
 });
+
+test("#given marketplace repo lacks optional MCP source packages #when aggregate build runs #then it can still build hook CLIs", async () => {
+	// given
+	const buildBundledMcpRuntimesScript = await readFile(join(root, "scripts", "build-bundled-mcp-runtimes.mjs"), "utf8");
+
+	// when / then
+	assert.match(buildBundledMcpRuntimesScript, /Skipping optional/);
+	assert.doesNotMatch(buildBundledMcpRuntimesScript, /process\.exit\(1\)/);
+});

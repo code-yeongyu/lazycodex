@@ -9,7 +9,7 @@ test("#given aggregate plugin build script #when inspected #then hook status and
 	// given
 	const packageText = await readFile(join(root, "package.json"), "utf8");
 	const packageJson = await readJson("package.json");
-	const telemetrySyncScript = await readFile(join(root, "..", "scripts", "sync-telemetry-component.mjs"), "utf8");
+	const telemetrySyncScript = await readFile(join(root, "scripts", "sync-telemetry-component.mjs"), "utf8");
 
 	// when
 	const buildScript = packageJson.scripts.build;
@@ -18,21 +18,25 @@ test("#given aggregate plugin build script #when inspected #then hook status and
 	// then
 	assert.equal(
 		buildScript,
-		"node scripts/sync-hook-status-messages.mjs && node scripts/build-bundled-mcp-runtimes.mjs && node scripts/sync-skills.mjs && node ../scripts/sync-telemetry-component.mjs && node scripts/build-components.mjs",
+		"node scripts/sync-hook-status-messages.mjs && node scripts/build-bundled-mcp-runtimes.mjs && node scripts/sync-skills.mjs && node scripts/sync-telemetry-component.mjs && node scripts/build-components.mjs",
 	);
 	assert.equal(testScript, "node --test test/*.test.mjs");
 	assert(packageJson.workspaces.includes("components/ultrawork"));
-	assert.match(telemetrySyncScript, /syncTelemetryComponent/);
+	assert.match(telemetrySyncScript, /sync-telemetry-component\.mjs/);
+	assert.match(telemetrySyncScript, /Skipping telemetry component sync/);
 	assert.doesNotMatch(packageText, /\bpython3?\b|ultrawork-detector\.py/);
 });
 
-test("#given omo-codex package build script #when inspected #then delegates to the aggregate plugin package", async () => {
+test("#given marketplace package build scripts #when inspected #then aggregate plugin build is self-contained", async () => {
 	// given
-	const packageJson = JSON.parse(await readFile(join(root, "..", "package.json"), "utf8"));
+	const packageJson = await readJson("package.json");
+	const rootPackageJson = JSON.parse(await readFile(join(root, "..", "..", "package.json"), "utf8"));
 
 	// when
-	const buildPluginScript = packageJson.scripts["build:plugin"];
+	const aggregateBuildScript = packageJson.scripts.build;
+	const rootBuildPluginScript = rootPackageJson.scripts?.["build:plugin"];
 
 	// then
-	assert.equal(buildPluginScript, "bun run --cwd plugin build");
+	assert.match(aggregateBuildScript, /node scripts\/build-components\.mjs/);
+	assert.equal(rootBuildPluginScript, undefined);
 });

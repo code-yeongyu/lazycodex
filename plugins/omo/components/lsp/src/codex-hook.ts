@@ -1,7 +1,5 @@
 import { readFileSync } from "node:fs";
 
-import { executeLspDiagnostics } from "@code-yeongyu/lsp-tools-mcp/dist/tools.js";
-
 import {
 	isUnavailableLspDiagnostics,
 	markLspSessionCompacted,
@@ -58,9 +56,23 @@ const CONTEXT_PRESSURE_MARKERS = [
 	"long threads and multiple compactions",
 ] as const;
 
+type LspToolsModule = typeof import("@code-yeongyu/lsp-tools-mcp/dist/tools.js");
+type LspManagerModule = typeof import("@code-yeongyu/lsp-tools-mcp/dist/lsp/manager.js");
+
+let lspToolsModulePromise: Promise<LspToolsModule | null> | undefined;
+let lspManagerModulePromise: Promise<LspManagerModule | null> | undefined;
+
 export async function runLspDiagnosticsText(filePath: string): Promise<string> {
-	const result = await executeLspDiagnostics({ filePath, severity: "error" });
+	const lspTools = await loadLspToolsModule();
+	if (lspTools === null) return `${UNSUPPORTED_EXTENSION_TEXT} LSP backend unavailable`;
+	const result = await lspTools.executeLspDiagnostics({ filePath, severity: "error" });
 	return result.content.map((block) => block.text).join("\n");
+}
+
+export async function disposeLspBackend(): Promise<void> {
+	const lspManager = await loadLspManagerModule();
+	if (lspManager === null) return;
+	await lspManager.disposeDefaultLspManager();
 }
 
 export async function runLspPostToolUseHook(
@@ -138,6 +150,31 @@ function formatDiagnosticsError(error: unknown): string {
 		if (message.length > 0) return message;
 	}
 	return String(error).trim();
+}
+
+async function loadLspToolsModule(): Promise<LspToolsModule | null> {
+	lspToolsModulePromise ??= import("@code-yeongyu/lsp-tools-mcp/dist/tools.js").catch((error: unknown) => {
+		if (isMissingLspBackendError(error)) return null;
+		throw error;
+	});
+	return lspToolsModulePromise;
+}
+
+async function loadLspManagerModule(): Promise<LspManagerModule | null> {
+	lspManagerModulePromise ??= import("@code-yeongyu/lsp-tools-mcp/dist/lsp/manager.js").catch((error: unknown) => {
+		if (isMissingLspBackendError(error)) return null;
+		throw error;
+	});
+	return lspManagerModulePromise;
+}
+
+function isMissingLspBackendError(error: unknown): boolean {
+	return (
+		error instanceof Error &&
+		"code" in error &&
+		error.code === "ERR_MODULE_NOT_FOUND" &&
+		error.message.includes("@code-yeongyu/lsp-tools-mcp")
+	);
 }
 
 function formatDiagnosticBlock({ filePath, diagnostics }: DiagnosticBlock): string {

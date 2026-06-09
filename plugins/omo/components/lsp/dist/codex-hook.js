@@ -1,0 +1,208 @@
+import { readFileSync } from "node:fs";
+import { isUnavailableLspDiagnostics, markLspSessionCompacted, recordLspDiagnosticsObservations, sessionIdFrom, shouldSkipUnavailableLspDiagnostics, } from "./lsp-session-state.js";
+import { extractMutatedFilePaths } from "./mutated-file-paths.js";
+export { extractMutatedFilePaths } from "./mutated-file-paths.js";
+const CLEAN_DIAGNOSTICS_TEXT = "No diagnostics found";
+const UNSUPPORTED_EXTENSION_TEXT = "No LSP server configured for extension:";
+const DIAGNOSTIC_START_PATTERN = /(?:error|warning|information|hint)\[[^\]\r\n]+\] \(\d+\) at \d+:\d+:/g;
+const DIAGNOSTIC_CHUNK_PATTERN = /^(?:error|warning|information|hint)\[[^\]\r\n]+\] \(\d+\) at \d+:\d+:/;
+const DEFAULT_MAX_HOOK_FEEDBACK_CHARS = 8000;
+const CONTEXT_PRESSURE_MAX_HOOK_FEEDBACK_CHARS = 1200;
+const MAX_CONCURRENT_DIAGNOSTICS = 4;
+const CONTEXT_PRESSURE_MARKERS = [
+    "context compacted",
+    "context_length_exceeded",
+    "skill descriptions were shortened",
+    "context_too_large",
+    "codex ran out of room in the model's context window",
+    "your input exceeds the context window",
+    "long threads and multiple compactions",
+];
+let lspToolsModulePromise;
+let lspManagerModulePromise;
+export async function runLspDiagnosticsText(filePath) {
+    const lspTools = await loadLspToolsModule();
+    if (lspTools === null)
+        return `${UNSUPPORTED_EXTENSION_TEXT} LSP backend unavailable`;
+    const result = await lspTools.executeLspDiagnostics({ filePath, severity: "error" });
+    return result.content.map((block) => block.text).join("\n");
+}
+export async function disposeLspBackend() {
+    const lspManager = await loadLspManagerModule();
+    if (lspManager === null)
+        return;
+    await lspManager.disposeDefaultLspManager();
+}
+export async function runLspPostToolUseHook(input, runDiagnostics = runLspDiagnosticsText) {
+    const sessionId = sessionIdFrom(input);
+    const filePaths = extractMutatedFilePaths(input).filter((filePath) => !shouldSkipUnavailableLspDiagnostics(filePath, sessionId));
+    if (filePaths.length === 0)
+        return "";
+    const blocks = [];
+    const observations = [];
+    for (const { filePath, diagnostics } of await collectDiagnostics(filePaths, runDiagnostics)) {
+        const unavailable = isUnavailableLspDiagnostics(diagnostics);
+        observations.push({ filePath, unavailable });
+        if (isCleanDiagnostics(diagnostics))
+            continue;
+        if (unavailable)
+            continue;
+        blocks.push({ filePath, diagnostics });
+    }
+    recordLspDiagnosticsObservations(sessionId, observations);
+    if (blocks.length === 0)
+        return "";
+    const rawReason = blocks.map(formatDiagnosticBlock).join("\n\n");
+    const reason = limitHookText(rawReason, hookFeedbackLimit(input.transcript_path));
+    const output = {
+        decision: "block",
+        reason,
+        hookSpecificOutput: {
+            hookEventName: "PostToolUse",
+            additionalContext: reason,
+        },
+    };
+    return `${JSON.stringify(output)}\n`;
+}
+export async function runLspPostCompactHook(input) {
+    markLspSessionCompacted(sessionIdFrom(input));
+    return "";
+}
+async function collectDiagnostics(filePaths, runDiagnostics) {
+    const results = [];
+    let nextIndex = 0;
+    const workerCount = Math.min(MAX_CONCURRENT_DIAGNOSTICS, filePaths.length);
+    async function worker() {
+        for (;;) {
+            const index = nextIndex;
+            nextIndex += 1;
+            const filePath = filePaths[index];
+            if (filePath === undefined)
+                return;
+            results[index] = { filePath, diagnostics: await collectFileDiagnostics(filePath, runDiagnostics) };
+        }
+    }
+    await Promise.all(Array.from({ length: workerCount }, () => worker()));
+    return results;
+}
+async function collectFileDiagnostics(filePath, runDiagnostics) {
+    try {
+        return (await runDiagnostics(filePath)).trim();
+    }
+    catch (error) {
+        return formatDiagnosticsError(error);
+    }
+}
+function formatDiagnosticsError(error) {
+    if (error instanceof Error) {
+        const message = error.message.trim();
+        if (message.length > 0)
+            return message;
+    }
+    return String(error).trim();
+}
+async function loadLspToolsModule() {
+    lspToolsModulePromise ??= import("@code-yeongyu/lsp-tools-mcp/dist/tools.js").catch((error) => {
+        if (isMissingLspBackendError(error))
+            return null;
+        throw error;
+    });
+    return lspToolsModulePromise;
+}
+async function loadLspManagerModule() {
+    lspManagerModulePromise ??= import("@code-yeongyu/lsp-tools-mcp/dist/lsp/manager.js").catch((error) => {
+        if (isMissingLspBackendError(error))
+            return null;
+        throw error;
+    });
+    return lspManagerModulePromise;
+}
+function isMissingLspBackendError(error) {
+    return (error instanceof Error &&
+        "code" in error &&
+        error.code === "ERR_MODULE_NOT_FOUND" &&
+        error.message.includes("@code-yeongyu/lsp-tools-mcp"));
+}
+function formatDiagnosticBlock({ filePath, diagnostics }) {
+    return `LSP diagnostics after editing ${filePath}:\n\n${formatDiagnosticsForDisplay(diagnostics)}`;
+}
+function formatDiagnosticsForDisplay(diagnostics) {
+    const chunks = splitDiagnosticChunks(diagnostics);
+    if (!chunks.some(isDiagnosticChunk))
+        return chunks.join("\n").trim();
+    return chunks.map(formatDiagnosticChunk).join("\n");
+}
+function splitDiagnosticChunks(diagnostics) {
+    const normalized = diagnostics.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim();
+    if (normalized.length === 0)
+        return [];
+    const matches = Array.from(normalized.matchAll(DIAGNOSTIC_START_PATTERN));
+    const firstMatch = matches[0];
+    if (firstMatch?.index === undefined)
+        return [normalized];
+    const chunks = [];
+    const leadingText = normalized.slice(0, firstMatch.index).trim();
+    if (leadingText.length > 0)
+        chunks.push(leadingText);
+    for (const [index, match] of matches.entries()) {
+        if (match.index === undefined)
+            continue;
+        const nextMatch = matches[index + 1];
+        const end = nextMatch?.index ?? normalized.length;
+        const chunk = normalized.slice(match.index, end).trim();
+        if (chunk.length > 0)
+            chunks.push(chunk);
+    }
+    return chunks;
+}
+function formatDiagnosticChunk(chunk) {
+    const lines = chunk.split("\n");
+    const firstLine = lines[0];
+    if (firstLine === undefined)
+        return "";
+    if (!isDiagnosticChunk(firstLine))
+        return chunk;
+    const followingLines = lines.slice(1).map((line) => `  ${line}`);
+    return [`- ${firstLine}`, ...followingLines].join("\n");
+}
+function isDiagnosticChunk(chunk) {
+    return DIAGNOSTIC_CHUNK_PATTERN.test(chunk);
+}
+function hookFeedbackLimit(transcriptPath) {
+    return isContextPressureTranscript(transcriptPath)
+        ? CONTEXT_PRESSURE_MAX_HOOK_FEEDBACK_CHARS
+        : DEFAULT_MAX_HOOK_FEEDBACK_CHARS;
+}
+function isContextPressureTranscript(transcriptPath) {
+    if (typeof transcriptPath !== "string")
+        return false;
+    try {
+        return hasContextPressureMarker(readFileSync(transcriptPath, "utf8"));
+    }
+    catch (error) {
+        if (error instanceof Error)
+            return false;
+        throw error;
+    }
+}
+function hasContextPressureMarker(text) {
+    const normalizedText = text.toLowerCase();
+    return CONTEXT_PRESSURE_MARKERS.some((marker) => normalizedText.includes(marker));
+}
+function limitHookText(text, maxChars) {
+    if (text.length <= maxChars)
+        return text;
+    const marker = `\n\n[Truncated hook output to ${maxChars} chars to avoid Codex context overflow.]`;
+    if (marker.length >= maxChars)
+        return marker.slice(0, maxChars);
+    const head = text.slice(0, maxChars - marker.length).replace(/[ \t\r\n]+$/, "");
+    return `${head}${marker}`;
+}
+function isCleanDiagnostics(diagnostics) {
+    return (diagnostics.length === 0 ||
+        diagnostics === CLEAN_DIAGNOSTICS_TEXT ||
+        diagnostics.startsWith(UNSUPPORTED_EXTENSION_TEXT));
+}
+export function isRecord(value) {
+    return typeof value === "object" && value !== null && !Array.isArray(value);
+}

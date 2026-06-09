@@ -2,10 +2,8 @@
 import { cp, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { sharedSkillsRootPath } from "@oh-my-opencode/shared-skills";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
-const sharedSkillsRoot = sharedSkillsRootPath();
 const skillsRoot = join(root, "skills");
 const sourceTestFilePattern = /\.test\.ts$/;
 const skillSources = [
@@ -150,6 +148,12 @@ async function adaptSkillForCodex(skillName) {
 }
 
 async function syncSkills() {
+	const sharedSkillsRoot = await resolveSharedSkillsRoot();
+	if (sharedSkillsRoot === null) {
+		console.warn("Skipping shared skill sync; @oh-my-opencode/shared-skills is unavailable.");
+		return;
+	}
+
 	await rm(skillsRoot, { recursive: true, force: true });
 	await mkdir(skillsRoot, { recursive: true });
 
@@ -171,6 +175,25 @@ async function syncSkills() {
 		});
 		await adaptSkillForCodex(skillName);
 	}
+}
+
+async function resolveSharedSkillsRoot() {
+	try {
+		const { sharedSkillsRootPath } = await import("@oh-my-opencode/shared-skills");
+		return sharedSkillsRootPath();
+	} catch (error) {
+		if (isMissingSharedSkillsError(error)) return null;
+		throw error;
+	}
+}
+
+function isMissingSharedSkillsError(error) {
+	return (
+		error instanceof Error &&
+		"code" in error &&
+		error.code === "ERR_MODULE_NOT_FOUND" &&
+		error.message.includes("@oh-my-opencode/shared-skills")
+	);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

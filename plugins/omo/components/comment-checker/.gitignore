@@ -5,3 +5,5 @@ node_modules/
 .env.*
 coverage/
 .vitest/
+!dist/
+!dist/**

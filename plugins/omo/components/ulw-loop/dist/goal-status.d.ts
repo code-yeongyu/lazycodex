@@ -1,0 +1,12 @@
+import { type UlwLoopScope } from "./paths.js";
+import type { UlwLoopCodexGoalMode, UlwLoopItem, UlwLoopPlan, UlwLoopSuccessCriterion } from "./types.js";
+export declare const ULW_LOOP_AGGREGATE_CODEX_OBJECTIVE: string;
+export declare function aggregateCodexObjectiveForScope(scope?: UlwLoopScope): string;
+export declare function codexGoalMode(plan: UlwLoopPlan): UlwLoopCodexGoalMode;
+export declare function isUlwLoopDone(plan: UlwLoopPlan): boolean;
+export declare function isFinalRunCompletionCandidate(plan: UlwLoopPlan, goal: UlwLoopItem): boolean;
+export declare function aggregateCodexObjective(plan: UlwLoopPlan): string;
+export declare function expectedCodexObjective(plan: UlwLoopPlan, goal: UlwLoopItem): string;
+export declare function compatibleCodexObjectives(plan: UlwLoopPlan): readonly string[];
+export declare function hasAllCriteriaPass(goal: UlwLoopItem): boolean;
+export declare function firstUnresolvedCriterion(goal: UlwLoopItem): UlwLoopSuccessCriterion | undefined;

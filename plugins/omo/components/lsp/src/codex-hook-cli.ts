@@ -1,8 +1,6 @@
 import { stdin as processStdin } from "node:process";
 
-import { disposeDefaultLspManager } from "@code-yeongyu/lsp-tools-mcp/dist/lsp/manager.js";
-
-import { isRecord, runLspPostCompactHook, runLspPostToolUseHook } from "./codex-hook.js";
+import { disposeLspBackend, isRecord, runLspPostCompactHook, runLspPostToolUseHook } from "./codex-hook.js";
 
 export async function runPostToolUseHookCli(stdin: NodeJS.ReadStream = processStdin): Promise<void> {
 	await runHookCli((input) => runLspPostToolUseHook(input), stdin);
@@ -30,7 +28,7 @@ async function runHookCli(
 		const output = await runHook(input);
 		if (output) process.stdout.write(output);
 	} finally {
-		await disposeDefaultLspManager();
+		await disposeLspBackend();
 	}
 }
 

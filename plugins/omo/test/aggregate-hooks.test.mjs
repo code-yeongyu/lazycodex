@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 import test from "node:test";
 
@@ -81,6 +81,32 @@ test("#given aggregate hook commands #when inspected #then commands stay Node-ba
 	assert(commands.includes('node "${PLUGIN_ROOT}/components/ultrawork/dist/cli.js" hook user-prompt-submit'));
 	assert(commands.every((command) => command.startsWith("node ")));
 	assert(commands.every((command) => !command.includes("\\")));
+});
+
+test("#given aggregate hook commands #when installed from the marketplace snapshot #then every referenced local CLI exists", async () => {
+	// given
+	const hooks = await readJson("hooks/hooks.json");
+
+	// when
+	const missingTargets = [];
+	for (const { handler } of collectCommandHooks(hooks, "hooks/hooks.json")) {
+		const command = handler.command;
+		const match = /"\$\{PLUGIN_ROOT\}\/([^"]+)"/.exec(command);
+		if (match === null) continue;
+		const target = match[1];
+		try {
+			await stat(join(root, target));
+		} catch (error) {
+			if (error instanceof Error && "code" in error && error.code === "ENOENT") {
+				missingTargets.push(target);
+				continue;
+			}
+			throw error;
+		}
+	}
+
+	// then
+	assert.deepEqual(missingTargets, []);
 });
 
 test("#given component hook commands #when inspected #then standalone packages expose Codex status messages", async () => {

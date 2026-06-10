@@ -70,7 +70,7 @@ describe("plugin package metadata", () => {
 		expect(packageJson.type).toBe("module");
 		expect(packageJson.packageManager).toBe("npm@11.12.1");
 		expect(packageJson.dependencies).toEqual({
-			"@code-yeongyu/lsp-tools-mcp": "file:../../../../lsp-tools-mcp",
+			"@code-yeongyu/lsp-tools-mcp": "file:../lsp-tools-mcp",
 		});
 		expect(packageJson.bin["omo-lsp"]).toBe("./dist/cli.js");
 		expect(packageJson.bin["codex-lsp"]).toBeUndefined();
@@ -80,7 +80,7 @@ describe("plugin package metadata", () => {
 		expect(postToolUseCommand).toBe(`node "${pluginRoot}/dist/cli.js" hook post-tool-use`);
 		expect(postCompactCommand).toBe(`node "${pluginRoot}/dist/cli.js" hook post-compact`);
 		expect(lspServer?.command).toBe("node");
-		expect(lspServer?.args).toEqual(["../../../../lsp-tools-mcp/dist/cli.js", "mcp"]);
+		expect(lspServer?.args).toEqual(["../lsp-tools-mcp/dist/cli.js", "mcp"]);
 		expect(cliSource).not.toContain("./lazy-lsp-mcp.js");
 		expect(cliSource).toContain("@code-yeongyu/lsp-tools-mcp/dist/cli.js");
 		expect(cliSource).not.toContain("../../../../../lsp-tools-mcp/dist/cli.js");

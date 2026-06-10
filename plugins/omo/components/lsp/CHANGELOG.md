@@ -4,6 +4,10 @@
 
 - Reuse the repository-level `packages/lsp-tools-mcp` package instead of carrying a second copy under `components/lsp/packages`.
 
+## 0.2.1
+
+- Resolve the LSP runtime from the aggregate plugin bundle so installed LazyCodex plugin caches do not depend on files outside `plugins/omo`.
+
 ## 0.2.0
 
 - Extracted the LSP runtime and MCP server into [`@code-yeongyu/lsp-tools-mcp`](https://github.com/code-yeongyu/lsp-tools-mcp).

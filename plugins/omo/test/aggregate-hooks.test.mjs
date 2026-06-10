@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join, resolve, sep } from "node:path";
 import test from "node:test";
 
 import {
@@ -98,6 +98,31 @@ test("#given aggregate hook commands #when packaging is verified #then reference
 
 	// then
 	assert.deepEqual(missingComponentCliTargets, []);
+});
+
+test("#given component file dependencies #when packaging is verified #then dependency targets stay inside the plugin bundle", async () => {
+	// given
+	const packageJson = await readJson("package.json");
+	const workspacePackagePaths = packageJson.workspaces.map((workspace) => join(workspace, "package.json"));
+	const pluginRoot = resolve(root);
+	const pluginRootPrefix = pluginRoot.endsWith(sep) ? pluginRoot : `${pluginRoot}${sep}`;
+
+	// when
+	const escapingDependencies = [];
+	for (const workspacePackagePath of workspacePackagePaths) {
+		const workspacePackage = await readJson(workspacePackagePath);
+		const workspaceRoot = dirname(resolve(root, workspacePackagePath));
+		for (const [name, specifier] of Object.entries(workspacePackage.dependencies ?? {})) {
+			if (typeof specifier !== "string" || !specifier.startsWith("file:")) continue;
+			const target = resolve(workspaceRoot, specifier.slice("file:".length));
+			if (target !== pluginRoot && !target.startsWith(pluginRootPrefix)) {
+				escapingDependencies.push(`${workspacePackagePath}:${name}:${specifier}`);
+			}
+		}
+	}
+
+	// then
+	assert.deepEqual(escapingDependencies, []);
 });
 
 test("#given component hook commands #when inspected #then standalone packages expose Codex status messages", async () => {

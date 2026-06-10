@@ -1,0 +1,12 @@
+import type { Diagnostic, DocumentSymbol, Location, LocationLink, PrepareRenameDefaultBehavior, PrepareRenameResult, Range, SeverityFilter, SymbolInfo } from "./types.js";
+import type { ApplyResult } from "./workspace-edit.js";
+export declare function uriToPath(uri: string): string;
+export declare function formatLocation(loc: Location | LocationLink): string;
+export declare function formatSymbolKind(kind: number): string;
+export declare function formatSeverity(severity: number | undefined): string;
+export declare function formatDocumentSymbol(symbol: DocumentSymbol, indent?: number): string;
+export declare function formatSymbolInfo(symbol: SymbolInfo): string;
+export declare function formatDiagnostic(diag: Diagnostic): string;
+export declare function filterDiagnosticsBySeverity(diagnostics: Diagnostic[], severityFilter?: SeverityFilter): Diagnostic[];
+export declare function formatPrepareRenameResult(result: PrepareRenameResult | PrepareRenameDefaultBehavior | Range | null): string;
+export declare function formatApplyResult(result: ApplyResult): string;

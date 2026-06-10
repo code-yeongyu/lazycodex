@@ -1,0 +1,10 @@
+export declare const DEFAULT_MAX_REFERENCES = 200;
+export declare const DEFAULT_MAX_SYMBOLS = 200;
+export declare const DEFAULT_MAX_DIAGNOSTICS = 200;
+export declare const DEFAULT_MAX_DIRECTORY_FILES = 50;
+export declare const REQUEST_TIMEOUT_MS = 15000;
+export declare const INIT_TIMEOUT_MS = 60000;
+export declare const IDLE_TIMEOUT_MS: number;
+export declare const REAPER_INTERVAL_MS = 60000;
+export declare const STOP_HARD_KILL_TIMEOUT_MS = 5000;
+export declare const STOP_SIGKILL_GRACE_MS = 1000;

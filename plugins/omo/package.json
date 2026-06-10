@@ -10,6 +10,7 @@
 		"components/git-bash",
 		"components/rules",
 		"components/lsp",
+		"components/lsp-tools-mcp",
 		"components/telemetry",
 		"components/start-work-continuation",
 		"components/ulw-loop",

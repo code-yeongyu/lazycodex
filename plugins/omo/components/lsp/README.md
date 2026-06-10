@@ -75,7 +75,7 @@ The plugin ships:
 - `hooks/hooks.json` for the `PostToolUse` diagnostics hook.
 - `skills/lsp/SKILL.md` with MCP usage guidance.
 
-The runtime depends on `@code-yeongyu/lsp-tools-mcp` via `file:../../../../lsp-tools-mcp`, so marketplace builds reuse the root package instead of carrying a second copy under this component.
+The aggregate Codex plugin bundles the runtime under `components/lsp-tools-mcp` and this component depends on it via `file:../lsp-tools-mcp`, so installed plugin caches can resolve the LSP hook and MCP runtime without files outside the plugin bundle.
 
 The hook command is:
 
@@ -86,13 +86,13 @@ node "${PLUGIN_ROOT}/dist/cli.js" hook post-tool-use
 The MCP command is:
 
 ```bash
-node ../../../../lsp-tools-mcp/dist/cli.js mcp
+node ../lsp-tools-mcp/dist/cli.js mcp
 ```
 
 ## Local Development
 
 ```bash
-npm run bootstrap     # installs + builds the root packages/lsp-tools-mcp package
+npm run bootstrap     # installs + builds the bundled lsp-tools-mcp package when developing from source
 npm install
 npm test
 npm run typecheck

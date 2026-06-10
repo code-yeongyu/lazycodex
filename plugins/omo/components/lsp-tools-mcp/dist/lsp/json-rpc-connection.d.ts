@@ -1,0 +1,36 @@
+type NotificationHandler = (params: unknown) => void;
+type RequestHandler = (params: unknown) => Promise<unknown> | unknown;
+export declare class JsonRpcConnection {
+    private readonly reader;
+    private readonly writer;
+    private readonly pendingRequests;
+    private readonly notificationHandlers;
+    private readonly requestHandlers;
+    private readonly closeHandlers;
+    private readonly errorHandlers;
+    private inputBuffer;
+    private nextRequestId;
+    private listening;
+    private disposed;
+    constructor(reader: NodeJS.ReadableStream, writer: NodeJS.WritableStream);
+    listen(): void;
+    onNotification(method: string, handler: NotificationHandler): void;
+    onRequest(method: string, handler: RequestHandler): void;
+    onClose(handler: () => void): void;
+    onError(handler: (error: Error) => void): void;
+    sendRequest<T>(method: string, params?: unknown): Promise<T>;
+    sendNotification(method: string, params?: unknown): Promise<void>;
+    dispose(): void;
+    private readonly handleData;
+    private readonly handleClose;
+    private readonly handleStreamError;
+    private drainInputBuffer;
+    private dispatchBody;
+    private handleResponse;
+    private handleNotification;
+    private handleRequest;
+    private writeError;
+    private writeMessage;
+    private emitError;
+}
+export {};

@@ -83,6 +83,23 @@ test("#given aggregate hook commands #when inspected #then commands stay Node-ba
 	assert(commands.every((command) => !command.includes("\\")));
 });
 
+test("#given aggregate hook commands #when packaging is verified #then referenced component CLI targets exist", async () => {
+	// given
+	const hooks = await readJson("hooks/hooks.json");
+
+	// when
+	const componentCliTargets = collectCommandHooks(hooks, "hooks/hooks.json")
+		.map(({ handler }) => /^node "\$\{PLUGIN_ROOT\}\/(components\/[^"]+\/dist\/cli\.js)"/.exec(handler.command)?.[1])
+		.filter((target) => typeof target === "string");
+	const missingComponentCliTargets = [];
+	for (const target of componentCliTargets) {
+		if (!(await exists(target))) missingComponentCliTargets.push(target);
+	}
+
+	// then
+	assert.deepEqual(missingComponentCliTargets, []);
+});
+
 test("#given component hook commands #when inspected #then standalone packages expose Codex status messages", async () => {
 	// given
 	const componentHooks = await readComponentHookManifests();

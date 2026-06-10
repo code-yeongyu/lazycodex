@@ -8,7 +8,6 @@ import { exists, readJson, root } from "./aggregate-plugin-fixture.mjs";
 const mcpPackageManifestPaths = [
 	"components/lsp-tools-mcp/package.json",
 	"components/ast-grep-mcp/package.json",
-	"components/git-bash-mcp/package.json",
 ];
 const mcpPackageManifestExists = await Promise.all(mcpPackageManifestPaths.map(exists));
 
@@ -22,19 +21,17 @@ test("#given aggregate MCP config #when inspected #then code MCPs reference pack
 	// when
 	const lspServer = mcp.mcpServers.lsp;
 	const astGrepServer = mcp.mcpServers.ast_grep;
-	const gitBashServer = mcp.mcpServers.git_bash;
 	const codeMcpNames = Object.keys(mcp.mcpServers)
-		.filter((name) => name === "lsp" || name === "ast_grep" || name === "git_bash")
+		.filter((name) => name === "lsp" || name === "ast_grep")
 		.sort();
 	const componentLocalMcpSources = lspSources.filter((name) => name.startsWith("lazy-mcp") || name === "lazy-lsp-mcp.ts");
 
 	// then
-	assert.deepEqual(codeMcpNames, ["ast_grep", "git_bash", "lsp"]);
+	assert.deepEqual(codeMcpNames, ["ast_grep", "lsp"]);
 	assert.equal(packageJson.workspaces.includes("components/lsp/packages/lsp-tools-mcp"), false);
 	assert.equal(packageJson.workspaces.includes("components/ast-grep/packages/ast-grep-mcp"), false);
 	assert.deepEqual(packageJson.dependencies, { "@oh-my-opencode/shared-skills": "file:../../shared-skills" });
 	assert.match(bundledMcpBuildScript, /ast-grep-mcp/);
-	assert.match(bundledMcpBuildScript, /git-bash-mcp/);
 	assert.doesNotMatch(packageJson.scripts.build, /--workspaces/);
 	assert.equal(lspServer.command, "node");
 	assert.deepEqual(lspServer.args, ["./components/lsp-tools-mcp/dist/cli.js", "mcp"]);
@@ -42,18 +39,34 @@ test("#given aggregate MCP config #when inspected #then code MCPs reference pack
 	assert.equal(astGrepServer.command, "node");
 	assert.deepEqual(astGrepServer.args, ["./components/ast-grep-mcp/dist/cli.js", "mcp"]);
 	assert.equal(astGrepServer.cwd, ".");
-	assert.equal(gitBashServer.command, "node");
-	assert.deepEqual(gitBashServer.args, ["./components/git-bash-mcp/dist/cli.js", "mcp"]);
-	assert.equal(gitBashServer.cwd, ".");
 	assert.deepEqual(componentLocalMcpSources, []);
 });
 
+test("#given aggregate MCP config #when packaging is verified #then local MCP command targets exist", async () => {
+	// given
+	const mcp = await readJson(".mcp.json");
+
+	// when
+	const missingTargets = [];
+	for (const [name, server] of Object.entries(mcp.mcpServers)) {
+		if (typeof server.command !== "string") continue;
+		const [target] = server.args ?? [];
+		if (typeof target !== "string") continue;
+		if (!(await exists(join(server.cwd ?? ".", target)))) {
+			missingTargets.push(`${name}:${target}`);
+		}
+	}
+
+	// then
+	assert.deepEqual(missingTargets, []);
+});
+
 test(
-	"#given package-level MCP CLIs #when package metadata is inspected #then bin names use the omo prefix",
+	"#given package-level MCP CLIs #when package metadata is inspected #then bundled runtime bins point at local CLIs",
 	{ skip: mcpPackageManifestExists.some((exists) => !exists) },
 	async () => {
 		// given
-		const [lspPackageJson, astGrepPackageJson, gitBashPackageJson] = await Promise.all(
+		const [lspPackageJson, astGrepPackageJson] = await Promise.all(
 			mcpPackageManifestPaths.map((path) => readJson(path)),
 		);
 
@@ -61,13 +74,9 @@ test(
 		const binNames = [
 			...Object.keys(lspPackageJson.bin ?? {}),
 			...Object.keys(astGrepPackageJson.bin ?? {}),
-			...Object.keys(gitBashPackageJson.bin ?? {}),
 		].sort();
 
 		// then
-		assert.deepEqual(binNames, ["omo-ast-grep", "omo-git-bash", "omo-lsp"]);
-		for (const name of binNames) {
-			assert.match(name, /^omo-/);
-		}
+		assert.deepEqual(binNames, ["ast-grep-mcp", "lsp-tools-mcp"]);
 	},
 );

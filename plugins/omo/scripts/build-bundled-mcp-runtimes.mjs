@@ -21,12 +21,6 @@ const runtimes = [
 		bundledRoot: join(bundledComponentsRoot, "ast-grep-mcp"),
 		requiredOutputs: ["dist/cli.js"],
 	},
-	{
-		label: "git-bash-mcp",
-		sourceRoot: join(repoPackagesRoot, "git-bash-mcp"),
-		bundledRoot: join(bundledComponentsRoot, "git-bash-mcp"),
-		requiredOutputs: ["dist/cli.js"],
-	},
 ];
 
 for (const runtime of runtimes) {
@@ -45,7 +39,7 @@ function buildRuntime(runtime) {
 	}
 
 	if (!existsSync(join(runtime.sourceRoot, "package.json"))) {
-		console.warn(`Skipping ${runtime.label}; no source package or bundled runtime found`);
+		assertRequiredOutputs(runtime.bundledRoot, runtime);
 		return;
 	}
 

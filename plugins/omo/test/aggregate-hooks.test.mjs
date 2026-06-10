@@ -157,7 +157,7 @@ test("#given hook status messages #when inspected #then labels describe OMO resp
 	assert.deepEqual(genericStatusMessages, []);
 });
 
-test("#given aggregate OMO plugin is enabled #when hooks are inspected #then shell guidance and ulw-loop guard are registered", async () => {
+test("#given aggregate OMO plugin is enabled #when hooks are inspected #then ulw-loop guard is registered without unavailable git_bash guidance", async () => {
 	// given
 	const hooks = await readJson("hooks/hooks.json");
 	const text = JSON.stringify(hooks);
@@ -166,13 +166,11 @@ test("#given aggregate OMO plugin is enabled #when hooks are inspected #then she
 	const preToolUseGroups = hooks.hooks.PreToolUse;
 
 	// then
-	assert.match(text, /components\/git-bash\/dist\/cli\.js/);
-	assert.match(text, /Recommending Git Bash Mcp/);
-	assert.match(text, /hook post-compact/);
-	assert.match(text, /Resetting Git Bash Mcp Reminder/);
+	assert.doesNotMatch(text, /components\/git-bash\/dist\/cli\.js/);
+	assert.doesNotMatch(text, /Git Bash Mcp/);
 	assert.match(text, /components\/ulw-loop\/dist\/cli\.js/);
 	assert.match(text, /hook pre-tool-use/);
-	assert.deepEqual(preToolUseGroups.map((group) => group.matcher), ["^Bash$", "^create_goal$"]);
+	assert.deepEqual(preToolUseGroups.map((group) => group.matcher), ["^create_goal$"]);
 });
 
 test("#given aggregate SessionStart hooks #when inspected #then LazyCodex auto-update is registered", async () => {

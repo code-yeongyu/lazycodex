@@ -1,0 +1,17 @@
+{
+	"name": "@sisyphuslabs/omo-ast-grep-mcp-runtime",
+	"version": "0.1.0",
+	"description": "Bundled ast-grep MCP runtime for the aggregate OMO Codex plugin.",
+	"type": "module",
+	"private": true,
+	"license": "MIT",
+	"bin": {
+		"ast-grep-mcp": "./dist/cli.js"
+	},
+	"files": [
+		"dist"
+	],
+	"engines": {
+		"node": ">=20.0.0"
+	}
+}

@@ -5,6 +5,7 @@
 Internally each component remains isolated under `components/`:
 
 - `components/comment-checker`
+- `components/ast-grep-mcp`
 - `components/rules`
 - `components/lsp`
 - `components/git-bash`
@@ -13,7 +14,7 @@ Internally each component remains isolated under `components/`:
 - `components/ulw-loop`
 - `components/telemetry`
 
-The root plugin manifest exports one Codex plugin named `omo`, with aggregate hooks, skills, and plugin-scoped MCP servers for `ast_grep`, `grep_app`, `context7`, `git_bash`, and `lsp`.
+The root plugin manifest exports one Codex plugin named `omo`, with aggregate hooks, skills, and plugin-scoped MCP servers for `ast_grep`, `grep_app`, `context7`, and `lsp`.
 
 ## Telemetry
 

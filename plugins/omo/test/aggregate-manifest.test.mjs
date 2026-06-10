@@ -49,6 +49,7 @@ test("#given component directories #when scanned #then only intentional resource
 
 	// then
 	assert.deepEqual(componentNames, [
+		"ast-grep-mcp",
 		"comment-checker",
 		"git-bash",
 		"lsp",

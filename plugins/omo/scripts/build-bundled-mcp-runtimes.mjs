@@ -6,21 +6,25 @@ import { fileURLToPath } from "node:url";
 
 const pluginRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const repoPackagesRoot = join(pluginRoot, "..", "..");
+const bundledComponentsRoot = join(pluginRoot, "components");
 
 const runtimes = [
 	{
 		label: "lsp-tools-mcp",
-		packageRoot: join(repoPackagesRoot, "lsp-tools-mcp"),
+		sourceRoot: join(repoPackagesRoot, "lsp-tools-mcp"),
+		bundledRoot: join(bundledComponentsRoot, "lsp-tools-mcp"),
 		requiredOutputs: ["dist/cli.js", "dist/tools.js"],
 	},
 	{
 		label: "ast-grep-mcp",
-		packageRoot: join(repoPackagesRoot, "ast-grep-mcp"),
+		sourceRoot: join(repoPackagesRoot, "ast-grep-mcp"),
+		bundledRoot: join(bundledComponentsRoot, "ast-grep-mcp"),
 		requiredOutputs: ["dist/cli.js"],
 	},
 	{
 		label: "git-bash-mcp",
-		packageRoot: join(repoPackagesRoot, "git-bash-mcp"),
+		sourceRoot: join(repoPackagesRoot, "git-bash-mcp"),
+		bundledRoot: join(bundledComponentsRoot, "git-bash-mcp"),
 		requiredOutputs: ["dist/cli.js"],
 	},
 ];
@@ -30,19 +34,23 @@ for (const runtime of runtimes) {
 }
 
 function buildRuntime(runtime) {
-	if (hasBundledDist(runtime)) {
+	if (hasRequiredOutputs(runtime.bundledRoot, runtime)) {
 		console.log(`Using bundled ${runtime.label} dist`);
 		return;
 	}
 
-	if (!existsSync(join(runtime.packageRoot, "package.json"))) {
-		assertBundledDist(runtime);
-		console.log(`Using bundled ${runtime.label} dist`);
+	if (existsSync(join(runtime.bundledRoot, "package.json"))) {
+		assertRequiredOutputs(runtime.bundledRoot, runtime);
+		return;
+	}
+
+	if (!existsSync(join(runtime.sourceRoot, "package.json"))) {
+		console.warn(`Skipping ${runtime.label}; no source package or bundled runtime found`);
 		return;
 	}
 
 	const result = spawnSync("npm", ["run", "build"], {
-		cwd: runtime.packageRoot,
+		cwd: runtime.sourceRoot,
 		shell: process.platform === "win32",
 		stdio: "inherit",
 	});
@@ -50,16 +58,16 @@ function buildRuntime(runtime) {
 	if (result.status !== 0) process.exit(result.status ?? 1);
 }
 
-function hasBundledDist(runtime) {
-	return runtime.requiredOutputs.every((output) => existsSync(join(runtime.packageRoot, output)));
+function hasRequiredOutputs(root, runtime) {
+	return runtime.requiredOutputs.every((output) => existsSync(join(root, output)));
 }
 
-function assertBundledDist(runtime) {
-	const missingOutputs = runtime.requiredOutputs.filter((output) => !existsSync(join(runtime.packageRoot, output)));
+function assertRequiredOutputs(root, runtime) {
+	const missingOutputs = runtime.requiredOutputs.filter((output) => !existsSync(join(root, output)));
 	if (missingOutputs.length === 0) return;
 	console.error(`Missing bundled ${runtime.label} outputs:`);
 	for (const output of missingOutputs) {
-		console.error(`  ${join(runtime.packageRoot, output)}`);
+		console.error(`  ${join(root, output)}`);
 	}
 	process.exit(1);
 }

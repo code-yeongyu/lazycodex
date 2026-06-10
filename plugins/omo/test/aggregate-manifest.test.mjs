@@ -52,6 +52,7 @@ test("#given component directories #when scanned #then only intentional resource
 		"comment-checker",
 		"git-bash",
 		"lsp",
+		"lsp-tools-mcp",
 		"rules",
 		"start-work-continuation",
 		"telemetry",

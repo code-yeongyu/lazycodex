@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import picomatch from "picomatch";
+import { createGlobMatcher, normalizeGlobPath } from "./glob-matcher.js";
 const compiledPatternSets = new Map();
 export function matchRule(input) {
     if (input.isSingleFile) {
@@ -45,7 +45,7 @@ function normalizePatternList(patterns) {
     return Array.isArray(patterns) ? patterns : [patterns];
 }
 function normalizePath(path) {
-    return path.replaceAll("\\", "/");
+    return normalizeGlobPath(path);
 }
 function normalizedPathBases(pathBases) {
     const normalizedBases = [normalizePath(pathBases.projectRelative)];
@@ -76,9 +76,6 @@ function compilePatternSet(patterns) {
         positivePatterns.push({ pattern, isMatch: createGlobMatcher(pattern) });
     }
     return { positivePatterns, negativeMatchers };
-}
-function createGlobMatcher(pattern) {
-    return picomatch(normalizePath(pattern), { bash: true, dot: true });
 }
 function isExcluded(pathBase, negativeMatchers) {
     for (const isMatch of negativeMatchers) {

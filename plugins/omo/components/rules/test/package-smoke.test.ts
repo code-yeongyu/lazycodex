@@ -51,6 +51,7 @@ describe("plugin package metadata", () => {
 		const pluginJson = readPluginJson(".codex-plugin/plugin.json");
 		const hooksJson = readHooksJson("hooks/hooks.json");
 		const cliSource = readFileSync("src/cli.ts", "utf8");
+		const matcherDist = readFileSync("dist/rules/matcher.js", "utf8");
 		const bundledRules = readdirSync("bundled-rules").sort();
 
 		// when
@@ -67,7 +68,8 @@ describe("plugin package metadata", () => {
 		// then
 		expect(packageJson.type).toBe("module");
 		expect(packageJson.packageManager).toBe("npm@11.12.1");
-		expect(packageJson.dependencies ?? {}).toEqual({ picomatch: "^4.0.3" });
+		expect(packageJson.dependencies ?? {}).toEqual({});
+		expect(matcherDist).not.toContain("picomatch");
 		expect(packageJson.bin["omo-rules"]).toBe("./dist/cli.js");
 		expect(packageJson.files).toContain("bundled-rules");
 		expect(bundledRules).toContain("windows-git-bash.md");

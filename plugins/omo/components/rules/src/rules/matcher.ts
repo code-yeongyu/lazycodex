@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import picomatch from "picomatch";
+import { createGlobMatcher, normalizeGlobPath } from "./glob-matcher.js";
 import type { MatchReason, RuleFrontmatter } from "./types.js";
 
 export interface MatcherInput {
@@ -83,7 +83,7 @@ function normalizePatternList(patterns: string | string[] | undefined): string[]
 }
 
 function normalizePath(path: string): string {
-	return path.replaceAll("\\", "/");
+	return normalizeGlobPath(path);
 }
 
 function normalizedPathBases(pathBases: MatcherInput["pathBases"]): string[] {
@@ -121,10 +121,6 @@ function compilePatternSet(patterns: ReadonlyArray<string>): CompiledPatternSet 
 	}
 
 	return { positivePatterns, negativeMatchers };
-}
-
-function createGlobMatcher(pattern: string): (path: string) => boolean {
-	return picomatch(normalizePath(pattern), { bash: true, dot: true });
 }
 
 function isExcluded(pathBase: string, negativeMatchers: ReadonlyArray<(path: string) => boolean>): boolean {

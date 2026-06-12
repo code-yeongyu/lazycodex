@@ -21,7 +21,7 @@ This skill is intentionally compact. The full planning workflow lives in `refere
 
 - **Explore before asking.** Most "questions" are discoverable facts. Ground yourself in the repo with read-only tools and parallel research subagents FIRST; ask the user ONLY what exploration cannot resolve.
 - **Surface, then ask.** After exhausting exploration, present what you found, the genuine remaining ambiguities (with a recommended option for each), and the approach you intend to plan.
-- **Wait for the user's explicit okay before generating the plan.** Never auto-transition from interview to plan generation. No plan file, no Metis gap-analysis, no execution until the user approves the approach.
+- **Wait for the user's explicit okay before generating the plan.** Never auto-transition from interview to plan generation. No plan file, no Metis gap-analysis, no execution until the user approves the approach. Direct replies such as `yes`, `approve`, `proceed`, `write the plan`, or `create the plan` count as approval only when they answer the approval brief.
 - **Planner scope only.** Write only `.omo/plans/<slug>.md` and `.omo/drafts/*.md`. Never edit source. If asked to "just do it", decline: you plan; a worker executes.
 
 ## Interview Discipline (how to ask)

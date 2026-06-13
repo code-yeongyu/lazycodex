@@ -28,6 +28,10 @@ test("#given ulw-plan skill #when the planning gate is inspected #then it explor
 	assert.match(skill, /explore/i);
 	assert.match(skill, /wait for[^.]{0,80}explicit[^.]{0,40}(?:okay|approval)/i);
 	assert.doesNotMatch(skill, /Proceeding to plan generation/);
+	assert.match(skill, /Recognize approval intent/);
+	assert.match(skill, /do not demand one exact magic phrase/);
+	assert.match(skill, /record the pending gate in `\.omo\/drafts\/<slug>\.md`/);
+	assert.match(skill, /ask ONE concise approval question/);
 });
 
 test("#given ulw-plan full workflow reference #when inspected #then it documents the approval gate and .omo plan output with Codex-native tools only", async () => {
@@ -40,4 +44,8 @@ test("#given ulw-plan full workflow reference #when inspected #then it documents
 	assert.match(workflow, /multi_agent_v1\.spawn_agent\(\{[^)]*"fork_context":false/);
 	assert.doesNotMatch(workflow, opencodeOnlyToolPattern);
 	assert.doesNotMatch(workflow, /Proceeding to plan generation/);
+	assert.match(workflow, /Handle approval intent robustly so the gate never loops/);
+	assert.match(workflow, /never require one exact magic phrase/);
+	assert.match(workflow, /persist the pending gate to `\.omo\/drafts\/<slug>\.md`/);
+	assert.match(workflow, /single concise approval prompt/);
 });

@@ -64,6 +64,8 @@ When exploration is exhausted and the genuine unknowns are answered, do NOT auto
 
 Then **wait for the user's explicit okay** before generating the plan. No Metis, no plan file, no execution until the user approves. If the user amends scope, fold it in and re-present the brief. This gate replaces any automatic interview-to-plan transition.
 
+Handle approval intent robustly so the gate never loops. Accept clear approval replies — "yes", "approve", "approved", "proceed", "go ahead", "do it", "write the plan", "create the plan", and localized equivalents (e.g. Korean "네", "응", "진행", "ㄱㄱ", "작성해") — as approval; never require one exact magic phrase. When you present the brief, persist the pending gate to `.omo/drafts/<slug>.md` with the exact pending action ("awaiting approval to write `.omo/plans/<slug>.md`") and target plan path; on the next turn read that durable gate state first instead of re-running exploration or re-explaining the full planning status. If the reply is still not approval, emit a single concise approval prompt rather than restating the whole brief, so the gate cannot burn context in a re-approval loop. Replies that amend scope update the brief and re-present it; they never trigger plan generation.
+
 Narrow `$start-work` bootstrap exception: if `$start-work` invoked this skill because there was no active Boulder work and no selectable plan, the user's `start work` request counts as approval to generate the plan and begin execution. Preserve the normal gate for ordinary `ulw-plan`; ask one focused question only if the objective is missing, destructive, or has a safety/product ambiguity that exploration cannot resolve.
 
 ## Phase 3 - Generate the plan (only after approval)

@@ -24,25 +24,25 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
-    "geist": "^1.7.2",
+    "geist": "1.7.2",
     "next": "16.2.9",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.0",
-    "@opennextjs/cloudflare": "^1.19.11",
+    "@biomejs/biome": "2.5.0",
+    "@opennextjs/cloudflare": "1.19.11",
     "@playwright/test": "1.61.0",
     "@tailwindcss/postcss": "4.3.1",
-    "@types/node": "^25.9.3",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "lighthouse": "^13.4.0",
-    "marked": "^18.0.5",
-    "postcss": "^8.5.15",
+    "@types/node": "25.9.3",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "lighthouse": "13.4.0",
+    "marked": "18.0.5",
+    "postcss": "8.5.15",
     "tailwindcss": "4.3.1",
-    "typescript": "^6.0.3",
-    "wrangler": "^4.101.0"
+    "typescript": "5.9.3",
+    "wrangler": "4.101.0"
   },
   "browserslist": [
     "chrome >= 111",

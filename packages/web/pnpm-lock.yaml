@@ -15,23 +15,23 @@ importers:
   .:
     dependencies:
       geist:
-        specifier: ^1.7.2
+        specifier: 1.7.2
         version: 1.7.2(next@16.2.9(@opentelemetry/api@1.9.1)(@playwright/test@1.61.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))
       next:
         specifier: 16.2.9
         version: 16.2.9(@opentelemetry/api@1.9.1)(@playwright/test@1.61.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react:
-        specifier: ^19.2.7
+        specifier: 19.2.7
         version: 19.2.7
       react-dom:
-        specifier: ^19.2.7
+        specifier: 19.2.7
         version: 19.2.7(react@19.2.7)
     devDependencies:
       '@biomejs/biome':
-        specifier: ^2.5.0
+        specifier: 2.5.0
         version: 2.5.0
       '@opennextjs/cloudflare':
-        specifier: ^1.19.11
+        specifier: 1.19.11
         version: 1.19.11(next@16.2.9(@opentelemetry/api@1.9.1)(@playwright/test@1.61.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(wrangler@4.101.0)
       '@playwright/test':
         specifier: 1.61.0
@@ -40,19 +40,19 @@ importers:
         specifier: 4.3.1
         version: 4.3.1
       '@types/node':
-        specifier: ^25.9.3
+        specifier: 25.9.3
         version: 25.9.3
       '@types/react':
-        specifier: ^19.2.17
+        specifier: 19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.2.3
+        specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.17)
       lighthouse:
-        specifier: ^13.4.0
+        specifier: 13.4.0
         version: 13.4.0
       marked:
-        specifier: ^18.0.5
+        specifier: 18.0.5
         version: 18.0.5
       postcss:
         specifier: 8.5.15
@@ -61,10 +61,10 @@ importers:
         specifier: 4.3.1
         version: 4.3.1
       typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
+        specifier: 5.9.3
+        version: 5.9.3
       wrangler:
-        specifier: ^4.101.0
+        specifier: 4.101.0
         version: 4.101.0
 
 packages:
@@ -2542,8 +2542,8 @@ packages:
   typed-query-selector@2.12.2:
     resolution: {integrity: sha512-EOPFbyIub4ngnEdqi2yOcNeDLaX/0jcE1JoAXQDDMIthap7FoN795lc/SHfIq2d416VufXpM8z/lD+WRm2gfOQ==}
 
-  typescript@6.0.3:
-    resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -5458,7 +5458,7 @@ snapshots:
 
   typed-query-selector@2.12.2: {}
 
-  typescript@6.0.3: {}
+  typescript@5.9.3: {}
 
   undici-types@5.26.5: {}
 

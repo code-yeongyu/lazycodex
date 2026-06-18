@@ -8,7 +8,7 @@ const BANNED_STALE_COMMANDS = [
   ["npx", "lazycodex", "install"].join(" "),
   ["npx", "omo", "install", "--platform=codex"].join(" "),
 ]
-const IGNORED_PREFIXES = [".omo/"]
+const IGNORED_PREFIXES = [".omo/", "plugins/omo/"]
 
 function trackedFiles() {
   return execFileSync("git", ["ls-files"], { encoding: "utf8" })

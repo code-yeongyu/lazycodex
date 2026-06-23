@@ -10,8 +10,12 @@ export type DocSectionId =
   | "discipline-agents"
   | "model-routing"
   | "hooks-lifecycle"
+  | "git-workflow"
+  | "tdd"
+  | "manual-qa"
   | "skills"
   | "configuration"
+  | "deploy"
   | "cli";
 
 export type DocSection = {
@@ -44,8 +48,12 @@ export const DOC_SECTIONS: readonly DocSection[] = [
   { id: "discipline-agents", file: "discipline-agents.md", group: "Concepts", title: "Hephaestus" },
   { id: "model-routing", file: "model-routing.md", group: "Concepts", title: "Multi-model routing" },
   { id: "hooks-lifecycle", file: "hooks-lifecycle.md", group: "Concepts", title: "Hooks & Lifecycle" },
+  { id: "git-workflow", file: "git-workflow.md", group: "Concepts", title: "Git workflow" },
+  { id: "tdd", file: "tdd.md", group: "Concepts", title: "TDD" },
+  { id: "manual-qa", file: "manual-qa.md", group: "Concepts", title: "Manual QA" },
   { id: "skills", file: "skills.md", group: "Skills", title: "Feature coverage" },
   { id: "configuration", file: "configuration.md", group: "Reference", title: "Configuration" },
+  { id: "deploy", file: "deploy.md", group: "Reference", title: "Deploy" },
   { id: "cli", file: "cli.md", group: "Reference", title: "CLI" },
 ] as const;
 

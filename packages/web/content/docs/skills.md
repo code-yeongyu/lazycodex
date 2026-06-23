@@ -18,14 +18,26 @@ Skills add specialist judgment around those pillars:
 
 | Skill | Use it for |
 | --- | --- |
-| `review-work` | Multi-angle post-implementation review |
+| `init-deep` | Hierarchical `AGENTS.md` context for large or old repos |
+| `ulw-plan` | Explore-first planning before coding |
+| `ulw-loop` | Evidence-bound loop until verified completion |
+| `start-work` | Execute a plan with durable Boulder progress |
+| `review-work` | Five-lane parallel post-implementation review |
 | `remove-ai-slops` | Behavior-preserving cleanup of AI-looking code |
 | `frontend-ui-ux` | Designed UI work instead of generic layout filling |
-| `programming` | Strict TypeScript, Rust, Python, or Go discipline |
+| `programming` | Strict TypeScript, Rust, Python, or Go discipline, TDD-first |
+| `git-master` | Atomic commits, rebase/squash, push safety, history investigation |
+| `visual-qa` | Screenshot/TUI diff plus dual-oracle visual QA |
+| `debugging` | Evidence-led root-cause investigation |
+| `refactor` | Behavior-preserving restructure of existing code |
+| `ultraresearch` | Deep multi-source research synthesis |
 | `LSP` | Diagnostics, definitions, references, symbols, and renames |
+| `lsp-setup` | Configure language servers for a project |
 | `AST-grep` | Structural search and rewrite across code |
 | `rules` | Project instructions from AGENTS, rules, and instruction files |
 | `comment-checker` | Feedback after edit-like operations |
+
+The command pillars and the disciplines behind them are covered in depth: [ulw-plan](./ulw-plan.md), [ulw-loop](./ulw-loop.md), [start-work](./start-work.md), [TDD](./tdd.md), [manual QA](./manual-qa.md), and [git workflow](./git-workflow.md).
 
 ### Where skills live
 

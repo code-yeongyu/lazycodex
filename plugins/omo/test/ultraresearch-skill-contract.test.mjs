@@ -202,3 +202,21 @@ test("#given ultraresearch blocked sources #when escalation is inspected #then i
 		);
 	}
 });
+
+test("#given ultraresearch blocked sources #when insane-search resolves them #then records flow into the source registry", async () => {
+	for (const copy of await readUltraresearchCopies()) {
+		assert.match(copy.content, /INSANE_SOURCE_RECORD/, `${copy.label}: browsing workers must return source records`);
+		assert.match(copy.content, /source registry/i, `${copy.label}: insane-search records must feed the source registry`);
+		for (const field of [
+			"url",
+			"final_url",
+			"access_method",
+			"waf_profile",
+			"selector_proof",
+			"trace_summary",
+			"source_quality_hint",
+		]) {
+			assert.match(copy.content, new RegExp(`\\b${field}\\b`), `${copy.label}: missing ${field} in source record contract`);
+		}
+	}
+});

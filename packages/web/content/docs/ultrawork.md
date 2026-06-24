@@ -1,4 +1,4 @@
-ultrawork is the headline mode. Typing `ultrawork` (or the short alias `ulw`) anywhere in your prompt activates maximum-precision, outcome-first, evidence-driven orchestration.
+ultrawork is the headline mode. Include `ultrawork` (or the short alias `ulw`) anywhere in your prompt — like adding `ultrathink` — and the harness switches to maximum-precision, outcome-first, evidence-driven orchestration. Skills activate internally; you do not need to name them.
 
 > "Plan, execute, verify, and keep the evidence attached."
 
@@ -6,9 +6,17 @@ The principle is simple. An agent saying it is done does not mean the work is do
 
 ### Usage
 
-```bash
+Just include the word in your prompt. Nothing else to configure.
+
+```text
 ulw add authentication
 ```
+
+```text
+fix the flaky checkout test ultrawork
+```
+
+The harness reads the task, picks the right skills (programming, debugging, refactor, etc.), and runs the evidence-bound loop automatically. You do not choose skills yourself unless you want to be explicit — for example `$review-work` or `$ulw-research`.
 
 ### What it enforces
 

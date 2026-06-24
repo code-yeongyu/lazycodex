@@ -18,10 +18,7 @@ They follow the same flow. LazyCodex installs into the Codex environment. Use wh
 No. Unless you are building LazyCodex from source, Bun is not required. Install and usage go through `npx` with plain Node.js/npm.
 
 **Does it work on Windows?**
-It can, but native Windows is not recommended. If you must use Windows, run everything inside WSL2 Ubuntu. If the install or run misbehaves, switch to WSL2 or Git Bash before debugging further.
-
-**What version does the docs site show?**
-The plugin version — currently `4.12.1`. This is the OmO plugin package version that LazyCodex installs.
+Yes. Both the npx installer and the Codex marketplace path support Windows natively. The installer provisions Node.js and Git Bash automatically when they are missing, and shell hooks run through Git Bash. If you already have Node.js and Git for Windows installed, everything works out of the box. See the [Windows section in Installation](./installation.md) for environment variable overrides and bootstrap logs.
 
 ### First use
 

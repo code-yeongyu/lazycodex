@@ -13,6 +13,33 @@ The command pillars stay simple:
 
 Skills add specialist judgment around those pillars. The sections below describe each skill and how it is typically used.
 
+### Skill index
+
+Most skills auto-activate when a request matches their domain, so you do not need to study or manually select every skill before using LazyCodex. When you want to be explicit, put the skill name in the prompt — for example `$visual-qa`, `$git-master`, or `$ulw-research`.
+
+| Skill | Use it for |
+| --- | --- |
+| `init-deep` | Hierarchical `AGENTS.md` context for large or old repos |
+| `ulw-plan` | Explore-first planning before coding |
+| `ulw-loop` | Evidence-bound loop until verified completion |
+| `start-work` | Execute a plan with durable Boulder progress |
+| `review-work` | Five-lane parallel post-implementation review |
+| `remove-ai-slops` | Behavior-preserving cleanup of AI-looking code |
+| `frontend` | Designed UI work instead of generic layout filling |
+| `programming` | Strict TypeScript, Rust, Python, or Go discipline, TDD-first |
+| `git-master` | Atomic commits, rebase/squash, push safety, history investigation |
+| `visual-qa` | Screenshot/TUI diff plus dual-oracle visual QA |
+| `debugging` | Evidence-led root-cause investigation |
+| `refactor` | Behavior-preserving restructure of existing code |
+| `ulw-research` | Maximum-saturation research with codebase, web, official-docs, and OSS-repo swarms |
+| `LSP` | Diagnostics, definitions, references, symbols, and renames |
+| `lsp-setup` | Configure language servers for a project |
+| `AST-grep` | Structural search and rewrite across code |
+| `rules` | Project instructions from AGENTS, rules, and instruction files |
+| `comment-checker` | Feedback after edit-like operations |
+
+### Skill highlights
+
 ---
 
 ### review-work
@@ -176,9 +203,47 @@ Finds code by syntactic shape rather than text — every function call matching 
 
 ---
 
+### lsp-setup
+
+Language-server installation and workspace wiring.
+
+Configures language servers when a project does not already expose reliable diagnostics, definitions, references, and safe renames. It detects the language stack, installs or points to the right server, and validates that LSP calls work before higher-level coding or refactor skills depend on them.
+
+**When it activates:** When diagnostics are missing, definitions cannot be resolved, or a project needs LSP support before a refactor or programming task.
+
+---
+
+### rules
+
+Project instruction injection from repository and user rule files.
+
+Automatically loads project instructions from sources such as `AGENTS.md`, `CONTEXT.md`, `.omo/rules/`, `.claude/rules/`, `.github/instructions/`, and `.github/copilot-instructions.md`. There is no command to run — the harness treats these rules as active context when the plugin is enabled.
+
+**When it activates:** At session start and prompt submission, so agents inherit project constraints before planning or editing.
+
+---
+
+### comment-checker
+
+Immediate feedback after edit-like operations.
+
+After code changes, `comment-checker` inspects comments near the edited lines. If it flags comment drift — a comment that no longer matches the code below it — the agent must fix or justify the comment before proceeding. This catches stale comments at the moment they are introduced rather than during a later review.
+
+**When it activates:** After write, edit, patch, or other edit-like tool calls when the plugin has the guardrail enabled.
+
+---
+
 ### Where skills live
 
-LazyCodex installs skills as part of the OmO plugin. OmO can also load skills from project and user locations such as `.codex/skills`, `~/.codex/skills`, `.agents/skills`, and `~/.agents/skills`.
+LazyCodex installs skills as part of the OmO plugin. OmO can also load skills from project and user locations such as `.codex/skills`, `~/.codex/skills`, `.opencode/skills`, `~/.config/opencode/skills`, `.claude/skills`, `.agents/skills`, and `~/.agents/skills`.
+
+LazyCodex installs the Codex Light setup with:
+
+```bash
+npx lazycodex-ai install
+```
+
+That installer wires the Codex marketplace plugin as `omo@sisyphuslabs` while keeping the public package alias easy to remember.
 
 Each skill carries deep internal references — detailed playbooks, language-specific recipes, and per-phase instructions — but none of that is something you need to read. The harness reads it for you when the skill activates.
 

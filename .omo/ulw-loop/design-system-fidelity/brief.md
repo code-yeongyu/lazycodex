@@ -1,0 +1,1 @@
+Preserve LazyCodex web landing/docs visual behavior exactly while extracting/aligning a proper design-system source of truth from the current rendered UI in packages/web, then prove via real browser baseline/after screenshots, interaction scenarios, typecheck/build/e2e, atomic commit, push, and PR.

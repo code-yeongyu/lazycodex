@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "createdAt": "2026-06-24T03:52:26.307Z",
+  "updatedAt": "2026-06-24T04:13:51.878Z",
+  "briefPath": ".omo/ulw-loop/design-system-fidelity/brief.md",
+  "goalsPath": ".omo/ulw-loop/design-system-fidelity/goals.json",
+  "ledgerPath": ".omo/ulw-loop/design-system-fidelity/ledger.jsonl",
+  "codexGoalMode": "aggregate",
+  "goals": [
+    {
+      "id": "G001-preserve-lazycodex-web-landing-docs",
+      "title": "Preserve LazyCodex web landing/docs visual behavior exactly while ext...",
+      "objective": "Preserve LazyCodex web landing/docs visual behavior exactly while extracting/aligning a proper design-system source of truth from the current rendered UI in packages/web, then prove via real browser baseline/after screenshots, interaction scenarios, typecheck/build/e2e, atomic commit, push, and PR.",
+      "status": "pending",
+      "successCriteria": [
+        {
+          "id": "C001",
+          "scenario": "Browser baseline/after fidelity: run production web app, capture / at 1440x900 and 390x844 before edits and after edits with Playwright Chrome channel; PASS iff image-diff similarity is >=99.5 for each same-viewport pair, no framework overlay, no console errors, no horizontal overflow.",
+          "userModel": "happy",
+          "expectedEvidence": ".omo/ulw-loop/evidence/design-system-fidelity/C001-browser-fidelity.json plus screenshots under .omo/ulw-loop/evidence/design-system-fidelity/screenshots/",
+          "essential": true,
+          "capturedEvidence": "Playwright real Chrome production capture evidence at .omo/ulw-loop/evidence/design-system-fidelity/C001-browser-fidelity.json; 4 baseline/after screenshot pairs under .omo/ulw-loop/evidence/design-system-fidelity/screenshots/ all non-empty; similarityScore 100 for landing desktop/mobile and docs desktop/mobile, no console errors, no overflow. cleanup: browser contexts closed by capture script; killed next-server pid 17704; lsof -iTCP:3107 empty; removed packages/web/test-results and packages/web/playwright-report.",
+          "status": "pass",
+          "capturedAt": "2026-06-24T04:04:48.465Z"
+        },
+        {
+          "id": "C002",
+          "scenario": "Docs interaction edge/regression: run production web app and drive /docs at 390x844 and 1280x800; click mobile Menu, search for \"ulw\", use Ctrl/Cmd+K focus, click \"$ulw-loop\" nav link; PASS iff menu opens/closes, filtered nav shows matching entry, URL hash updates, target section is in viewport, no console errors, no horizontal overflow.",
+          "userModel": "edge",
+          "expectedEvidence": ".omo/ulw-loop/evidence/design-system-fidelity/C002-docs-interactions.json plus screenshots under .omo/ulw-loop/evidence/design-system-fidelity/screenshots/",
+          "essential": true,
+          "capturedEvidence": "Playwright real Chrome docs interaction evidence at .omo/ulw-loop/evidence/design-system-fidelity/C002-docs-interactions.json; mobile 390x844 and desktop 1280x800 screenshots non-empty; menu opens/closes on mobile, Meta+K focuses search, search term \"ulw\" filters visible links to \"$ulw-plan\" and \"$ulw-loop\", \"$ulw-loop\" nav updates hash and target is in viewport, no console errors, no overflow. cleanup: browser contexts closed by interaction script; killed next-server pid 17704; lsof -iTCP:3107 empty; removed packages/web/test-results and packages/web/playwright-report.",
+          "status": "pass",
+          "capturedAt": "2026-06-24T04:06:03.934Z"
+        },
+        {
+          "id": "C003",
+          "scenario": "Automated regression gates: run pnpm run lint, pnpm run type-check, pnpm run build, pnpm exec playwright test e2e/landing.spec.ts e2e/docs.spec.ts e2e/responsive.spec.ts; PASS iff all exit 0 and screenshots/artifacts from C001/C002 exist and are non-empty.",
+          "userModel": "regression",
+          "expectedEvidence": ".omo/ulw-loop/evidence/design-system-fidelity/C003-automated-gates.txt",
+          "essential": false,
+          "capturedEvidence": "Automated gate transcript at .omo/ulw-loop/evidence/design-system-fidelity/C003-automated-gates.txt plus full frontend gate transcript at .omo/evidence/design-system-fidelity-full-gates.txt; lint/type-check/build exit 0; focused Playwright landing/docs/responsive reports 32 passed; SEO spec reports 8 passed; real Chrome Lighthouse mobile and desktop both report perf=100 a11y=100 bp=100 seo=100; full Playwright e2e reports 52 passed; C001/C002 artifacts and screenshots are non-empty. cleanup: Playwright webServers exited; lsof checked :3107/:59694/:59761/:60044 empty; removed packages/web/test-results, packages/web/playwright-report, and packages/web/e2e/lighthouse-reports.",
+          "status": "pass",
+          "capturedAt": "2026-06-24T04:13:51.878Z"
+        }
+      ],
+      "attempt": 0,
+      "createdAt": "2026-06-24T03:52:26.307Z",
+      "updatedAt": "2026-06-24T04:13:51.878Z"
+    }
+  ],
+  "codexObjective": "Complete the durable ulw-loop plan in .omo/ulw-loop/design-system-fidelity/goals.json, including later accepted/appended stories, under the original brief constraints; use .omo/ulw-loop/design-system-fidelity/ledger.jsonl as the audit trail."
+}

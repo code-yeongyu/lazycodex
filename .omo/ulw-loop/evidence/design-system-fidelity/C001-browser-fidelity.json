@@ -1,0 +1,49 @@
+{
+  "criterion": "C001",
+  "method": "Playwright real Chrome channel against production next start on http://127.0.0.1:3107",
+  "chromeExtensionFallback": "Codex Chrome Extension backend unavailable after required retry; used repo-required Playwright channel=chrome path.",
+  "checks": [
+    {
+      "surface": "landing desktop",
+      "viewport": "1440x900",
+      "similarityScore": 100,
+      "diffPixels": 0,
+      "diffRatio": 0,
+      "alphaChannelIntact": true,
+      "baseline": ".omo/ulw-loop/evidence/design-system-fidelity/screenshots/baseline-landing-desktop-1440x900.png",
+      "after": ".omo/ulw-loop/evidence/design-system-fidelity/screenshots/after-landing-desktop-1440x900.png"
+    },
+    {
+      "surface": "landing mobile",
+      "viewport": "390x844",
+      "similarityScore": 100,
+      "diffPixels": 0,
+      "diffRatio": 0,
+      "alphaChannelIntact": true,
+      "baseline": ".omo/ulw-loop/evidence/design-system-fidelity/screenshots/baseline-landing-mobile-390x844.png",
+      "after": ".omo/ulw-loop/evidence/design-system-fidelity/screenshots/after-landing-mobile-390x844.png"
+    },
+    {
+      "surface": "docs desktop",
+      "viewport": "1280x800",
+      "similarityScore": 100,
+      "diffPixels": 0,
+      "diffRatio": 0,
+      "alphaChannelIntact": true,
+      "baseline": ".omo/ulw-loop/evidence/design-system-fidelity/screenshots/baseline-docs-desktop-1280x800.png",
+      "after": ".omo/ulw-loop/evidence/design-system-fidelity/screenshots/after-docs-desktop-1280x800.png"
+    },
+    {
+      "surface": "docs mobile",
+      "viewport": "390x844",
+      "similarityScore": 100,
+      "diffPixels": 0,
+      "diffRatio": 0,
+      "alphaChannelIntact": true,
+      "baseline": ".omo/ulw-loop/evidence/design-system-fidelity/screenshots/baseline-docs-mobile-390x844.png",
+      "after": ".omo/ulw-loop/evidence/design-system-fidelity/screenshots/after-docs-mobile-390x844.png"
+    }
+  ],
+  "pageHealth": "baseline and after capture logs contain no console errors/warnings, no Next overlay, and no horizontal overflow",
+  "cleanup": "browser contexts closed after capture; production server intentionally kept for C002/C003 and will be stopped after QA"
+}

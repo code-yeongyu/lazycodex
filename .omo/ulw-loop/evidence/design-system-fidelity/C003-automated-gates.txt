@@ -1,0 +1,165 @@
+# C003 automated regression gates
+startedAt=2026-06-24T04:03:06Z
+
+## pnpm run lint
+$ biome lint app e2e
+Checked 18 files in 3ms. No fixes applied.
+
+## pnpm run type-check
+$ tsc --noEmit
+
+## pnpm run build
+$ node ./scripts/generate-docs-content.mjs
+Docs content already current with 20 HTML-compiled docs
+$ NODE_OPTIONS=--no-deprecation next build
+▲ Next.js 16.2.9 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 933ms
+  Running TypeScript ...
+  Finished TypeScript in 1555ms ...
+  Collecting page data using 13 workers ...
+  Generating static pages using 13 workers (0/11) ...
+  Generating static pages using 13 workers (2/11) 
+  Generating static pages using 13 workers (5/11) 
+  Generating static pages using 13 workers (8/11) 
+✓ Generating static pages using 13 workers (11/11) in 690ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/github-stars
+├ ○ /apple-icon.png
+├ ○ /docs
+├ ○ /icon.svg
+├ ○ /manifest.webmanifest
+├ ○ /opengraph-image
+├ ○ /robots.txt
+├ ○ /sitemap.xml
+└ ○ /twitter-image
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+## pnpm exec playwright test e2e/landing.spec.ts e2e/docs.spec.ts e2e/responsive.spec.ts
+[WebServer] (node:27467) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] $ node ./scripts/generate-docs-content.mjs
+[WebServer] Docs content already current with 20 HTML-compiled docs
+[WebServer] $ NODE_OPTIONS=--no-deprecation next build
+[WebServer] (node:27498) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ Next.js 16.2.9 (Turbopack)
+[WebServer] 
+[WebServer]   Creating an optimized production build ...
+[WebServer] (node:27498) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:27512) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ✓ Compiled successfully in 934ms
+[WebServer]   Running TypeScript ...
+[WebServer]   Finished TypeScript in 1550ms ...
+[WebServer]   Collecting page data using 13 workers ...
+[WebServer] (node:27546) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:27538) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:27548) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:27542) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:27540) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:27544) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:27541) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:27543) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:27547) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:27537) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:27539) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:27545) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]   Generating static pages using 13 workers (0/11) ...
+[WebServer] (node:27549) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]   Generating static pages using 13 workers (2/11) 
+[WebServer]   Generating static pages using 13 workers (5/11) 
+[WebServer]   Generating static pages using 13 workers (8/11) 
+[WebServer] ✓ Generating static pages using 13 workers (11/11) in 684ms
+[WebServer]   Finalizing page optimization ...
+[WebServer] 
+[WebServer] Route (app)
+[WebServer] ┌ ○ /
+[WebServer] ├ ○ /_not-found
+[WebServer] ├ ƒ /api/github-stars
+[WebServer] ├ ○ /apple-icon.png
+[WebServer] ├ ○ /docs
+[WebServer] ├ ○ /icon.svg
+[WebServer] ├ ○ /manifest.webmanifest
+[WebServer] ├ ○ /opengraph-image
+[WebServer] ├ ○ /robots.txt
+[WebServer] ├ ○ /sitemap.xml
+[WebServer] └ ○ /twitter-image
+[WebServer] 
+[WebServer] 
+[WebServer] ○  (Static)   prerendered as static content
+[WebServer] ƒ  (Dynamic)  server-rendered on demand
+[WebServer] 
+[WebServer] (node:27571) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] $ NODE_OPTIONS=--no-deprecation next start
+[WebServer] (node:27586) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ Next.js 16.2.9
+[WebServer] - Local:         http://localhost:57101
+[WebServer] - Network:       http://192.168.0.50:57101
+[WebServer] ✓ Ready in 79ms
+
+Running 32 tests using 1 worker
+
+(node:27598) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › e2e/docs.spec.ts:15:3 › docs page — structure › responds 200 (19ms)
+  ✓   2 [chromium] › e2e/docs.spec.ts:20:3 › docs page — structure › has exactly one h1 (127ms)
+  ✓   3 [chromium] › e2e/docs.spec.ts:25:3 › docs page — structure › renders every section as a visible element carrying its id + title (165ms)
+  ✓   4 [chromium] › e2e/docs.spec.ts:35:3 › docs page — structure › nav lists every section title as links or buttons (174ms)
+  ✓   5 [chromium] › e2e/docs.spec.ts:46:3 › docs page — structure › documents lazycodex-ai as the npm install alias (131ms)
+  ✓   6 [chromium] › e2e/docs.spec.ts:63:3 › docs page — structure › documents skills and built-in workflow usage (184ms)
+  ✓   7 [chromium] › e2e/docs.spec.ts:80:3 › docs page — structure › orders Skills immediately after Commands and before Concepts (1ms)
+  ✓   8 [chromium] › e2e/docs.spec.ts:91:3 › docs page — navigation › clicking the $ulw-loop nav entry jumps to that section (195ms)
+  ✓   9 [chromium] › e2e/docs.spec.ts:106:3 › docs page — no-JS SSR › server-renders every section heading without JavaScript (161ms)
+  ✓  10 [chromium] › e2e/landing.spec.ts:15:3 › landing page — hero › has exactly one h1 reading the wordmark (95ms)
+  ✓  11 [chromium] › e2e/landing.spec.ts:23:3 › landing page — hero › shows the eyebrow and both hero lines (96ms)
+  ✓  12 [chromium] › e2e/landing.spec.ts:41:3 › landing page — install + commands › shows the install command and a copy button (96ms)
+  ✓  13 [chromium] › e2e/landing.spec.ts:51:3 › landing page — install + commands › renders every command with its name and syntax (100ms)
+  ✓  14 [chromium] › e2e/landing.spec.ts:59:3 › landing page — install + commands › feature workflow guidance keeps the three command pillars first (99ms)
+  ✓  15 [chromium] › e2e/landing.spec.ts:70:3 › landing page — install + commands › places skill coverage before the concept section (101ms)
+  ✓  16 [chromium] › e2e/landing.spec.ts:87:3 › landing page — links + footer › github stars pill links to the stargazers url with a count (94ms)
+  ✓  17 [chromium] › e2e/landing.spec.ts:96:3 › landing page — links + footer › updates the github stars pill from the live API (92ms)
+  ✓  18 [chromium] › e2e/landing.spec.ts:104:3 › landing page — links + footer › has a Docs link pointing at /docs (90ms)
+  ✓  19 [chromium] › e2e/landing.spec.ts:111:3 › landing page — links + footer › links to OmO and shows lazycodex.ai (91ms)
+  ✓  20 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at mobile-small (360×640) (623ms)
+  ✓  21 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at mobile-iphone-se (375×667) (629ms)
+  ✓  22 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at mobile-iphone-14 (390×844) (619ms)
+  ✓  23 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at mobile-large-android (412×915) (626ms)
+  ✓  24 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at tablet-ipad-portrait (768×1024) (625ms)
+  ✓  25 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at tablet-ipad-landscape (1024×768) (629ms)
+  ✓  26 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at tablet-ipad-pro-portrait (1024×1366) (628ms)
+  ✓  27 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at desktop-laptop (1280×800) (627ms)
+  ✓  28 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at desktop-fullhd (1440×900) (619ms)
+  ✓  29 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at desktop-wide (1536×864) (618ms)
+  ✓  30 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at desktop-ultrawide (1920×1080) (633ms)
+  ✓  31 [chromium] › e2e/responsive.spec.ts:81:1 › @responsive iPhone-13 device profile (Playwright preset) (628ms)
+  ✓  32 [chromium] › e2e/responsive.spec.ts:98:1 › @responsive iPad-Pro device profile (Playwright preset) (618ms)
+
+  32 passed (17.9s)
+
+completedAt=2026-06-24T04:03:32Z

@@ -1,0 +1,66 @@
+{
+  "baseUrl": "http://127.0.0.1:3107",
+  "capturedAt": "2026-06-24T03:55:51.391Z",
+  "results": [
+    {
+      "name": "landing-desktop",
+      "route": "/",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "file": "/Users/yeongyu/local-workspaces/lazycodex-wt/design-system-fidelity/.omo/ulw-loop/evidence/design-system-fidelity/screenshots/baseline-landing-desktop-1440x900.png",
+      "title": "LazyCodex — Codex agent harness for complex codebases",
+      "url": "http://127.0.0.1:3107/",
+      "overlayCount": 0,
+      "overflow": false,
+      "logs": [],
+      "bodyText": "Skip to main content\nLazyCodex\nDocs\n1.9k stars\n\nA LIGHT PORT OF OMO'S HEPHAESTUS, FOR CODEX\n\nLazyCodex\n\nThe Hephaestus deep-worker agent, ported light into Codex.\n\nA focused slice of OmO — goals not r"
+    },
+    {
+      "name": "landing-mobile",
+      "route": "/",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "file": "/Users/yeongyu/local-workspaces/lazycodex-wt/design-system-fidelity/.omo/ulw-loop/evidence/design-system-fidelity/screenshots/baseline-landing-mobile-390x844.png",
+      "title": "LazyCodex — Codex agent harness for complex codebases",
+      "url": "http://127.0.0.1:3107/",
+      "overlayCount": 0,
+      "overflow": false,
+      "logs": [],
+      "bodyText": "Skip to main content\nLazyCodex\nDocs\n1.9k stars\n\nA LIGHT PORT OF OMO'S HEPHAESTUS, FOR CODEX\n\nLazyCodex\n\nThe Hephaestus deep-worker agent, ported light into Codex.\n\nA focused slice of OmO — goals not r"
+    },
+    {
+      "name": "docs-desktop",
+      "route": "/docs",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "file": "/Users/yeongyu/local-workspaces/lazycodex-wt/design-system-fidelity/.omo/ulw-loop/evidence/design-system-fidelity/screenshots/baseline-docs-desktop-1280x800.png",
+      "title": "Documentation | LazyCodex",
+      "url": "http://127.0.0.1:3107/docs",
+      "overlayCount": 0,
+      "overflow": false,
+      "logs": [],
+      "bodyText": "Skip to main content\nLazyCodex\nDocs\n1.9k stars\nv0.2.2\nDocumentation\n\nInstall and run the OmO harness inside Codex for complex codebases — project memory, planning, execution, and verified completion.\n"
+    },
+    {
+      "name": "docs-mobile",
+      "route": "/docs",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "file": "/Users/yeongyu/local-workspaces/lazycodex-wt/design-system-fidelity/.omo/ulw-loop/evidence/design-system-fidelity/screenshots/baseline-docs-mobile-390x844.png",
+      "title": "Documentation | LazyCodex",
+      "url": "http://127.0.0.1:3107/docs",
+      "overlayCount": 0,
+      "overflow": false,
+      "logs": [],
+      "bodyText": "Skip to main content\nLazyCodex\nDocs\n1.9k stars\nv0.2.2\nDocumentation\n\nInstall and run the OmO harness inside Codex for complex codebases — project memory, planning, execution, and verified completion.\n"
+    }
+  ]
+}

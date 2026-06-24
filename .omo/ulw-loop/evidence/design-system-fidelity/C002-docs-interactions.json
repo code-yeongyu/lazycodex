@@ -1,0 +1,54 @@
+{
+  "criterion": "C002",
+  "method": "Playwright real Chrome channel against production next start on http://127.0.0.1:3107",
+  "pass": true,
+  "results": [
+    {
+      "name": "mobile",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "shortcut": {
+        "shortcut": "Meta+K",
+        "focused": true
+      },
+      "visibleLinks": [
+        "$ulw-plan",
+        "$ulw-loop"
+      ],
+      "url": "http://127.0.0.1:3107/docs#ulw-loop",
+      "targetInViewport": true,
+      "menuOpened": true,
+      "menuClosed": true,
+      "overflowInitial": false,
+      "overflowFinal": false,
+      "logs": [],
+      "screenshot": "/Users/yeongyu/local-workspaces/lazycodex-wt/design-system-fidelity/.omo/ulw-loop/evidence/design-system-fidelity/screenshots/interaction-docs-mobile-390x844.png"
+    },
+    {
+      "name": "desktop",
+      "viewport": {
+        "width": 1280,
+        "height": 800
+      },
+      "shortcut": {
+        "shortcut": "Meta+K",
+        "focused": true
+      },
+      "visibleLinks": [
+        "$ulw-plan",
+        "$ulw-loop"
+      ],
+      "url": "http://127.0.0.1:3107/docs#ulw-loop",
+      "targetInViewport": true,
+      "menuOpened": null,
+      "menuClosed": null,
+      "overflowInitial": false,
+      "overflowFinal": false,
+      "logs": [],
+      "screenshot": "/Users/yeongyu/local-workspaces/lazycodex-wt/design-system-fidelity/.omo/ulw-loop/evidence/design-system-fidelity/screenshots/interaction-docs-desktop-1280x800.png"
+    }
+  ],
+  "cleanup": "browser contexts closed after interaction run; production server intentionally kept for C003 and will be stopped after automated gates"
+}

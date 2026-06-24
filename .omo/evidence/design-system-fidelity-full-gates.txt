@@ -1,0 +1,356 @@
+# Full frontend gates
+startedAt=2026-06-24T04:10:55Z
+
+## pnpm exec playwright test e2e/seo.spec.ts
+[WebServer] (node:43524) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] $ node ./scripts/generate-docs-content.mjs
+[WebServer] Docs content already current with 20 HTML-compiled docs
+[WebServer] $ NODE_OPTIONS=--no-deprecation next build
+[WebServer] (node:43550) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ Next.js 16.2.9 (Turbopack)
+[WebServer] 
+[WebServer]   Creating an optimized production build ...
+[WebServer] (node:43550) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43558) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ✓ Compiled successfully in 934ms
+[WebServer]   Running TypeScript ...
+[WebServer]   Finished TypeScript in 1599ms ...
+[WebServer]   Collecting page data using 13 workers ...
+[WebServer] (node:43619) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43614) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43616) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43617) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43615) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43625) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43618) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43622) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43623) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43624) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43620) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:43621) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]   Generating static pages using 13 workers (0/11) ...
+[WebServer] (node:43626) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]   Generating static pages using 13 workers (2/11) 
+[WebServer]   Generating static pages using 13 workers (5/11) 
+[WebServer]   Generating static pages using 13 workers (8/11) 
+[WebServer] ✓ Generating static pages using 13 workers (11/11) in 700ms
+[WebServer]   Finalizing page optimization ...
+[WebServer] 
+[WebServer] Route (app)
+[WebServer] ┌ ○ /
+[WebServer] ├ ○ /_not-found
+[WebServer] ├ ƒ /api/github-stars
+[WebServer] ├ ○ /apple-icon.png
+[WebServer] ├ ○ /docs
+[WebServer] ├ ○ /icon.svg
+[WebServer] ├ ○ /manifest.webmanifest
+[WebServer] ├ ○ /opengraph-image
+[WebServer] ├ ○ /robots.txt
+[WebServer] ├ ○ /sitemap.xml
+[WebServer] └ ○ /twitter-image
+[WebServer] 
+[WebServer] 
+[WebServer] ○  (Static)   prerendered as static content
+[WebServer] ƒ  (Dynamic)  server-rendered on demand
+[WebServer] 
+[WebServer] (node:43834) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] $ NODE_OPTIONS=--no-deprecation next start
+[WebServer] (node:43862) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ Next.js 16.2.9
+[WebServer] - Local:         http://localhost:59694
+[WebServer] - Network:       http://192.168.0.50:59694
+[WebServer] ✓ Ready in 80ms
+
+Running 8 tests using 1 worker
+
+(node:43921) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [chromium] › e2e/seo.spec.ts:25:3 › site SEO + metadata › has a unique <title>, description, canonical, lang, viewport (112ms)
+  ✓  2 [chromium] › e2e/seo.spec.ts:52:3 › site SEO + metadata › has OpenGraph and Twitter card tags (101ms)
+  ✓  3 [chromium] › e2e/seo.spec.ts:77:3 › site SEO + metadata › has JSON-LD SoftwareApplication structured data (92ms)
+  ✓  4 [chromium] › e2e/seo.spec.ts:87:3 › site SEO + metadata › /robots.txt and /sitemap.xml are reachable (14ms)
+  ✓  5 [chromium] › e2e/seo.spec.ts:101:3 › site SEO + metadata › /docs route is reachable (13ms)
+  ✓  6 [chromium] › e2e/seo.spec.ts:106:3 › site SEO + metadata › /manifest.webmanifest is reachable and valid (5ms)
+  ✓  7 [chromium] › e2e/seo.spec.ts:114:3 › site SEO + metadata › opengraph image and twitter image render as PNGs (11ms)
+  ✓  8 [chromium] › e2e/seo.spec.ts:135:3 › site SEO + metadata › serves the unified LazyCodex favicon assets (102ms)
+
+  8 passed (6.8s)
+
+## pnpm run test:lighthouse
+$ NODE_OPTIONS=--no-deprecation playwright test --grep @lighthouse
+[WebServer] (node:44013) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] $ node ./scripts/generate-docs-content.mjs
+[WebServer] Docs content already current with 20 HTML-compiled docs
+[WebServer] $ NODE_OPTIONS=--no-deprecation next build
+[WebServer] (node:44055) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ Next.js 16.2.9 (Turbopack)
+[WebServer] 
+[WebServer]   Creating an optimized production build ...
+[WebServer] (node:44055) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:44070) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ✓ Compiled successfully in 925ms
+[WebServer]   Running TypeScript ...
+[WebServer]   Finished TypeScript in 1550ms ...
+[WebServer]   Collecting page data using 13 workers ...
+[WebServer] (node:44153) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:44151) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:44143) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:44145) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:44149) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:44148) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:44152) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:44146) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:44147) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:44142) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:44144) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:44150) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]   Generating static pages using 13 workers (0/11) ...
+[WebServer] (node:44154) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]   Generating static pages using 13 workers (2/11) 
+[WebServer]   Generating static pages using 13 workers (5/11) 
+[WebServer]   Generating static pages using 13 workers (8/11) 
+[WebServer] ✓ Generating static pages using 13 workers (11/11) in 686ms
+[WebServer]   Finalizing page optimization ...
+[WebServer] 
+[WebServer] Route (app)
+[WebServer] ┌ ○ /
+[WebServer] ├ ○ /_not-found
+[WebServer] ├ ƒ /api/github-stars
+[WebServer] ├ ○ /apple-icon.png
+[WebServer] ├ ○ /docs
+[WebServer] ├ ○ /icon.svg
+[WebServer] ├ ○ /manifest.webmanifest
+[WebServer] ├ ○ /opengraph-image
+[WebServer] ├ ○ /robots.txt
+[WebServer] ├ ○ /sitemap.xml
+[WebServer] └ ○ /twitter-image
+[WebServer] 
+[WebServer] 
+[WebServer] ○  (Static)   prerendered as static content
+[WebServer] ƒ  (Dynamic)  server-rendered on demand
+[WebServer] 
+[WebServer] (node:44165) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] $ NODE_OPTIONS=--no-deprecation next start
+[WebServer] (node:44180) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ Next.js 16.2.9
+[WebServer] - Local:         http://localhost:59761
+[WebServer] - Network:       http://192.168.0.50:59761
+[WebServer] ✓ Ready in 79ms
+
+Running 2 tests using 1 worker
+
+(node:44186) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[Lighthouse mobile] url=http://127.0.0.1:59761 perf=100 a11y=100 bp=100 seo=100
+[Lighthouse mobile] Failing audits:
+  - unused-javascript: score=0.5 (Reduce unused JavaScript)
+  - bf-cache: score=0 (Page prevented back/forward cache restoration)
+  - legacy-javascript-insight: score=0.5 (Legacy JavaScript)
+  - network-dependency-tree-insight: score=0 (Network dependency tree)
+  - render-blocking-insight: score=0.5 (Render-blocking requests)
+  ✓  1 [chromium] › e2e/lighthouse.spec.ts:220:3 › @lighthouse — Lighthouse 100/100/100/100 (Playwright Chrome + CDP) › mobile preset hits 100 in every category (16.3s)
+[Lighthouse desktop] url=http://127.0.0.1:59761 perf=100 a11y=100 bp=100 seo=100
+[Lighthouse desktop] Failing audits:
+  - unused-javascript: score=0.5 (Reduce unused JavaScript)
+  - bf-cache: score=0 (Page prevented back/forward cache restoration)
+  - image-delivery-insight: score=0.5 (Improve image delivery)
+  - legacy-javascript-insight: score=0.5 (Legacy JavaScript)
+  - network-dependency-tree-insight: score=0 (Network dependency tree)
+  - render-blocking-insight: score=0.5 (Render-blocking requests)
+  ✓  2 [chromium] › e2e/lighthouse.spec.ts:226:3 › @lighthouse — Lighthouse 100/100/100/100 (Playwright Chrome + CDP) › desktop preset hits 100 in every category (16.0s)
+
+  2 passed (39.2s)
+
+## pnpm run test:e2e
+$ NODE_OPTIONS=--no-deprecation playwright test
+[WebServer] (node:45019) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] $ node ./scripts/generate-docs-content.mjs
+[WebServer] Docs content already current with 20 HTML-compiled docs
+[WebServer] $ NODE_OPTIONS=--no-deprecation next build
+[WebServer] (node:45047) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ Next.js 16.2.9 (Turbopack)
+[WebServer] 
+[WebServer]   Creating an optimized production build ...
+[WebServer] (node:45047) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:45060) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ✓ Compiled successfully in 929ms
+[WebServer]   Running TypeScript ...
+[WebServer]   Finished TypeScript in 1572ms ...
+[WebServer]   Collecting page data using 13 workers ...
+[WebServer] (node:45072) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:45074) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:45065) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:45071) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:45068) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:45067) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:45070) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:45075) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:45073) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:45076) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:45069) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:45066) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]   Generating static pages using 13 workers (0/11) ...
+[WebServer] (node:45077) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer]   Generating static pages using 13 workers (2/11) 
+[WebServer]   Generating static pages using 13 workers (5/11) 
+[WebServer]   Generating static pages using 13 workers (8/11) 
+[WebServer] ✓ Generating static pages using 13 workers (11/11) in 685ms
+[WebServer]   Finalizing page optimization ...
+[WebServer] 
+[WebServer] Route (app)
+[WebServer] ┌ ○ /
+[WebServer] ├ ○ /_not-found
+[WebServer] ├ ƒ /api/github-stars
+[WebServer] ├ ○ /apple-icon.png
+[WebServer] ├ ○ /docs
+[WebServer] ├ ○ /icon.svg
+[WebServer] ├ ○ /manifest.webmanifest
+[WebServer] ├ ○ /opengraph-image
+[WebServer] ├ ○ /robots.txt
+[WebServer] ├ ○ /sitemap.xml
+[WebServer] └ ○ /twitter-image
+[WebServer] 
+[WebServer] 
+[WebServer] ○  (Static)   prerendered as static content
+[WebServer] ƒ  (Dynamic)  server-rendered on demand
+[WebServer] 
+[WebServer] (node:45083) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] $ NODE_OPTIONS=--no-deprecation next start
+[WebServer] (node:45097) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ▲ Next.js 16.2.9
+[WebServer] - Local:         http://localhost:60044
+[WebServer] - Network:       http://192.168.0.50:60044
+[WebServer] ✓ Ready in 80ms
+
+Running 52 tests using 1 worker
+
+(node:45105) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [chromium] › e2e/docs.spec.ts:15:3 › docs page — structure › responds 200 (19ms)
+  ✓   2 [chromium] › e2e/docs.spec.ts:20:3 › docs page — structure › has exactly one h1 (115ms)
+  ✓   3 [chromium] › e2e/docs.spec.ts:25:3 › docs page — structure › renders every section as a visible element carrying its id + title (173ms)
+  ✓   4 [chromium] › e2e/docs.spec.ts:35:3 › docs page — structure › nav lists every section title as links or buttons (190ms)
+  ✓   5 [chromium] › e2e/docs.spec.ts:46:3 › docs page — structure › documents lazycodex-ai as the npm install alias (131ms)
+  ✓   6 [chromium] › e2e/docs.spec.ts:63:3 › docs page — structure › documents skills and built-in workflow usage (186ms)
+  ✓   7 [chromium] › e2e/docs.spec.ts:80:3 › docs page — structure › orders Skills immediately after Commands and before Concepts (0ms)
+  ✓   8 [chromium] › e2e/docs.spec.ts:91:3 › docs page — navigation › clicking the $ulw-loop nav entry jumps to that section (185ms)
+  ✓   9 [chromium] › e2e/docs.spec.ts:106:3 › docs page — no-JS SSR › server-renders every section heading without JavaScript (159ms)
+  ✓  10 [chromium] › e2e/github-stars.spec.ts:21:3 › github stars API › responds with a numeric live star count (550ms)
+  ✓  11 [chromium] › e2e/github-stars.spec.ts:37:3 › github stars live source parsing › uses GH_TOKEN when GITHUB_TOKEN is absent (2ms)
+  ✓  12 [chromium] › e2e/github-stars.spec.ts:63:3 › github stars live source parsing › falls back to Shields when GitHub rejects the request (1ms)
+  ✓  13 [chromium] › e2e/github-stars.spec.ts:87:3 › github stars live source parsing › parses Shields comma and compact star payloads (1ms)
+  ✓  14 [chromium] › e2e/github-stars.spec.ts:93:3 › github stars live source parsing › caches the non-zero fallback instead of serving a zero-star shell (1ms)
+  ✓  15 [chromium] › e2e/github-stars.spec.ts:103:3 › github stars live source parsing › rejects zero-star upstream payloads as stale or broken source data (0ms)
+  ✓  16 [chromium] › e2e/home.spec.ts:17:3 › home page — content › renders the wordmark, hero copy, and footer (101ms)
+  ✓  17 [chromium] › e2e/home.spec.ts:37:3 › home page — content › does not show launch gating copy (94ms)
+  ✓  18 [chromium] › e2e/home.spec.ts:44:3 › home page — content › has a single h1 and no broken landmarks (92ms)
+  ✓  19 [chromium] › e2e/home.spec.ts:52:3 › home page — content › skip-link is hidden until focused (96ms)
+  ✓  20 [chromium] › e2e/landing.spec.ts:15:3 › landing page — hero › has exactly one h1 reading the wordmark (92ms)
+  ✓  21 [chromium] › e2e/landing.spec.ts:23:3 › landing page — hero › shows the eyebrow and both hero lines (97ms)
+  ✓  22 [chromium] › e2e/landing.spec.ts:41:3 › landing page — install + commands › shows the install command and a copy button (97ms)
+  ✓  23 [chromium] › e2e/landing.spec.ts:51:3 › landing page — install + commands › renders every command with its name and syntax (98ms)
+  ✓  24 [chromium] › e2e/landing.spec.ts:59:3 › landing page — install + commands › feature workflow guidance keeps the three command pillars first (100ms)
+  ✓  25 [chromium] › e2e/landing.spec.ts:70:3 › landing page — install + commands › places skill coverage before the concept section (104ms)
+  ✓  26 [chromium] › e2e/landing.spec.ts:87:3 › landing page — links + footer › github stars pill links to the stargazers url with a count (95ms)
+  ✓  27 [chromium] › e2e/landing.spec.ts:96:3 › landing page — links + footer › updates the github stars pill from the live API (93ms)
+  ✓  28 [chromium] › e2e/landing.spec.ts:104:3 › landing page — links + footer › has a Docs link pointing at /docs (92ms)
+  ✓  29 [chromium] › e2e/landing.spec.ts:111:3 › landing page — links + footer › links to OmO and shows lazycodex.ai (93ms)
+[Lighthouse mobile] url=http://127.0.0.1:60044 perf=100 a11y=100 bp=100 seo=100
+[Lighthouse mobile] Failing audits:
+  - unused-javascript: score=0.5 (Reduce unused JavaScript)
+  - bf-cache: score=0 (Page prevented back/forward cache restoration)
+  - legacy-javascript-insight: score=0.5 (Legacy JavaScript)
+  - network-dependency-tree-insight: score=0 (Network dependency tree)
+  - render-blocking-insight: score=0.5 (Render-blocking requests)
+  ✓  30 [chromium] › e2e/lighthouse.spec.ts:220:3 › @lighthouse — Lighthouse 100/100/100/100 (Playwright Chrome + CDP) › mobile preset hits 100 in every category (16.0s)
+[Lighthouse desktop] url=http://127.0.0.1:60044 perf=100 a11y=100 bp=100 seo=100
+[Lighthouse desktop] Failing audits:
+  - unused-javascript: score=0.5 (Reduce unused JavaScript)
+  - bf-cache: score=0 (Page prevented back/forward cache restoration)
+  - image-delivery-insight: score=0.5 (Improve image delivery)
+  - legacy-javascript-insight: score=0.5 (Legacy JavaScript)
+  - network-dependency-tree-insight: score=0 (Network dependency tree)
+  - render-blocking-insight: score=0.5 (Render-blocking requests)
+  ✓  31 [chromium] › e2e/lighthouse.spec.ts:226:3 › @lighthouse — Lighthouse 100/100/100/100 (Playwright Chrome + CDP) › desktop preset hits 100 in every category (16.0s)
+  ✓  32 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at mobile-small (360×640) (674ms)
+  ✓  33 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at mobile-iphone-se (375×667) (675ms)
+  ✓  34 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at mobile-iphone-14 (390×844) (677ms)
+  ✓  35 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at mobile-large-android (412×915) (674ms)
+  ✓  36 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at tablet-ipad-portrait (768×1024) (676ms)
+  ✓  37 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at tablet-ipad-landscape (1024×768) (675ms)
+  ✓  38 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at tablet-ipad-pro-portrait (1024×1366) (674ms)
+  ✓  39 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at desktop-laptop (1280×800) (678ms)
+  ✓  40 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at desktop-fullhd (1440×900) (675ms)
+  ✓  41 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at desktop-wide (1536×864) (676ms)
+  ✓  42 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at desktop-ultrawide (1920×1080) (674ms)
+  ✓  43 [chromium] › e2e/responsive.spec.ts:81:1 › @responsive iPhone-13 device profile (Playwright preset) (658ms)
+  ✓  44 [chromium] › e2e/responsive.spec.ts:98:1 › @responsive iPad-Pro device profile (Playwright preset) (666ms)
+  ✓  45 [chromium] › e2e/seo.spec.ts:25:3 › site SEO + metadata › has a unique <title>, description, canonical, lang, viewport (98ms)
+  ✓  46 [chromium] › e2e/seo.spec.ts:52:3 › site SEO + metadata › has OpenGraph and Twitter card tags (98ms)
+  ✓  47 [chromium] › e2e/seo.spec.ts:77:3 › site SEO + metadata › has JSON-LD SoftwareApplication structured data (92ms)
+  ✓  48 [chromium] › e2e/seo.spec.ts:87:3 › site SEO + metadata › /robots.txt and /sitemap.xml are reachable (8ms)
+  ✓  49 [chromium] › e2e/seo.spec.ts:101:3 › site SEO + metadata › /docs route is reachable (8ms)
+  ✓  50 [chromium] › e2e/seo.spec.ts:106:3 › site SEO + metadata › /manifest.webmanifest is reachable and valid (3ms)
+  ✓  51 [chromium] › e2e/seo.spec.ts:114:3 › site SEO + metadata › opengraph image and twitter image render as PNGs (8ms)
+  ✓  52 [chromium] › e2e/seo.spec.ts:135:3 › site SEO + metadata › serves the unified LazyCodex favicon assets (97ms)
+
+  52 passed (51.2s)
+
+completedAt=2026-06-24T04:12:35Z

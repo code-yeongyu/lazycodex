@@ -27,8 +27,8 @@ export default function LandingPage(): JSX.Element {
         </div>
         <InstallBlock />
         <CommandCards />
-        <HephaestusSection />
         <FeatureWorkflowsSection />
+        <HephaestusSection />
         <UltraworkSection />
         <DocsCta />
       </main>

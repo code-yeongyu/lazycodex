@@ -44,7 +44,7 @@ Borders / status:
 ## 6. Docs Information Architecture (vibetip-inspired)
 The docs are a single richly-sectioned page with a grouped sidebar, ⌘K search, a per-section right-side table of contents, and prev/next navigation cards — inspired by the lzx.vibetip.help docs layout.
 
-- **Sidebar groups** (ordered): Install · Getting started · Commands · Concepts · Skills · Reference.
+- **Sidebar groups** (ordered): Install · Getting started · Commands · Skills · Concepts · Reference.
 - **⌘K / Ctrl-K** focuses the search field from anywhere; typing filters sidebar entries by title.
 - **Right ToC ("On this section")** lists the active section's `h2`/`h3` headings with scroll-spy highlighting.
 - **Prev/next cards** at the end of every section link to the neighboring section.

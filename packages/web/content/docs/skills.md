@@ -14,7 +14,9 @@ The three command pillars stay simple:
 - `$ulw-plan` turns fuzzy work into a decision-complete plan
 - `$start-work` executes a plan with durable Boulder progress
 
-Skills add specialist judgment around those pillars:
+Skills add specialist judgment around those pillars.
+
+Most skills auto-activate when a request matches their domain, so you do not need to study or manually select every skill before using LazyCodex. When you want to be explicit, put the skill name in the prompt — for example `$visual-qa`, `$git-master`, or `$ultraresearch`.
 
 | Skill | Use it for |
 | --- | --- |
@@ -24,13 +26,13 @@ Skills add specialist judgment around those pillars:
 | `start-work` | Execute a plan with durable Boulder progress |
 | `review-work` | Five-lane parallel post-implementation review |
 | `remove-ai-slops` | Behavior-preserving cleanup of AI-looking code |
-| `frontend-ui-ux` | Designed UI work instead of generic layout filling |
+| `frontend` | Designed UI work instead of generic layout filling |
 | `programming` | Strict TypeScript, Rust, Python, or Go discipline, TDD-first |
 | `git-master` | Atomic commits, rebase/squash, push safety, history investigation |
 | `visual-qa` | Screenshot/TUI diff plus dual-oracle visual QA |
 | `debugging` | Evidence-led root-cause investigation |
 | `refactor` | Behavior-preserving restructure of existing code |
-| `ultraresearch` | Deep multi-source research synthesis |
+| `ultraresearch` | Maximum-saturation research: parallel codebase, web, official-docs, and OSS-repo swarms, recursive lead expansion, empirical verification, and cited synthesis |
 | `LSP` | Diagnostics, definitions, references, symbols, and renames |
 | `lsp-setup` | Configure language servers for a project |
 | `AST-grep` | Structural search and rewrite across code |

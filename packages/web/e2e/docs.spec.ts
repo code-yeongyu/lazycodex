@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test"
-import { DOC_SECTIONS } from "../lib/docs-sections"
+import { DOC_GROUPS, DOC_SECTIONS } from "../lib/docs-sections"
 
 /**
  * Docs `/docs` contract (TDD target state).
@@ -69,10 +69,21 @@ test.describe("docs page — structure", () => {
     await expect(body).toContainText("Feature coverage")
     await expect(body).toContainText("review-work")
     await expect(body).toContainText("remove-ai-slops")
-    await expect(body).toContainText("frontend-ui-ux")
+    await expect(body).toContainText("frontend")
+    await expect(body).toContainText("Most skills auto-activate")
+    await expect(body).toContainText("Maximum-saturation research")
     await expect(body).toContainText("LSP")
     await expect(body).toContainText("AST-grep")
     await expect(body).toContainText("comment-checker")
+  })
+
+  test("orders Skills immediately after Commands and before Concepts", () => {
+    const sectionIds = DOC_SECTIONS.map((section) => section.id)
+
+    expect(DOC_GROUPS.indexOf("Commands")).toBeLessThan(DOC_GROUPS.indexOf("Skills"))
+    expect(DOC_GROUPS.indexOf("Skills")).toBeLessThan(DOC_GROUPS.indexOf("Concepts"))
+    expect(sectionIds.indexOf("ulw-loop")).toBeLessThan(sectionIds.indexOf("skills"))
+    expect(sectionIds.indexOf("skills")).toBeLessThan(sectionIds.indexOf("ultrawork"))
   })
 })
 

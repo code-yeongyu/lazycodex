@@ -76,8 +76,8 @@ export const SITE_CONFIG = {
   builtInSkills: {
     title: "Built-in skill coverage",
     summary:
-      "Skills give the harness specialist judgment for review, cleanup, UI, strict language work, LSP diagnostics, AST-grep rewrites, project rules, and comment-checker feedback.",
-    skills: ["review-work", "remove-ai-slops", "frontend-ui-ux", "programming", "LSP", "AST-grep", "rules", "comment-checker"],
+      "Skills auto-activate when a task matches their domain, so you do not need to study every one first. Add a skill name to your prompt when you want to call it explicitly; ultraresearch is the maximum-saturation mode for deep codebase, web, official-docs, and OSS-repo research.",
+    skills: ["ultraresearch", "review-work", "remove-ai-slops", "frontend", "programming", "visual-qa", "LSP", "AST-grep", "rules", "comment-checker"],
   },
 } as const;
 

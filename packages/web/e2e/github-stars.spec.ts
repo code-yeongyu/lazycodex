@@ -3,8 +3,10 @@ import { join } from "node:path"
 import { expect, test } from "@playwright/test"
 import {
   fetchGitHubStars,
+  parseGitHubStarsPayload,
   parseShieldsStarsPayload,
 } from "../lib/github-stars"
+import { FALLBACK_GITHUB_STARS, formatStarsCount } from "../lib/github-stars-format"
 
 function restoreEnvVar(name: string, value: string | undefined): void {
   if (value === undefined) {
@@ -88,9 +90,19 @@ test.describe("github stars live source parsing", () => {
     expect(parseShieldsStarsPayload({ message: "invalid" })).toBeUndefined()
   })
 
-  test("does not cache static fallback responses", () => {
+  test("caches the non-zero fallback instead of serving a zero-star shell", () => {
     const routeSource = readFileSync(join(process.cwd(), "app/api/github-stars/route.ts"), "utf8")
 
-    expect(routeSource).toContain('const FALLBACK_CACHE_CONTROL = "no-store"')
+    expect(FALLBACK_GITHUB_STARS).toBeGreaterThan(0)
+    expect(formatStarsCount(FALLBACK_GITHUB_STARS)).not.toBe("0")
+    expect(routeSource).toContain(
+      'const FALLBACK_CACHE_CONTROL = "public, s-maxage=3600, stale-while-revalidate=86400"',
+    )
+  })
+
+  test("rejects zero-star upstream payloads as stale or broken source data", () => {
+    expect(parseGitHubStarsPayload({ stargazers_count: 0 })).toBeUndefined()
+    expect(parseShieldsStarsPayload({ value: 0 })).toBeUndefined()
+    expect(parseShieldsStarsPayload({ message: "0" })).toBeUndefined()
   })
 })

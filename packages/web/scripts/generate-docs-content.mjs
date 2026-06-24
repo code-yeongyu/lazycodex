@@ -6,8 +6,8 @@ import path from "node:path";
 import { Marked } from "marked";
 
 // Fixed, ordered section list. Key = output map key (the markdown file name).
-// Grouped for the sidebar: Install / Getting started / Commands / Concepts /
-// Skills / Reference.
+// Grouped for the sidebar: Install / Getting started / Commands / Skills /
+// Concepts / Reference.
 const SECTIONS = [
   { id: "overview", file: "overview.md", group: "Getting started", title: "Overview" },
   { id: "installation", file: "installation.md", group: "Install", title: "Installation" },
@@ -16,6 +16,7 @@ const SECTIONS = [
   { id: "ulw-plan", file: "ulw-plan.md", group: "Commands", title: "$ulw-plan" },
   { id: "start-work", file: "start-work.md", group: "Commands", title: "$start-work" },
   { id: "ulw-loop", file: "ulw-loop.md", group: "Commands", title: "$ulw-loop" },
+  { id: "skills", file: "skills.md", group: "Skills", title: "Feature coverage" },
   { id: "ultrawork", file: "ultrawork.md", group: "Concepts", title: "ultrawork mode" },
   { id: "discipline-agents", file: "discipline-agents.md", group: "Concepts", title: "Hephaestus" },
   { id: "model-routing", file: "model-routing.md", group: "Concepts", title: "Multi-model routing" },
@@ -23,7 +24,6 @@ const SECTIONS = [
   { id: "git-workflow", file: "git-workflow.md", group: "Concepts", title: "Git workflow" },
   { id: "tdd", file: "tdd.md", group: "Concepts", title: "TDD" },
   { id: "manual-qa", file: "manual-qa.md", group: "Concepts", title: "Manual QA" },
-  { id: "skills", file: "skills.md", group: "Skills", title: "Feature coverage" },
   { id: "configuration", file: "configuration.md", group: "Reference", title: "Configuration" },
   { id: "deploy", file: "deploy.md", group: "Reference", title: "Deploy" },
   { id: "cli", file: "cli.md", group: "Reference", title: "CLI" },
@@ -76,12 +76,30 @@ function createMarked() {
 // Inject id attributes into <h2>/<h3> and collect a table of contents for the
 // section. Done as a post-parse string transform so it is robust across marked
 // versions (no renderer API dependency).
-function injectHeadingIds(html) {
+function uniqueSlug(base, usedIds) {
+  if (!usedIds.has(base)) {
+    usedIds.add(base);
+    return base;
+  }
+
+  let suffix = 2;
+  while (usedIds.has(`${base}-${suffix}`)) {
+    suffix += 1;
+  }
+
+  const unique = `${base}-${suffix}`;
+  usedIds.add(unique);
+  return unique;
+}
+
+function injectHeadingIds(html, sectionId) {
+  const usedIds = new Set([sectionId]);
   const toc = [];
   const withIds = html.replace(/<(h[23])>(.*?)<\/\1>/g, (match, tag, inner) => {
     const text = inner.replace(/<[^>]+>/g, "").trim();
-    const id = slugify(text);
-    if (!id) return match;
+    const baseId = slugify(text);
+    if (!baseId) return match;
+    const id = uniqueSlug(baseId, usedIds);
     const level = tag === "h2" ? 2 : 3;
     toc.push({ level, id, text });
     return `<${tag} id="${id}">${inner}</${tag}>`;
@@ -95,7 +113,7 @@ for (const section of SECTIONS) {
   const markdown = await readFile(path.join(DOCS_ROOT, section.file), "utf8");
   // JSON.stringify (below) escapes backticks/${} safely — never template strings.
   const rawHtml = await createMarked().parse(markdown);
-  const { withIds, toc } = injectHeadingIds(rawHtml);
+  const { withIds, toc } = injectHeadingIds(rawHtml, section.id);
   sources[section.file] = withIds;
   tocs[section.file] = toc;
 }

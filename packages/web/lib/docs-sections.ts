@@ -31,8 +31,8 @@ export const DOC_GROUPS: readonly string[] = [
   "Install",
   "Getting started",
   "Commands",
-  "Concepts",
   "Skills",
+  "Concepts",
   "Reference",
 ];
 
@@ -44,6 +44,7 @@ export const DOC_SECTIONS: readonly DocSection[] = [
   { id: "ulw-plan", file: "ulw-plan.md", group: "Commands", title: "$ulw-plan" },
   { id: "start-work", file: "start-work.md", group: "Commands", title: "$start-work" },
   { id: "ulw-loop", file: "ulw-loop.md", group: "Commands", title: "$ulw-loop" },
+  { id: "skills", file: "skills.md", group: "Skills", title: "Feature coverage" },
   { id: "ultrawork", file: "ultrawork.md", group: "Concepts", title: "ultrawork mode" },
   { id: "discipline-agents", file: "discipline-agents.md", group: "Concepts", title: "Hephaestus" },
   { id: "model-routing", file: "model-routing.md", group: "Concepts", title: "Multi-model routing" },
@@ -51,7 +52,6 @@ export const DOC_SECTIONS: readonly DocSection[] = [
   { id: "git-workflow", file: "git-workflow.md", group: "Concepts", title: "Git workflow" },
   { id: "tdd", file: "tdd.md", group: "Concepts", title: "TDD" },
   { id: "manual-qa", file: "manual-qa.md", group: "Concepts", title: "Manual QA" },
-  { id: "skills", file: "skills.md", group: "Skills", title: "Feature coverage" },
   { id: "configuration", file: "configuration.md", group: "Reference", title: "Configuration" },
   { id: "deploy", file: "deploy.md", group: "Reference", title: "Deploy" },
   { id: "cli", file: "cli.md", group: "Reference", title: "CLI" },

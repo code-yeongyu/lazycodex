@@ -5,8 +5,8 @@ import { FALLBACK_GITHUB_STARS, formatStarsCount } from "../../../lib/github-sta
 export const dynamic = "force-dynamic"
 export const revalidate = 60
 
-const LIVE_CACHE_CONTROL = "public, s-maxage=60, stale-while-revalidate=300"
-const FALLBACK_CACHE_CONTROL = "no-store"
+const LIVE_CACHE_CONTROL = "public, s-maxage=300, stale-while-revalidate=3600"
+const FALLBACK_CACHE_CONTROL = "public, s-maxage=3600, stale-while-revalidate=86400"
 
 type GitHubStarsFallbackPayload = {
   readonly stars: number

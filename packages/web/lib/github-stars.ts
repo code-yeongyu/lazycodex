@@ -39,7 +39,7 @@ export function parseGitHubStarsPayload(payload: unknown): number | undefined {
   }
 
   const stars = payload.stargazers_count
-  if (typeof stars !== "number" || !Number.isFinite(stars) || stars < 0) {
+  if (typeof stars !== "number" || !Number.isFinite(stars) || stars <= 0) {
     return undefined
   }
 
@@ -53,7 +53,7 @@ function parseStarsText(value: string): number | undefined {
 
   const [, amountText, suffix] = match
   const amount = Number(amountText)
-  if (!Number.isFinite(amount) || amount < 0) return undefined
+  if (!Number.isFinite(amount) || amount <= 0) return undefined
 
   if (suffix?.toLowerCase() === "m") {
     return Math.round(amount * 1_000_000)
@@ -67,7 +67,7 @@ function parseStarsText(value: string): number | undefined {
 }
 
 function parseStarsValue(value: unknown): number | undefined {
-  if (typeof value === "number" && Number.isFinite(value) && value >= 0) {
+  if (typeof value === "number" && Number.isFinite(value) && value > 0) {
     return Math.floor(value)
   }
 

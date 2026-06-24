@@ -10,12 +10,19 @@ function readFormattedStars(payload: unknown): string | undefined {
     return undefined
   }
 
+  if ("stars" in payload) {
+    const stars = payload.stars
+    if (typeof stars !== "number" || !Number.isFinite(stars) || stars <= 0) {
+      return undefined
+    }
+  }
+
   const formatted = payload.formatted
   if (typeof formatted !== "string" || formatted.trim().length === 0) {
     return undefined
   }
 
-  return formatted
+  return formatted === "0" ? undefined : formatted
 }
 
 export function GithubStarsPill(): JSX.Element {
@@ -26,7 +33,7 @@ export function GithubStarsPill(): JSX.Element {
 
     async function refreshStars(): Promise<void> {
       try {
-        const response = await fetch("/api/github-stars", { cache: "no-store" })
+        const response = await fetch("/api/github-stars")
         if (!response.ok || cancelled) return
 
         const payload: unknown = await response.json()

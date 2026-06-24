@@ -66,6 +66,21 @@ test.describe("landing page — install + commands", () => {
     await expect(page.getByText("Evidence at the end", { exact: false }).first()).toBeVisible()
     await expect(page.getByText("Built-in skill coverage", { exact: false }).first()).toBeVisible()
   })
+
+  test("places skill coverage before the concept section", async ({ page }) => {
+    await page.goto("/")
+
+    const skillsTop = await page
+      .getByText("Built-in skill coverage", { exact: false })
+      .first()
+      .evaluate((node) => node.getBoundingClientRect().top)
+    const conceptsTop = await page
+      .getByText("Where it comes from", { exact: false })
+      .first()
+      .evaluate((node) => node.getBoundingClientRect().top)
+
+    expect(skillsTop).toBeLessThan(conceptsTop)
+  })
 })
 
 test.describe("landing page — links + footer", () => {
@@ -75,6 +90,7 @@ test.describe("landing page — links + footer", () => {
     await expect(stars).toBeVisible()
     await expect(stars).toContainText(/stars/i)
     await expect(stars).toContainText(/\d/)
+    await expect(stars).not.toContainText(/^0\sstars$/)
   })
 
   test("updates the github stars pill from the live API", async ({ page }) => {

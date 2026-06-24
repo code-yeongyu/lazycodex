@@ -1,5 +1,10 @@
 # LazyCodex Design System
 
+Implementation sources:
+- Browser CSS tokens and shared utility layers live in `app/styles/design-system.css`, imported before page-specific styles by `app/globals.css`.
+- Social preview tokens live in `app/og-image-theme.ts` and intentionally mirror the browser palette.
+- Page-specific composition styles live in `app/styles/landing.css` and `app/styles/docs.css`.
+
 ## 1. Core Philosophy
 - **Complex-Codebase Harness Tone**: A near-black canvas with a faint cool-green undertone, centered on a glowing emerald card that presents LazyCodex as the Codex agent harness for serious repositories. The brand color is green — emerald/mint — not the earlier teal.
 - **Card-in-Canvas Architecture**: The hero content lives inside a 1200x630px card with a complex radial gradient; the OpenGraph image mirrors that HTML card instead of using a separate visual language.
@@ -11,21 +16,21 @@ Surfaces (near-black, cool-green undertone):
 - `--surface-1`: `rgba(255,255,255,0.018)` · `--surface-2`: `rgba(255,255,255,0.035)` · `--surface-3`: `rgba(255,255,255,0.055)`
 - `--card-base` / `--surface-panel`: `#0E1411` · `--surface-panel-alt`: `#0C1310` · `--surface-panel-deep`: `#0D1310`
 
-Brand (emerald core):
-- `--brand-core`: `#10b981` · `--brand-mid`: `#059669` · `--brand-outer`: `#065f46`
+Brand (green core):
+- `--brand-core`: `#22c55e` · `--brand-mid`: `#16a34a` · `--brand-outer`: `#15803d`
 
 Accent (the live-wire green):
-- `--accent-primary`: `#34d399` · `--accent-primary-soft`: `rgba(52,211,153,0.1)` · `--accent-primary-border`: `rgba(52,211,153,0.22)`
-- `--accent-mint`: `#6ee7b7` · `--accent-glow`: `#6ee7b7`
+- `--accent-primary`: `#4ade80` · `--accent-primary-soft`: `rgba(74,222,128,0.1)` · `--accent-primary-border`: `rgba(74,222,128,0.24)`
+- `--accent-mint`: `#86efac` · `--accent-glow`: `#86efac`
 - Legacy aliases `--accent-cyan` / `--accent-teal` are mapped to the green values for compatibility; new code uses `--accent-primary` / `--accent-mint`.
 
 Text:
-- `--text-primary`: `#ffffff` · `--text-secondary`: `#9aa6a0` · `--text-tertiary`: `#7a857f`
-- `--text-muted`: `rgba(255,255,255,0.72)` · `--text-soft`: `#d1fae5` (mint-tinted)
+- `--text-primary`: `#ffffff` · `--text-secondary`: `#b8c2bc` · `--text-tertiary`: `#8b9690`
+- `--text-muted`: `rgba(255,255,255,0.74)` · `--text-soft`: `#dcfce7` (mint-tinted)
 
 Borders / status:
 - `--border-subtle`: `rgba(255,255,255,0.06)` · `--border-default`: `rgba(255,255,255,0.1)`
-- `--status-success`: `#10b981` · `--status-warning`: `#f59e0b` · `--status-error`: `#ef4444`
+- `--status-success`: `#22c55e` · `--status-warning`: `#f59e0b` · `--status-error`: `#ef4444`
 
 ## 3. Brand Mark
 - A rounded-square emerald mark with an "L" stroke and a mint dot — a clean geometric identity replacing the earlier boulder. Inline SVG in the header (zero network bytes), mirrored in the favicon and OG image.
@@ -36,7 +41,7 @@ Borders / status:
 - **Docs**: three-column grid on desktop — `260px` sidebar | fluid content | `220px` right ToC. Collapses to two columns (hide ToC) under 1100px and to a single column with a mobile menu toggle under 768px. Every container uses `min-h-[100dvh]` (never `h-screen`) and `dvh` for iOS Safari stability. No flexbox percentage math; CSS Grid for multi-column.
 
 ## 5. Gradients & Effects
-- **Base Gradient**: radial from `#10b981` through `#059669` and `#065f46` into `#0a0c0b`.
+- **Base Gradient**: radial from `#22c55e` through `#16a34a` and `#15803d` into `#0a0c0b`.
 - **Beam**: screen blend mode, soft mint light pouring from top-left.
 - **Sheen**: screen blend mode, diagonal linear gradients with blur.
 - **Pools**: screen blend mode, subtle emerald/mint pools at bottom-left and top-right.
@@ -61,7 +66,14 @@ The docs are a single richly-sectioned page with a grouped sidebar, ⌘K search,
 - Explicit `width`/`height` on every `<img>` to prevent CLS; `loading`/`fetchPriority`/`decoding` driven by `priority`.
 - Per-route `metadata`, JSON-LD `SoftwareApplication`, `sitemap.ts`, `robots.ts`, and OG/Twitter image routes.
 
-## 9. Anti-Patterns
+## 9. Component Families
+- **Brand mark**: inline SVG rounded square, `var(--card-base)` fill, `var(--accent-primary)` stroke, mint dot. Do not replace it with raster imagery above the fold.
+- **Hero card**: `var(--card-base)` surface, 20px browser radius, layered `.card-gradient-*` utilities, large left-aligned wordmark, right-anchored mark on desktop.
+- **Command cards**: `var(--surface-panel)` surface, subtle white border, mono heading/code, green icon well, and dot-list facts.
+- **Docs shell**: CSS Grid desktop layout (`260px | content | 220px`), sticky sidebar and ToC, mobile menu toggle under 768px, active nav indicated by a straight vertical bar.
+- **Interactive states**: short color/transform transitions, focus rings from `:focus-visible`, no layout-property animation.
+
+## 10. Anti-Patterns
 - Generic AI-SaaS slop copy. Use concrete product language.
 - Teal/cyan brand colors (replaced by emerald/mint). The earlier teal identity is gone; green is the brand.
 - `export const runtime = "edge"` (incompatible with `@opennextjs/cloudflare`).

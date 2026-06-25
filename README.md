@@ -4,7 +4,7 @@
   <h1>LazyCodex</h1>
 
   <p><strong>The one and only agent harness for complex codebases.</strong><br />
-  Project memory, planning, execution, and verified completion inside Codex.</p>
+  Project memory, planning, execution, and verified completion across Codex, Claude Code, and Gemini from one installer.</p>
 
   <p>
     <a href="https://github.com/code-yeongyu/lazycodex/stargazers">
@@ -28,7 +28,7 @@
 > [!NOTE]
 > **[OmO] 60K Stars: the terrifying token burner has arrived in LazyCodex.**
 >
-> Sisyphus Labs' OmO is the quality-obsessed agent harness whose public lore says it loved Anthropic models hard enough to get third-party clients blocked. Now that same OmO quality bar is available for Codex through LazyCodex.
+> Sisyphus Labs' OmO is the quality-obsessed agent harness whose public lore says it loved Anthropic models hard enough to get third-party clients blocked. Now that same OmO quality bar is available through LazyCodex across Codex, Claude Code, and Gemini in one pass.
 >
 > If you wanted OmO but did not want the setup ceremony, start here:
 >
@@ -46,8 +46,16 @@ One line. No global install, no `npm i -g`. Always use `npx`:
 npx lazycodex-ai install
 ```
 
-This is shorthand for `npx --yes --package oh-my-openagent omo install --platform=codex`. For a fully autonomous, no-TUI setup:
+By default this runs OmO install for all supported targets: Codex, Claude Code,
+and Gemini. To install only one surface, pass an explicit platform:
 
+```bash
+npx lazycodex-ai install --platform=codex
+npx lazycodex-ai install --platform=claude-code
+npx lazycodex-ai install --platform=gemini
+```
+
+For a fully autonomous, no-TUI setup:
 ```bash
 npx lazycodex-ai install --no-tui --codex-autonomous
 ```
@@ -87,7 +95,7 @@ npx lazycodex-ai doctor
 ```
 
 `doctor` prints the installation health report: plugin cache, hooks, MCP
-servers, agents, and config state. Inside Codex, type `$` in the composer to
+servers, agents, and config state. Inside the target agent, check the command menu or CLI shortcuts to
 browse every installed skill — `init-deep`, `ulw-loop`, `ulw-plan`,
 `start-work`, and the rest — and hooks announce themselves with
 `LazyCodex(<version>): ...` status messages during a session.
@@ -98,13 +106,13 @@ browse every installed skill — `init-deep`, `ulw-loop`, `ulw-plan`,
 npx lazycodex-ai uninstall
 ```
 
-Removes the installed plugin cache, bin links, agent roles, and the managed
-sections of `~/.codex/config.toml`.
+Removes the installed plugin cache, bin links, agent roles, and managed
+sections of the target agent config.
 
 ## ⚡ Commands
 
-LazyCodex installs these as OmO commands for Codex. Invoke them with the
-`$command` syntax shown by the installer.
+LazyCodex installs these as OmO commands for the target agent. Invoke them with
+the `$command` syntax shown by the installer.
 
 | Command | Type this | What it does |
 | --- | --- | --- |
@@ -117,15 +125,15 @@ Full documentation lives at [lazycodex.ai/docs](https://lazycodex.ai/docs).
 ## Use the built-in workflows
 
 LazyCodex should be judged by the features it actually installs. It is the
-Codex distribution for OmO's agent harness: project memory, planning,
+light distribution for OmO's agent harness: project memory, planning,
 execution, verified completion, skills, hooks, model routing, and diagnostics.
 
 ### 1. `$init-deep` creates project memory
 
 `$init-deep` generates hierarchical `AGENTS.md` context. It scores complex
 directories, writes local guidance near the code that needs it, and gives future
-agents landmarks before they edit. Type `$init-deep` in the Codex composer —
-the `$` prefix is how every installed skill is invoked.
+agents landmarks before they edit. Type `$init-deep` in the target agent —
+the `$` prefix is how every installed skill is invoked when the surface exposes command syntax.
 
 Use it when the repository is too large to explain from memory. Run it again
 when the shape of the codebase changes.
@@ -161,20 +169,19 @@ actual work:
 | `rules` | Project instructions from AGENTS, rules, and instruction files |
 | `comment-checker` | Feedback after edit-like operations |
 
-### 4. Sub-agent roles ride Codex's native multi-agent tools
+### 4. Sub-agent roles ride the target agent's multi-agent tools
 
-LazyCodex installs selectable agent roles into `~/.codex/agents/`: `explorer`,
-`librarian`, `plan`, `momus`, `metis`, and `codex-ultrawork-reviewer`. Pick one
-by passing `agent_type` to Codex's `spawn_agent` tool — the child agent runs
-with that role's model and instructions:
+LazyCodex installs selectable agent roles for surfaces that expose sub-agent role
+selection: `explorer`, `librarian`, `plan`, `momus`, `metis`, and
+`lazycodex-gate-reviewer`. Pick one through the target agent's sub-agent tool
+when that field is available:
 
 ```jsonc
 spawn_agent({"message": "TASK: map the auth flow end to end.", "agent_type": "explorer"})
 ```
 
-The installer exposes `agent_type` on `multi_agent_v2` sessions (Codex hides it
-by default). If your Codex build's spawn tool has no `agent_type` parameter,
-describe the role inside `message` instead — the skills are written to fall
+If your target agent's spawn tool has no typed role parameter,
+describe the role inside the task message instead — the skills are written to fall
 back to that form automatically.
 
 Start at [https://lazycodex.ai](https://lazycodex.ai).
@@ -183,15 +190,15 @@ Start at [https://lazycodex.ai](https://lazycodex.ai).
 
 ## 💤 What is this?
 
-**LazyCodex** packages [OmO (oh-my-openagent)](https://github.com/code-yeongyu/oh-my-openagent) as the Codex agent harness for complex codebases.
+**LazyCodex** packages [OmO (oh-my-openagent)](https://github.com/code-yeongyu/oh-my-openagent) as a light agent harness for complex codebases across Codex, Claude Code, and Gemini.
 
-Think [LazyVim](https://github.com/LazyVim/LazyVim) for [lazy.nvim](https://github.com/folke/lazy.nvim), but for Codex.
+Think [LazyVim](https://github.com/LazyVim/LazyVim) for [lazy.nvim](https://github.com/folke/lazy.nvim), but for coding-agent harness setup.
 
-OmO is the agent harness: discipline agents, parallel orchestration, multi-model routing, skills, hooks, and verified completion. LazyCodex packages that harness for Codex.
+OmO is the agent harness: discipline agents, parallel orchestration, multi-model routing, skills, hooks, and verified completion. LazyCodex packages the Hephaestus slice so the same setup can be installed into Codex, Claude Code, and Gemini without hand-wiring each surface.
 
-> _"LazyVim made Neovim usable for the rest of us. LazyCodex does the same for Codex."_
+> _"LazyVim made Neovim usable for the rest of us. LazyCodex does the same for agent harness setup."_
 
-Credit: The LazyCodex name idea is inspired by [LazyVim](https://github.com/LazyVim/LazyVim). The Ultragoal and UltraQA ideas are inspired by [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex), reimplemented from concept for this Codex setup.
+Credit: The LazyCodex name idea is inspired by [LazyVim](https://github.com/LazyVim/LazyVim). The Ultragoal and UltraQA ideas are inspired by [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex), reimplemented from concept for this setup.
 
 ## 🧩 What you get
 

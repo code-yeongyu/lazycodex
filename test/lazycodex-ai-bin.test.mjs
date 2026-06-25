@@ -44,7 +44,7 @@ describe("lazycodex-ai npm package", () => {
     assert.match(publishWorkflow, new RegExp(`default: "${releaseVersion}"`))
   })
 
-  it("dry-runs install through oh-my-openagent with the Codex platform default", () => {
+  it("dry-runs install through oh-my-openagent for Codex, Claude Code, and Gemini by default", () => {
     // given
     assert.equal(existsSync(binPath), true, "lazycodex-ai bin must exist")
 
@@ -57,10 +57,69 @@ describe("lazycodex-ai npm package", () => {
 
     // then
     assert.equal(result.status, 0, result.stderr)
+    assert.deepEqual(result.stdout.trim().split("\n"), [
+      "npx --yes --package oh-my-openagent omo install --platform=codex --no-tui --codex-autonomous",
+      "npx --yes --package oh-my-openagent omo install --platform=claude-code --no-tui",
+      "npx --yes --package oh-my-openagent omo install --platform=gemini --no-tui",
+    ])
+  })
+
+  it("preserves explicit install platform targets", () => {
+    // given
+    assert.equal(existsSync(binPath), true, "lazycodex-ai bin must exist")
+
+    // when
+    const result = spawnSync(
+      process.execPath,
+      [binPath, "--dry-run", "install", "--platform=claude-code", "--no-tui"],
+      { cwd: root, encoding: "utf8" },
+    )
+
+    // then
+    assert.equal(result.status, 0, result.stderr)
     assert.equal(
       result.stdout.trim(),
-      "npx --yes --package oh-my-openagent omo install --platform=codex --no-tui --codex-autonomous",
+      "npx --yes --package oh-my-openagent omo install --platform=claude-code --no-tui",
     )
+  })
+
+  it("preserves explicit install platform targets passed as a separate value", () => {
+    // given
+    assert.equal(existsSync(binPath), true, "lazycodex-ai bin must exist")
+
+    // when
+    const result = spawnSync(
+      process.execPath,
+      [binPath, "--dry-run", "install", "--platform", "gemini", "--no-tui"],
+      { cwd: root, encoding: "utf8" },
+    )
+
+    // then
+    assert.equal(result.status, 0, result.stderr)
+    assert.equal(
+      result.stdout.trim(),
+      "npx --yes --package oh-my-openagent omo install --platform=gemini --no-tui",
+    )
+  })
+
+  it("expands --platform=all into every supported platform target", () => {
+    // given
+    assert.equal(existsSync(binPath), true, "lazycodex-ai bin must exist")
+
+    // when
+    const result = spawnSync(
+      process.execPath,
+      [binPath, "--dry-run", "install", "--platform=all", "--no-tui"],
+      { cwd: root, encoding: "utf8" },
+    )
+
+    // then
+    assert.equal(result.status, 0, result.stderr)
+    assert.deepEqual(result.stdout.trim().split("\n"), [
+      "npx --yes --package oh-my-openagent omo install --platform=codex --no-tui",
+      "npx --yes --package oh-my-openagent omo install --platform=claude-code --no-tui",
+      "npx --yes --package oh-my-openagent omo install --platform=gemini --no-tui",
+    ])
   })
 
   it("dry-runs non-install commands through oh-my-openagent", () => {

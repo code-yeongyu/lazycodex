@@ -1,7 +1,7 @@
 {
   "name": "lazycodex-ai",
   "version": "0.2.2",
-  "description": "Codex install alias for oh-my-openagent. Run `npx lazycodex-ai install` to set up the Codex platform.",
+  "description": "OmO installer for Codex, Claude Code, and Gemini agent harness targets.",
   "type": "module",
   "bin": {
     "lazycodex-ai": "bin/lazycodex-ai.js"
@@ -17,6 +17,8 @@
   },
   "keywords": [
     "codex",
+    "claude-code",
+    "gemini",
     "oh-my-openagent",
     "ai-agents",
     "orchestration"

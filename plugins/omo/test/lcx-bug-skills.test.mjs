@@ -45,7 +45,7 @@ test("#given synced lcx-contribute-bug-fix skill #when inspected #then it delive
 	assert.match(interfaceMetadata, /- "fix bug pr"/);
 });
 
-test("#given synced lcx-doctor skill #when inspected #then it diagnoses installs against latest /tmp sources without mutating them", async () => {
+test("#given synced lcx-doctor skill #when inspected #then it uses TMPDIR for source paths and checks current aggregate hook layout", async () => {
 	// given
 	const skillRoot = join(root, "skills", "lcx-doctor");
 
@@ -55,6 +55,10 @@ test("#given synced lcx-doctor skill #when inspected #then it diagnoses installs
 
 	// then
 	assert.match(skill, /^---\r?\nname: lcx-doctor\r?\n/m);
+	assert.match(skill, /\$\{TMPDIR:-\/tmp\}/);
+	assert.doesNotMatch(skill, /\/tmp\/lazycodex-source/);
+	assert.doesNotMatch(skill, /\/tmp\/openai-codex-source/);
+	assert.doesNotMatch(skill, /hooks\/hooks\.json/);
 	assert.match(interfaceMetadata, /display_name: "\(OmO\) lcx-doctor"/);
 	assert.match(interfaceMetadata, /- "lazycodex doctor"/);
 	assert.match(interfaceMetadata, /- "lazycodex health check"/);

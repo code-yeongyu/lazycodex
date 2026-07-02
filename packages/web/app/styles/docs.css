@@ -303,7 +303,7 @@
 .docs-content code {
   font-family: var(--font-mono);
   background: var(--surface-2);
-  color: var(--accent-mint);
+  color: var(--text-soft);
   padding: 0.15em 0.4em;
   border-radius: 4px;
   font-size: 0.85em;

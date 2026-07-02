@@ -34,7 +34,7 @@ or blue.
 | Brand/core | `--brand-core` | `#22c55e` | Green brand center (fills, gradients) |
 | Brand/mid | `--brand-mid` | `#16a34a` | Green gradient middle |
 | Brand/outer | `--brand-outer` | `#15803d` | Gradient edge |
-| Accent/primary | `--accent-primary` | `#15803d` | CTAs, focus, active docs links (AA on light) |
+| Accent/primary | `--accent-primary` | `#166534` | CTAs, focus, active docs links (AA on light) |
 | Accent/soft | `--accent-primary-soft` | `rgba(21,128,61,0.08)` | Soft green fills |
 | Accent/border | `--accent-primary-border` | `rgba(21,128,61,0.28)` | Soft green outlines |
 | Accent/mint | `--accent-mint` | `#86efac` | Fills and decoration ONLY — never text on light |

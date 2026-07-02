@@ -24,7 +24,7 @@ export function UlwDemoSection(): JSX.Element {
         </p>
 
         <div className="mt-6 rounded-lg border border-[color:var(--accent-primary)]/20 bg-[color:var(--accent-primary)]/5 px-6 py-3">
-          <InlineCode className="text-lg text-[color:var(--accent-mint)]">
+          <InlineCode className="text-lg text-[color:var(--accent-glow)]">
             {SITE_CONFIG.ultraworkExample}
           </InlineCode>
         </div>

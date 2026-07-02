@@ -37,9 +37,10 @@
     --text-muted: rgba(16, 25, 20, 0.75);
     --text-soft: #14532d;
 
-    /* Accent — AA-legible forest green on light ground. --accent-mint is for
-       fills/decoration ONLY, never text on light surfaces. */
-    --accent-primary: #15803d;
+    /* Accent — AA-legible forest green on light ground, including the tinted
+       chip fills (#e2ede0/#e9f0e5 family) where #15803d only reached ~4.2:1.
+       --accent-mint is for fills/decoration ONLY, never text on light surfaces. */
+    --accent-primary: #166534;
     --accent-primary-soft: rgba(21, 128, 61, 0.08);
     --accent-primary-border: rgba(21, 128, 61, 0.28);
     --accent-cyan: #15803d;

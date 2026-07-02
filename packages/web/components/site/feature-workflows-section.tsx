@@ -10,10 +10,10 @@ import { SITE_CONFIG } from "../../lib/site-config"
 export function FeatureWorkflowsSection(): JSX.Element {
   return (
     <MarketingSection className="mt-24 md:mt-32">
-      <MarketingRuleGrid>
+      <MarketingRuleGrid ruleStyle="dotted">
         <div>
           <Kicker>{SITE_CONFIG.featureWorkflows.kicker}</Kicker>
-          <SectionHeading className="text-[clamp(32px,5vw,56px)]">
+          <SectionHeading serif className="text-[clamp(32px,5vw,56px)]">
             {SITE_CONFIG.featureWorkflows.title}
           </SectionHeading>
           <BodyText>{SITE_CONFIG.featureWorkflows.intro}</BodyText>
@@ -44,7 +44,7 @@ export function FeatureWorkflowsSection(): JSX.Element {
           {SITE_CONFIG.builtInSkills.skills.map((skill) => (
             <li
               key={skill}
-              className="rounded-md border border-white/10 bg-black/20 px-3 py-2 font-mono text-xs text-[color:var(--text-secondary)]"
+              className="rounded-md border border-[color:var(--border-subtle)] bg-[color:var(--surface-2)] px-3 py-2 font-mono text-xs text-[color:var(--text-secondary)]"
             >
               {skill}
             </li>

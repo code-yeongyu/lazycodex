@@ -19,7 +19,6 @@ export const SITE_CONFIG = {
     period: ".",
   },
   harnessPillars: ["goals not recipes", "parallel exploration", "verified completion"],
-  ultraworkTagline: "ultrawork turns the harness into a verified run.",
   ultraworkExample: "ulw add authentication",
   omoIntro: {
     kicker: "Where it comes from",

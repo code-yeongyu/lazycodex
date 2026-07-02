@@ -67,7 +67,7 @@ export function CodexWindow(): JSX.Element {
           className="ulw-content"
           role="tabpanel"
           id="ulw-demo-panel"
-          aria-label={`Scene ${sceneIndex + 1} of ${ULW_DEMO_SCENES.length}: ${scene.status}`}
+          aria-labelledby={`ulw-demo-tab-${sceneIndex}`}
         >
           <TranscriptPane scene={scene} sceneIndex={sceneIndex} />
           <SideRail scene={scene} />
@@ -98,6 +98,7 @@ export function CodexWindow(): JSX.Element {
             className="ulw-control"
             role="tab"
             key={entry.key}
+            id={`ulw-demo-tab-${index}`}
             aria-selected={index === sceneIndex}
             aria-controls="ulw-demo-panel"
             tabIndex={index === sceneIndex ? 0 : -1}

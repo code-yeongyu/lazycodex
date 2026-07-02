@@ -41,6 +41,23 @@ LazyCodex feels like a serious command surface for complex codebases: near-black
 | Status/warning | `--status-warning` | `#f59e0b` | Warnings |
 | Status/error | `--status-error` | `#ef4444` | Errors |
 
+### Codex window adapter tokens (ulw-demo / team-mode mocks only)
+
+The interactive Ultrawork demo and the Team Mode thread mock reproduce the light Codex Desktop
+surface inside the dark canvas. That light surface is an isolated adapter palette — it never leaks
+into ordinary landing/docs UI, and ordinary tokens never restyle the window interior.
+
+| Role | Token | Value | Usage |
+| --- | --- | --- | --- |
+| Window/canvas | `--codex-window-bg` | `#ffffff` | Codex window body |
+| Window/chrome | `--codex-window-chrome` | `#f6f7f6` | Title bar, sidebar, composer field |
+| Window/border | `--codex-window-border` | `rgba(10,12,11,0.12)` | Window ring, pane dividers |
+| Window/text | `--codex-window-text` | `#17211b` | Primary transcript text |
+| Window/text-soft | `--codex-window-text-soft` | `#5b675f` | Tool rows, metadata, timestamps |
+| Window/chip | `--codex-window-chip` | `rgba(10,12,11,0.06)` | Inline code chips, path chips |
+| Window/active | `--codex-window-active` | `rgba(34,197,94,0.12)` | Active step, active roster row |
+| Window/accent | `--codex-window-accent` | `#15803d` | Active-state text on light surface (AA on white) |
+
 ### Rules
 
 - New UI uses `--accent-primary` and `--accent-mint`; `--accent-cyan` and `--accent-teal` remain green aliases only for compatibility.
@@ -126,6 +143,35 @@ All spacing resolves to a 4px rhythm. Existing Tailwind values map to the same r
 - **Variants**: primary filled text button, secondary outlined button.
 - **States**: hover scale or tonal shift, visible focus ring, no layout-property animation.
 
+### CodexWindow (ulw-demo)
+
+- **Source**: `components/site/ulw-demo/codex-window.tsx` (client leaf), scene data in `lib/ulw-demo-scenes.ts`.
+- **Structure**: light Codex Desktop window (adapter tokens above): title bar with traffic lights and
+  `ULTRAWORK MODE ENABLED!` badge, transcript pane (command chip → status line → scene headline →
+  scene body → 8 numbered workflow steps), right rail (Environment card, Subagents roster,
+  narrative card, `goals.json / ledger.jsonl` card), composer bar, scene tab strip with play/pause.
+- **Variants**: 8 scenes (`research → plan → todo → assign → red → green → qa-retry → checkpoint`),
+  each atomically updating command, status, headline, body, active step, roster lanes, proof chips,
+  ledger, and JSON card.
+- **States**: `data-scene` index; `data-playing` for autoplay; per-step `data-active`; per-lane
+  `data-live`. Scene tabs expose `role=tab` + `aria-selected`; play/pause exposes `aria-pressed`;
+  scene status announces via `aria-live="polite"`.
+- **Accessibility**: fully keyboard operable; content remains readable with JS disabled (scene 0
+  server-rendered); every scene reachable without autoplay.
+- **Integrity**: live DOM only — no raster screenshot, `<img>`, or `background-image` may stand in
+  for window content.
+
+### TeamModeSection / UlwResearchSection
+
+- **Source**: `components/site/team-mode-section.tsx`, `components/site/ulw-research-section.tsx`;
+  copy constants in `lib/site-config.ts`.
+- **Structure**: TeamMode shows a leader thread plus member thread cards (light chrome via the same
+  adapter tokens) with a `Sent by Codex from another thread` note bubble; UlwResearch is a compact
+  feature band composed from existing surface primitives.
+- **Copy rule**: every visible string traces to `plugins/omo/skills/teammode/SKILL.md`,
+  `plugins/omo/skills/ulw-research/SKILL.md`, or `content/docs/*.md` via the copy ledger — no
+  invented claims, metrics, customers, or dates.
+
 ### DocsHero
 
 - **Source**: `components/design-system/docs-hero.tsx`.
@@ -148,6 +194,20 @@ All spacing resolves to a 4px rhythm. Existing Tailwind values map to the same r
 - Respect `prefers-reduced-motion`; `splash-reveal` disables itself.
 - Focus states are visible through global `:focus-visible` and component-level rings.
 - Docs interactions must keep working: mobile menu, sidebar search, Cmd/Ctrl-K focus, hash navigation, scroll-spy, and prev/next cards.
+- **Hover is an affordance, not decoration.** Hover feedback may exist only on elements with a real
+  action (links, buttons, tabs, inputs). A hover effect on a non-actionable element — cards, list
+  rows, headings, chips, roster rows — is a defect and must be removed.
+
+### ulw-demo timeline
+
+- Scene transitions animate `opacity`/`transform` only (150-300ms); step and lane activation use the
+  same budget. No layout-property animation anywhere in the window.
+- Autoplay starts when the demo scrolls into view (IntersectionObserver), advances scenes every
+  ~7s, pauses on any user interaction with the tabs or the play/pause control, and never traps focus.
+- `prefers-reduced-motion: reduce` disables autoplay entirely and makes scene switches instant;
+  tabs remain fully operable.
+- The typing-caret effect on the command chip is CSS-only (`opacity` blink) and disabled under
+  reduced motion.
 
 ## 7. Depth & Surface
 

@@ -9,6 +9,10 @@ interface ClassNameProps extends ChildrenProps {
   readonly className?: string
 }
 
+interface SectionProps extends ClassNameProps {
+  readonly id?: string
+}
+
 interface SkipLinkProps {
   readonly children?: ReactNode
   readonly className?: string
@@ -53,9 +57,10 @@ export function MarketingContainer({
 export function MarketingSection({
   children,
   className,
-}: ClassNameProps): JSX.Element {
+  id,
+}: SectionProps): JSX.Element {
   return (
-    <section className={cx("mx-auto w-full max-w-[1200px] px-4 md:px-8", className)}>
+    <section id={id} className={cx("mx-auto w-full max-w-[1200px] px-4 md:px-8", className)}>
       {children}
     </section>
   )

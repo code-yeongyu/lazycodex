@@ -2,7 +2,7 @@ import type { CSSProperties, JSX, ReactNode } from "react"
 import { cx } from "./utils"
 
 const gradientTextStyle = {
-  background: "linear-gradient(180deg, #86efac 0%, #4ade80 50%, #16a34a 100%)",
+  background: "linear-gradient(180deg, #15803d 0%, #16a34a 50%, #22c55e 100%)",
   WebkitBackgroundClip: "text",
   backgroundClip: "text",
   color: "transparent",
@@ -26,11 +26,20 @@ export function Kicker({ children, className }: TextProps): JSX.Element {
   )
 }
 
-export function SectionHeading({ children, className }: TextProps): JSX.Element {
+interface SectionHeadingProps extends TextProps {
+  readonly serif?: boolean
+}
+
+export function SectionHeading({
+  children,
+  className,
+  serif = false,
+}: SectionHeadingProps): JSX.Element {
   return (
     <h2
       className={cx(
         "mt-4 text-balance font-medium leading-tight text-[color:var(--text-primary)]",
+        serif && "font-[family-name:var(--font-serif)]",
         className,
       )}
     >

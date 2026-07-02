@@ -75,7 +75,7 @@ export function HeroBrandMark(): JSX.Element {
         className="absolute inset-0 rounded-[28px] opacity-60 blur-2xl"
         style={{
           background:
-            "radial-gradient(circle at 50% 50%, rgba(74,222,128,0.45) 0%, transparent 70%)",
+            "radial-gradient(circle at 50% 50%, rgba(21,128,61,0.25) 0%, transparent 70%)",
         }}
         aria-hidden="true"
       />

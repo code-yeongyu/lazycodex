@@ -19,7 +19,12 @@ interface NumberedPointProps {
 
 export function SurfaceCard({ children, className }: ChildrenProps): JSX.Element {
   return (
-    <div className={cx("rounded-lg border border-white/10 bg-white/[0.03] p-5", className)}>
+    <div
+      className={cx(
+        "rounded-lg border border-[color:var(--border-subtle)] bg-[color:var(--card-base)] p-5 shadow-[0_1px_2px_rgba(16,25,20,0.04)]",
+        className,
+      )}
+    >
       {children}
     </div>
   )
@@ -42,7 +47,7 @@ export function ShowcaseSurface({ children, className }: ChildrenProps): JSX.Ele
   return (
     <div
       className={cx(
-        "relative flex w-full flex-col items-center rounded-3xl bg-black px-4 py-16 shadow-2xl ring-1 ring-white/5",
+        "relative flex w-full flex-col items-center rounded-3xl bg-[#101613] px-4 py-16 shadow-2xl ring-1 ring-black/10",
         className,
       )}
     >
@@ -53,7 +58,7 @@ export function ShowcaseSurface({ children, className }: ChildrenProps): JSX.Ele
 }
 
 export function CommandCodeSurface({ children }: ChildrenProps): JSX.Element {
-  return <div className="rounded-md bg-black/40 p-3">{children}</div>
+  return <div className="rounded-md bg-[#101613] p-3 text-[#dcfce7]">{children}</div>
 }
 
 export function IconWell({ children }: ChildrenProps): JSX.Element {
@@ -88,7 +93,7 @@ export function FactList({
 
 export function CompactDotList({
   items,
-  dotClassName = "bg-white/25",
+  dotClassName = "bg-[color:var(--border-default)]",
 }: FactListProps): JSX.Element {
   return (
     <ul className="mt-3 flex flex-col gap-2">
@@ -107,7 +112,7 @@ export function CompactDotList({
 
 export function NumberedPoint({ index, label, text }: NumberedPointProps): JSX.Element {
   return (
-    <div className="grid gap-4 rounded-lg border border-white/10 bg-white/[0.03] p-5 md:grid-cols-[72px_1fr]">
+    <div className="grid gap-4 rounded-lg border border-[color:var(--border-subtle)] bg-[color:var(--card-base)] p-5 shadow-[0_1px_2px_rgba(16,25,20,0.04)] md:grid-cols-[72px_1fr]">
       <span className="font-mono text-xs uppercase text-[color:var(--text-tertiary)]">
         {String(index + 1).padStart(2, "0")}
       </span>

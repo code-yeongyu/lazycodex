@@ -61,9 +61,21 @@ export function MarketingSection({
   )
 }
 
-export function MarketingRuleGrid({ children }: ChildrenProps): JSX.Element {
+interface MarketingRuleGridProps extends ChildrenProps {
+  readonly ruleStyle?: "solid" | "dotted"
+}
+
+export function MarketingRuleGrid({
+  children,
+  ruleStyle = "solid",
+}: MarketingRuleGridProps): JSX.Element {
   return (
-    <div className="grid gap-8 border-y border-white/10 py-12 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:py-16">
+    <div
+      className={cx(
+        "grid gap-8 border-y border-[color:var(--border-subtle)] py-12 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:py-16",
+        ruleStyle === "dotted" && "rule-grid-dotted",
+      )}
+    >
       {children}
     </div>
   )

@@ -22,7 +22,7 @@ export function CopyButton({ value, className = "" }: CopyButtonProps): JSX.Elem
     <button
       type="button"
       onClick={handleCopy}
-      className={`group relative flex h-8 w-8 items-center justify-center rounded-md transition-colors hover:bg-[color:var(--surface-panel)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent-primary)] ${className}`}
+      className={`group relative flex h-8 w-8 items-center justify-center rounded-md transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--accent-mint)] ${className}`}
       aria-label="Copy install command"
     >
       <span className="sr-only" aria-live="polite">
@@ -39,7 +39,7 @@ export function CopyButton({ value, className = "" }: CopyButtonProps): JSX.Elem
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-[color:var(--accent-primary)]"
+          className="text-[color:var(--accent-mint)]"
           aria-hidden="true"
         >
           <polyline points="20 6 9 17 4 12" />
@@ -55,7 +55,7 @@ export function CopyButton({ value, className = "" }: CopyButtonProps): JSX.Elem
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-[color:var(--text-muted)] transition-colors group-hover:text-[color:var(--text-primary)]"
+          className="text-[color:var(--accent-mint)] opacity-80 transition-opacity group-hover:opacity-100"
           aria-hidden="true"
         >
           <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />

@@ -74,7 +74,7 @@ function GlyphIcon({ type }: { readonly type: LazyCommand["glyph"] }): JSX.Eleme
 
 export function CommandCard({ command }: CommandCardProps): JSX.Element {
   return (
-    <article className="flex flex-col gap-4 rounded-xl border border-white/5 bg-[color:var(--surface-panel)] p-6 shadow-sm transition-colors hover:border-white/10">
+    <article className="flex flex-col gap-4 rounded-xl border border-[color:var(--border-subtle)] bg-[color:var(--card-base)] p-6 shadow-sm">
       <header className="flex items-center gap-3">
         <IconWell>
           <GlyphIcon type={command.glyph} />
@@ -85,7 +85,7 @@ export function CommandCard({ command }: CommandCardProps): JSX.Element {
       </header>
 
       <CommandCodeSurface>
-        <code className="block overflow-x-auto whitespace-nowrap font-mono text-sm text-[color:var(--text-secondary)]">
+        <code className="block overflow-x-auto whitespace-nowrap font-mono text-sm">
           {command.syntax}
         </code>
       </CommandCodeSurface>

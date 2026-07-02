@@ -196,14 +196,16 @@
     border: 1px solid transparent;
     border-radius: 9px;
     padding: 7px 10px;
-    opacity: 0.55;
-    transition: opacity 200ms ease, background-color 200ms ease, border-color 200ms ease;
+    transition: background-color 200ms ease, border-color 200ms ease;
   }
 
   .ulw-step[data-active="true"] {
-    opacity: 1;
     background: var(--codex-window-active);
-    border-color: rgba(21, 128, 61, 0.25);
+    border-color: rgba(22, 101, 52, 0.25);
+  }
+
+  .ulw-step[data-active="true"] strong {
+    color: var(--codex-window-text);
   }
 
   .ulw-step-number {
@@ -216,6 +218,8 @@
   .ulw-step strong {
     font-size: 12.5px;
     font-weight: 600;
+    color: var(--codex-window-text-soft);
+    transition: color 200ms ease;
   }
 
   .ulw-step p {
@@ -335,13 +339,14 @@
     padding: 4px 8px;
     border-radius: 7px;
     font-size: 11.5px;
-    opacity: 0.5;
-    transition: opacity 200ms ease, background-color 200ms ease;
+    color: var(--codex-window-text-soft);
+    transition: color 200ms ease, background-color 200ms ease;
   }
 
   .ulw-worker[data-live="true"] {
-    opacity: 1;
     background: var(--codex-window-active);
+    color: var(--codex-window-text);
+    font-weight: 500;
   }
 
   .ulw-worker-name {
@@ -373,16 +378,16 @@
     flex-shrink: 0;
   }
 
-  .ulw-worker-glyph[data-lane="root"] { background: #0f766e; }
-  .ulw-worker-glyph[data-lane="explore"] { background: #2563eb; }
-  .ulw-worker-glyph[data-lane="library"] { background: #d97706; }
-  .ulw-worker-glyph[data-lane="plan"] { background: #7c3aed; }
-  .ulw-worker-glyph[data-lane="todo"] { background: #475569; }
-  .ulw-worker-glyph[data-lane="execute"] { background: #16a34a; }
-  .ulw-worker-glyph[data-lane="test"] { background: #dc2626; }
-  .ulw-worker-glyph[data-lane="qa"] { background: #db2777; }
-  .ulw-worker-glyph[data-lane="review"] { background: #4f46e5; }
-  .ulw-worker-glyph[data-lane="continuation"] { background: #64748b; }
+  .ulw-worker-glyph[data-lane="root"] { background: #115e59; }
+  .ulw-worker-glyph[data-lane="explore"] { background: #1d4ed8; }
+  .ulw-worker-glyph[data-lane="library"] { background: #92400e; }
+  .ulw-worker-glyph[data-lane="plan"] { background: #6d28d9; }
+  .ulw-worker-glyph[data-lane="todo"] { background: #334155; }
+  .ulw-worker-glyph[data-lane="execute"] { background: #166534; }
+  .ulw-worker-glyph[data-lane="test"] { background: #b91c1c; }
+  .ulw-worker-glyph[data-lane="qa"] { background: #be185d; }
+  .ulw-worker-glyph[data-lane="review"] { background: #4338ca; }
+  .ulw-worker-glyph[data-lane="continuation"] { background: #475569; }
 
   .ulw-ledger pre {
     font-family: var(--font-mono);

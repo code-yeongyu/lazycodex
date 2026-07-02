@@ -56,7 +56,7 @@ into ordinary landing/docs UI, and ordinary tokens never restyle the window inte
 | Window/text-soft | `--codex-window-text-soft` | `#5b675f` | Tool rows, metadata, timestamps |
 | Window/chip | `--codex-window-chip` | `rgba(10,12,11,0.06)` | Inline code chips, path chips |
 | Window/active | `--codex-window-active` | `rgba(34,197,94,0.12)` | Active step, active roster row |
-| Window/accent | `--codex-window-accent` | `#15803d` | Active-state text on light surface (AA on white) |
+| Window/accent | `--codex-window-accent` | `#166534` | Active-state text on light surface (AA on white) |
 
 ### Rules
 

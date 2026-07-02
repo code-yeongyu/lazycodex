@@ -75,7 +75,7 @@ export function CodexWindow(): JSX.Element {
         <ComposerBar scene={scene} />
       </div>
 
-      <div className="ulw-controls" role="tablist" aria-label="Ultrawork demo scenes">
+      <div className="ulw-controls">
         <button
           type="button"
           className="ulw-control"
@@ -85,6 +85,13 @@ export function CodexWindow(): JSX.Element {
         >
           {playing ? "pause" : "play"}
         </button>
+        {/* display:contents keeps the shared flex-wrap layout while giving the
+            tablist only tab children (aria-required-children). */}
+        <div
+          role="tablist"
+          aria-label="Ultrawork demo scenes"
+          style={{ display: "contents" }}
+        >
         {ULW_DEMO_SCENES.map((entry, index) => (
           <button
             type="button"
@@ -103,6 +110,7 @@ export function CodexWindow(): JSX.Element {
             {entry.tab}
           </button>
         ))}
+        </div>
       </div>
     </div>
   )

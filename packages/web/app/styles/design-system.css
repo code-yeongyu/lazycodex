@@ -36,6 +36,7 @@
 
     /* Accent — the live-wire green (green-400/300, unambiguously green). */
     --accent-primary: #4ade80;
+    --accent-on-primary: #052e16;
     --accent-primary-soft: rgba(74, 222, 128, 0.1);
     --accent-primary-border: rgba(74, 222, 128, 0.24);
     --accent-cyan: #4ade80;
@@ -61,7 +62,12 @@
     --codex-window-text-soft: #5b675f;
     --codex-window-chip: rgba(10, 12, 11, 0.06);
     --codex-window-active: rgba(34, 197, 94, 0.12);
+    --codex-window-active-border: rgba(22, 101, 52, 0.28);
     --codex-window-accent: #166534;
+    --codex-window-glyph-text: #ffffff;
+    --codex-window-traffic-red: #f87171;
+    --codex-window-traffic-amber: #fbbf24;
+    --codex-window-traffic-green: #34d399;
   }
 
   html {

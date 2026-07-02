@@ -13,7 +13,7 @@ export function UlwDemoSection(): JSX.Element {
   return (
     <MarketingSection
       id="ulw-demo"
-      className="mt-24 flex flex-col items-center text-center md:mt-32"
+      className="mt-24 flex scroll-mt-20 flex-col items-center text-center md:mt-32"
     >
       <Kicker>{SITE_CONFIG.ulwDemo.kicker}</Kicker>
       <h2 className="text-balance text-[clamp(32px,5vw,48px)] font-medium tracking-tight text-[color:var(--text-primary)]">

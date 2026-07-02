@@ -27,6 +27,7 @@ LazyCodex feels like a serious command surface for complex codebases: near-black
 | Brand/mid | `--brand-mid` | `#16a34a` | Green gradient middle |
 | Brand/outer | `--brand-outer` | `#15803d` | Selection and gradient edge |
 | Accent/primary | `--accent-primary` | `#4ade80` | CTAs, focus, active docs links |
+| Accent/on-primary | `--accent-on-primary` | `#052e16` | Text on accent-primary fills |
 | Accent/soft | `--accent-primary-soft` | `rgba(74,222,128,0.1)` | Soft green fills |
 | Accent/border | `--accent-primary-border` | `rgba(74,222,128,0.24)` | Soft green outlines |
 | Accent/mint | `--accent-mint`, `--accent-glow` | `#86efac` | Highlights, glow text |
@@ -56,7 +57,10 @@ into ordinary landing/docs UI, and ordinary tokens never restyle the window inte
 | Window/text-soft | `--codex-window-text-soft` | `#5b675f` | Tool rows, metadata, timestamps |
 | Window/chip | `--codex-window-chip` | `rgba(10,12,11,0.06)` | Inline code chips, path chips |
 | Window/active | `--codex-window-active` | `rgba(34,197,94,0.12)` | Active step, active roster row |
+| Window/active-border | `--codex-window-active-border` | `rgba(22,101,52,0.28)` | Active step/proof outlines |
 | Window/accent | `--codex-window-accent` | `#166534` | Active-state text on light surface (AA on white) |
+| Window/glyph-text | `--codex-window-glyph-text` | `#ffffff` | Letters inside roster glyph squares |
+| Window/traffic | `--codex-window-traffic-red/-amber/-green` | `#f87171` / `#fbbf24` / `#34d399` | macOS traffic-light ornaments |
 
 ### Rules
 
@@ -160,6 +164,10 @@ All spacing resolves to a 4px rhythm. Existing Tailwind values map to the same r
   server-rendered); every scene reachable without autoplay.
 - **Integrity**: live DOM only — no raster screenshot, `<img>`, or `background-image` may stand in
   for window content.
+- **Roster glyph colors**: the subagent glyph squares use per-agent identity hues (blue explorer,
+  amber librarian, violet planner, …) faithful to the Codex Desktop reference. They are scoped to
+  the window adapter and are identity badges, not brand accents — the green-only brand rule applies
+  outside the window.
 
 ### TeamModeSection / UlwResearchSection
 

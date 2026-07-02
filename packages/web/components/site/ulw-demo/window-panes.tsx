@@ -63,8 +63,12 @@ export function TranscriptPane({
         </strong>
       </div>
 
+      {/* The live region stays OUTSIDE the keyed swap subtree: React must
+          mutate its text in place for screen readers to announce scenes. */}
+      <small className="ulw-scene-status" aria-live="polite">
+        {scene.status}
+      </small>
       <div className="ulw-scene-copy ulw-scene-swap" key={scene.key}>
-        <small aria-live="polite">{scene.status}</small>
         <h3>{scene.title}</h3>
         <p>{scene.body}</p>
       </div>

@@ -52,8 +52,13 @@ export function HephaestusSection(): JSX.Element {
         </div>
       </MarketingRuleGrid>
 
-      {/* Hephaestus — the ported agent */}
-      <ShowcaseSurface className="mt-16 overflow-hidden text-center md:px-8">
+      {/* Hephaestus — the ported agent. This ShowcaseSurface is the ONE
+          intentional dark marketing band on the light canvas (DESIGN.md
+          contrast anchor). The light-canvas ink tokens are re-scoped here to
+          the dark-window text family (design-system.css dark window block) so
+          every inner primitive reads light-on-dark at AA: #e8f0ea/#b8c2bc are
+          ~15.7:1/~10:1 and #4ade80 ~10.4:1 against the #101613 band. */}
+      <ShowcaseSurface className="mt-16 overflow-hidden text-center md:px-8 [--accent-primary:#4ade80] [--text-muted:#b8c2bc] [--text-primary:#e8f0ea] [--text-tertiary:#b8c2bc]">
         <div className="flex items-center gap-3">
           <AccentBadge>{hephaestus.badge}</AccentBadge>
         </div>

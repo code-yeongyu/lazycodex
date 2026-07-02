@@ -4,7 +4,7 @@ import { SITE_CONFIG } from "../../lib/site-config"
 
 export function Hero(): JSX.Element {
   return (
-    <section className="relative flex w-full flex-col justify-end pb-[36px] pt-[36px] md:pb-[44px] md:pt-[52px]">
+    <section className="relative flex w-full flex-col justify-end pb-[36px] pt-[36px] md:pb-[24px] md:pt-[40px]">
       {/* Open light canvas — no card, no gradient washes. The declarative
           hero text sits directly on the sage ground so it stays the LCP
           element and paints at FCP; the demo window below carries the

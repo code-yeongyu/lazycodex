@@ -95,7 +95,7 @@ test.describe("ulw demo — window theme toggle", () => {
     page,
   }) => {
     await page.goto("/")
-    const ulwWindow = page.locator(".ulw-window")
+    const ulwWindow = page.locator("#ulw-demo .ulw-window")
 
     // Light is the default (faithful to the real Codex app; Lighthouse audits it).
     await expect(ulwWindow).toHaveAttribute("data-window-theme", "light")
@@ -115,7 +115,7 @@ test.describe("ulw demo — window theme toggle", () => {
     page,
   }) => {
     await page.goto("/")
-    const ulwWindow = page.locator(".ulw-window")
+    const ulwWindow = page.locator("#ulw-demo .ulw-window")
     const group = page.getByRole("group", { name: "Demo window theme" })
     const lightButton = group.getByRole("button", { name: "Light" })
     const darkButton = group.getByRole("button", { name: "Dark" })
@@ -132,7 +132,7 @@ test.describe("ulw demo — window theme toggle", () => {
     page,
   }) => {
     await page.goto("/")
-    const ulwWindow = page.locator(".ulw-window")
+    const ulwWindow = page.locator("#ulw-demo .ulw-window")
     const group = page.getByRole("group", { name: "Demo window theme" })
     const lightButton = group.getByRole("button", { name: "Light" })
     const darkButton = group.getByRole("button", { name: "Dark" })
@@ -154,7 +154,7 @@ test.describe("ulw demo — window theme toggle", () => {
     // Reduced motion pins the demo on scene 0 so the visibility check is stable.
     await page.emulateMedia({ reducedMotion: "reduce" })
     await page.goto("/")
-    const ulwWindow = page.locator(".ulw-window")
+    const ulwWindow = page.locator("#ulw-demo .ulw-window")
     const darkButton = page
       .getByRole("group", { name: "Demo window theme" })
       .getByRole("button", { name: "Dark" })

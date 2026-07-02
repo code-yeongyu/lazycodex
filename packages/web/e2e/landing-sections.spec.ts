@@ -63,7 +63,7 @@ test.describe("information architecture", () => {
     const demo = await page
       .locator("#ulw-demo")
       .evaluate((node) => node.getBoundingClientRect().top + window.scrollY)
-    const commands = await topOf(page, "$ulw-loop")
+    const commands = await topOf(page, '$ulw-loop "task"')
     const workflows = await topOf(page, SITE_CONFIG.featureWorkflows.title)
     const teamMode = await topOf(page, SITE_CONFIG.teamMode.title)
     const research = await topOf(page, SITE_CONFIG.ulwResearch.title)

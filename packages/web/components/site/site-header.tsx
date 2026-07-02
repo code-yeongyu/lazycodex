@@ -7,7 +7,7 @@ import { GithubStarsPill } from "./github-stars-pill"
 
 export function SiteHeader(): JSX.Element {
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-white/5 bg-[color:var(--surface-base)]/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full border-b border-[color:var(--border-subtle)] bg-[color:var(--surface-base)]/85 backdrop-blur-md">
       <MarketingContainer className="flex h-14 items-center justify-between">
         <div className="flex items-center gap-3">
           <Link

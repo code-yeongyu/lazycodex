@@ -63,37 +63,15 @@ export function TranscriptPane({ scene }: { readonly scene: UlwScene }): JSX.Ele
 export function WindowFooter({
   scene,
   sceneIndex,
-  onSelectScene,
 }: {
   readonly scene: UlwScene
   readonly sceneIndex: number
-  readonly onSelectScene: (index: number) => void
 }): JSX.Element {
   return (
     <div className="ulw-app-footer">
-      <div className="ulw-app-stepper">
-        <button
-          type="button"
-          className="ulw-app-stepnav"
-          aria-label="Previous step"
-          disabled={sceneIndex === 0}
-          onClick={() => onSelectScene(sceneIndex - 1)}
-        >
-          <UlwIcon name="chevron-left" />
-        </button>
-        <span className="ulw-app-step">
-          Step {sceneIndex + 1} / {ULW_DEMO_SCENES.length}
-        </span>
-        <button
-          type="button"
-          className="ulw-app-stepnav"
-          aria-label="Next step"
-          disabled={sceneIndex === ULW_DEMO_SCENES.length - 1}
-          onClick={() => onSelectScene(sceneIndex + 1)}
-        >
-          <UlwIcon name="chevron-right" />
-        </button>
-      </div>
+      <span className="ulw-app-step">
+        Step {sceneIndex + 1} / {ULW_DEMO_SCENES.length}
+      </span>
 
       <div className="ulw-app-goal">
         <UlwIcon name="target" />

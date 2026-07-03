@@ -87,12 +87,6 @@
     flex-shrink: 0;
   }
 
-  .ulw-app-stepper {
-    display: flex;
-    align-items: center;
-    align-self: center;
-    gap: 6px;
-  }
 
   .ulw-app-step {
     font-family: var(--font-mono);
@@ -103,29 +97,8 @@
     color: var(--codex-window-text-soft);
   }
 
-  .ulw-app-stepnav {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 999px;
-    border: 1px solid var(--codex-window-border);
-    background: transparent;
-    color: var(--codex-window-text-soft);
-    cursor: pointer;
-    transition: color 150ms ease, border-color 150ms ease;
-  }
 
-  .ulw-app-stepnav:hover:not(:disabled) {
-    color: var(--codex-window-text);
-    border-color: var(--codex-window-active-border);
-  }
 
-  .ulw-app-stepnav:disabled {
-    opacity: 0.35;
-    cursor: default;
-  }
 
   .ulw-app-goal-elapsed {
     margin-left: auto;

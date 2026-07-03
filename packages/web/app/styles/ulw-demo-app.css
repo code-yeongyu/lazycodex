@@ -125,16 +125,11 @@
     background: var(--codex-window-accent);
   }
 
-  .ulw-app-control:focus-visible {
-    outline: 2px solid var(--codex-window-accent);
-    outline-offset: 1px;
-  }
 
   .ulw-app-showmore {
     padding-left: 30px;
   }
 
-  /* ---- Main column: title bar with playback controls, transcript, footer. */
 
   .ulw-app-main {
     display: flex;
@@ -165,34 +160,9 @@
     color: var(--codex-window-text-soft);
   }
 
-  .ulw-app-controls {
-    margin-left: auto;
-    display: flex;
-    gap: 6px;
-  }
 
-  .ulw-app-control {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 7px;
-    border: 1px solid var(--codex-window-border);
-    color: var(--codex-window-text-soft);
-    transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
-  }
 
-  .ulw-app-control:hover {
-    background: var(--codex-window-chip);
-    color: var(--codex-window-text);
-  }
 
-  .ulw-app-control[aria-pressed="true"] {
-    color: var(--codex-window-accent);
-    border-color: var(--codex-window-active-border);
-    background: var(--codex-window-active);
-  }
 
   .ulw-icon {
     flex-shrink: 0;
@@ -215,11 +185,6 @@
   @media (prefers-reduced-motion: reduce) {
     .ulw-app-progress span {
       animation: none;
-    }
-
-    .ulw-app-session,
-    .ulw-app-control {
-      transition: none;
     }
   }
 }

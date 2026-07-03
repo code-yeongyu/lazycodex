@@ -98,7 +98,7 @@ export const ULW_DEMO_SCENES = [
     json: '{ "activeGoalId": null, "criteria": "pending" }',
     lanes: ["root", "explore", "library"],
     proof: 0,
-    elapsed: "4m 08s",
+    elapsed: "3d 2h 14m",
   },
   {
     key: "plan",
@@ -114,7 +114,7 @@ export const ULW_DEMO_SCENES = [
     json: '{ "briefPath": ".omo/ulw-loop/brief.md", "goalsPath": ".omo/ulw-loop/goals.json" }',
     lanes: ["root", "explore", "library", "plan"],
     proof: 1,
-    elapsed: "18m 40s",
+    elapsed: "3d 4h 51m",
   },
   {
     key: "todo",
@@ -130,7 +130,7 @@ export const ULW_DEMO_SCENES = [
     json: '{ "activeGoalId": null, "goals": [{ "id": "G001-ultrawork-demo", "status": "pending" }] }',
     lanes: ["root", "plan", "todo"],
     proof: 2,
-    elapsed: "42m 05s",
+    elapsed: "3d 7h 33m",
   },
   {
     key: "assign",
@@ -146,7 +146,7 @@ export const ULW_DEMO_SCENES = [
     json: '{ "activeGoalId": "G001-ultrawork-demo", "attempt": 1, "status": "in_progress" }',
     lanes: ["root", "todo", "execute", "test", "qa", "review", "continuation"],
     proof: 3,
-    elapsed: "1h 12m",
+    elapsed: "3d 11h 06m",
   },
   {
     key: "red",
@@ -162,7 +162,7 @@ export const ULW_DEMO_SCENES = [
     json: '{ "C001": { "status": "fail", "capturedEvidence": "TDD red" } }',
     lanes: ["root", "execute", "test"],
     proof: 4,
-    elapsed: "3h 26m",
+    elapsed: "3d 15h 48m",
   },
   {
     key: "green",
@@ -178,7 +178,7 @@ export const ULW_DEMO_SCENES = [
     json: '{ "C001": { "status": "pass", "capturedEvidence": "GREEN unit proof" } }',
     lanes: ["root", "execute", "test", "todo"],
     proof: 5,
-    elapsed: "9h 51m",
+    elapsed: "3d 19h 22m",
   },
   {
     key: "qa-retry",
@@ -194,7 +194,7 @@ export const ULW_DEMO_SCENES = [
     json: '{ "status": "in_progress", "attempt": 2, "failureReason": "QA fail" }',
     lanes: ["root", "execute", "test", "qa", "continuation"],
     proof: 6,
-    elapsed: "18h 33m",
+    elapsed: "3d 22h 57m",
   },
   {
     key: "checkpoint",
@@ -210,7 +210,7 @@ export const ULW_DEMO_SCENES = [
     json: '{ "aggregateCompletion": { "status": "complete" }, "qualityGate": "clean" }',
     lanes: ["root", "qa", "review", "todo"],
     proof: 7,
-    elapsed: "1d 6h 47m",
+    elapsed: "4d 2h 41m",
   },
 ] as const satisfies readonly UlwScene[];
 
@@ -220,4 +220,4 @@ export const ULW_DEMO_ENVIRONMENT: readonly (readonly [string, string])[] = [
   ["Mode", "ulw ulw ulw"],
 ] as const;
 
-export const ULW_DEMO_AUTOPLAY_MS = 7000;
+export const ULW_DEMO_AUTOPLAY_MS = 4000;

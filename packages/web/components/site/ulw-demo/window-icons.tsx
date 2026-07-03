@@ -24,13 +24,6 @@ const ICON_PATHS = {
   plus: "M8 3.5v9M3.5 8h9",
   mic: "M8 10.5A2.5 2.5 0 0 0 10.5 8V4.5a2.5 2.5 0 0 0-5 0V8A2.5 2.5 0 0 0 8 10.5ZM12.5 8a4.5 4.5 0 0 1-9 0M8 12.5V14",
   "arrow-up": "M8 12.5v-9M4.5 7 8 3.5 11.5 7",
-  play: "M5.5 3.5v9l7-4.5Z",
-  pause: "M6 4v8M10 4v8",
-  replay: "M2.5 8a5.5 5.5 0 1 0 1.7-4M4 2.5v2.8h2.8",
-  moon: "M13.2 9.7A5.7 5.7 0 1 1 6.3 2.8a4.6 4.6 0 0 0 6.9 6.9Z",
-  sun: "M8 5.4a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2ZM8 1.3v1.5M8 13.2v1.5M1.3 8h1.5M13.2 8h1.5M3.3 3.3l1 1M11.7 11.7l1 1M12.7 3.3l-1 1M4.3 11.7l-1 1",
-  "chevron-left": "M9.5 4 6 8l3.5 4",
-  "chevron-right": "M6.5 4 10 8l-3.5 4",
 } as const
 
 export type UlwIconName = keyof typeof ICON_PATHS

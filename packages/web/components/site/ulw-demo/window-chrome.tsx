@@ -60,18 +60,8 @@ export function WindowSidebar(): JSX.Element {
 
 export function WindowTitlebar({
   sceneTab,
-  playing,
-  windowTheme,
-  onTogglePlay,
-  onReplay,
-  onToggleTheme,
 }: {
   readonly sceneTab: string
-  readonly playing: boolean
-  readonly windowTheme: "light" | "dark"
-  readonly onTogglePlay: () => void
-  readonly onReplay: () => void
-  readonly onToggleTheme: () => void
 }): JSX.Element {
   return (
     <header className="ulw-app-titlebar">
@@ -79,34 +69,6 @@ export function WindowTitlebar({
       <span className="ulw-app-title-dots" aria-hidden="true">
         ⋯
       </span>
-      <div className="ulw-app-controls" role="group" aria-label="Demo playback controls">
-        <button
-          type="button"
-          className="ulw-app-control"
-          aria-pressed={playing}
-          aria-label={playing ? "Pause the demo" : "Play the demo"}
-          onClick={onTogglePlay}
-        >
-          <UlwIcon name={playing ? "pause" : "play"} />
-        </button>
-        <button
-          type="button"
-          className="ulw-app-control"
-          aria-label="Replay the demo from the first scene"
-          onClick={onReplay}
-        >
-          <UlwIcon name="replay" />
-        </button>
-        <button
-          type="button"
-          className="ulw-app-control"
-          aria-pressed={windowTheme === "light"}
-          aria-label="Toggle the light window theme"
-          onClick={onToggleTheme}
-        >
-          <UlwIcon name="sun" />
-        </button>
-      </div>
     </header>
   )
 }

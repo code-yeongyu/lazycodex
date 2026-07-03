@@ -20,12 +20,9 @@
     --surface-0: #0a0b0d;
     --surface-1: rgba(255, 255, 255, 0.04);
     --surface-2: rgba(255, 255, 255, 0.06);
-    --surface-3: rgba(255, 255, 255, 0.09);
     --card-base: #15171b;
     --surface-night: #07080a;
     --surface-panel: #101216;
-    --surface-panel-alt: #111318;
-    --surface-panel-deep: #0e1013;
 
     /* Brand — green core (green-500 family), clearly green not teal. */
     --brand-core: #22c55e;
@@ -46,8 +43,6 @@
     --accent-primary: #4ade80;
     --accent-primary-soft: rgba(74, 222, 128, 0.1);
     --accent-primary-border: rgba(74, 222, 128, 0.32);
-    --accent-cyan: #4ade80;
-    --accent-teal: #22c55e;
     --accent-mint: #86efac;
     --accent-glow: #bbf7d0;
 
@@ -159,35 +154,6 @@
 }
 
 @layer utilities {
-  /* Hero-card washes — subtle radial green glows composited on the elevated
-     dark panel base. Dark identity: low-alpha green over var(--card-base);
-     no light stops, no white washes — the glow stays quiet. */
-  .card-gradient-base {
-    background:
-      radial-gradient(120% 100% at 60% 65%, rgba(74, 222, 128, 0.08) 0%, rgba(74, 222, 128, 0.05) 35%, rgba(34, 197, 94, 0.03) 70%, rgba(34, 197, 94, 0) 100%),
-      var(--card-base);
-  }
-
-  .card-gradient-beam {
-    background:
-      radial-gradient(55% 55% at 38% -8%, rgba(74, 222, 128, 0.14) 0%, rgba(74, 222, 128, 0.06) 35%, rgba(74, 222, 128, 0) 65%),
-      radial-gradient(32% 28% at 55% -5%, rgba(74, 222, 128, 0.08) 0%, rgba(74, 222, 128, 0) 70%);
-  }
-
-  .card-gradient-sheen {
-    background:
-      linear-gradient(118deg, transparent 18%, rgba(74, 222, 128, 0.06) 26%, rgba(74, 222, 128, 0.1) 30%, rgba(74, 222, 128, 0.05) 35%, transparent 45%),
-      linear-gradient(112deg, transparent 8%, rgba(34, 197, 94, 0.04) 15%, transparent 28%);
-    filter: blur(20px);
-    opacity: 0.85;
-  }
-
-  .card-gradient-pools {
-    background:
-      radial-gradient(55% 50% at 8% 95%, rgba(34, 197, 94, 0.09), transparent 70%),
-      radial-gradient(45% 45% at 95% 40%, rgba(74, 222, 128, 0.07), transparent 70%);
-  }
-
   /* ampcode-style dotted vertical column rules: every column after the
      first gets a dotted left rule (MarketingRuleGrid ruleStyle="dotted").
      The rule color flips with --border-subtle (hairline white on dark). */

@@ -1,6 +1,6 @@
 import type { JSX } from "react"
 import { MarketingSection } from "../design-system/layout"
-import { AccentSurface } from "../design-system/surfaces"
+import { AccentSurface, MonoTag } from "../design-system/surfaces"
 import { BodyText, Kicker, SectionHeading } from "../design-system/typography"
 import { SITE_CONFIG } from "../../lib/site-config"
 
@@ -26,12 +26,9 @@ export function UlwResearchSection(): JSX.Element {
         <div className="flex flex-col justify-center gap-4">
           <ul className="grid grid-cols-2 gap-2">
             {ulwResearch.lanes.map((lane) => (
-              <li
-                key={lane}
-                className="rounded-md border border-[color:var(--border-subtle)] bg-[color:var(--surface-2)] px-3 py-2 text-center font-mono text-xs text-[color:var(--text-secondary)]"
-              >
+              <MonoTag key={lane} className="text-center">
                 {lane}
-              </li>
+              </MonoTag>
             ))}
           </ul>
           <p className="text-sm leading-relaxed text-[color:var(--text-muted)]">

@@ -82,6 +82,20 @@ export function AccentBadge({ children, className }: TextProps): JSX.Element {
   )
 }
 
+const cardLabelTone = {
+  default: "text-[color:var(--text-tertiary)]",
+  accent: "text-[color:var(--accent-primary)]",
+} as const
+
+interface CardLabelProps {
+  readonly children: ReactNode
+  readonly tone?: keyof typeof cardLabelTone
+}
+
+export function CardLabel({ children, tone = "default" }: CardLabelProps): JSX.Element {
+  return <h3 className={cx("font-mono text-xs uppercase", cardLabelTone[tone])}>{children}</h3>
+}
+
 export function InlineCode({ children, className }: TextProps): JSX.Element {
   return (
     <code className={cx("font-mono font-medium", className)}>

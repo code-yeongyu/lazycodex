@@ -1,7 +1,7 @@
 import type { JSX } from "react"
 import { MarketingRuleGrid, MarketingSection } from "../design-system/layout"
 import { SurfaceCard } from "../design-system/surfaces"
-import { BodyText, Kicker, SectionHeading } from "../design-system/typography"
+import { BodyText, CardLabel, Kicker, SectionHeading } from "../design-system/typography"
 import { SITE_CONFIG } from "../../lib/site-config"
 
 /**
@@ -96,9 +96,7 @@ export function TeamModeSection(): JSX.Element {
           </div>
 
           <SurfaceCard>
-            <h3 className="font-mono text-xs uppercase text-[color:var(--text-tertiary)]">
-              {teamMode.whenTitle}
-            </h3>
+            <CardLabel>{teamMode.whenTitle}</CardLabel>
             <ul className="mt-3 flex flex-col gap-2">
               {teamMode.whenPoints.map((point) => (
                 <li

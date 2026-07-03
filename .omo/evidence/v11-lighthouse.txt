@@ -1,0 +1,60 @@
+[WebServer] $ node ./scripts/generate-docs-content.mjs
+[WebServer] Docs content already current with 20 HTML-compiled docs
+[WebServer] $ NODE_OPTIONS=--no-deprecation next build
+[WebServer] ▲ Next.js 16.2.9 (Turbopack)
+[WebServer] 
+[WebServer]   Creating an optimized production build ...
+[WebServer] ✓ Compiled successfully in 1008ms
+[WebServer]   Running TypeScript ...
+[WebServer]   Finished TypeScript in 2.3s ...
+[WebServer]   Collecting page data using 13 workers ...
+[WebServer]   Generating static pages using 13 workers (0/11) ...
+[WebServer]   Generating static pages using 13 workers (2/11) 
+[WebServer]   Generating static pages using 13 workers (5/11) 
+[WebServer]   Generating static pages using 13 workers (8/11) 
+[WebServer] ✓ Generating static pages using 13 workers (11/11) in 689ms
+[WebServer]   Finalizing page optimization ...
+[WebServer] 
+[WebServer] Route (app)
+[WebServer] ┌ ○ /
+[WebServer] ├ ○ /_not-found
+[WebServer] ├ ƒ /api/github-stars
+[WebServer] ├ ○ /apple-icon.png
+[WebServer] ├ ○ /docs
+[WebServer] ├ ○ /icon.svg
+[WebServer] ├ ○ /manifest.webmanifest
+[WebServer] ├ ○ /opengraph-image
+[WebServer] ├ ○ /robots.txt
+[WebServer] ├ ○ /sitemap.xml
+[WebServer] └ ○ /twitter-image
+[WebServer] 
+[WebServer] 
+[WebServer] ○  (Static)   prerendered as static content
+[WebServer] ƒ  (Dynamic)  server-rendered on demand
+[WebServer] 
+[WebServer] $ NODE_OPTIONS=--no-deprecation next start
+[WebServer] ▲ Next.js 16.2.9
+[WebServer] - Local:         http://localhost:56958
+[WebServer] - Network:       http://192.168.0.3:56958
+[WebServer] ✓ Ready in 70ms
+
+Running 2 tests using 1 worker
+
+[Lighthouse mobile] url=http://127.0.0.1:56958 perf=100 a11y=100 bp=100 seo=100
+[Lighthouse mobile] Failing audits:
+  - unused-javascript: score=0.5 (Reduce unused JavaScript)
+  - bf-cache: score=0 (Page prevented back/forward cache restoration)
+  - legacy-javascript-insight: score=0.5 (Legacy JavaScript)
+  - network-dependency-tree-insight: score=0 (Network dependency tree)
+  - render-blocking-insight: score=0.5 (Render-blocking requests)
+  ✓  1 [chromium] › e2e/lighthouse.spec.ts:220:3 › @lighthouse — Lighthouse 100/100/100/100 (Playwright Chrome + CDP) › mobile preset hits 100 in every category (15.9s)
+[Lighthouse desktop] url=http://127.0.0.1:56958 perf=100 a11y=100 bp=100 seo=100
+[Lighthouse desktop] Failing audits:
+  - unused-javascript: score=0.5 (Reduce unused JavaScript)
+  - bf-cache: score=0 (Page prevented back/forward cache restoration)
+  - legacy-javascript-insight: score=0.5 (Legacy JavaScript)
+  - network-dependency-tree-insight: score=0 (Network dependency tree)
+  - render-blocking-insight: score=0.5 (Render-blocking requests)
+  ✓  2 [chromium] › e2e/lighthouse.spec.ts:226:3 › @lighthouse — Lighthouse 100/100/100/100 (Playwright Chrome + CDP) › desktop preset hits 100 in every category (15.8s)
+
+  2 passed (39.6s)

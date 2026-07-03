@@ -1,5 +1,6 @@
 import type { JSX } from "react"
 import { MarketingSection } from "../../design-system/layout"
+import { AccentSurface } from "../../design-system/surfaces"
 import { InlineCode, Kicker } from "../../design-system/typography"
 import { SITE_CONFIG } from "../../../lib/site-config"
 import { CodexWindow } from "./codex-window"
@@ -23,11 +24,11 @@ export function UlwDemoSection(): JSX.Element {
           {SITE_CONFIG.ulwDemo.intro}
         </p>
 
-        <div className="mt-6 rounded-lg border border-[color:var(--accent-primary)]/20 bg-[color:var(--accent-primary)]/5 px-6 py-3">
+        <AccentSurface className="mt-6" padding="px-6 py-3">
           <InlineCode className="text-lg text-[color:var(--accent-glow)]">
             {SITE_CONFIG.ultraworkExample}
           </InlineCode>
-        </div>
+        </AccentSurface>
 
         <blockquote className="mt-3 font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--text-tertiary)]">
           “{SITE_CONFIG.ulwDemo.quote}”

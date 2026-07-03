@@ -6,6 +6,15 @@ interface ChildrenProps {
   readonly className?: string
 }
 
+interface ChildrenOnlyProps {
+  readonly children: ReactNode
+}
+
+interface AccentSurfaceProps extends ChildrenProps {
+  readonly as?: "div" | "li"
+  readonly padding?: string
+}
+
 interface FactListProps {
   readonly items: readonly string[]
   readonly dotClassName?: string
@@ -30,16 +39,22 @@ export function SurfaceCard({ children, className }: ChildrenProps): JSX.Element
   )
 }
 
-export function AccentSurface({ children, className }: ChildrenProps): JSX.Element {
+export function AccentSurface({
+  children,
+  className,
+  as: Tag = "div",
+  padding = "p-5",
+}: AccentSurfaceProps): JSX.Element {
   return (
-    <div
+    <Tag
       className={cx(
-        "rounded-lg border border-[color:var(--accent-primary)]/20 bg-[color:var(--accent-primary)]/5 p-5",
+        "rounded-lg border border-[color:var(--accent-primary)]/20 bg-[color:var(--accent-primary)]/5",
+        padding,
         className,
       )}
     >
       {children}
-    </div>
+    </Tag>
   )
 }
 
@@ -57,11 +72,11 @@ export function ShowcaseSurface({ children, className }: ChildrenProps): JSX.Ele
   )
 }
 
-export function CommandCodeSurface({ children }: ChildrenProps): JSX.Element {
+export function CommandCodeSurface({ children }: ChildrenOnlyProps): JSX.Element {
   return <div className="rounded-md bg-[#1b1f24] p-3 text-[#dcfce7] ring-1 ring-white/10">{children}</div>
 }
 
-export function IconWell({ children }: ChildrenProps): JSX.Element {
+export function IconWell({ children }: ChildrenOnlyProps): JSX.Element {
   return (
     <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[color:var(--accent-primary)]/10 text-[color:var(--accent-primary)]">
       {children}
@@ -107,6 +122,19 @@ export function CompactDotList({
         </li>
       ))}
     </ul>
+  )
+}
+
+export function MonoTag({ children, className }: ChildrenProps): JSX.Element {
+  return (
+    <li
+      className={cx(
+        "rounded-md border border-[color:var(--border-subtle)] bg-[color:var(--surface-2)] px-3 py-2 font-mono text-xs text-[color:var(--text-secondary)]",
+        className,
+      )}
+    >
+      {children}
+    </li>
   )
 }
 

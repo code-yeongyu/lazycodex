@@ -3,7 +3,7 @@ import {
   MarketingRuleGrid,
   MarketingSection,
 } from "../design-system/layout"
-import { AccentSurface, NumberedPoint } from "../design-system/surfaces"
+import { AccentSurface, MonoTag, NumberedPoint } from "../design-system/surfaces"
 import { BodyText, Kicker, SectionHeading } from "../design-system/typography"
 import { SITE_CONFIG } from "../../lib/site-config"
 
@@ -42,12 +42,7 @@ export function FeatureWorkflowsSection(): JSX.Element {
         </div>
         <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {SITE_CONFIG.builtInSkills.skills.map((skill) => (
-            <li
-              key={skill}
-              className="rounded-md border border-[color:var(--border-subtle)] bg-[color:var(--surface-2)] px-3 py-2 font-mono text-xs text-[color:var(--text-secondary)]"
-            >
-              {skill}
-            </li>
+            <MonoTag key={skill}>{skill}</MonoTag>
           ))}
         </ul>
       </AccentSurface>

@@ -12,6 +12,7 @@ import {
 import {
   AccentBadge,
   BodyText,
+  CardLabel,
   GradientTitle,
   Kicker,
   SectionHeading,
@@ -35,15 +36,11 @@ export function HephaestusSection(): JSX.Element {
 
         <div className="grid gap-3 sm:grid-cols-2">
           <SurfaceCard>
-            <h3 className="font-mono text-xs uppercase text-[color:var(--text-tertiary)]">
-              {omoIntro.omoLabel}
-            </h3>
+            <CardLabel>{omoIntro.omoLabel}</CardLabel>
             <CompactDotList items={omoIntro.omoPoints} />
           </SurfaceCard>
           <AccentSurface>
-            <h3 className="font-mono text-xs uppercase text-[color:var(--accent-primary)]">
-              {omoIntro.lazyLabel}
-            </h3>
+            <CardLabel tone="accent">{omoIntro.lazyLabel}</CardLabel>
             <CompactDotList
               items={omoIntro.lazyPoints}
               dotClassName="bg-[color:var(--accent-primary)]"
@@ -74,16 +71,13 @@ export function HephaestusSection(): JSX.Element {
 
         <ol className="mt-12 grid w-full max-w-[960px] grid-cols-2 gap-3 md:grid-cols-5">
           {hephaestus.loop.map((phase, i) => (
-            <li
-              key={phase.step}
-              className="rounded-lg border border-[color:var(--accent-primary)]/20 bg-[color:var(--accent-primary)]/5 p-4 text-center"
-            >
+            <AccentSurface as="li" key={phase.step} padding="p-4" className="text-center">
               <div className="mb-2 font-mono text-xs text-[color:var(--accent-primary)]">
                 {String(i + 1).padStart(2, "0")}
               </div>
               <p className="text-sm font-medium text-[color:var(--text-primary)]">{phase.step}</p>
               <p className="mt-1 text-xs leading-snug text-[color:var(--text-muted)]">{phase.text}</p>
-            </li>
+            </AccentSurface>
           ))}
         </ol>
 

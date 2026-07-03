@@ -10,9 +10,7 @@ interface ClassNameProps extends ChildrenProps {
 }
 
 interface SkipLinkProps {
-  readonly children?: ReactNode
   readonly className?: string
-  readonly href?: string
 }
 
 export function PageShell({ children }: ChildrenProps): JSX.Element {
@@ -26,14 +24,10 @@ export function PageShell({ children }: ChildrenProps): JSX.Element {
   )
 }
 
-export function SkipLink({
-  children = "Skip to main content",
-  className = "skip-link",
-  href = "#content",
-}: SkipLinkProps): JSX.Element {
+export function SkipLink({ className = "skip-link" }: SkipLinkProps): JSX.Element {
   return (
-    <a href={href} className={className}>
-      {children}
+    <a href="#content" className={className}>
+      Skip to main content
     </a>
   )
 }

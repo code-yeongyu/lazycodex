@@ -6,7 +6,6 @@ interface LinkActionProps {
   readonly children: ReactNode
   readonly className?: string
   readonly href: string
-  readonly prefetch?: false
   readonly variant?: "primary" | "secondary"
 }
 
@@ -21,13 +20,12 @@ export function LinkAction({
   children,
   className,
   href,
-  prefetch = false,
   variant = "secondary",
 }: LinkActionProps): JSX.Element {
   return (
     <Link
       href={href}
-      prefetch={prefetch}
+      prefetch={false}
       className={cx(actionClassName[variant], className)}
     >
       {children}

@@ -40,11 +40,8 @@ layer never animates — zero paint cost after first frame, zero CLS.
 | Surface/night | `--surface-night` | `#07080a` | Footer and deeper page bands |
 | Surface/subtle | `--surface-1` | `rgba(255,255,255,0.04)` | Hover and quiet fills |
 | Surface/raised | `--surface-2` | `rgba(255,255,255,0.06)` | Secondary tonal layer |
-| Surface/strong | `--surface-3` | `rgba(255,255,255,0.09)` | Stronger tonal layer |
 | Surface/card | `--card-base` | `#15171b` | Elevated dark panels, content cards |
 | Surface/panel | `--surface-panel` | `#101216` | Panels, install bar |
-| Surface/alt | `--surface-panel-alt` | `#111318` | Alternate panel |
-| Surface/deep | `--surface-panel-deep` | `#0e1013` | Deep panel |
 | Brand/core | `--brand-core` | `#22c55e` | Green brand center (fills, gradients) |
 | Brand/mid | `--brand-mid` | `#16a34a` | Green gradient middle |
 | Brand/outer | `--brand-outer` | `#15803d` | Gradient edge |
@@ -71,15 +68,15 @@ appears only inside the sanctioned light surface below (the demo window's light 
 
 ### Codex window adapter tokens (ulw-demo / team-mode mocks only)
 
-The interactive Ultrawork demo and the Team Mode thread mock reproduce the Codex Desktop surface
-on the dark canvas. The window carries its own isolated adapter palette with two themes selected
-by `data-window-theme="light|dark"` on `.ulw-window` — light is the default and the
-server-rendered state: the faithful-app light window on the dark page is the hero contrast,
-mirroring the real Codex app frames. A `role="group"` toggle switches it (see § CodexWindow).
+The Ultrawork demo and the Team Mode thread mock reproduce the Codex Desktop surface on the dark
+canvas. The window carries its own isolated adapter palette with two theme blocks selected by
+`data-window-theme="light|dark"` on `.ulw-window`. Both mounted windows are FIXED dark
+(`data-window-theme="dark"` hardcoded — there is no theme toggle); the light block remains the
+adapter's base token definition and the only sanctioned light surface should one return.
 Adapter tokens never leak into ordinary landing/docs UI, and ordinary tokens never restyle the
 window interior.
 
-Light theme (default block on `.ulw-window`):
+Light theme (base block on `.ulw-window`, currently unmounted):
 
 | Role | Token | Value | Usage |
 | --- | --- | --- | --- |
@@ -136,10 +133,10 @@ rule applies everywhere outside the window.
 
 ### Rules
 
-- New UI uses `--accent-primary`; `--accent-cyan` and `--accent-teal` remain green aliases only for compatibility.
+- New UI uses `--accent-primary`.
 - `--accent-mint` (`#86efac`) is a fill/decoration color first (glows, dots, code prompt glyphs). Interactive text and links stay on `--accent-primary` so the accent voice remains single and restrained.
 - Accent is reserved for interactivity, code emphasis, focus, and brand signal.
-- Light surfaces are allowed ONLY inside the demo window's OPT-IN light theme (`.ulw-window` light adapter block, also used by the Team Mode mock). The window DEFAULTS to its dark elevated theme — a full-white pane on the near-black canvas is glare, so light is a deliberate toggle, never the resting state. Everything else sits on the dark canvas. Code blocks (`pre`), command surfaces (`CommandCodeSurface`), and the Hephaestus band (`ShowcaseSurface`) are slightly ELEVATED dark layers — a tonal lift plus a hairline ring, so they never vanish into the page.
+- Light surfaces are allowed ONLY through the `.ulw-window` light adapter block. Both mounted windows (demo + Team Mode mock) are fixed to the dark elevated theme — a full-white pane on the near-black canvas is glare — so the light block is currently a defined-but-unmounted sanctioned surface, never the page. Everything else sits on the dark canvas. Code blocks (`pre`), command surfaces (`CommandCodeSurface`), and the Hephaestus band (`ShowcaseSurface`) are slightly ELEVATED dark layers — a tonal lift plus a hairline ring, so they never vanish into the page.
 - Raw colors belong in this file, `design-system.css`, or OG theme tokens. Component code references tokens or shared primitives. The sanctioned raw values in components are: `#16191e` (showcase band), `#1b1f24` (command code chip), `#15181d` (docs `pre`), `#dcfce7` (text on dark code chips), gradient stops `#86efac`/`#4ade80`/`#22c55e`, brand glow `rgba(74,222,128,0.16)`, card shadow `rgba(0,0,0,0.4)`, and the `white/10` hairline rings on elevated dark chips.
 
 ## 3. Typography
@@ -215,15 +212,15 @@ All spacing resolves to a 4px rhythm. Existing Tailwind values map to the same r
 ### Typography Primitives
 
 - **Source**: `components/design-system/typography.tsx`.
-- **Components**: `Kicker`, `SectionHeading` (with the serif display option), `BodyText`, `GradientTitle`, `AccentBadge`, `InlineCode`.
-- **Usage**: marketing sections, showcase titles, badges, and command/code snippets. `GradientTitle` uses the dark-legible green gradient (`#86efac → #4ade80 → #22c55e`).
+- **Components**: `Kicker`, `SectionHeading` (with the serif display option), `BodyText`, `GradientTitle`, `AccentBadge`, `CardLabel` (mono uppercase card sub-heading, `tone: "default" | "accent"`), `InlineCode`.
+- **Usage**: marketing sections, showcase titles, badges, card labels, and command/code snippets. `GradientTitle` uses the dark-legible green gradient (`#86efac → #4ade80 → #22c55e`).
 - **Motion**: typography itself does not animate; reveal behavior remains in CSS utilities.
 
 ### Surface Primitives
 
 - **Source**: `components/design-system/surfaces.tsx`.
-- **Components**: `SurfaceCard`, `AccentSurface`, `ShowcaseSurface`, `CommandCodeSurface`, `IconWell`, `FactList`, `CompactDotList`, `NumberedPoint`.
-- **Usage**: elevated dark cards (`--card-base` + `--border-subtle` + soft black shadow) for command cards, comparison cards, and numbered workflow rows. `ShowcaseSurface` is a slightly elevated showcase band (`#16191e` + `white/10` ring) for the Hephaestus showcase; `CommandCodeSurface` is an elevated code chip (`#1b1f24` with `#dcfce7` text + `white/10` ring) — code surfaces read as distinct raised layers on the dark canvas, never dissolving into it.
+- **Components**: `SurfaceCard`, `AccentSurface` (polymorphic `as: "div" | "li"` + `padding` variant), `ShowcaseSurface`, `CommandCodeSurface`, `IconWell`, `FactList`, `CompactDotList`, `MonoTag` (mono chip `<li>` for lane/skill grids), `NumberedPoint`.
+- **Usage**: elevated dark cards (`--card-base` + `--border-subtle` + soft black shadow) for command cards, comparison cards, and numbered workflow rows; `AccentSurface` also covers the demo's example-prompt chip and the Hephaestus loop tiles. `ShowcaseSurface` is a slightly elevated showcase band (`#16191e` + `white/10` ring) for the Hephaestus showcase; `CommandCodeSurface` is an elevated code chip (`#1b1f24` with `#dcfce7` text + `white/10` ring) — code surfaces read as distinct raised layers on the dark canvas, never dissolving into it.
 - **Depth**: hairline border plus tonal lift, with showcase shadows only where already present.
 
 ### Action Primitives
@@ -235,28 +232,31 @@ All spacing resolves to a 4px rhythm. Existing Tailwind values map to the same r
 
 ### CodexWindow (ulw-demo)
 
-- **Source**: `components/site/ulw-demo/codex-window.tsx` (client leaf), scene data in `lib/ulw-demo-scenes.ts`.
-- **Structure**: Codex Desktop window (adapter tokens above) on the dark canvas: title bar with traffic lights and
-  `ULTRAWORK MODE ENABLED!` badge, transcript pane (command chip → status line → scene headline →
-  scene body → 8 numbered workflow steps), right rail (Environment card, Subagents roster,
-  narrative card, `goals.json / ledger.jsonl` card), composer bar, scene tab strip with play/pause.
-- **Variants**: 8 scenes (`research → plan → todo → assign → red → green → qa-retry → checkpoint`),
-  each atomically updating command, status, headline, body, active step, roster lanes, proof chips,
-  ledger, and JSON card.
-- **Window themes**: dark (default) and light (opt-in via the sun toggle, `aria-pressed` = light), driven by `data-window-theme="light|dark"` on
-  `.ulw-window`. Light is the server-rendered default (faithful to the real Codex app and the state
-  Lighthouse audits); dark re-themes only the window interior through the
-  `[data-window-theme="dark"]` token block — the page canvas never changes.
-- **Window theme toggle**: a `role="group"` container labeled `aria-label="Demo window theme"`
-  holding two `<button>`s, "Light" and "Dark", each exposing `aria-pressed`. It sits in the normal
-  tab order (it is NOT a second tablist) and sets `data-window-theme` on `.ulw-window`.
-- **States**: `data-scene` index; `data-playing` for autoplay; per-step `data-active`; per-lane
-  `data-live`; `data-window-theme` for the theme. Scene tabs expose `role=tab` + `aria-selected`;
-  play/pause exposes `aria-pressed`; scene status announces via `aria-live="polite"`.
-- **Accessibility**: fully keyboard operable; content remains readable with JS disabled (scene 0
-  server-rendered in the light theme); every scene reachable without autoplay.
-- **Layout stability**: `.ulw-window` reserves a fixed min-height per breakpoint so scene changes
-  and hydration never shift layout; panes stack single-column at ≤ 768px.
+- **Source**: `components/site/ulw-demo/codex-window.tsx` (client leaf), scene strings and the
+  derived replay timeline in `lib/ulw-demo-scenes.ts`.
+- **Structure**: Codex Desktop window (adapter tokens above) on the dark canvas: sidebar with the
+  run's single constant session, per-session title bar with traffic lights, transcript pane,
+  right rail (Environment card, Subagents roster, narrative card), footer with the running line
+  and a decorative composer.
+- **Replay model**: ONE appending chat replay — the user's ask renders as the opening message
+  bubble (`.ulw-app-user`), then `ULW_DEMO_TIMELINE` entries (mode flag, then per-phase status,
+  command, prose, tool-ledger rows, and JSON chips — every string derived verbatim from the 8
+  grounded scenes) append one per tick (`ULW_DEMO_ENTRY_MS = 900`). Earlier entries persist and
+  the transcript follows the newest entry via INNER scroll only. At the finished checkpoint the
+  replay rests 4s, then loops back to the server-rendered opening state
+  (`ULW_DEMO_INITIAL_ENTRIES = 4`).
+- **Window theme**: FIXED dark (`data-window-theme="dark"` hardcoded). There is no theme toggle
+  and no in-window control of any kind — zero `<button>`s inside `.ulw-window` (e2e-asserted).
+- **Footer**: the app's running line ("Working for <elapsed>" with `.ulw-spinner`) plus a
+  `.ulw-run-progress` track that fills by phase — a run indicator, never a playback control.
+- **States**: replay arms on scroll-into-view (IntersectionObserver, one-shot, 0.2 threshold);
+  per-lane `data-live` on the roster; `data-window-theme` on the window.
+- **Accessibility**: non-playable by design; decorative regions (composer, spinner, run-progress)
+  are `aria-hidden`; the transcript is a labeled region; the opening entries are server-rendered
+  so content is readable with JS disabled.
+- **Layout stability**: `.ulw-window` is a FIXED 680px box (560px at ≤ 768px); the appending
+  transcript scrolls internally so the outer box never changes (e2e asserts ≤ 1px drift while
+  entries append); panes stack single-column at ≤ 768px.
 - **Integrity**: live DOM only — no raster screenshot, `<img>`, or `background-image` may stand in
   for window content.
 - **Roster glyph colors**: the subagent glyph squares use the per-theme `--lane-*` identity hues
@@ -303,17 +303,16 @@ All spacing resolves to a 4px rhythm. Existing Tailwind values map to the same r
 
 ### ulw-demo timeline
 
-- Scene transitions animate `opacity`/`transform` only (150-300ms); step and lane activation use the
-  same budget. No layout-property animation anywhere in the window.
-- Autoplay starts when the demo scrolls into view (IntersectionObserver, one-shot at 0.2 threshold),
-  advances scenes every 7s (`AUTOPLAY_MS = 7000` in `lib/ulw-demo-scenes.ts`), pauses on any user
-  interaction with the tabs or the play/pause control, and never traps focus.
-- `prefers-reduced-motion: reduce` disables autoplay entirely and makes scene switches instant;
-  tabs and the window-theme toggle remain fully operable.
-- The typing-caret effect on the command chip is CSS-only (`opacity` blink) and disabled under
-  reduced motion.
-- Switching the window theme is a token swap (color/background transitions only) — it never
-  re-triggers scene animation or autoplay.
+- Appended entries flow in via `opacity`/`transform` only (`.ulw-entry`, 420ms); the footer
+  run-progress track fills by `transform: scaleX` per phase. No layout-property animation
+  anywhere in the window.
+- The replay arms when the demo scrolls into view (IntersectionObserver, one-shot at 0.2
+  threshold), appends one entry per `ULW_DEMO_ENTRY_MS = 900`, rests 4s on the finished
+  checkpoint (`LOOP_REST_MS` in `codex-window.tsx`), then loops back to the opening ask.
+- `prefers-reduced-motion: reduce` disables the replay entirely: the COMPLETED transcript renders
+  statically, nothing appends afterwards, and the entry flow-in animation is off.
+- The transcript follows the newest entry via inner `scrollTo` (smooth; `auto` under reduced
+  motion) — the window's outer box never moves.
 
 ## 7. Depth & Surface
 
@@ -329,13 +328,13 @@ Codex window where real product chrome is shown.
 | Panel | `--card-base` / `--surface-panel` with `--border-subtle` and `rgba(0,0,0,0.4)` shadow | Cards, install bar, docs input |
 | Accent panel | `--accent-primary` soft fill and border | Built-in skills, Lazy comparison, workflow code |
 | Elevated dark chip | `#16191e` / `#1b1f24` / `#15181d` surface + `white/10` ring, light-on-dark text | Code blocks, command surfaces, Hephaestus showcase, demo window dark theme |
-| Light accent | `.ulw-window` light adapter theme (`#ffffff` window on the dark ground) | Demo window default, Team Mode mock |
-| Hero | `--card-base`, layered `.card-gradient-*` low-alpha green glows, large soft shadow | Landing hero card |
+| Light accent | `.ulw-window` light adapter theme (`#ffffff` window on the dark ground) | Sanctioned but currently unmounted (both windows fixed dark) |
+| Hero | open canvas — display type directly on `--surface-base` over the `.glow-backdrop` atmosphere | Landing hero |
 
 ### Rules
 
-- Hero card gradients are subtle radial green glows on the dark panel (`rgba(74,222,128,0.08 → 0.03)` families on `--card-base`) — low alpha only, no light stops anywhere.
-- Light surfaces appear only inside the demo window's light adapter theme; the page canvas is always dark. Every other raised layer is an elevated dark surface: tonal lift + hairline ring.
+- The hero sits directly on the open canvas; its only glow is the shared `.glow-backdrop` atmosphere plus the brand-mark's `rgba(74,222,128,0.16)` halo — low alpha only, no light stops anywhere.
+- Light surfaces may appear only through the `.ulw-window` light adapter theme (currently unmounted); the page canvas is always dark. Every other raised layer is an elevated dark surface: tonal lift + hairline ring.
 - Do not add purple-blue gradients; green is the only brand hue.
 - Do not replace the hero, the brand mark, or the demo window content with raster screenshots.
 - If a component pattern appears twice, it belongs in `components/design-system/` and this section.

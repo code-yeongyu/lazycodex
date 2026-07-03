@@ -4,9 +4,8 @@
    document flow, decorative composer. The demo is a staged recording with no
    controls and no progress bar — it simply looks like a session in progress.
    Split from ulw-demo.css to keep files under the size limit.
-   Motion: transform/opacity/color only. Zero outer layout shift: every
-   scene-variable region is single-line-with-code-scroll or min-height
-   reserved, so the window's outer box never changes between scenes. */
+   Motion: transform/opacity/color only. Zero outer layout shift: the
+   window box is fixed-height and the transcript scrolls internally. */
 
 @layer components {
   .ulw-window.ulw-app {
@@ -115,11 +114,9 @@
     }
   }
 
-
   .ulw-app-showmore {
     padding-left: 30px;
   }
-
 
   .ulw-app-main {
     display: flex;
@@ -149,10 +146,6 @@
   .ulw-app-title-dots {
     color: var(--codex-window-text-soft);
   }
-
-
-
-
 
   .ulw-icon {
     flex-shrink: 0;

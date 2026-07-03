@@ -10,8 +10,10 @@ import {
 import { UlwIcon, type UlwIconName } from "./window-icons"
 
 /**
- * Presentational panes for the Codex window, pure functions of the active
- * scene. Every visible string comes from `lib/ulw-demo-scenes.ts` or the
+ * Presentational panes for the Codex window: the transcript renders the
+ * appended replay entries; the footer and side panel derive from the
+ * current phase's scene. Every visible string comes from
+ * `lib/ulw-demo-scenes.ts` or the
  * generic chrome labels visible in our own app frames
  * (.omo/reference/app-frames/creation-03.png, subagents-03.png).
  * Transcript anatomy follows the real app: command bubble, prose, then

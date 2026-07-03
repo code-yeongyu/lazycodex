@@ -220,14 +220,12 @@ export const ULW_DEMO_ENVIRONMENT: readonly (readonly [string, string])[] = [
   ["Mode", "ulw ulw ulw"],
 ] as const;
 
-export const ULW_DEMO_AUTOPLAY_MS = 4000;
-
 /* ---- v10 chat-replay timeline (derived — every string above is reused
    verbatim; the only new strings are the user ask, sourced from
    SITE_CONFIG.ultraworkExample at the consumer, and the mode flag that
    already ships in the window chrome). ---- */
 
-export type UlwEntryKind = "user" | "mode" | "status" | "prose" | "tool" | "code";
+export type UlwEntryKind = "mode" | "status" | "prose" | "tool" | "code";
 
 export type UlwEntry = {
   readonly id: string;

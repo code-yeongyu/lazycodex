@@ -36,8 +36,8 @@ export function WindowSidebar(): JSX.Element {
         ))}
       </div>
 
-      {/* ONE session pursuing one goal — constant across every scene, like a
-          real 30h+ run. Scene navigation lives on the footer step pill. */}
+      {/* ONE session pursuing one goal — constant for the whole replay,
+          like a real 30h+ run. */}
       <nav className="ulw-app-group" aria-label="Sessions">
         <span className="ulw-app-group-label" aria-hidden="true">
           Projects

@@ -88,8 +88,6 @@
     font-size: 11px;
     letter-spacing: 0.02em;
     color: var(--codex-window-text-soft);
-    /* Single line + reserve: scene swaps must not move the layout below. */
-    min-height: 17px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -99,8 +97,6 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
-    /* Reserve for the tallest headline+body pair: zero layout shift. */
-    min-height: 112px;
   }
 
   .ulw-scene-copy h3 {
@@ -116,16 +112,5 @@
     line-height: 1.55;
     color: var(--codex-window-text-soft);
     max-width: 62ch;
-  }
-
-
-
-  @media (max-width: 768px) {
-    .ulw-scene-copy {
-      min-height: 168px;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
   }
 }

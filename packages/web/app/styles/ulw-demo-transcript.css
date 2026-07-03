@@ -40,14 +40,6 @@
     overflow-x: auto;
   }
 
-  .ulw-app-tools {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    /* Reserve three ledger rows so scene swaps stay shift-free. */
-    min-height: 86px;
-  }
-
   .ulw-app-tool {
     display: flex;
     align-items: center;
@@ -90,7 +82,6 @@
     padding: 4px 22px 16px;
     flex-shrink: 0;
   }
-
 
   .ulw-app-working {
     display: flex;
@@ -153,9 +144,6 @@
       transition: none;
     }
   }
-
-
-
 
   .ulw-app-goal-elapsed {
     margin-left: auto;

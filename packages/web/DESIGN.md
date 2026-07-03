@@ -256,7 +256,8 @@ All spacing resolves to a 4px rhythm. Existing Tailwind values map to the same r
   so content is readable with JS disabled.
 - **Layout stability**: `.ulw-window` is a FIXED 680px box (560px at ≤ 768px); the appending
   transcript scrolls internally so the outer box never changes (e2e asserts ≤ 1px drift while
-  entries append); panes stack single-column at ≤ 768px.
+  entries append). At ≤ 768px the session sidebar AND the right rail hide (a stacked rail would
+  starve the transcript row to 0px inside the fixed box) — the transcript owns the window.
 - **Integrity**: live DOM only — no raster screenshot, `<img>`, or `background-image` may stand in
   for window content.
 - **Roster glyph colors**: the subagent glyph squares use the per-theme `--lane-*` identity hues

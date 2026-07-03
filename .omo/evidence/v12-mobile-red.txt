@@ -1,0 +1,74 @@
+[WebServer] $ node ./scripts/generate-docs-content.mjs
+[WebServer] Docs content already current with 20 HTML-compiled docs
+[WebServer] $ NODE_OPTIONS=--no-deprecation next build
+[WebServer] ▲ Next.js 16.2.9 (Turbopack)
+[WebServer] 
+[WebServer]   Creating an optimized production build ...
+[WebServer] ✓ Compiled successfully in 967ms
+[WebServer]   Running TypeScript ...
+[WebServer]   Finished TypeScript in 1448ms ...
+[WebServer]   Collecting page data using 13 workers ...
+[WebServer]   Generating static pages using 13 workers (0/11) ...
+[WebServer]   Generating static pages using 13 workers (2/11) 
+[WebServer]   Generating static pages using 13 workers (5/11) 
+[WebServer]   Generating static pages using 13 workers (8/11) 
+[WebServer] ✓ Generating static pages using 13 workers (11/11) in 603ms
+[WebServer]   Finalizing page optimization ...
+[WebServer] 
+[WebServer] Route (app)
+[WebServer] ┌ ○ /
+[WebServer] ├ ○ /_not-found
+[WebServer] ├ ƒ /api/github-stars
+[WebServer] ├ ○ /apple-icon.png
+[WebServer] ├ ○ /docs
+[WebServer] ├ ○ /icon.svg
+[WebServer] ├ ○ /manifest.webmanifest
+[WebServer] ├ ○ /opengraph-image
+[WebServer] ├ ○ /robots.txt
+[WebServer] ├ ○ /sitemap.xml
+[WebServer] └ ○ /twitter-image
+[WebServer] 
+[WebServer] 
+[WebServer] ○  (Static)   prerendered as static content
+[WebServer] ƒ  (Dynamic)  server-rendered on demand
+[WebServer] 
+[WebServer] $ NODE_OPTIONS=--no-deprecation next start
+[WebServer] ▲ Next.js 16.2.9
+[WebServer] - Local:         http://localhost:64926
+[WebServer] - Network:       http://192.168.0.3:64926
+[WebServer] ✓ Ready in 69ms
+
+Running 1 test using 1 worker
+
+  ✘  1 [chromium] › e2e/ulw-demo.spec.ts:117:3 › ulw demo — reduced motion + mobile @edge › no horizontal overflow at 390x844 and the sidebar collapses (5.3s)
+
+
+  1) [chromium] › e2e/ulw-demo.spec.ts:117:3 › ulw demo — reduced motion + mobile @edge › no horizontal overflow at 390x844 and the sidebar collapses 
+
+    Error: expect(locator).toBeHidden() failed
+
+    Locator:  locator('#ulw-demo').locator('.ulw-side')
+    Expected: hidden
+    Received: visible
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeHidden" with timeout 5000ms
+      - waiting for locator('#ulw-demo').locator('.ulw-side')
+        14 × locator resolved to <aside class="ulw-side" aria-label="Environment and subagents panel">…</aside>
+           - unexpected value "visible"
+
+
+      124 |     // the transcript owns the fixed window box.
+      125 |     await expect(page.getByRole("navigation", { name: "Sessions" })).toBeHidden()
+    > 126 |     await expect(demo.locator(".ulw-side")).toBeHidden()
+          |                                             ^
+      127 |
+      128 |     // The replay must be SEEN, not merely attached: the opening ask is
+      129 |     // visible and the transcript pane occupies most of the 560px window.
+        at /Users/yeongyu/local-workspaces/lazycodex-wt/code-yeongyu/light-greeny-redesign-interactive-demo/packages/web/e2e/ulw-demo.spec.ts:126:45
+
+    Error Context: test-results/ulw-demo-ulw-demo-—-reduce-e033a-4-and-the-sidebar-collapses-chromium/error-context.md
+
+  1 failed
+    [chromium] › e2e/ulw-demo.spec.ts:117:3 › ulw demo — reduced motion + mobile @edge › no horizontal overflow at 390x844 and the sidebar collapses 

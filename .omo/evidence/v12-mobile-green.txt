@@ -1,0 +1,48 @@
+[WebServer] $ node ./scripts/generate-docs-content.mjs
+[WebServer] Docs content already current with 20 HTML-compiled docs
+[WebServer] $ NODE_OPTIONS=--no-deprecation next build
+[WebServer] ▲ Next.js 16.2.9 (Turbopack)
+[WebServer] 
+[WebServer]   Creating an optimized production build ...
+[WebServer] ✓ Compiled successfully in 1017ms
+[WebServer]   Running TypeScript ...
+[WebServer]   Finished TypeScript in 2.5s ...
+[WebServer]   Collecting page data using 13 workers ...
+[WebServer]   Generating static pages using 13 workers (0/11) ...
+[WebServer]   Generating static pages using 13 workers (2/11) 
+[WebServer]   Generating static pages using 13 workers (5/11) 
+[WebServer]   Generating static pages using 13 workers (8/11) 
+[WebServer] ✓ Generating static pages using 13 workers (11/11) in 800ms
+[WebServer]   Finalizing page optimization ...
+[WebServer] 
+[WebServer] Route (app)
+[WebServer] ┌ ○ /
+[WebServer] ├ ○ /_not-found
+[WebServer] ├ ƒ /api/github-stars
+[WebServer] ├ ○ /apple-icon.png
+[WebServer] ├ ○ /docs
+[WebServer] ├ ○ /icon.svg
+[WebServer] ├ ○ /manifest.webmanifest
+[WebServer] ├ ○ /opengraph-image
+[WebServer] ├ ○ /robots.txt
+[WebServer] ├ ○ /sitemap.xml
+[WebServer] └ ○ /twitter-image
+[WebServer] 
+[WebServer] 
+[WebServer] ○  (Static)   prerendered as static content
+[WebServer] ƒ  (Dynamic)  server-rendered on demand
+[WebServer] 
+[WebServer] $ NODE_OPTIONS=--no-deprecation next start
+[WebServer] ▲ Next.js 16.2.9
+[WebServer] - Local:         http://localhost:50094
+[WebServer] - Network:       http://192.168.0.3:50094
+[WebServer] ✓ Ready in 70ms
+
+Running 4 tests using 1 worker
+
+  ✓  1 [chromium] › e2e/ulw-demo.spec.ts:35:3 › ulw demo — chat replay @happy › one ask, then the run appends beneath it (6.2s)
+  ✓  2 [chromium] › e2e/ulw-demo.spec.ts:78:3 › ulw demo — chat replay @happy › walks the whole run to the checkpoint, then loops (47.3s)
+  ✓  3 [chromium] › e2e/ulw-demo.spec.ts:99:3 › ulw demo — reduced motion + mobile @edge › reduced motion shows the completed run statically (3.1s)
+  ✓  4 [chromium] › e2e/ulw-demo.spec.ts:117:3 › ulw demo — reduced motion + mobile @edge › no horizontal overflow at 390x844 and the sidebar collapses (2.0s)
+
+  4 passed (1.1m)

@@ -221,3 +221,46 @@ export const ULW_DEMO_ENVIRONMENT: readonly (readonly [string, string])[] = [
 ] as const;
 
 export const ULW_DEMO_AUTOPLAY_MS = 4000;
+
+/* ---- v10 chat-replay timeline (derived — every string above is reused
+   verbatim; the only new strings are the user ask, sourced from
+   SITE_CONFIG.ultraworkExample at the consumer, and the mode flag that
+   already ships in the window chrome). ---- */
+
+export type UlwEntryKind = "user" | "mode" | "status" | "prose" | "tool" | "code";
+
+export type UlwEntry = {
+  readonly id: string;
+  readonly kind: UlwEntryKind;
+  readonly heading?: string;
+  readonly text: string;
+  readonly phase: number;
+};
+
+export const ULW_DEMO_TIMELINE: readonly UlwEntry[] = [
+  { id: "mode", kind: "mode", text: "ULTRAWORK MODE ENABLED!", phase: 0 },
+  ...ULW_DEMO_SCENES.flatMap((scene, phase) => [
+    { id: `${scene.key}-status`, kind: "status" as const, text: scene.status, phase },
+    { id: `${scene.key}-cmd`, kind: "code" as const, text: scene.command, phase },
+    {
+      id: `${scene.key}-prose`,
+      kind: "prose" as const,
+      heading: scene.title,
+      text: scene.body,
+      phase,
+    },
+    ...scene.ledger.split("\n").map((line, i) => ({
+      id: `${scene.key}-tool-${i}`,
+      kind: "tool" as const,
+      text: line,
+      phase,
+    })),
+    { id: `${scene.key}-json`, kind: "code" as const, text: scene.json, phase },
+  ]),
+];
+
+/** Cadence of the replay: one appended entry per tick. */
+export const ULW_DEMO_ENTRY_MS = 900;
+
+/** Entries visible in the server-rendered opening state (ask + mode + first activity). */
+export const ULW_DEMO_INITIAL_ENTRIES = 4;

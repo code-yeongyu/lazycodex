@@ -15,7 +15,11 @@
     gap: 12px;
     padding: 16px 22px 8px;
     min-height: 0;
-    overflow: hidden;
+    /* The replay APPENDS: the transcript scrolls internally while the
+       window's outer box never moves. */
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
   }
 
   .ulw-app-user {
@@ -129,7 +133,7 @@
 
   /* Scene continuity: new transcript content flows up into place, reading
      as the session carrying on rather than a slide swap. */
-  .ulw-app-transcript {
+  .ulw-entry {
     animation: ulw-flow-in 420ms ease-out;
   }
 
@@ -141,7 +145,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .ulw-app-transcript {
+    .ulw-entry {
       animation: none;
     }
 

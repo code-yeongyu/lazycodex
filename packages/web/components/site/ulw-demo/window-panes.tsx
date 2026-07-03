@@ -1,8 +1,10 @@
-import type { JSX } from "react"
+import { useEffect, useRef, type JSX } from "react"
+import { SITE_CONFIG } from "../../../lib/site-config"
 import {
   ULW_DEMO_ENVIRONMENT,
   ULW_DEMO_SCENES,
   ULW_DEMO_WORKERS,
+  type UlwEntry,
   type UlwScene,
 } from "../../../lib/ulw-demo-scenes"
 import { UlwIcon, type UlwIconName } from "./window-icons"
@@ -25,37 +27,66 @@ function ledgerIcon(line: string): UlwIconName {
   return "terminal"
 }
 
-export function TranscriptPane({ scene }: { readonly scene: UlwScene }): JSX.Element {
+export function TranscriptPane({
+  entries,
+}: {
+  readonly entries: readonly UlwEntry[]
+}): JSX.Element {
+  const paneRef = useRef<HTMLElement | null>(null)
+
+  // Follow the replay like the real app follows a live session: keep the
+  // newest entry in view via INNER scroll only (the window box never moves).
+  useEffect(() => {
+    const node = paneRef.current
+    if (!node) return
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    node.scrollTo({ top: node.scrollHeight, behavior: reduced ? "auto" : "smooth" })
+  }, [entries.length])
+
   return (
-    <section className="ulw-app-transcript" aria-label="Ultrawork run transcript">
-      <p className="ulw-mode-flag">ULTRAWORK MODE ENABLED!</p>
-
-      <div className="ulw-app-user">
-        <code>{scene.command}</code>
+    <section ref={paneRef} className="ulw-app-transcript" aria-label="Ultrawork run transcript">
+      {/* The user's opening ask — the whole run answers this one message. */}
+      <div className="ulw-entry ulw-app-user">
+        <code>{SITE_CONFIG.ultraworkExample}</code>
       </div>
 
-      {/* The live region stays OUTSIDE the keyed swap subtree: React must
-          mutate its text in place for screen readers to announce scenes. */}
-      <small className="ulw-scene-status" aria-live="polite">
-        {scene.status}
-      </small>
-      <div className="ulw-scene-copy ulw-scene-swap" key={scene.key}>
-        <h3>{scene.title}</h3>
-        <p>{scene.body}</p>
-      </div>
-
-      <div className="ulw-app-tools" aria-label="Run ledger activity">
-        {scene.ledger.split("\n").map((line) => (
-          <div className="ulw-app-tool" key={line}>
-            <UlwIcon name={ledgerIcon(line)} />
-            <span>{line}</span>
+      {entries.map((entry) => {
+        if (entry.kind === "mode") {
+          return (
+            <p className="ulw-entry ulw-mode-flag" key={entry.id}>
+              {entry.text}
+            </p>
+          )
+        }
+        if (entry.kind === "status") {
+          return (
+            <small className="ulw-entry ulw-scene-status" key={entry.id}>
+              {entry.text}
+            </small>
+          )
+        }
+        if (entry.kind === "prose") {
+          return (
+            <div className="ulw-entry ulw-scene-copy" key={entry.id}>
+              <h3>{entry.heading}</h3>
+              <p>{entry.text}</p>
+            </div>
+          )
+        }
+        if (entry.kind === "tool") {
+          return (
+            <div className="ulw-entry ulw-app-tool" key={entry.id}>
+              <UlwIcon name={ledgerIcon(entry.text)} />
+              <span>{entry.text}</span>
+            </div>
+          )
+        }
+        return (
+          <div className="ulw-entry ulw-app-code" key={entry.id}>
+            <code>{entry.text}</code>
           </div>
-        ))}
-      </div>
-
-      <div className="ulw-app-code">
-        <code>{scene.json}</code>
-      </div>
+        )
+      })}
     </section>
   )
 }

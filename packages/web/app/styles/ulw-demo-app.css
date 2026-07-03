@@ -11,7 +11,9 @@
 @layer components {
   .ulw-window.ulw-app {
     max-width: 1120px;
-    min-height: 680px;
+    /* FIXED height: the appending transcript scrolls inside; the outer box
+       never grows (zero layout shift is a binding contract). */
+    height: 680px;
     display: flex;
     flex-direction: column;
   }
@@ -158,7 +160,7 @@
 
   @media (max-width: 768px) {
     .ulw-window.ulw-app {
-      min-height: 560px;
+      height: 560px;
     }
 
     .ulw-app-frame {

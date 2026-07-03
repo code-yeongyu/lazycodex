@@ -120,8 +120,16 @@ test.describe("ulw demo — reduced motion + mobile @edge", () => {
     const demo = page.locator("#ulw-demo")
     await demo.locator(".ulw-window").scrollIntoViewIfNeeded()
 
-    // The session sidebar is hidden at mobile widths, like the real app.
+    // The session sidebar AND the right rail are hidden at mobile widths;
+    // the transcript owns the fixed window box.
     await expect(page.getByRole("navigation", { name: "Sessions" })).toBeHidden()
+    await expect(demo.locator(".ulw-side")).toBeHidden()
+
+    // The replay must be SEEN, not merely attached: the opening ask is
+    // visible and the transcript pane occupies most of the 560px window.
+    await expect(demo.locator(".ulw-app-user")).toBeVisible()
+    const transcriptBox = await demo.locator(".ulw-app-transcript").boundingBox()
+    expect(transcriptBox?.height ?? 0).toBeGreaterThan(250)
 
     // The replay keeps appending; dynamic entries must not overflow.
     const entries = demo.locator(".ulw-entry")

@@ -1,0 +1,101 @@
+[WebServer] $ node ./scripts/generate-docs-content.mjs
+[WebServer] Docs content already current with 20 HTML-compiled docs
+[WebServer] $ NODE_OPTIONS=--no-deprecation next build
+[WebServer] ▲ Next.js 16.2.9 (Turbopack)
+[WebServer] 
+[WebServer]   Creating an optimized production build ...
+[WebServer] ✓ Compiled successfully in 870ms
+[WebServer]   Running TypeScript ...
+[WebServer]   Finished TypeScript in 1715ms ...
+[WebServer]   Collecting page data using 13 workers ...
+[WebServer]   Generating static pages using 13 workers (0/11) ...
+[WebServer]   Generating static pages using 13 workers (2/11) 
+[WebServer]   Generating static pages using 13 workers (5/11) 
+[WebServer]   Generating static pages using 13 workers (8/11) 
+[WebServer] ✓ Generating static pages using 13 workers (11/11) in 650ms
+[WebServer]   Finalizing page optimization ...
+[WebServer] 
+[WebServer] Route (app)
+[WebServer] ┌ ○ /
+[WebServer] ├ ○ /_not-found
+[WebServer] ├ ƒ /api/github-stars
+[WebServer] ├ ○ /apple-icon.png
+[WebServer] ├ ○ /docs
+[WebServer] ├ ○ /icon.svg
+[WebServer] ├ ○ /manifest.webmanifest
+[WebServer] ├ ○ /opengraph-image
+[WebServer] ├ ○ /robots.txt
+[WebServer] ├ ○ /sitemap.xml
+[WebServer] └ ○ /twitter-image
+[WebServer] 
+[WebServer] 
+[WebServer] ○  (Static)   prerendered as static content
+[WebServer] ƒ  (Dynamic)  server-rendered on demand
+[WebServer] 
+[WebServer] $ NODE_OPTIONS=--no-deprecation next start
+[WebServer] ▲ Next.js 16.2.9
+[WebServer] - Local:         http://localhost:50813
+[WebServer] - Network:       http://192.168.0.3:50813
+[WebServer] ✓ Ready in 56ms
+
+Running 57 tests using 1 worker
+
+  ✓   1 [chromium] › e2e/docs.spec.ts:15:3 › docs page — structure › responds 200 (17ms)
+  ✓   2 [chromium] › e2e/docs.spec.ts:20:3 › docs page — structure › has exactly one h1 (107ms)
+  ✓   3 [chromium] › e2e/docs.spec.ts:25:3 › docs page — structure › renders every section as a visible element carrying its id + title (150ms)
+  ✓   4 [chromium] › e2e/docs.spec.ts:35:3 › docs page — structure › nav lists every section title as links or buttons (160ms)
+  ✓   5 [chromium] › e2e/docs.spec.ts:46:3 › docs page — structure › documents lazycodex-ai as the npm install alias (118ms)
+  ✓   6 [chromium] › e2e/docs.spec.ts:63:3 › docs page — structure › documents skills and built-in workflow usage (165ms)
+  ✓   7 [chromium] › e2e/docs.spec.ts:80:3 › docs page — structure › orders Skills immediately after Commands and before Concepts (0ms)
+  ✓   8 [chromium] › e2e/docs.spec.ts:91:3 › docs page — navigation › clicking the $ulw-loop nav entry jumps to that section (156ms)
+  ✓   9 [chromium] › e2e/docs.spec.ts:106:3 › docs page — no-JS SSR › server-renders every section heading without JavaScript (149ms)
+  ✓  10 [chromium] › e2e/github-stars.spec.ts:21:3 › github stars API › responds with a numeric live star count (167ms)
+  ✓  11 [chromium] › e2e/github-stars.spec.ts:37:3 › github stars live source parsing › uses GH_TOKEN when GITHUB_TOKEN is absent (2ms)
+  ✓  12 [chromium] › e2e/github-stars.spec.ts:63:3 › github stars live source parsing › falls back to Shields when GitHub rejects the request (0ms)
+  ✓  13 [chromium] › e2e/github-stars.spec.ts:87:3 › github stars live source parsing › parses Shields comma and compact star payloads (0ms)
+  ✓  14 [chromium] › e2e/github-stars.spec.ts:93:3 › github stars live source parsing › caches the non-zero fallback instead of serving a zero-star shell (0ms)
+  ✓  15 [chromium] › e2e/github-stars.spec.ts:103:3 › github stars live source parsing › rejects zero-star upstream payloads as stale or broken source data (0ms)
+  ✓  16 [chromium] › e2e/home.spec.ts:17:3 › home page — content › renders the wordmark, hero copy, and footer (102ms)
+  ✓  17 [chromium] › e2e/home.spec.ts:37:3 › home page — content › does not show launch gating copy (93ms)
+  ✓  18 [chromium] › e2e/home.spec.ts:44:3 › home page — content › has a single h1 and no broken landmarks (94ms)
+  ✓  19 [chromium] › e2e/home.spec.ts:52:3 › home page — content › skip-link is hidden until focused (112ms)
+  ✓  20 [chromium] › e2e/landing-sections.spec.ts:20:3 › team mode section › renders the grounded team mode copy (120ms)
+  ✓  21 [chromium] › e2e/landing-sections.spec.ts:41:3 › ulw-research section › renders the grounded ulw-research copy (117ms)
+  ✓  22 [chromium] › e2e/landing-sections.spec.ts:56:3 › information architecture › keeps the planned section order (553ms)
+  ✓  23 [chromium] › e2e/landing.spec.ts:15:3 › landing page — hero › has exactly one h1 reading the wordmark (94ms)
+  ✓  24 [chromium] › e2e/landing.spec.ts:23:3 › landing page — hero › shows the eyebrow and both hero lines (102ms)
+  ✓  25 [chromium] › e2e/landing.spec.ts:41:3 › landing page — install + commands › shows the install command and a copy button (100ms)
+  ✓  26 [chromium] › e2e/landing.spec.ts:51:3 › landing page — install + commands › renders every command with its name and syntax (99ms)
+  ✓  27 [chromium] › e2e/landing.spec.ts:59:3 › landing page — install + commands › feature workflow guidance keeps the three command pillars first (100ms)
+  ✓  28 [chromium] › e2e/landing.spec.ts:70:3 › landing page — install + commands › places skill coverage before the concept section (104ms)
+  ✓  29 [chromium] › e2e/landing.spec.ts:87:3 › landing page — links + footer › github stars pill links to the stargazers url with a count (96ms)
+  ✓  30 [chromium] › e2e/landing.spec.ts:96:3 › landing page — links + footer › updates the github stars pill from the live API (93ms)
+  ✓  31 [chromium] › e2e/landing.spec.ts:104:3 › landing page — links + footer › has a Docs link pointing at /docs (97ms)
+  ✓  32 [chromium] › e2e/landing.spec.ts:111:3 › landing page — links + footer › links to OmO and shows lazycodex.ai (96ms)
+  ✓  33 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at mobile-small (360×640) (803ms)
+  ✓  34 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at mobile-iphone-se (375×667) (818ms)
+  ✓  35 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at mobile-iphone-14 (390×844) (784ms)
+  ✓  36 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at mobile-large-android (412×915) (791ms)
+  ✓  37 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at tablet-ipad-portrait (768×1024) (824ms)
+  ✓  38 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at tablet-ipad-landscape (1024×768) (783ms)
+  ✓  39 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at tablet-ipad-pro-portrait (1024×1366) (793ms)
+  ✓  40 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at desktop-laptop (1280×800) (795ms)
+  ✓  41 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at desktop-fullhd (1440×900) (797ms)
+  ✓  42 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at desktop-wide (1536×864) (829ms)
+  ✓  43 [chromium] › e2e/responsive.spec.ts:37:3 › @responsive renders correctly at desktop-ultrawide (1920×1080) (830ms)
+  ✓  44 [chromium] › e2e/responsive.spec.ts:81:1 › @responsive iPhone-13 device profile (Playwright preset) (766ms)
+  ✓  45 [chromium] › e2e/responsive.spec.ts:98:1 › @responsive iPad-Pro device profile (Playwright preset) (769ms)
+  ✓  46 [chromium] › e2e/seo.spec.ts:25:3 › site SEO + metadata › has a unique <title>, description, canonical, lang, viewport (109ms)
+  ✓  47 [chromium] › e2e/seo.spec.ts:52:3 › site SEO + metadata › has OpenGraph and Twitter card tags (102ms)
+  ✓  48 [chromium] › e2e/seo.spec.ts:77:3 › site SEO + metadata › has JSON-LD SoftwareApplication structured data (94ms)
+  ✓  49 [chromium] › e2e/seo.spec.ts:87:3 › site SEO + metadata › /robots.txt and /sitemap.xml are reachable (7ms)
+  ✓  50 [chromium] › e2e/seo.spec.ts:101:3 › site SEO + metadata › /docs route is reachable (7ms)
+  ✓  51 [chromium] › e2e/seo.spec.ts:106:3 › site SEO + metadata › /manifest.webmanifest is reachable and valid (3ms)
+  ✓  52 [chromium] › e2e/seo.spec.ts:114:3 › site SEO + metadata › opengraph image and twitter image render as PNGs (6ms)
+  ✓  53 [chromium] › e2e/seo.spec.ts:135:3 › site SEO + metadata › serves the unified LazyCodex favicon assets (98ms)
+  ✓  54 [chromium] › e2e/ulw-demo.spec.ts:35:3 › ulw demo — chat replay @happy › one ask, then the run appends beneath it (6.1s)
+  ✓  55 [chromium] › e2e/ulw-demo.spec.ts:78:3 › ulw demo — chat replay @happy › walks the whole run to the checkpoint, then loops (46.9s)
+  ✓  56 [chromium] › e2e/ulw-demo.spec.ts:99:3 › ulw demo — reduced motion + mobile @edge › reduced motion shows the completed run statically (3.1s)
+  ✓  57 [chromium] › e2e/ulw-demo.spec.ts:117:3 › ulw demo — reduced motion + mobile @edge › no horizontal overflow at 390x844 and the sidebar collapses (2.0s)
+
+  57 passed (1.3m)

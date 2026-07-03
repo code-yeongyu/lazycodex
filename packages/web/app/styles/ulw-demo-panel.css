@@ -129,9 +129,12 @@
   }
 
   @media (max-width: 768px) {
+    /* The window keeps its fixed height on phones, so the rail cannot fit
+       beneath the transcript inside the box: as a second implicit grid row
+       it starves the transcript row to 0px. The rail hides and the replay
+       owns the window (the remaining auto row stretches to fill). */
     .ulw-side {
-      border-left: none;
-      border-top: 1px solid var(--codex-window-border);
+      display: none;
     }
   }
 

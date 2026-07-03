@@ -31,7 +31,14 @@ export function TeamModeSection(): JSX.Element {
         </div>
 
         <div className="flex flex-col gap-3">
-          <div className="ulw-window" aria-label="Team mode member threads">
+          {/* Dark window, matching the demo default: creating a team spawns
+              ONE chat session per member — the left pane lists them exactly
+              like the app sidebar lists sessions. */}
+          <div
+            className="ulw-window"
+            data-window-theme="dark"
+            aria-label="Team mode member sessions"
+          >
             <div className="ulw-titlebar">
               <span className="ulw-traffic" aria-hidden="true">
                 <span />
@@ -44,28 +51,46 @@ export function TeamModeSection(): JSX.Element {
                 </span>
               </div>
             </div>
-            <div className="flex flex-col gap-2 p-4">
-              {teamMode.memberThreads.map((member) => (
-                <div
-                  key={member.name}
-                  className="flex items-center justify-between gap-3 rounded-lg border border-[color:var(--codex-window-border)] px-3 py-2"
-                >
-                  <span className="min-w-0 truncate text-[12.5px] font-medium text-[color:var(--codex-window-text)]">
-                    {member.name}
-                  </span>
-                  <span className="whitespace-nowrap font-mono text-[10px] text-[color:var(--codex-window-text-soft)]">
-                    {member.status}
-                  </span>
+            <div className="grid gap-0 sm:grid-cols-[minmax(0,11rem)_minmax(0,1fr)]">
+              <div className="flex flex-col gap-1 border-b border-[color:var(--codex-window-border)] p-3 sm:border-b-0 sm:border-r">
+                {teamMode.memberThreads.map((member) => (
+                  <div
+                    key={member.name}
+                    className="flex min-w-0 items-center gap-2 rounded-md bg-[color:var(--codex-window-chip)] px-2.5 py-1.5"
+                  >
+                    <span
+                      className="h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--codex-window-accent)]"
+                      aria-hidden="true"
+                    />
+                    <span className="min-w-0 truncate text-[12px] font-medium text-[color:var(--codex-window-text)]">
+                      {member.name}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-col gap-2 p-4">
+                {teamMode.memberThreads.map((member) => (
+                  <div
+                    key={member.name}
+                    className="flex items-center justify-between gap-3 rounded-lg border border-[color:var(--codex-window-border)] px-3 py-2"
+                  >
+                    <span className="min-w-0 truncate text-[12.5px] font-medium text-[color:var(--codex-window-text)]">
+                      {member.name}
+                    </span>
+                    <span className="whitespace-nowrap font-mono text-[10px] text-[color:var(--codex-window-text-soft)]">
+                      {member.status}
+                    </span>
+                  </div>
+                ))}
+                <div className="mt-1 rounded-lg bg-[color:var(--codex-window-chip)] px-3 py-2">
+                  <p className="text-right font-mono text-[10px] text-[color:var(--codex-window-text-soft)]">
+                    {teamMode.threadNote}
+                  </p>
+                  <p className="mt-1 text-[11.5px] leading-snug text-[color:var(--codex-window-text)]">
+                    Member A COMPLETE verification note: report exists, pinned-link
+                    check passed, and no GitHub mutations/repo edits.
+                  </p>
                 </div>
-              ))}
-              <div className="mt-1 rounded-lg bg-[color:var(--codex-window-chip)] px-3 py-2">
-                <p className="text-right font-mono text-[10px] text-[color:var(--codex-window-text-soft)]">
-                  {teamMode.threadNote}
-                </p>
-                <p className="mt-1 text-[11.5px] leading-snug text-[color:var(--codex-window-text)]">
-                  Member A COMPLETE verification note: report exists, pinned-link
-                  check passed, and no GitHub mutations/repo edits.
-                </p>
               </div>
             </div>
           </div>

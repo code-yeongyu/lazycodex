@@ -107,14 +107,14 @@ test.describe("ulw demo — happy path @happy", () => {
     await expect(playToggle).toHaveAttribute("aria-pressed", "true")
 
     await page.screenshot({
-      path: "../../.omo/evidence/v2-demo-checkpoint.png",
+      path: "../../.omo/evidence/v4-demo-checkpoint.png",
       fullPage: false,
     })
   })
 })
 
 test.describe("ulw demo — reduced motion + mobile @edge", () => {
-  test("reduced motion pins scene 0 but keeps the play affordance and rows working", async ({
+  test("reduced motion pins scene 0 with disabled lower bound and working step nav", async ({
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: "reduce" })
@@ -124,10 +124,12 @@ test.describe("ulw demo — reduced motion + mobile @edge", () => {
 
     await expect(page.getByText(RESEARCH.title, { exact: true })).toBeVisible()
 
-    // No autoplay: after > one interval the recording is still on step 1.
+    // No autoplay: after > one interval the recording is still on step 1,
+    // where the lower step-nav bound is disabled (SSR scene-0 state).
     await page.waitForTimeout(9_000)
     await expect(demo.getByText("Step 1 / 8", { exact: true })).toBeVisible()
     await expect(page.getByText(PLAN.title, { exact: true })).toBeHidden()
+    await expect(stepNav(page, "Previous step")).toBeDisabled()
 
     // The play affordance stays available for explicit intent.
     await expect(page.getByRole("button", { name: "Play the demo", exact: true })).toBeVisible()
@@ -161,7 +163,7 @@ test.describe("ulw demo — reduced motion + mobile @edge", () => {
     expect(overflow).toBeLessThanOrEqual(0)
 
     await page.screenshot({
-      path: "../../.omo/evidence/v2-demo-mobile.png",
+      path: "../../.omo/evidence/v4-demo-mobile.png",
       fullPage: false,
     })
   })

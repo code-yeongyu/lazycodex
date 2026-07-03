@@ -36,36 +36,12 @@ export type UlwScene = {
   readonly elapsed: string;
 };
 
-export type UlwStep = { readonly heading: string; readonly detail: string };
-
 export type UlwWorker = {
   readonly name: string;
   readonly role: string;
   readonly lane: UlwLane;
   readonly glyph: string;
 };
-
-export const ULW_DEMO_STEPS = [
-  { heading: "Explorer + Librarian swarm", detail: "Call parallel subagents to find repo truth, docs, commands, and inaccurate claims to avoid." },
-  { heading: "Plan agent / Prometheus", detail: "Combine research into a decision-complete plan before implementation begins." },
-  { heading: "TodoWrite + task system", detail: "Register atomic tasks and blockedBy edges; `.omo/ulw-loop/goals.json` stores criteria." },
-  { heading: "$start-work assigns lanes", detail: "Executor, QA Executor, reviewer, and gate workers receive bounded deliverables." },
-  { heading: "TDD red", detail: "Capture the failing-first proof before production code changes." },
-  { heading: "GREEN + record-evidence", detail: "Make the smallest fix, pass the test, and record criterion-scoped evidence." },
-  { heading: "QA fail -> goal_retried", detail: "Manual QA can fail the run; ULW records the failure and retries the same criterion." },
-  { heading: "Quality gate + checkpoint", detail: "Only code review, manualQa, gateReview, iteration, and coverage evidence close the story." },
-] as const satisfies readonly UlwStep[];
-
-export const ULW_DEMO_PROOFS = [
-  "research facts",
-  "plan artifact",
-  "TodoWrite",
-  "worker lanes",
-  "TDD red",
-  "record-evidence",
-  "QA fail retry",
-  "checkpoint complete",
-] as const satisfies readonly string[];
 
 export const ULW_DEMO_WORKERS = [
   { name: "Root Orchestrator", role: "holding goal", lane: "root", glyph: "R" },

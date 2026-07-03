@@ -1,5 +1,4 @@
 import type { JSX } from "react"
-import { cx } from "./utils"
 
 interface BrandMarkProps {
   readonly className?: string
@@ -82,7 +81,7 @@ export function HeroBrandMark(): JSX.Element {
       <BrandMark
         size="hero"
         dotFill="var(--accent-primary)"
-        className={cx("relative h-[140px] w-[140px] md:h-[160px] md:w-[160px]")}
+        className="relative h-[140px] w-[140px] md:h-[160px] md:w-[160px]"
       />
     </div>
   )

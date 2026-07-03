@@ -5,8 +5,6 @@
    for the file-size limit). */
 
 @layer components {
-  /* ---- Right panel (subagents-03.png: Environment / Subagents groups). */
-
   .ulw-side {
     border-left: 1px solid var(--codex-window-border);
     background: color-mix(in srgb, var(--codex-window-chrome) 55%, var(--codex-window-bg));

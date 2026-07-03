@@ -2,8 +2,7 @@
    document flow faithful to the app frames (creation-03.png): user command
    bubble, prose, tool-activity rows, inline code chip, then the Step pill,
    Pursuing-goal row, and the decorative composer. Imported by ulw-demo.css
-   (split for the file-size limit). Scene-variable regions are single-line
-   code-scroll or min-height reserved: zero outer layout shift. */
+   (split for the file-size limit). */
 
 @layer components {
   /* ---- Transcript document flow. */

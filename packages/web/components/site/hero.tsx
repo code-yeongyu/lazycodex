@@ -55,7 +55,6 @@ export function Hero(): JSX.Element {
           </ul>
         </div>
 
-        {/* Right-anchored brand mark — a composed visual anchor. */}
         <div className="hidden shrink-0 items-center justify-end md:flex">
           <HeroBrandMark />
         </div>

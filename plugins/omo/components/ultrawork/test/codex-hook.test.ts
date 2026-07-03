@@ -244,6 +244,25 @@ describe("codex ultrawork hook", () => {
 		expect(directive).toMatch(/WORKING:/);
 	});
 
+	it("#given directive #when wait_agent is silent #then timeout counters never close running children", () => {
+		// given
+		const payload = {
+			hook_event_name: "UserPromptSubmit",
+			prompt: "ulw",
+		};
+
+		// when
+		const output = runUserPromptSubmitHook(payload);
+		const parsed = parseHookOutput(output);
+
+		// then
+		const directive = parsed.hookSpecificOutput.additionalContext;
+		expect(directive).toMatch(/A silent wait is not a child-state transition/);
+		expect(directive).toMatch(/must not by itself\s+trigger `TASK STILL ACTIVE`/);
+		expect(directive).not.toMatch(/After two silent waits/);
+		expect(directive).not.toMatch(/After four silent/);
+	});
+
 	it("#given directive #when inspected #then keeps impact-proportional sizing invariants", () => {
 		// given
 		const payload = {

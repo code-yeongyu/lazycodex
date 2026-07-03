@@ -1,0 +1,65 @@
+
+┌─────────────────────────────┐
+│ OpenNext — Cloudflare build │
+└─────────────────────────────┘
+
+App directory: /Users/yeongyu/local-workspaces/lazycodex-wt/code-yeongyu/light-greeny-redesign-interactive-demo/packages/web
+Next.js version : 16.2.9
+@opennextjs/cloudflare version: 1.19.11
+@opennextjs/aws version: 4.0.2
+workerd compatibility_date: 2026-05-25
+
+┌─────────────────────────────────┐
+│ OpenNext — Building Next.js app │
+└─────────────────────────────────┘
+
+$ node ./scripts/generate-docs-content.mjs
+Docs content already current with 20 HTML-compiled docs
+$ NODE_OPTIONS=--no-deprecation next build
+▲ Next.js 16.2.9 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 891ms
+  Running TypeScript ...
+  Finished TypeScript in 1418ms ...
+  Collecting page data using 13 workers ...
+  Generating static pages using 13 workers (0/11) ...
+  Generating static pages using 13 workers (2/11) 
+  Generating static pages using 13 workers (5/11) 
+  Generating static pages using 13 workers (8/11) 
+✓ Generating static pages using 13 workers (11/11) in 595ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/github-stars
+├ ○ /apple-icon.png
+├ ○ /docs
+├ ○ /icon.svg
+├ ○ /manifest.webmanifest
+├ ○ /opengraph-image
+├ ○ /robots.txt
+├ ○ /sitemap.xml
+└ ○ /twitter-image
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+┌──────────────────────────────┐
+│ OpenNext — Generating bundle │
+└──────────────────────────────┘
+
+Bundling middleware function...
+Bundling static assets...
+Bundling cache assets...
+Building server function: default...
+Applying code patches: 1.275s
+# copyPackageTemplateFiles
+[35m⚙️ Bundling the OpenNext server...
+[0m
+[35mWorker saved in `.open-next/worker.js` 🚀
+[0m
+OpenNext build complete.

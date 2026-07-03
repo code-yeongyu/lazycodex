@@ -1,0 +1,4 @@
+{"mergedAt":"2026-07-03T11:39:19Z","number":103,"state":"MERGED"}
+
+post-merge main CI: Web CI 28658133961 success (57/57), Web Deploy 28658133997 success
+production check: lazycodex.ai serves the redesign (hero title + demo mode flag present)

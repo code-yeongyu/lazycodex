@@ -1,0 +1,177 @@
+{
+  "goals": [
+    {
+      "id": "g1-foundations",
+      "title": "Wave 1: light tokens, grounded data port, DESIGN.md, brand surfaces (plan tasks 1-4)",
+      "tier": "HEAVY",
+      "shape": "delivery",
+      "criteria": [
+        {
+          "id": "c1-tokens",
+          "scenario": "Plan Task 1 verbatim. Acceptance: from worktree root `grep -cE -- \"--surface-base: ?#f4f6ee|color-scheme: ?light\" packages/web/app/styles/design-system.css` >=2; `grep -n codex-window packages/web/app/styles/design-system.css | wc -l` >=26; `node .omo/scripts/contrast-check.mjs | tee .omo/evidence/task-1-contrast.txt` last line ALL PASS exit 0. QA happy: dev server PORT=4310 from packages/web, playwright screenshot 1440x900 -> ../../.omo/evidence/task-1-light-canvas.png, binary check body backgroundColor == rgb(244, 246, 238) via node -e import('@playwright/test') chromium from packages/web. QA edge: mutate contrast script copy to /tmp/cc-bad.mjs replacing #101914 with #c9d2cb; `set -o pipefail; node /tmp/cc-bad.mjs 2>&1 | tee .omo/evidence/task-1-contrast-negative.txt; echo exit=$? >> same` -> contains FAIL and exit=1. Cleanup: kill :4310 pids, lsof -i :4310 empty; rm /tmp/cc-bad.mjs.",
+          "channel": "browser",
+          "expectedEvidence": ".omo/evidence/task-1-light-canvas.png",
+          "adversarialClasses": ["contrast-regression", "stale-dark-literals"]
+        },
+        {
+          "id": "c2-demo-data",
+          "scenario": "Plan Task 2 verbatim. Acceptance: `diff packages/web/lib/ulw-demo-scenes.ts /Users/yeongyu/local-workspaces/lazycodex-wt/code-yeongyu/factory-tone-landing-ulw-demo/packages/web/lib/ulw-demo-scenes.ts` empty; source-ledger.md + copy-grounding-check.mjs copied into .omo; copy-ledger.md skeleton >=4 sections; site-config gains ulwDemo/teamMode/ulwResearch keys; `node .omo/scripts/config-drift-check.mjs` prints ULWDEMO-MATCH TEAMMODE-MATCH ULWRESEARCH-MATCH exit 0; pnpm type-check exit 0. QA happy: from packages/web `set -o pipefail; npx tsc --noEmit lib/ulw-demo-scenes.ts --target es2022 --module esnext --moduleResolution bundler 2>&1 | tee ../../.omo/evidence/task-2-scenes-compile.txt && echo TSC-PASS | tee -a same` then grep -c 'tab: \"' == 8. QA edge: run copy-grounding-check baseline tee .omo/evidence/task-2-grounding-baseline.txt with exit recorded. Cleanup: none needed (read-only checks).",
+          "channel": "cli",
+          "expectedEvidence": ".omo/evidence/task-2-scenes-compile.txt",
+          "adversarialClasses": ["copy-drift", "invented-strings"]
+        },
+        {
+          "id": "c3-designmd",
+          "scenario": "Plan Task 3 verbatim. Acceptance: `grep -c \"f4f6ee\\|codex-window\\|data-window-theme\\|rule-grid-dotted\\|font-serif\" packages/web/DESIGN.md` >=8; `grep -ci \"dark canvas\" packages/web/DESIGN.md` == 0; `grep -c \"no raster\" packages/web/DESIGN.md` >=1. QA happy: token parity loop for f4f6ee ffffff 15803d 101914 bbf7d0 across DESIGN.md and design-system.css -> five OK lines tee .omo/evidence/task-3-token-parity.txt. QA edge: stale-dark scan grep -rniE 'near-black|dark canvas|#0a0c0b|#0E1411' tee .omo/evidence/task-3-stale-dark.txt with matches=0 (0E1411 allowed ONLY inside dark window token table). Cleanup: none needed (read-only).",
+          "channel": "cli",
+          "expectedEvidence": ".omo/evidence/task-3-token-parity.txt",
+          "adversarialClasses": ["doc-code-drift"]
+        },
+        {
+          "id": "c4-brand-surfaces",
+          "scenario": "Plan Task 4 verbatim. Acceptance: layout.tsx colorScheme light + f4f6ee count >=3 across layout/manifest/og-image-theme; icon.svg keeps literal LazyCodex mark and drops 0E1411; apple-icon untouched in git diff; type-check + build exit 0. QA happy: dev server PORT=4311 from packages/web; curl /opengraph-image -> 200 image/png, PNG IHDR w=1200 h=630 via node readUInt32BE, artifacts ../../.omo/evidence/task-4-og.png + task-4-og-headers.txt. QA edge: curl /icon.svg -> 200 image/svg+xml and grep -c 'LazyCodex mark' /tmp/icon-check.svg >=1 tee ../../.omo/evidence/task-4-icon.txt. Cleanup: kill :4311 pids lsof empty; rm /tmp/icon-check.svg.",
+          "channel": "http",
+          "expectedEvidence": ".omo/evidence/task-4-og.png",
+          "adversarialClasses": ["seo-contract-drift", "og-dimension-regression"]
+        }
+      ]
+    },
+    {
+      "id": "g2-specs-primitives-sections",
+      "title": "Wave 2: RED specs, primitives, hero/header, install/commands, workflows, heph/cta/footer (plan tasks 5,6,8,9,10,12)",
+      "tier": "HEAVY",
+      "shape": "delivery",
+      "criteria": [
+        {
+          "id": "c5-e2e-red",
+          "scenario": "Plan Task 5 verbatim. Port ulw-demo.spec.ts + landing-sections.spec.ts from prior worktree, append window-theme toggle suite (role=group name 'Demo window theme', aria-pressed Light/Dark, data-window-theme flip, keyboard Enter, dark scene-0 visible), edit landing-sections order to NEW IA (demo before install). Acceptance: both files exist; grep -c 'data-window-theme|Demo window theme' in ulw-demo.spec >=4; RED run `cd packages/web && pnpm exec playwright test e2e/ulw-demo.spec.ts e2e/landing-sections.spec.ts 2>&1 | tee ../../.omo/evidence/task-5-red.txt` then grep '[1-9][0-9]* failed' -> RED-CONFIRMED; biome lint app e2e components lib exit 0. QA happy: red-reason grep Error/expect/locator head -20 tee .omo/evidence/task-5-red-reason.txt -> failures cite missing #ulw-demo/.ulw-window selectors, no 'Cannot find module', no TS errors. QA edge: `set -o pipefail; cd packages/web && pnpm exec playwright test e2e/home.spec.ts e2e/landing.spec.ts 2>&1 | tee ../../.omo/evidence/task-5-untouched-green.txt && echo UNTOUCHED-PASS` -> UNTOUCHED-PASS. Cleanup: playwright self-managed webServer; verify no stray next start on used port.",
+          "channel": "cli",
+          "expectedEvidence": ".omo/evidence/task-5-red.txt",
+          "adversarialClasses": ["red-for-wrong-reason", "collateral-spec-damage"]
+        },
+        {
+          "id": "c6-primitives",
+          "scenario": "Plan Task 6 verbatim. Acceptance: `grep -rn \"bg-white/\\[0.03\\]\\|border-white/10\\|border-white/20\\|bg-white/5\\|bg-black/40\" packages/web/components/design-system/ | wc -l` == 0; layout.tsx has ruleStyle/rule-grid-dotted >=2; biome+type-check exit 0. QA happy: dev PORT=4312 from packages/web, full-page screenshot ../../.omo/evidence/task-6-primitives-full.png + binary article card backgroundColor rgb(255, 255, 255) with non-white borderColor via @playwright/test chromium. QA edge: literal audit grep -rnE 'bg-white/|border-white/|ring-white/|bg-black' tee .omo/evidence/task-6-literal-audit.txt count=0 with bg-black only in sanctioned ShowcaseSurface/CommandCodeSurface lines. Cleanup: kill :4312, lsof empty.",
+          "channel": "browser",
+          "expectedEvidence": ".omo/evidence/task-6-primitives-full.png",
+          "adversarialClasses": ["invisible-borders-on-light", "api-signature-break"]
+        },
+        {
+          "id": "c8-hero-header",
+          "scenario": "Plan Task 8 verbatim. Acceptance: hero.tsx has zero card-gradient-beam/sheen/pools refs; `cd packages/web && pnpm exec playwright test e2e/landing.spec.ts e2e/home.spec.ts` all passed; biome+type-check exit 0. QA happy: dev PORT=4314 from packages/web, screenshot 1440x900 ../../.omo/evidence/task-8-hero-fold.png + binary bg=rgb(244, 246, 238) h1=true via @playwright/test (fold contract for demo window deferred to task 13). QA edge: screenshot 360x780 ../../.omo/evidence/task-8-hero-360.png + `set -o pipefail; pnpm exec playwright test e2e/responsive.spec.ts 2>&1 | tee ../../.omo/evidence/task-8-responsive.txt && echo RESPONSIVE-PASS` -> RESPONSIVE-PASS. Cleanup: kill :4314, lsof empty.",
+          "channel": "browser",
+          "expectedEvidence": ".omo/evidence/task-8-hero-fold.png",
+          "adversarialClasses": ["copy-drift", "360px-overflow", "one-h1-break"]
+        },
+        {
+          "id": "c9-install-commands",
+          "scenario": "Plan Task 9 verbatim. Acceptance: landing.spec.ts all passed; zero border-white//bg-black/40 literals in install-block+command-card; biome+type-check exit 0. QA happy: dev PORT=4315 from packages/web; @playwright/test script with clipboard permissions clicks first copy button, navigator.clipboard.readText -> file ../../.omo/evidence/task-9-copy.txt contains clipboard=npx lazycodex-ai install. QA edge: `grep -n \"<article\\|<h2\" packages/web/components/site/command-card.tsx | tee .omo/evidence/task-9-structure.txt` -> exactly one article and one h2 per card path. Cleanup: kill :4315, lsof empty.",
+          "channel": "browser",
+          "expectedEvidence": ".omo/evidence/task-9-copy.txt",
+          "adversarialClasses": ["article-h2-tripwire", "clipboard-regression"]
+        },
+        {
+          "id": "c10-workflows",
+          "scenario": "Plan Task 10 verbatim. Acceptance: zero bg-black/20|border-white/10 in feature-workflows-section.tsx; landing.spec.ts all passed; biome+type-check exit 0. QA happy: dev PORT=4316 from packages/web; @playwright/test script scrolls to 'Built-in skill coverage', screenshot ../../.omo/evidence/task-10-skills-band.png showing light pills + dotted rules. QA edge: `set -o pipefail; cd packages/web && pnpm exec playwright test e2e/landing.spec.ts 2>&1 | tee ../../.omo/evidence/task-10-ordering.txt && echo ORDERING-PASS` -> ORDERING-PASS (full file, includes skills-above-omoIntro ordering assertion). Cleanup: kill :4316, lsof empty.",
+          "channel": "browser",
+          "expectedEvidence": ".omo/evidence/task-10-skills-band.png",
+          "adversarialClasses": ["heading-literal-drift", "ordering-break"]
+        },
+        {
+          "id": "c12-heph-cta-footer",
+          "scenario": "Plan Task 12 verbatim. Acceptance: docs-cta.tsx zero rgba(74,222,128,0.12); landing.spec.ts all passed (footer contract); biome+type-check exit 0. QA happy: dev PORT=4318 from packages/web; @playwright/test End-key scroll screenshot ../../.omo/evidence/task-12-footer.png + binary footer backgroundColor rgb(233, 238, 224) and footer a count >=2. QA edge: from packages/web rendered-anchor audit via @playwright/test collecting footer a hrefs vs allowed list (githubUrl/omoUrl//docs/siteUrl family) -> FOOTER-LINKS-OK tee ../../.omo/evidence/task-12-footer-links.txt. Cleanup: kill :4318, lsof empty.",
+          "channel": "browser",
+          "expectedEvidence": ".omo/evidence/task-12-footer.png",
+          "adversarialClasses": ["invented-footer-links", "dark-band-contrast"]
+        }
+      ]
+    },
+    {
+      "id": "g3-demo-team-docs",
+      "title": "Wave 3: CodexWindow demo port + toggle + minimal mount, team/research sections, docs audit (plan tasks 7,11,14)",
+      "tier": "HEAVY",
+      "shape": "delivery",
+      "criteria": [
+        {
+          "id": "c7-codex-window",
+          "scenario": "Plan Task 7 verbatim. Port ulw-demo components + ulw-demo.css (light retune: shadow 0 24px 70px rgba(16,25,20,0.16), lane hexes -> var(--lane-*), fixed min-heights 560/480, panes stack <=768px), add window-theme toggle (role=group aria-label 'Demo window theme', two aria-pressed buttons, data-window-theme default light), minimal mount UlwDemoSection in page.tsx after Hero container. Acceptance: grep data-window-theme >=1 in components; 'Demo window theme' ==1; zero console. lines; codex-window.tsx <250 LOC; zero <article>; GREEN `set -o pipefail; cd packages/web && pnpm exec playwright test e2e/ulw-demo.spec.ts 2>&1 | tee ../../.omo/evidence/task-7-demo-green.txt && echo DEMO-SPEC-PASS` -> DEMO-SPEC-PASS; biome+type-check exit 0. QA happy: dev PORT=4313; screenshots task-7-window-light.png + task-7-window-dark.png (click Dark via @playwright/test) both showing ULTRAWORK MODE ENABLED! transcript + 13-agent roster. QA edge: reducedMotion reduce context, 9s wait, selected tab still 01 -> ../../.omo/evidence/task-7-reduced-motion.json. Cleanup: kill :4313, lsof empty.",
+          "channel": "browser",
+          "expectedEvidence": ".omo/evidence/task-7-demo-green.txt",
+          "adversarialClasses": ["cls-layout-shift", "reduced-motion-violation", "toggle-a11y-break", "raster-standin"]
+        },
+        {
+          "id": "c11-team-research",
+          "scenario": "Plan Task 11 verbatim. Port team-mode-section + ulw-research-section, chips -> light tokens, consume Task-2 config keys, thread-mock inline strings stay verbatim-hardcoded. Acceptance: both files exist; zero border-white/10|bg-black/20; CONSUMES-CONFIG awk check; zero <article>; biome+type-check exit 0. QA happy: literal-strings extraction node script tee .omo/evidence/task-11-literal-strings.txt then every LIT line grep -F FOUND in prior-branch components. QA edge: `set -o pipefail; node .omo/scripts/config-drift-check.mjs | tee .omo/evidence/task-11-copy-drift.txt && echo DRIFT-CHECK-PASS` -> three MATCH lines + DRIFT-CHECK-PASS. Cleanup: none needed (read-only checks).",
+          "channel": "cli",
+          "expectedEvidence": ".omo/evidence/task-11-literal-strings.txt",
+          "adversarialClasses": ["invented-strings", "config-drift"]
+        },
+        {
+          "id": "c14-docs-audit",
+          "scenario": "Plan Task 14 verbatim. Acceptance: `set -o pipefail; cd packages/web && pnpm exec playwright test e2e/docs.spec.ts 2>&1 | tee ../../.omo/evidence/task-14-docs-spec.txt && echo DOCS-SPEC-PASS` -> DOCS-SPEC-PASS; biome lint exit 0. QA happy: dev PORT=4320; screenshots task-14-docs-light.png (1440x2000) + task-14-docs-mobile.png (390x844) + binary docs-bg=rgb(244, 246, 238) AND pre-bg=rgb(12, 16, 14) via @playwright/test from packages/web. QA edge: no-JS context h2 count -> line ending NOJS-SSR-OK written ../../.omo/evidence/task-14-nojs.txt. Cleanup: kill :4320, lsof empty.",
+          "channel": "browser",
+          "expectedEvidence": ".omo/evidence/task-14-docs-light.png",
+          "adversarialClasses": ["nojs-ssr-break", "docs-dark-remnants"]
+        }
+      ]
+    },
+    {
+      "id": "g4-compose-ledger",
+      "title": "Wave 4-5: final IA composition + raster retirement, then copy-ledger completeness (plan tasks 13, 15 — strictly sequential)",
+      "tier": "HEAVY",
+      "shape": "delivery",
+      "criteria": [
+        {
+          "id": "c13-compose",
+          "scenario": "Plan Task 13 verbatim. Rewrite page.tsx to final IA (Hero -> UlwDemoSection -> InstallBlock -> CommandCards -> FeatureWorkflows -> TeamMode -> UlwResearch -> Hephaestus -> DocsCta), delete ultrawork-section.tsx/brand-image.tsx/badge-ultrawork.* after importer grep. Acceptance: section grep >=6, UltraworkSection == 0; DELETED echo; `set -o pipefail; cd packages/web && pnpm exec playwright test e2e/landing-sections.spec.ts e2e/ulw-demo.spec.ts 2>&1 | tee ../../.omo/evidence/task-13-green.txt && echo IA-SPECS-PASS`; full non-lighthouse sweep tee task-13-full-e2e.txt -> FULL-E2E-PASS; fold contract windowTop <900 -> ABOVE-FOLD on :4319; biome+type-check+build exit 0. QA happy: full-page screenshots task-13-ia-fullpage.png (1440) + task-13-ia-mobile.png (390) + binary bg + demo=1. QA edge: curl deleted badge -> 404 tee ../../.omo/evidence/task-13-badge-404.txt. Cleanup: kill :4319, lsof empty.",
+          "channel": "browser",
+          "expectedEvidence": ".omo/evidence/task-13-green.txt",
+          "adversarialClasses": ["ia-order-break", "dead-imports", "below-fold-demo"]
+        },
+        {
+          "id": "c15-ledger",
+          "scenario": "Plan Task 15 verbatim. Fill copy-ledger rows for every NEW visible string incl toggle labels row; run grounding checker with live server: dev PORT=4321, `set -o pipefail; ULW_AUDIT_BASE=http://127.0.0.1:4321 node .omo/scripts/copy-grounding-check.mjs 2>&1 | tee .omo/evidence/task-15-grounding.txt && echo GROUNDING-PASS`; write+run .omo/scripts/new-string-audit.mjs (LEDGER_PATH env, >=8 char literals, grounding AND ledger dual requirement) -> NEW-STRINGS-OK + AUDIT-PASS tee .omo/evidence/task-15-new-strings.txt; `grep -c \"Demo window theme\" .omo/evidence/copy-ledger.md` >=1. QA happy: sampled new string from site-config diff grep -F in ledger -> LEDGERED tee .omo/evidence/task-15-sample.txt. QA edge: `set -o pipefail; LEDGER_PATH=/tmp/ledger-empty.md node .omo/scripts/new-string-audit.mjs 2>&1 | tee .omo/evidence/task-15-negative.txt; echo exit=$? >> same` -> MISSING lines + exit=1. Cleanup: kill :4321 lsof empty; rm /tmp/ledger-empty.md.",
+          "channel": "cli",
+          "expectedEvidence": ".omo/evidence/task-15-new-strings.txt",
+          "adversarialClasses": ["unledgered-strings", "toothless-checker"]
+        }
+      ]
+    },
+    {
+      "id": "g5-final-gate",
+      "title": "Final verification wave F1-F4 + delivery runbook readiness",
+      "tier": "HEAVY",
+      "shape": "delivery",
+      "criteria": [
+        {
+          "id": "f1-compliance",
+          "scenario": "Plan F1 verbatim: read plan end-to-end; verify every Must Have exists by opening files/running commands; every Must NOT Have absent (grep bg-black sanctioned-only; git log --stat no .omo commits; git diff origin/main --name-only excludes apple-icon.png, github-stars files, frozen specs); every evidence file exists. Output: findings file .omo/evidence/f1-compliance.md listing each Must Have -> proof command -> result. Cleanup: none needed (read-only).",
+          "channel": "cli",
+          "expectedEvidence": ".omo/evidence/f1-compliance.md",
+          "adversarialClasses": ["scope-creep", "omo-committed"]
+        },
+        {
+          "id": "f2-quality",
+          "scenario": "Plan F2 verbatim from packages/web: biome lint app e2e components lib && type-check && build -> BUILD-PASS; pipefail playwright non-lighthouse tee ../../.omo/evidence/f2-e2e.txt -> E2E-PASS; pipefail playwright @lighthouse tee ../../.omo/evidence/f2-lighthouse.txt -> LH-PASS with 100x4 mobile AND desktop visible; pipefail opennextjs-cloudflare build tee ../../.omo/evidence/f2-opennext.txt -> OPENNEXT-PASS. Diff review for as-any/empty-catch/console.log/dead code. Cleanup: playwright self-managed; verify no stray servers via lsof on 4310-4321.",
+          "channel": "cli",
+          "expectedEvidence": ".omo/evidence/f2-lighthouse.txt",
+          "adversarialClasses": ["lighthouse-contrast-fail", "perf-cls-regression"]
+        },
+        {
+          "id": "f3-manual-qa",
+          "scenario": "Plan F3 verbatim: from clean state run integration browser QA with omo-visual-qa discipline: full-page 1440+390 screenshots of / and /docs; observe autoplay 01->02; tab-jump; play/pause aria-pressed flip; window-theme toggle both themes screenshots; reduced-motion stays scene 01; keyboard Tab reaches toggle+tabs, arrows move tabs; hover audit only on actionable elements. All artifacts under .omo/evidence/final-qa/. Cleanup: kill all QA server pids, lsof empty on used port, receipt recorded.",
+          "channel": "browser",
+          "expectedEvidence": ".omo/evidence/final-qa/desktop-1440-full.png",
+          "adversarialClasses": ["hover-on-nonactionable", "keyboard-trap", "autoplay-reduced-motion"]
+        },
+        {
+          "id": "f4-scope-fidelity",
+          "scenario": "Plan F4 verbatim: per todo diff spec vs actual via git show <commit> --stat; nothing missing/beyond spec; no cross-task contamination; git status --short shows nothing unaccounted except .omo/; every commit message matches its todo's Commit line. Output findings file .omo/evidence/f4-scope-fidelity.md mapping task -> commit -> files -> verdict. Cleanup: none needed (read-only).",
+          "channel": "cli",
+          "expectedEvidence": ".omo/evidence/f4-scope-fidelity.md",
+          "adversarialClasses": ["omnibus-commit", "unaccounted-files"]
+        }
+      ]
+    }
+  ]
+}

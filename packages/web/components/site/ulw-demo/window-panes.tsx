@@ -1,6 +1,7 @@
 import type { JSX } from "react"
 import {
   ULW_DEMO_ENVIRONMENT,
+  ULW_DEMO_SCENES,
   ULW_DEMO_WORKERS,
   type UlwScene,
 } from "../../../lib/ulw-demo-scenes"
@@ -59,15 +60,30 @@ export function TranscriptPane({ scene }: { readonly scene: UlwScene }): JSX.Ele
   )
 }
 
-export function WindowFooter({ scene }: { readonly scene: UlwScene }): JSX.Element {
+export function WindowFooter({
+  scene,
+  sceneIndex,
+}: {
+  readonly scene: UlwScene
+  readonly sceneIndex: number
+}): JSX.Element {
   return (
     <div className="ulw-app-footer">
-      {/* The app's running line ("Working for 4m 8s" in desktop app.png) —
-          the recording never counts steps, it just keeps working. */}
-      <span className="ulw-app-step">
-        <span className="ulw-spinner" aria-hidden="true" />
-        Working for {scene.elapsed}
-      </span>
+      {/* The app's running line ("Working for 4m 8s" in desktop app.png),
+          with a run-progress track filling as the goal advances. */}
+      <div className="ulw-app-working">
+        <span className="ulw-app-step">
+          <span className="ulw-spinner" aria-hidden="true" />
+          Working for {scene.elapsed}
+        </span>
+        <span className="ulw-run-progress" aria-hidden="true">
+          <span
+            style={{
+              transform: `scaleX(${(sceneIndex + 1) / ULW_DEMO_SCENES.length})`,
+            }}
+          />
+        </span>
+      </div>
 
       <div className="ulw-app-goal">
         <UlwIcon name="target" />

@@ -88,13 +88,66 @@
   }
 
 
+  .ulw-app-working {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
   .ulw-app-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     font-family: var(--font-mono);
     font-size: 10.5px;
     padding: 3px 10px;
     border-radius: 999px;
     border: 1px solid var(--codex-window-border);
     color: var(--codex-window-text-soft);
+    white-space: nowrap;
+  }
+
+  /* Run progress — how far through the goal the recording is. The fill is
+     scaleX-driven (compositor-safe) and eases forward on each scene, so the
+     run visibly accumulates instead of the screen merely switching. */
+  .ulw-run-progress {
+    flex: 1;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--codex-window-chip);
+    overflow: hidden;
+  }
+
+  .ulw-run-progress span {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--codex-window-accent);
+    transform-origin: left center;
+    transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Scene continuity: new transcript content flows up into place, reading
+     as the session carrying on rather than a slide swap. */
+  .ulw-app-transcript {
+    animation: ulw-flow-in 420ms ease-out;
+  }
+
+  @keyframes ulw-flow-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ulw-app-transcript {
+      animation: none;
+    }
+
+    .ulw-run-progress span {
+      transition: none;
+    }
   }
 
 

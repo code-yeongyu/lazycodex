@@ -54,10 +54,12 @@ export function CodexWindow(): JSX.Element {
           <WindowSidebar />
           <section className="ulw-app-main" aria-label="Ultrawork root orchestration surface">
             <WindowTitlebar sceneTab={scene.tab} />
-            <TranscriptPane scene={scene} />
-            <WindowFooter scene={scene} />
+            {/* Keyed per scene: fresh content flows in from below, like the
+                session simply continuing — never a hard slide swap. */}
+            <TranscriptPane key={scene.key} scene={scene} />
+            <WindowFooter scene={scene} sceneIndex={sceneIndex} />
           </section>
-          <SidePanel scene={scene} />
+          <SidePanel key={scene.key} scene={scene} />
         </div>
       </div>
     </div>

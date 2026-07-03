@@ -196,12 +196,13 @@
   }
 
   /* Page atmosphere — the emerald-lit darkness of the original identity.
-     Static radial washes on an absolutely-positioned backdrop (PageShell):
-     an aurora behind the hero, a faint mid-page pool behind the demo, and a
-     low anchor near the Hephaestus band. Alphas stay <= 0.10 so every
-     AA-checked text pair is unaffected (worst case composites the canvas
-     from #0a0b0d toward #0d1410 — still darker than the audited #15171b
-     card ground). No animation: zero paint cost after first frame. */
+     Four static radial washes on an absolutely-positioned backdrop
+     (PageShell): the hero aurora (peak alpha 0.17), a faint right-side pool
+     near the demo, a mid-page pool, and a low anchor near the Hephaestus
+     band. At the aurora peak the canvas composites from #0a0b0d to roughly
+     #0e2b1b; text-primary still measures 14.3:1 there (18.5:1 on the pure
+     canvas), so every AA-checked pair keeps a wide margin. No animation:
+     zero paint cost after first frame. */
   .glow-backdrop {
     background:
       radial-gradient(72rem 30rem at 50% 4rem, rgba(34, 197, 94, 0.17), rgba(34, 197, 94, 0.06) 45%, transparent 68%),

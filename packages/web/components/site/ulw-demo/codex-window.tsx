@@ -70,7 +70,7 @@ export function CodexWindow(): JSX.Element {
           />
         </div>
         <div className="ulw-app-frame">
-          <WindowSidebar sceneIndex={sceneIndex} onSelectScene={selectScene} />
+          <WindowSidebar />
           <section className="ulw-app-main" aria-label="Ultrawork root orchestration surface">
             <WindowTitlebar
               sceneTab={scene.tab}
@@ -83,7 +83,7 @@ export function CodexWindow(): JSX.Element {
               }
             />
             <TranscriptPane scene={scene} />
-            <WindowFooter scene={scene} sceneIndex={sceneIndex} />
+            <WindowFooter scene={scene} sceneIndex={sceneIndex} onSelectScene={selectScene} />
           </section>
           <SidePanel scene={scene} />
         </div>

@@ -94,24 +94,21 @@
     color: var(--codex-window-text-soft);
   }
 
-  /* Session rows double as scene navigation (app-native tab replacement). */
+  /* The ONE session of the run — static (not navigation; no hover): the
+     whole demo is a single goal being pursued, so the sidebar never changes. */
   .ulw-app-session {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 7px;
     width: 100%;
     text-align: left;
-    padding: 5px 8px 5px 30px;
+    padding: 5px 8px 5px 14px;
     border-radius: 7px;
     font-size: 12px;
     color: var(--codex-window-text-soft);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: background-color 150ms ease, color 150ms ease;
-  }
-
-  .ulw-app-session:hover {
-    background: var(--codex-window-chip);
-    color: var(--codex-window-text);
   }
 
   .ulw-app-session[aria-current="true"] {
@@ -120,7 +117,14 @@
     font-weight: 600;
   }
 
-  .ulw-app-session:focus-visible,
+  .ulw-app-session-dot {
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--codex-window-accent);
+  }
+
   .ulw-app-control:focus-visible {
     outline: 2px solid var(--codex-window-accent);
     outline-offset: 1px;

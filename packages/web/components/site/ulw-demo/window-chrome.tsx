@@ -1,6 +1,5 @@
 import type { JSX } from "react"
 import { SITE_CONFIG } from "../../../lib/site-config"
-import { ULW_DEMO_SCENES } from "../../../lib/ulw-demo-scenes"
 import { UlwIcon, type UlwIconName } from "./window-icons"
 
 /**
@@ -19,13 +18,7 @@ const SIDEBAR_NAV: readonly { icon: UlwIconName; label: string }[] = [
   { icon: "clock", label: "Automations" },
 ]
 
-export function WindowSidebar({
-  sceneIndex,
-  onSelectScene,
-}: {
-  readonly sceneIndex: number
-  readonly onSelectScene: (index: number) => void
-}): JSX.Element {
+export function WindowSidebar(): JSX.Element {
   return (
     <aside className="ulw-app-sidebar">
       <span className="ulw-traffic" aria-hidden="true">
@@ -43,15 +36,9 @@ export function WindowSidebar({
         ))}
       </div>
 
-      <div className="ulw-app-group" aria-hidden="true">
-        <span className="ulw-app-group-label">Pinned</span>
-        <span className="ulw-app-row">
-          <UlwIcon name="terminal" />
-          {SITE_CONFIG.ultraworkExample}
-        </span>
-      </div>
-
-      <nav className="ulw-app-group" aria-label="Demo scenes">
+      {/* ONE session pursuing one goal — constant across every scene, like a
+          real 30h+ run. Scene navigation lives on the footer step pill. */}
+      <nav className="ulw-app-group" aria-label="Sessions">
         <span className="ulw-app-group-label" aria-hidden="true">
           Projects
         </span>
@@ -59,17 +46,10 @@ export function WindowSidebar({
           <UlwIcon name="folder" />
           {SITE_CONFIG.wordmark}
         </span>
-        {ULW_DEMO_SCENES.map((scene, index) => (
-          <button
-            type="button"
-            className="ulw-app-session"
-            key={scene.key}
-            aria-current={index === sceneIndex ? "true" : undefined}
-            onClick={() => onSelectScene(index)}
-          >
-            {scene.tab}
-          </button>
-        ))}
+        <span className="ulw-app-session ulw-app-session-active" aria-current="true">
+          <span className="ulw-app-session-dot" aria-hidden="true" />
+          {SITE_CONFIG.ultraworkExample}
+        </span>
         <span className="ulw-app-row ulw-app-showmore" aria-hidden="true">
           Show more
         </span>

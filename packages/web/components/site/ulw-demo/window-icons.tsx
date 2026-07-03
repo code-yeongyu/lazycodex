@@ -29,6 +29,8 @@ const ICON_PATHS = {
   replay: "M2.5 8a5.5 5.5 0 1 0 1.7-4M4 2.5v2.8h2.8",
   moon: "M13.2 9.7A5.7 5.7 0 1 1 6.3 2.8a4.6 4.6 0 0 0 6.9 6.9Z",
   sun: "M8 5.4a2.6 2.6 0 1 0 0 5.2 2.6 2.6 0 0 0 0-5.2ZM8 1.3v1.5M8 13.2v1.5M1.3 8h1.5M13.2 8h1.5M3.3 3.3l1 1M11.7 11.7l1 1M12.7 3.3l-1 1M4.3 11.7l-1 1",
+  "chevron-left": "M9.5 4 6 8l3.5 4",
+  "chevron-right": "M6.5 4 10 8l-3.5 4",
 } as const
 
 export type UlwIconName = keyof typeof ICON_PATHS

@@ -6,9 +6,9 @@ import { UlwIcon, type UlwIconName } from "./window-icons"
  * Window chrome for the Codex-desktop demo: left session sidebar plus the
  * per-session title bar. Anatomy mirrors the real app frames
  * (.omo/reference/app-frames/creation-03.png): traffic lights above a nav
- * list, then Pinned and Projects session groups. The Projects session rows
- * ARE the scene navigation — the app-native replacement for a tab strip —
- * so they are plain buttons carrying aria-current, not a fake tablist.
+ * list, then the Projects group. The sidebar is static — it shows the run's
+ * single long-lived session (a span with aria-current, nothing clickable):
+ * the demo is a staged recording, and nothing in the window is interactive.
  */
 
 const SIDEBAR_NAV: readonly { icon: UlwIconName; label: string }[] = [

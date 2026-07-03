@@ -81,6 +81,16 @@ test.describe("information architecture", () => {
     expect(teamMode).toBeLessThan(research)
     expect(research).toBeLessThan(hephaestus)
 
+    // The glassy Ultrawork badge showcase is back below Hephaestus.
+    // (Lazy-loaded: bring it into view so it acquires its box first.)
+    const badge = page.locator('img[src*="badge-ultrawork"]')
+    await badge.scrollIntoViewIfNeeded()
+    await expect(badge).toBeVisible()
+    const badgeTop = await badge.evaluate(
+      (node) => node.getBoundingClientRect().top + window.scrollY,
+    )
+    expect(hephaestus).toBeLessThan(badgeTop)
+
     await page.screenshot({
       path: "../../.omo/evidence/g3-c1/landing-1280-full.png",
       fullPage: true,

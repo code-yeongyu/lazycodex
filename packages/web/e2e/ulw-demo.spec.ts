@@ -31,7 +31,7 @@ function sceneRow(page: Page, tab: string) {
 }
 
 function themeToggle(page: Page) {
-  return page.getByRole("button", { name: "Toggle the dark window theme" })
+  return page.getByRole("button", { name: "Toggle the light window theme" })
 }
 
 test.describe("ulw demo — happy path @happy", () => {
@@ -147,14 +147,15 @@ test.describe("ulw demo — reduced motion + mobile @edge", () => {
 })
 
 test.describe("ulw demo — window theme toggle", () => {
-  test("defaults to the light window theme with an accessible toggle @happy", async ({
+  test("defaults to the dark window theme with an accessible toggle @happy", async ({
     page,
   }) => {
     await page.goto("/")
     const ulwWindow = page.locator("#ulw-demo .ulw-window")
 
-    // Light is the default (faithful to the real Codex app; Lighthouse audits it).
-    await expect(ulwWindow).toHaveAttribute("data-window-theme", "light")
+    // Dark is the default: the window sits on a near-black canvas, so the
+    // elevated dark layer is the restful state; light is the opt-in.
+    await expect(ulwWindow).toHaveAttribute("data-window-theme", "dark")
     await expect(themeToggle(page)).toHaveAttribute("aria-pressed", "false")
   })
 
@@ -166,11 +167,11 @@ test.describe("ulw demo — window theme toggle", () => {
 
     await expect(themeToggle(page)).toBeVisible()
     await themeToggle(page).click()
-    await expect(ulwWindow).toHaveAttribute("data-window-theme", "dark")
+    await expect(ulwWindow).toHaveAttribute("data-window-theme", "light")
     await expect(themeToggle(page)).toHaveAttribute("aria-pressed", "true")
 
     await themeToggle(page).click()
-    await expect(ulwWindow).toHaveAttribute("data-window-theme", "light")
+    await expect(ulwWindow).toHaveAttribute("data-window-theme", "dark")
     await expect(themeToggle(page)).toHaveAttribute("aria-pressed", "false")
   })
 
@@ -185,11 +186,11 @@ test.describe("ulw demo — window theme toggle", () => {
     await expect(themeToggle(page)).toBeFocused()
     await page.keyboard.press("Enter")
 
-    await expect(ulwWindow).toHaveAttribute("data-window-theme", "dark")
+    await expect(ulwWindow).toHaveAttribute("data-window-theme", "light")
     await expect(themeToggle(page)).toHaveAttribute("aria-pressed", "true")
   })
 
-  test("dark window theme keeps the scene-0 transcript visible @edge", async ({ page }) => {
+  test("light window theme keeps the scene-0 transcript visible @edge", async ({ page }) => {
     // Reduced motion pins the demo on scene 0 so the visibility check is stable.
     await page.emulateMedia({ reducedMotion: "reduce" })
     await page.goto("/")
@@ -197,7 +198,7 @@ test.describe("ulw demo — window theme toggle", () => {
 
     await expect(themeToggle(page)).toBeVisible()
     await themeToggle(page).click()
-    await expect(ulwWindow).toHaveAttribute("data-window-theme", "dark")
+    await expect(ulwWindow).toHaveAttribute("data-window-theme", "light")
 
     await expect(page.getByText(RESEARCH.title, { exact: true })).toBeVisible()
     await expect(page.getByText("ULTRAWORK MODE ENABLED!", { exact: true })).toBeVisible()

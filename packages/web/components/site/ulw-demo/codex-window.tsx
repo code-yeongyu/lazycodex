@@ -17,7 +17,7 @@ import { SidePanel, TranscriptPane, WindowFooter } from "./window-panes"
 export function CodexWindow(): JSX.Element {
   const [sceneIndex, setSceneIndex] = useState(0)
   const [playing, setPlaying] = useState(false)
-  const [windowTheme, setWindowTheme] = useState<"light" | "dark">("light")
+  const [windowTheme, setWindowTheme] = useState<"light" | "dark">("dark")
   const rootRef = useRef<HTMLDivElement | null>(null)
   const scene = ULW_DEMO_SCENES[sceneIndex % ULW_DEMO_SCENES.length] ?? ULW_DEMO_SCENES[0]
 

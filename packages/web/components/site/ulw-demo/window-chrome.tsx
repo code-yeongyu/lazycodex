@@ -120,11 +120,11 @@ export function WindowTitlebar({
         <button
           type="button"
           className="ulw-app-control"
-          aria-pressed={windowTheme === "dark"}
-          aria-label="Toggle the dark window theme"
+          aria-pressed={windowTheme === "light"}
+          aria-label="Toggle the light window theme"
           onClick={onToggleTheme}
         >
-          <UlwIcon name="moon" />
+          <UlwIcon name="sun" />
         </button>
       </div>
     </header>

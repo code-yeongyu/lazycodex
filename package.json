@@ -12,7 +12,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "node --test test/*.test.mjs",
+    "test": "node scripts/run-node-test-files.mjs",
     "pack:dry-run": "npm pack --dry-run"
   },
   "keywords": [

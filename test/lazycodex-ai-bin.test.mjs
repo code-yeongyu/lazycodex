@@ -1,10 +1,11 @@
 import assert from "node:assert/strict"
 import { existsSync, readFileSync } from "node:fs"
-import { join } from "node:path"
+import { dirname, join } from "node:path"
 import { spawnSync } from "node:child_process"
 import { describe, it } from "node:test"
+import { fileURLToPath } from "node:url"
 
-const root = new URL("..", import.meta.url).pathname
+const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const packageJsonPath = join(root, "package.json")
 const packageLockPath = join(root, "package-lock.json")
 const publishWorkflowPath = join(root, ".github", "workflows", "npm-publish.yml")
@@ -23,6 +24,7 @@ describe("lazycodex-ai npm package", () => {
     assert.equal(manifest.name, "lazycodex-ai")
     assert.equal(manifest.version, releaseVersion)
     assert.equal(manifest.bin?.["lazycodex-ai"], "bin/lazycodex-ai.js")
+    assert.equal(manifest.scripts?.test, "node scripts/run-node-test-files.mjs")
     assert.equal(manifest.private, undefined)
   })
 

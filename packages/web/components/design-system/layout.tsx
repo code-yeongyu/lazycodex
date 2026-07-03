@@ -16,7 +16,14 @@ interface SkipLinkProps {
 }
 
 export function PageShell({ children }: ChildrenProps): JSX.Element {
-  return <div className="flex min-h-[100dvh] flex-col">{children}</div>
+  return (
+    <div className="relative flex min-h-[100dvh] flex-col">
+      {/* Atmosphere backdrop: static low-alpha green glows behind everything.
+          Absolute + pointer-events-none — zero layout cost, no CLS. */}
+      <div aria-hidden className="glow-backdrop pointer-events-none absolute inset-0" />
+      <div className="relative flex min-h-[100dvh] flex-col">{children}</div>
+    </div>
+  )
 }
 
 export function SkipLink({

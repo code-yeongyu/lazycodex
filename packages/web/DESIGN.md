@@ -20,19 +20,31 @@ page itself. The brand color is green, not teal, cyan, purple, or blue.
 
 ## 2. Color
 
+### Atmosphere
+
+The canvas is not flat black: a static emerald atmosphere restores the
+original identity's luminous tone. `PageShell` mounts an `aria-hidden`
+`.glow-backdrop` layer (absolute, `pointer-events-none`, painted below the
+content wrapper by DOM order) carrying four low-alpha radial green washes —
+an aurora behind the hero (peak `rgba(34,197,94,0.17)`), a faint right-side
+pool near the demo, a mid-page pool, and a low anchor near the Hephaestus
+band. Alphas stay ≤ 0.17 so every AA-audited text pair is unaffected, and the
+layer never animates — zero paint cost after first frame, zero CLS.
+
+
 ### Palette
 
 | Role | Token | Value | Usage |
 | --- | --- | --- | --- |
-| Surface/base | `--surface-base`, `--surface-0` | `#0e1012` | Page canvas |
-| Surface/night | `--surface-night` | `#0a0c0e` | Footer and deeper page bands |
+| Surface/base | `--surface-base`, `--surface-0` | `#0a0b0d` | Page canvas |
+| Surface/night | `--surface-night` | `#07080a` | Footer and deeper page bands |
 | Surface/subtle | `--surface-1` | `rgba(255,255,255,0.04)` | Hover and quiet fills |
 | Surface/raised | `--surface-2` | `rgba(255,255,255,0.06)` | Secondary tonal layer |
 | Surface/strong | `--surface-3` | `rgba(255,255,255,0.09)` | Stronger tonal layer |
-| Surface/card | `--card-base` | `#16181c` | Elevated dark panels, content cards |
-| Surface/panel | `--surface-panel` | `#121417` | Panels, install bar |
-| Surface/alt | `--surface-panel-alt` | `#131519` | Alternate panel |
-| Surface/deep | `--surface-panel-deep` | `#101215` | Deep panel |
+| Surface/card | `--card-base` | `#15171b` | Elevated dark panels, content cards |
+| Surface/panel | `--surface-panel` | `#101216` | Panels, install bar |
+| Surface/alt | `--surface-panel-alt` | `#111318` | Alternate panel |
+| Surface/deep | `--surface-panel-deep` | `#0e1013` | Deep panel |
 | Brand/core | `--brand-core` | `#22c55e` | Green brand center (fills, gradients) |
 | Brand/mid | `--brand-mid` | `#16a34a` | Green gradient middle |
 | Brand/outer | `--brand-outer` | `#15803d` | Gradient edge |
@@ -84,7 +96,7 @@ Light theme (default block on `.ulw-window`):
 | Window/traffic | `--codex-window-traffic-red/-amber/-green` | `#f87171` / `#fbbf24` / `#34d399` | macOS traffic-light ornaments |
 
 Dark theme (override block scoped `[data-window-theme="dark"]`, same 13 token names). It is
-deliberately a touch LIGHTER than the page canvas (`#0e1012`) with a stronger hairline ring
+deliberately a touch LIGHTER than the page canvas (`#0a0b0d`) with a stronger hairline ring
 (`rgba(255,255,255,0.18)`), so the dark window still reads as a distinct elevated layer instead
 of dissolving into the page:
 
@@ -127,7 +139,7 @@ rule applies everywhere outside the window.
 - New UI uses `--accent-primary`; `--accent-cyan` and `--accent-teal` remain green aliases only for compatibility.
 - `--accent-mint` (`#86efac`) is a fill/decoration color first (glows, dots, code prompt glyphs). Interactive text and links stay on `--accent-primary` so the accent voice remains single and restrained.
 - Accent is reserved for interactivity, code emphasis, focus, and brand signal.
-- Light surfaces are allowed ONLY inside the demo window's faithful light theme (`.ulw-window` default adapter block, also used by the Team Mode mock). Everything else sits on the dark canvas. Code blocks (`pre`), command surfaces (`CommandCodeSurface`), and the Hephaestus band (`ShowcaseSurface`) are slightly ELEVATED dark layers — a tonal lift plus a hairline ring, so they never vanish into the page.
+- Light surfaces are allowed ONLY inside the demo window's OPT-IN light theme (`.ulw-window` light adapter block, also used by the Team Mode mock). The window DEFAULTS to its dark elevated theme — a full-white pane on the near-black canvas is glare, so light is a deliberate toggle, never the resting state. Everything else sits on the dark canvas. Code blocks (`pre`), command surfaces (`CommandCodeSurface`), and the Hephaestus band (`ShowcaseSurface`) are slightly ELEVATED dark layers — a tonal lift plus a hairline ring, so they never vanish into the page.
 - Raw colors belong in this file, `design-system.css`, or OG theme tokens. Component code references tokens or shared primitives. The sanctioned raw values in components are: `#16191e` (showcase band), `#1b1f24` (command code chip), `#15181d` (docs `pre`), `#dcfce7` (text on dark code chips), gradient stops `#86efac`/`#4ade80`/`#22c55e`, brand glow `rgba(74,222,128,0.16)`, card shadow `rgba(0,0,0,0.4)`, and the `white/10` hairline rings on elevated dark chips.
 
 ## 3. Typography
@@ -231,7 +243,7 @@ All spacing resolves to a 4px rhythm. Existing Tailwind values map to the same r
 - **Variants**: 8 scenes (`research → plan → todo → assign → red → green → qa-retry → checkpoint`),
   each atomically updating command, status, headline, body, active step, roster lanes, proof chips,
   ledger, and JSON card.
-- **Window themes**: light (default) and dark, driven by `data-window-theme="light|dark"` on
+- **Window themes**: dark (default) and light (opt-in via the sun toggle, `aria-pressed` = light), driven by `data-window-theme="light|dark"` on
   `.ulw-window`. Light is the server-rendered default (faithful to the real Codex app and the state
   Lighthouse audits); dark re-themes only the window interior through the
   `[data-window-theme="dark"]` token block — the page canvas never changes.
@@ -313,7 +325,7 @@ Codex window where real product chrome is shown.
 
 | Level | Treatment | Usage |
 | --- | --- | --- |
-| Canvas | `--surface-base` (`#0e1012`) | Whole site background |
+| Canvas | `--surface-base` (`#0a0b0d`) | Whole site background |
 | Panel | `--card-base` / `--surface-panel` with `--border-subtle` and `rgba(0,0,0,0.4)` shadow | Cards, install bar, docs input |
 | Accent panel | `--accent-primary` soft fill and border | Built-in skills, Lazy comparison, workflow code |
 | Elevated dark chip | `#16191e` / `#1b1f24` / `#15181d` surface + `white/10` ring, light-on-dark text | Code blocks, command surfaces, Hephaestus showcase, demo window dark theme |

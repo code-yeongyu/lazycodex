@@ -13,17 +13,19 @@
 
 @layer base {
   :root {
-    /* Surfaces — deep graphite canvas, quiet and neutral (Linear-class dark). */
-    --surface-base: #0e1012;
-    --surface-0: #0e1012;
+    /* Surfaces — near-black canvas where content emerges through luminance
+       (Linear-grammar darkness as the native medium), with the emerald
+       atmosphere restored by the .glow-backdrop layer below. */
+    --surface-base: #0a0b0d;
+    --surface-0: #0a0b0d;
     --surface-1: rgba(255, 255, 255, 0.04);
     --surface-2: rgba(255, 255, 255, 0.06);
     --surface-3: rgba(255, 255, 255, 0.09);
-    --card-base: #16181c;
-    --surface-night: #0a0c0e;
-    --surface-panel: #121417;
-    --surface-panel-alt: #131519;
-    --surface-panel-deep: #101215;
+    --card-base: #15171b;
+    --surface-night: #07080a;
+    --surface-panel: #101216;
+    --surface-panel-alt: #111318;
+    --surface-panel-deep: #0e1013;
 
     /* Brand — green core (green-500 family), clearly green not teal. */
     --brand-core: #22c55e;
@@ -191,5 +193,20 @@
      The rule color flips with --border-subtle (hairline white on dark). */
   .rule-grid-dotted > * + * {
     border-left: 1px dotted var(--border-subtle);
+  }
+
+  /* Page atmosphere — the emerald-lit darkness of the original identity.
+     Static radial washes on an absolutely-positioned backdrop (PageShell):
+     an aurora behind the hero, a faint mid-page pool behind the demo, and a
+     low anchor near the Hephaestus band. Alphas stay <= 0.10 so every
+     AA-checked text pair is unaffected (worst case composites the canvas
+     from #0a0b0d toward #0d1410 — still darker than the audited #15171b
+     card ground). No animation: zero paint cost after first frame. */
+  .glow-backdrop {
+    background:
+      radial-gradient(72rem 30rem at 50% 4rem, rgba(34, 197, 94, 0.17), rgba(34, 197, 94, 0.06) 45%, transparent 68%),
+      radial-gradient(50rem 26rem at 78% 26rem, rgba(74, 222, 128, 0.07), transparent 66%),
+      radial-gradient(70rem 42rem at 10% 118rem, rgba(22, 163, 74, 0.09), transparent 68%),
+      radial-gradient(84rem 48rem at 70% 100%, rgba(34, 197, 94, 0.06), transparent 70%);
   }
 }

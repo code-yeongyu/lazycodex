@@ -50,15 +50,6 @@ export function CodexWindow(): JSX.Element {
   return (
     <div ref={rootRef} className="flex w-full flex-col items-center">
       <div className="ulw-window ulw-app" data-window-theme="dark">
-        {/* Per-scene playback progress: transform-only (compositor-safe),
-            remounted per scene key; idle until the recording starts. */}
-        <div className="ulw-app-progress" aria-hidden="true">
-          <span
-            key={scene.key}
-            data-playing={playing}
-            style={{ animationDuration: `${ULW_DEMO_AUTOPLAY_MS}ms` }}
-          />
-        </div>
         <div className="ulw-app-frame">
           <WindowSidebar />
           <section className="ulw-app-main" aria-label="Ultrawork root orchestration surface">

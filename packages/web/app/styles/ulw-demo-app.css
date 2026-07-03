@@ -1,7 +1,8 @@
-/* App-shell chrome for the interactive Ultrawork demo — the .ulw-app-* layer
-   rebuilt to the real Codex desktop anatomy (.omo/reference/app-frames/
-   creation-03.png): sidebar session groups, per-session title bar with the
-   playback cluster, transcript document flow, decorative composer.
+/* App-shell chrome for the Ultrawork demo — the .ulw-app-* layer built to
+   the real Codex desktop anatomy (.omo/reference/app-frames/creation-03.png):
+   sidebar with the run's single session, per-session title bar, transcript
+   document flow, decorative composer. The demo is a staged recording with no
+   controls and no progress bar — it simply looks like a session in progress.
    Split from ulw-demo.css to keep files under the size limit.
    Motion: transform/opacity/color only. Zero outer layout shift: every
    scene-variable region is single-line-with-code-scroll or min-height
@@ -13,36 +14,6 @@
     min-height: 680px;
     display: flex;
     flex-direction: column;
-  }
-
-  /* Thin per-scene progress strip (screen-recording metaphor). The fill is
-     transform-only and paused via animation-play-state; the span remounts
-     per scene so the bar restarts on each beat. */
-  .ulw-app-progress {
-    height: 3px;
-    background: var(--codex-window-chip);
-    flex-shrink: 0;
-  }
-
-  .ulw-app-progress span {
-    display: block;
-    height: 100%;
-    width: 100%;
-    background: var(--codex-window-accent);
-    transform: scaleX(0);
-    transform-origin: left center;
-    animation: ulw-progress-fill 7000ms linear forwards;
-    animation-play-state: paused;
-  }
-
-  .ulw-app-progress span[data-playing="true"] {
-    animation-play-state: running;
-  }
-
-  @keyframes ulw-progress-fill {
-    to {
-      transform: scaleX(1);
-    }
   }
 
   .ulw-app-frame {
@@ -182,9 +153,4 @@
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .ulw-app-progress span {
-      animation: none;
-    }
-  }
 }

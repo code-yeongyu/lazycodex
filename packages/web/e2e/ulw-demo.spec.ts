@@ -48,8 +48,10 @@ test.describe("ulw demo — cinematic recording @happy", () => {
     await expect(activeSession(page)).toContainText(SESSION_TITLE)
     await expect(demo.getByText(RESEARCH.elapsed, { exact: true })).toBeVisible()
 
-    // NOT playable: the window contains zero interactive controls.
+    // NOT playable: the window contains zero interactive controls — and no
+    // progress bar either; the session just looks naturally in progress.
     await expect(demo.locator(".ulw-window button")).toHaveCount(0)
+    await expect(demo.locator(".ulw-app-progress")).toHaveCount(0)
 
     // Fast autoplay advances the recording on its own; the session and the
     // window box stay constant while the elapsed keeps rising.

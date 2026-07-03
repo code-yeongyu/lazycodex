@@ -2,11 +2,11 @@
   <title>LazyCodex mark</title>
   <defs>
     <linearGradient id="lc-green" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#22c55e" />
-      <stop offset="100%" stop-color="#15803d" />
+      <stop offset="0%" stop-color="#4ade80" />
+      <stop offset="100%" stop-color="#22c55e" />
     </linearGradient>
   </defs>
-  <rect x="28" y="28" width="200" height="200" rx="48" fill="#ffffff" stroke="url(#lc-green)" stroke-width="14" />
+  <rect x="28" y="28" width="200" height="200" rx="48" fill="#16181c" stroke="url(#lc-green)" stroke-width="14" />
   <path d="M88 96 V160 H152" fill="none" stroke="url(#lc-green)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
-  <circle cx="168" cy="96" r="18" fill="#15803d" />
+  <circle cx="168" cy="96" r="18" fill="#4ade80" />
 </svg>

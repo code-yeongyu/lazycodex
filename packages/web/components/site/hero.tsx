@@ -5,8 +5,8 @@ import { SITE_CONFIG } from "../../lib/site-config"
 export function Hero(): JSX.Element {
   return (
     <section className="relative flex w-full flex-col justify-end pb-[36px] pt-[36px] md:pb-[24px] md:pt-[40px]">
-      {/* Open light canvas — no card, no gradient washes. The declarative
-          hero text sits directly on the sage ground so it stays the LCP
+      {/* Open dark canvas — no card, no gradient washes. The declarative
+          hero text sits directly on the graphite ground so it stays the LCP
           element and paints at FCP; the demo window below carries the
           visual weight. Compact by design: the block stays under ~60vh at
           1440x900 so the demo window's top edge is visible in the first

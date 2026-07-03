@@ -12,8 +12,8 @@ const DESCRIPTION =
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#f4f6ee",
-  colorScheme: "light",
+  themeColor: "#0e1012",
+  colorScheme: "dark",
 }
 
 export const metadata: Metadata = {

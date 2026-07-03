@@ -38,7 +38,7 @@ export function LinkAction({
 export function GlowActionFrame({ children }: { readonly children: ReactNode }): JSX.Element {
   return (
     <div className="relative group">
-      <div className="absolute -inset-1 rounded-lg bg-[color:var(--accent-mint)] opacity-40 blur-xl transition-opacity group-hover:opacity-50" />
+      <div className="absolute -inset-1 rounded-lg bg-[color:var(--accent-mint)] opacity-25 blur-xl transition-opacity group-hover:opacity-35" />
       {children}
     </div>
   )

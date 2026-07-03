@@ -2,7 +2,7 @@ import type { CSSProperties, JSX, ReactNode } from "react"
 import { cx } from "./utils"
 
 const gradientTextStyle = {
-  background: "linear-gradient(180deg, #15803d 0%, #16a34a 50%, #22c55e 100%)",
+  background: "linear-gradient(180deg, #86efac 0%, #4ade80 50%, #22c55e 100%)",
   WebkitBackgroundClip: "text",
   backgroundClip: "text",
   color: "transparent",

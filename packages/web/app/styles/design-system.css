@@ -13,54 +13,55 @@
 
 @layer base {
   :root {
-    /* Surfaces — light sage paper with a faint green undertone. */
-    --surface-base: #f4f6ee;
-    --surface-0: #f4f6ee;
-    --surface-1: rgba(16, 25, 20, 0.03);
-    --surface-2: rgba(16, 25, 20, 0.05);
-    --surface-3: rgba(16, 25, 20, 0.08);
-    --card-base: #ffffff;
-    --surface-night: #e9ede0;
-    --surface-panel: #fbfcf7;
-    --surface-panel-alt: #f7faf2;
-    --surface-panel-deep: #f3f7ec;
+    /* Surfaces — deep graphite canvas, quiet and neutral (Linear-class dark). */
+    --surface-base: #0e1012;
+    --surface-0: #0e1012;
+    --surface-1: rgba(255, 255, 255, 0.04);
+    --surface-2: rgba(255, 255, 255, 0.06);
+    --surface-3: rgba(255, 255, 255, 0.09);
+    --card-base: #16181c;
+    --surface-night: #0a0c0e;
+    --surface-panel: #121417;
+    --surface-panel-alt: #131519;
+    --surface-panel-deep: #101215;
 
     /* Brand — green core (green-500 family), clearly green not teal. */
     --brand-core: #22c55e;
     --brand-mid: #16a34a;
     --brand-outer: #15803d;
 
-    /* Text — deep green-tinted inks, AA on the sage canvas. */
-    --text-primary: #101914;
-    --text-secondary: #3f4b43;
-    --text-tertiary: #55645b;
-    --text-muted: rgba(16, 25, 20, 0.75);
-    --text-soft: #14532d;
+    /* Text — near-white inks, AA on the graphite canvas AND on --card-base. */
+    --text-primary: #f7f8f8;
+    --text-secondary: #b4bcc8;
+    --text-tertiary: #98a1ab;
+    --text-muted: rgba(247, 248, 248, 0.78);
+    --text-soft: #86efac;
 
-    /* Accent — AA-legible forest green on light ground, including the tinted
-       chip fills (#e2ede0/#e9f0e5 family) where #15803d only reached ~4.2:1.
-       --accent-mint is for fills/decoration ONLY, never text on light surfaces. */
-    --accent-primary: #166534;
-    --accent-primary-soft: rgba(21, 128, 61, 0.08);
-    --accent-primary-border: rgba(21, 128, 61, 0.28);
-    --accent-cyan: #15803d;
+    /* Accent — green-400 on dark ground: AA (>= 4.5:1) on the canvas, on
+       --card-base, and on the elevated code chips (#1b1f24 family).
+       --accent-mint stays a fill/decoration hue by rule, though it is also
+       AA-legible on every dark surface here. */
+    --accent-primary: #4ade80;
+    --accent-primary-soft: rgba(74, 222, 128, 0.1);
+    --accent-primary-border: rgba(74, 222, 128, 0.32);
+    --accent-cyan: #4ade80;
     --accent-teal: #22c55e;
     --accent-mint: #86efac;
-    --accent-glow: #14532d;
+    --accent-glow: #bbf7d0;
 
-    /* Borders. */
-    --border-subtle: rgba(16, 25, 20, 0.10);
-    --border-default: rgba(16, 25, 20, 0.16);
+    /* Borders — hairline white washes. */
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-default: rgba(255, 255, 255, 0.12);
 
-    /* Status — AA on light. */
-    --status-success: #15803d;
-    --status-warning: #a16207;
-    --status-error: #b91c1c;
+    /* Status — AA on dark. */
+    --status-success: #4ade80;
+    --status-warning: #fbbf24;
+    --status-error: #f87171;
   }
 
   html {
     background-color: var(--surface-base);
-    color-scheme: light;
+    color-scheme: dark;
   }
 
   body {
@@ -73,8 +74,8 @@
   }
 
   ::selection {
-    background-color: #bbf7d0;
-    color: #14532d;
+    background-color: #14532d;
+    color: #dcfce7;
   }
 
   a {
@@ -89,7 +90,8 @@
 
   /* Codex window adapter — the surface tokens the ulw-demo / team-mode
      window mocks consume (see DESIGN.md § Codex window adapter tokens).
-     Default theme: LIGHT, faithful to the Codex desktop app. */
+     Default theme: LIGHT, faithful to the Codex desktop app frames — the
+     light window on the dark canvas is the page's hero contrast. */
   .ulw-window {
     --codex-window-bg: #ffffff;
     --codex-window-chrome: #f6f7f6;
@@ -121,24 +123,25 @@
   }
 
   /* Dark window variant — toggled via the role=group window-theme switch
-     (sets data-window-theme on .ulw-window). Values derive from the
-     retired dark site palette (#0E1411 family). */
+     (sets data-window-theme on .ulw-window). Slightly LIGHTER than the page
+     canvas (#0e1012) with a stronger hairline ring so the window still reads
+     as a distinct elevated layer instead of dissolving into the page. */
   [data-window-theme="dark"] {
-    --codex-window-bg: #101613;
-    --codex-window-chrome: #0e1411;
-    --codex-window-border: rgba(232, 240, 234, 0.14);
-    --codex-window-text: #e8f0ea;
-    --codex-window-text-soft: #b8c2bc;
-    --codex-window-chip: rgba(232, 240, 234, 0.07);
+    --codex-window-bg: #1a1d22;
+    --codex-window-chrome: #15181c;
+    --codex-window-border: rgba(255, 255, 255, 0.18);
+    --codex-window-text: #eef1f4;
+    --codex-window-text-soft: #a9b2bd;
+    --codex-window-chip: rgba(255, 255, 255, 0.07);
     --codex-window-active: rgba(74, 222, 128, 0.16);
-    --codex-window-active-border: rgba(74, 222, 128, 0.32);
+    --codex-window-active-border: rgba(74, 222, 128, 0.38);
     --codex-window-accent: #4ade80;
     --codex-window-glyph-text: #0a0c0b;
     --codex-window-traffic-red: #f87171;
     --codex-window-traffic-amber: #fbbf24;
     --codex-window-traffic-green: #34d399;
 
-    /* Lane glyphs re-tuned >= 3:1 against the dark window ground
+    /* Lane glyphs re-tuned >= 3:1 against the elevated dark window ground
        (same hue identity per lane, lifted two Tailwind stops). */
     --lane-root: #2dd4bf;
     --lane-explore: #60a5fa;
@@ -154,37 +157,38 @@
 }
 
 @layer utilities {
-  /* Hero-card washes — soft mint/sage radials composited on the white card
-     base. Light identity: alpha washes over var(--card-base); no near-black
-     stops, no screen blending (which needs a dark ground). */
+  /* Hero-card washes — subtle radial green glows composited on the elevated
+     dark panel base. Dark identity: low-alpha green over var(--card-base);
+     no light stops, no white washes — the glow stays quiet. */
   .card-gradient-base {
     background:
-      radial-gradient(120% 100% at 60% 65%, rgba(34, 197, 94, 0.10) 0%, rgba(34, 197, 94, 0.07) 35%, rgba(34, 197, 94, 0.04) 70%, rgba(134, 239, 172, 0.03) 100%),
+      radial-gradient(120% 100% at 60% 65%, rgba(74, 222, 128, 0.08) 0%, rgba(74, 222, 128, 0.05) 35%, rgba(34, 197, 94, 0.03) 70%, rgba(34, 197, 94, 0) 100%),
       var(--card-base);
   }
 
   .card-gradient-beam {
     background:
-      radial-gradient(55% 55% at 38% -8%, rgba(134, 239, 172, 0.30) 0%, rgba(134, 239, 172, 0.12) 35%, rgba(134, 239, 172, 0) 65%),
-      radial-gradient(32% 28% at 55% -5%, rgba(134, 239, 172, 0.16) 0%, rgba(134, 239, 172, 0) 70%);
+      radial-gradient(55% 55% at 38% -8%, rgba(74, 222, 128, 0.14) 0%, rgba(74, 222, 128, 0.06) 35%, rgba(74, 222, 128, 0) 65%),
+      radial-gradient(32% 28% at 55% -5%, rgba(74, 222, 128, 0.08) 0%, rgba(74, 222, 128, 0) 70%);
   }
 
   .card-gradient-sheen {
     background:
-      linear-gradient(118deg, transparent 18%, rgba(134, 239, 172, 0.10) 26%, rgba(134, 239, 172, 0.16) 30%, rgba(134, 239, 172, 0.08) 35%, transparent 45%),
-      linear-gradient(112deg, transparent 8%, rgba(34, 197, 94, 0.06) 15%, transparent 28%);
+      linear-gradient(118deg, transparent 18%, rgba(74, 222, 128, 0.06) 26%, rgba(74, 222, 128, 0.1) 30%, rgba(74, 222, 128, 0.05) 35%, transparent 45%),
+      linear-gradient(112deg, transparent 8%, rgba(34, 197, 94, 0.04) 15%, transparent 28%);
     filter: blur(20px);
     opacity: 0.85;
   }
 
   .card-gradient-pools {
     background:
-      radial-gradient(55% 50% at 8% 95%, rgba(34, 197, 94, 0.12), transparent 70%),
-      radial-gradient(45% 45% at 95% 40%, rgba(134, 239, 172, 0.16), transparent 70%);
+      radial-gradient(55% 50% at 8% 95%, rgba(34, 197, 94, 0.09), transparent 70%),
+      radial-gradient(45% 45% at 95% 40%, rgba(74, 222, 128, 0.07), transparent 70%);
   }
 
   /* ampcode-style dotted vertical column rules: every column after the
-     first gets a dotted left rule (MarketingRuleGrid ruleStyle="dotted"). */
+     first gets a dotted left rule (MarketingRuleGrid ruleStyle="dotted").
+     The rule color flips with --border-subtle (hairline white on dark). */
   .rule-grid-dotted > * + * {
     border-left: 1px dotted var(--border-subtle);
   }

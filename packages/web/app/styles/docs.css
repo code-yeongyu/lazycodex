@@ -309,8 +309,10 @@
   font-size: 0.85em;
 }
 
+/* Code blocks blend with the dark docs surface as slightly elevated
+   panels — hairline border keeps them a distinct layer. */
 .docs-content pre {
-  background: #0c100e;
+  background: #15181d;
   border: 1px solid var(--border-subtle);
   padding: 1.1rem 1.25rem;
   border-radius: 10px;

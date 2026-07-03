@@ -13,8 +13,8 @@ const SESSION_TITLE = SITE_CONFIG.ultraworkExample
  * replay, no step navigation, no theme toggle. The window is fixed to its
  * dark theme, autoplays through the 8 scenes on a fast interval once in
  * view, and loops forever. The sidebar shows the run's single constant
- * session; the Pursuing-goal chip carries a day-scale elapsed time that
- * keeps rising across scenes. Reduced motion pins the recording statically
+ * session; the footer shows a spinner + "Working for <elapsed>" (the
+ * app's running line) with a day-scale elapsed rising across scenes. Reduced motion pins the recording statically
  * on scene 1. Preserved from v4: scene-0 SSR text, autoplay advance,
  * constant session identity, no horizontal overflow at 390px, zero outer
  * layout shift across scenes.
@@ -43,7 +43,7 @@ test.describe("ulw demo — cinematic recording @happy", () => {
     // in the fixed dark window — with a day-scale elapsed already on the goal.
     await expect(page.getByText(RESEARCH.title, { exact: true })).toBeVisible()
     await expect(page.getByText("ULTRAWORK MODE ENABLED!", { exact: true })).toBeVisible()
-    await expect(demo.getByText("Step 1 / 8", { exact: true })).toBeVisible()
+    await expect(demo.getByText(`Working for ${RESEARCH.elapsed}`, { exact: true })).toBeVisible()
     await expect(demo.locator(".ulw-window")).toHaveAttribute("data-window-theme", "dark")
     await expect(activeSession(page)).toContainText(SESSION_TITLE)
     await expect(demo.getByText(RESEARCH.elapsed, { exact: true })).toBeVisible()
@@ -61,7 +61,7 @@ test.describe("ulw demo — cinematic recording @happy", () => {
     // window box stay constant while the elapsed keeps rising.
     const ulwWindow = demo.locator(".ulw-window")
     const boxA = await ulwWindow.boundingBox()
-    await expect(demo.getByText("Step 2 / 8", { exact: true })).toBeVisible({
+    await expect(demo.getByText(`Working for ${PLAN.elapsed}`, { exact: true })).toBeVisible({
       timeout: 12_000,
     })
     await expect(page.getByText(PLAN.title, { exact: true })).toBeVisible()
@@ -86,14 +86,14 @@ test.describe("ulw demo — cinematic recording @happy", () => {
     await demo.locator(".ulw-window").scrollIntoViewIfNeeded()
 
     // The recording walks to the final scene (day-scale elapsed) …
-    await expect(demo.getByText("Step 8 / 8", { exact: true })).toBeVisible({
+    await expect(demo.getByText(`Working for ${CHECKPOINT.elapsed}`, { exact: true })).toBeVisible({
       timeout: 45_000,
     })
     await expect(page.getByText(CHECKPOINT.title, { exact: true })).toBeVisible()
     await expect(demo.getByText(CHECKPOINT.elapsed, { exact: true })).toBeVisible()
 
     // … and loops forever instead of stopping.
-    await expect(demo.getByText("Step 1 / 8", { exact: true })).toBeVisible({
+    await expect(demo.getByText(`Working for ${RESEARCH.elapsed}`, { exact: true })).toBeVisible({
       timeout: 15_000,
     })
     await expect(activeSession(page)).toContainText(SESSION_TITLE)
@@ -112,7 +112,7 @@ test.describe("ulw demo — reduced motion + mobile @edge", () => {
     // No autoplay: after > two intervals the recording is still on step 1,
     // and there is still nothing to click inside the window.
     await page.waitForTimeout(9_000)
-    await expect(demo.getByText("Step 1 / 8", { exact: true })).toBeVisible()
+    await expect(demo.getByText(`Working for ${RESEARCH.elapsed}`, { exact: true })).toBeVisible()
     await expect(page.getByText(PLAN.title, { exact: true })).toBeHidden()
     await expect(demo.locator(".ulw-window button")).toHaveCount(0)
   })

@@ -55,7 +55,7 @@ export function CodexWindow(): JSX.Element {
           <section className="ulw-app-main" aria-label="Ultrawork root orchestration surface">
             <WindowTitlebar sceneTab={scene.tab} />
             <TranscriptPane scene={scene} />
-            <WindowFooter scene={scene} sceneIndex={sceneIndex} />
+            <WindowFooter scene={scene} />
           </section>
           <SidePanel scene={scene} />
         </div>

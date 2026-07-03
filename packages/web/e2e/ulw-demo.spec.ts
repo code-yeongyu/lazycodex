@@ -53,6 +53,10 @@ test.describe("ulw demo — cinematic recording @happy", () => {
     await expect(demo.locator(".ulw-window button")).toHaveCount(0)
     await expect(demo.locator(".ulw-app-progress")).toHaveCount(0)
 
+    // The run LOOKS alive: spinner glyphs mark the active session and the
+    // current step, exactly like the app's running-session indicator.
+    await expect(demo.locator(".ulw-spinner")).toHaveCount(2)
+
     // Fast autoplay advances the recording on its own; the session and the
     // window box stay constant while the elapsed keeps rising.
     const ulwWindow = demo.locator(".ulw-window")

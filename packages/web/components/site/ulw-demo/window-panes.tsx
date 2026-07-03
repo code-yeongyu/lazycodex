@@ -70,6 +70,7 @@ export function WindowFooter({
   return (
     <div className="ulw-app-footer">
       <span className="ulw-app-step">
+        <span className="ulw-spinner" aria-hidden="true" />
         Step {sceneIndex + 1} / {ULW_DEMO_SCENES.length}
       </span>
 

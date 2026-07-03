@@ -47,7 +47,7 @@ export function WindowSidebar(): JSX.Element {
           {SITE_CONFIG.wordmark}
         </span>
         <span className="ulw-app-session ulw-app-session-active" aria-current="true">
-          <span className="ulw-app-session-dot" aria-hidden="true" />
+          <span className="ulw-spinner" aria-hidden="true" />
           {SITE_CONFIG.ultraworkExample}
         </span>
         <span className="ulw-app-row ulw-app-showmore" aria-hidden="true">

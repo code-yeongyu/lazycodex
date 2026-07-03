@@ -88,12 +88,29 @@
     font-weight: 600;
   }
 
-  .ulw-app-session-dot {
+  /* Running-session spinner — the app's alive indicator. Transform-only
+     rotation (compositor-safe); reduced motion freezes it into a static
+     ring so the marker survives without movement. */
+  .ulw-spinner {
     flex-shrink: 0;
-    width: 6px;
-    height: 6px;
+    width: 9px;
+    height: 9px;
     border-radius: 999px;
-    background: var(--codex-window-accent);
+    border: 1.5px solid var(--codex-window-border);
+    border-top-color: var(--codex-window-accent);
+    animation: ulw-spin 900ms linear infinite;
+  }
+
+  @keyframes ulw-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ulw-spinner {
+      animation: none;
+    }
   }
 
 

@@ -1,0 +1,221 @@
+/* App-shell chrome for the interactive Ultrawork demo — the .ulw-app-* layer
+   rebuilt to the real Codex desktop anatomy (.omo/reference/app-frames/
+   creation-03.png): sidebar session groups, per-session title bar with the
+   playback cluster, transcript document flow, decorative composer.
+   Split from ulw-demo.css to keep files under the size limit.
+   Motion: transform/opacity/color only. Zero outer layout shift: every
+   scene-variable region is single-line-with-code-scroll or min-height
+   reserved, so the window's outer box never changes between scenes. */
+
+@layer components {
+  .ulw-window.ulw-app {
+    max-width: 1120px;
+    min-height: 680px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Thin per-scene progress strip (screen-recording metaphor). The fill is
+     transform-only and paused via animation-play-state; the span remounts
+     per scene so the bar restarts on each beat. */
+  .ulw-app-progress {
+    height: 3px;
+    background: var(--codex-window-chip);
+    flex-shrink: 0;
+  }
+
+  .ulw-app-progress span {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--codex-window-accent);
+    transform: scaleX(0);
+    transform-origin: left center;
+    animation: ulw-progress-fill 7000ms linear forwards;
+    animation-play-state: paused;
+  }
+
+  .ulw-app-progress span[data-playing="true"] {
+    animation-play-state: running;
+  }
+
+  @keyframes ulw-progress-fill {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  .ulw-app-frame {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 212px minmax(0, 1fr) 264px;
+    min-height: 0;
+  }
+
+  /* ---- Left sidebar: traffic lights, nav list, Pinned/Projects groups. */
+
+  .ulw-app-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 14px 10px;
+    background: var(--codex-window-chrome);
+    border-right: 1px solid var(--codex-window-border);
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .ulw-app-sidebar .ulw-traffic {
+    padding-left: 4px;
+  }
+
+  .ulw-app-nav,
+  .ulw-app-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .ulw-app-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: 7px;
+    font-size: 12px;
+    color: var(--codex-window-text-soft);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .ulw-app-group-label {
+    padding: 6px 8px 2px;
+    font-size: 11px;
+    color: var(--codex-window-text-soft);
+  }
+
+  /* Session rows double as scene navigation (app-native tab replacement). */
+  .ulw-app-session {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 5px 8px 5px 30px;
+    border-radius: 7px;
+    font-size: 12px;
+    color: var(--codex-window-text-soft);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+
+  .ulw-app-session:hover {
+    background: var(--codex-window-chip);
+    color: var(--codex-window-text);
+  }
+
+  .ulw-app-session[aria-current="true"] {
+    background: var(--codex-window-active);
+    color: var(--codex-window-text);
+    font-weight: 600;
+  }
+
+  .ulw-app-session:focus-visible,
+  .ulw-app-control:focus-visible {
+    outline: 2px solid var(--codex-window-accent);
+    outline-offset: 1px;
+  }
+
+  .ulw-app-showmore {
+    padding-left: 30px;
+  }
+
+  /* ---- Main column: title bar with playback controls, transcript, footer. */
+
+  .ulw-app-main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .ulw-app-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-bottom: 1px solid var(--codex-window-border);
+    flex-shrink: 0;
+  }
+
+  .ulw-app-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--codex-window-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ulw-app-title-dots {
+    color: var(--codex-window-text-soft);
+  }
+
+  .ulw-app-controls {
+    margin-left: auto;
+    display: flex;
+    gap: 6px;
+  }
+
+  .ulw-app-control {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    border: 1px solid var(--codex-window-border);
+    color: var(--codex-window-text-soft);
+    transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+  }
+
+  .ulw-app-control:hover {
+    background: var(--codex-window-chip);
+    color: var(--codex-window-text);
+  }
+
+  .ulw-app-control[aria-pressed="true"] {
+    color: var(--codex-window-accent);
+    border-color: var(--codex-window-active-border);
+    background: var(--codex-window-active);
+  }
+
+  .ulw-icon {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .ulw-window.ulw-app {
+      min-height: 560px;
+    }
+
+    .ulw-app-frame {
+      grid-template-columns: 1fr;
+    }
+
+    .ulw-app-sidebar {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ulw-app-progress span {
+      animation: none;
+    }
+
+    .ulw-app-session,
+    .ulw-app-control {
+      transition: none;
+    }
+  }
+}

@@ -1,0 +1,145 @@
+/* Right-hand panel for the interactive Ultrawork demo window — Environment
+   and Subagents groups styled after the app frames (subagents-03.png and
+   the desktop-app reference). Keeps the full 13-worker roster: delegation
+   made observable is the differentiator. Imported by ulw-demo.css (split
+   for the file-size limit). */
+
+@layer components {
+  /* ---- Right panel (subagents-03.png: Environment / Subagents groups). */
+
+  .ulw-side {
+    border-left: 1px solid var(--codex-window-border);
+    background: color-mix(in srgb, var(--codex-window-chrome) 55%, var(--codex-window-bg));
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  .ulw-side-card {
+    border: 1px solid var(--codex-window-border);
+    border-radius: 10px;
+    background: var(--codex-window-bg);
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ulw-side-heading {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--codex-window-text-soft);
+  }
+
+  .ulw-side-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--codex-window-text);
+  }
+
+  .ulw-side-row span:last-child {
+    color: var(--codex-window-text-soft);
+  }
+
+  .ulw-workers {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .ulw-worker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    border-radius: 7px;
+    font-size: 11.5px;
+    color: var(--codex-window-text-soft);
+    transition: color 200ms ease, background-color 200ms ease;
+  }
+
+  .ulw-worker[data-live="true"] {
+    background: var(--codex-window-active);
+    color: var(--codex-window-text);
+    font-weight: 500;
+  }
+
+  .ulw-worker-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ulw-worker small {
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    color: var(--codex-window-text-soft);
+    white-space: nowrap;
+  }
+
+  .ulw-worker-glyph {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--codex-window-glyph-text);
+    flex-shrink: 0;
+  }
+
+  /* Lane identity colors are per-window-theme custom props defined next to
+     the --codex-window-* adapter blocks (design-system.css). */
+  .ulw-worker-glyph[data-lane="root"] { background: var(--lane-root); }
+  .ulw-worker-glyph[data-lane="explore"] { background: var(--lane-explore); }
+  .ulw-worker-glyph[data-lane="library"] { background: var(--lane-library); }
+  .ulw-worker-glyph[data-lane="plan"] { background: var(--lane-plan); }
+  .ulw-worker-glyph[data-lane="todo"] { background: var(--lane-todo); }
+  .ulw-worker-glyph[data-lane="execute"] { background: var(--lane-execute); }
+  .ulw-worker-glyph[data-lane="test"] { background: var(--lane-test); }
+  .ulw-worker-glyph[data-lane="qa"] { background: var(--lane-qa); }
+  .ulw-worker-glyph[data-lane="review"] { background: var(--lane-review); }
+  .ulw-worker-glyph[data-lane="continuation"] { background: var(--lane-continuation); }
+
+  .ulw-app-side-note {
+    /* Reserve for the tallest sideTitle+sideBody pair (zero layout shift):
+       the tallest measured scene is ~112px at the 264px desktop column. */
+    min-height: 126px;
+  }
+
+  .ulw-app-side-note strong {
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .ulw-app-side-note span {
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--codex-window-text-soft);
+  }
+
+  @media (max-width: 768px) {
+    .ulw-side {
+      border-left: none;
+      border-top: 1px solid var(--codex-window-border);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ulw-worker {
+      transition: none;
+    }
+  }
+}

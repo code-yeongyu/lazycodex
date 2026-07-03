@@ -1,66 +1,37 @@
 import type { JSX } from "react"
 import {
   ULW_DEMO_ENVIRONMENT,
-  ULW_DEMO_PROOFS,
-  ULW_DEMO_STEPS,
+  ULW_DEMO_SCENES,
   ULW_DEMO_WORKERS,
   type UlwScene,
 } from "../../../lib/ulw-demo-scenes"
+import { UlwIcon, type UlwIconName } from "./window-icons"
 
 /**
- * Presentational panes for the Codex window. Pure functions of the active
- * scene — every visible string comes from `lib/ulw-demo-scenes.ts`
- * (source-grounded, see .omo/evidence/copy-ledger.md).
+ * Presentational panes for the Codex window, pure functions of the active
+ * scene. Every visible string comes from `lib/ulw-demo-scenes.ts` or the
+ * generic chrome labels visible in our own app frames
+ * (.omo/reference/app-frames/creation-03.png, subagents-03.png).
+ * Transcript anatomy follows the real app: command bubble, prose, then
+ * tool-activity rows (the run-ledger lines) with small inline glyphs.
  */
 
-export function WindowChrome(): JSX.Element {
-  return (
-    <>
-      <div className="ulw-menubar" aria-hidden="true">
-        <div className="ulw-menubar-left">
-          <strong>Codex</strong>
-          <span>File</span>
-          <span>Edit</span>
-          <span>View</span>
-          <span>Window</span>
-          <span>Help</span>
-        </div>
-        <div className="ulw-mode-flag">ULTRAWORK MODE ENABLED!</div>
-      </div>
-      <div className="ulw-titlebar">
-        <span className="ulw-traffic" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </span>
-        <div className="ulw-window-tabs" aria-hidden="true">
-          <span className="ulw-window-tab" data-current="true">
-            $ulw-loop / ultrawork.md
-          </span>
-          <span className="ulw-window-tab" data-current="false">
-            Subagents
-          </span>
-        </div>
-      </div>
-    </>
-  )
+function ledgerIcon(line: string): UlwIconName {
+  if (line.includes("fail")) return "alert"
+  if (line.includes("evidence_captured") || line.includes("checkpoint") || line.includes("status=pass")) {
+    return "check"
+  }
+  if (line.startsWith("goal_") || line.includes("activeGoalId")) return "target"
+  return "terminal"
 }
 
-export function TranscriptPane({
-  scene,
-  sceneIndex,
-}: {
-  readonly scene: UlwScene
-  readonly sceneIndex: number
-}): JSX.Element {
+export function TranscriptPane({ scene }: { readonly scene: UlwScene }): JSX.Element {
   return (
-    <section className="ulw-transcript" aria-label="Ultrawork root orchestration surface">
-      <div className="ulw-command">
-        <span aria-hidden="true">$</span>
-        <strong>
-          {scene.command}
-          <span className="ulw-caret" aria-hidden="true" />
-        </strong>
+    <section className="ulw-app-transcript" aria-label="Ultrawork run transcript">
+      <p className="ulw-mode-flag">ULTRAWORK MODE ENABLED!</p>
+
+      <div className="ulw-app-user">
+        <code>{scene.command}</code>
       </div>
 
       {/* The live region stays OUTSIDE the keyed swap subtree: React must
@@ -73,44 +44,71 @@ export function TranscriptPane({
         <p>{scene.body}</p>
       </div>
 
-      <div className="ulw-steps" aria-label="Ultrawork workflow stages">
-        {ULW_DEMO_STEPS.map((step, index) => (
-          <div className="ulw-step" data-active={index === sceneIndex} key={step.heading}>
-            <span className="ulw-step-number">{String(index + 1).padStart(2, "0")}</span>
-            <div>
-              <strong>{step.heading}</strong>
-              <p>{step.detail}</p>
-            </div>
+      <div className="ulw-app-tools" aria-label="Run ledger activity">
+        {scene.ledger.split("\n").map((line) => (
+          <div className="ulw-app-tool" key={line}>
+            <UlwIcon name={ledgerIcon(line)} />
+            <span>{line}</span>
           </div>
         ))}
       </div>
 
-      <div className="ulw-proofs" aria-label="Evidence captured so far">
-        {ULW_DEMO_PROOFS.map((proof, index) => (
-          <span className="ulw-proof" data-active={index <= scene.proof} key={proof}>
-            {proof}
-          </span>
-        ))}
+      <div className="ulw-app-code">
+        <code>{scene.json}</code>
       </div>
     </section>
   )
 }
 
-export function ComposerBar({ scene }: { readonly scene: UlwScene }): JSX.Element {
+export function WindowFooter({
+  scene,
+  sceneIndex,
+}: {
+  readonly scene: UlwScene
+  readonly sceneIndex: number
+}): JSX.Element {
   return (
-    <div className="ulw-composer">
-      <span aria-hidden="true">+</span>
-      <span className="ulw-composer-text">{scene.composer}</span>
-      <span className="ulw-composer-meta">Full access</span>
-      <span className="ulw-composer-meta">5.5 High</span>
-      <span className="ulw-composer-send" aria-hidden="true" />
+    <div className="ulw-app-footer">
+      <span className="ulw-app-step">
+        Step {sceneIndex + 1} / {ULW_DEMO_SCENES.length}
+      </span>
+
+      <div className="ulw-app-goal">
+        <UlwIcon name="target" />
+        <strong>Pursuing goal</strong>
+        <span>{scene.composer}</span>
+      </div>
+
+      {/* Static, decorative composer — faithful to the app frame but never a
+          real input, so the whole block is hidden from assistive tech. */}
+      <div className="ulw-app-composer" aria-hidden="true">
+        <span className="ulw-app-composer-placeholder">Ask for follow-up changes</span>
+        <div className="ulw-app-composer-row">
+          <span className="ulw-app-composer-chip">
+            <UlwIcon name="plus" />
+          </span>
+          <span className="ulw-app-composer-chip">Full access</span>
+          <span className="ulw-app-composer-chip">
+            <UlwIcon name="target" />
+            Goal
+          </span>
+          <span className="ulw-app-composer-grow" />
+          <span className="ulw-app-composer-chip">5.5 High</span>
+          <span className="ulw-app-composer-chip">
+            <UlwIcon name="mic" />
+          </span>
+          <span className="ulw-app-composer-send">
+            <UlwIcon name="arrow-up" />
+          </span>
+        </div>
+      </div>
     </div>
   )
 }
 
-export function SideRail({ scene }: { readonly scene: UlwScene }): JSX.Element {
+export function SidePanel({ scene }: { readonly scene: UlwScene }): JSX.Element {
   return (
-    <aside className="ulw-side" aria-label="Ultrawork worker lanes">
+    <aside className="ulw-side" aria-label="Environment and subagents panel">
       <div className="ulw-side-card">
         <span className="ulw-side-heading">Environment</span>
         {ULW_DEMO_ENVIRONMENT.map(([label, value]) => (
@@ -140,17 +138,9 @@ export function SideRail({ scene }: { readonly scene: UlwScene }): JSX.Element {
         </div>
       </div>
 
-      <div className="ulw-side-card">
-        <strong className="text-[12px] font-semibold">{scene.sideTitle}</strong>
-        <span className="text-[11px] leading-snug text-[color:var(--codex-window-text-soft)]">
-          {scene.sideBody}
-        </span>
-      </div>
-
-      <div className="ulw-side-card ulw-ledger">
-        <span className="ulw-side-heading">goals.json / ledger.jsonl</span>
-        <pre>{scene.ledger}</pre>
-        <pre>{scene.json}</pre>
+      <div className="ulw-side-card ulw-app-side-note">
+        <strong>{scene.sideTitle}</strong>
+        <span>{scene.sideBody}</span>
       </div>
     </aside>
   )

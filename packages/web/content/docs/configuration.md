@@ -46,7 +46,7 @@ npx lazycodex-ai install --no-tui --codex-autonomous
 - **Model routing** — which model handles planning, implementation, verification, and specialist skills. The installer sets sensible defaults from your detected subscriptions; override per role when a project needs a different profile.
 - **Hooks and lifecycle** — whether the Stop-hook auto-continues a plan, iteration caps (500 in ultrawork mode, 100 in normal mode), and how completion is gated.
 - **Skills** — which skills are active and where they load from.
-- **Agent** — Hephaestus, the autonomous deep worker, and its model/prompt overrides. The Codex package is the Hephaestus-only light port; the full OmO's Sisyphus orchestrator is not included.
+- **Agent roles** — Hephaestus plus explorer, librarian, planner, reviewer, QA, and gate roles. The installer writes the role definitions and model/prompt overrides that Codex can route to.
 
 ### Hooks & lifecycle
 

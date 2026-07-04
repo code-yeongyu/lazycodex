@@ -8,34 +8,34 @@ export const SITE_CONFIG = {
   siteUrl: "https://lazycodex.ai",
   docsPath: "/docs",
   version: "v0.2.2",
-  eyebrow: "A LIGHT PORT OF OMO'S HEPHAESTUS, FOR CODEX",
+  eyebrow: "OMO AGENT HARNESS FOR CODEX",
   wordmark: "LazyCodex",
-  heroLineA: "The Hephaestus deep-worker agent, ported light into Codex.",
+  heroLineA: "The one and only agent harness for complex codebases.",
   heroLineB: {
-    prefix: "A focused slice of ",
-    slot: "OmO",
-    suffix: " — goals not recipes, ",
-    keyword: "verified completion",
+    prefix: "Project memory, planning, execution, and ",
+    slot: "verified completion",
+    suffix: " inside ",
+    keyword: "Codex",
     period: ".",
   },
-  harnessPillars: ["goals not recipes", "parallel exploration", "verified completion"],
+  harnessPillars: ["project memory", "parallel agents", "verified completion"],
   ultraworkTagline: "ultrawork turns the harness into a verified run.",
   ultraworkExample: "ulw add authentication",
   omoIntro: {
     kicker: "Where it comes from",
-    title: "A light port of OmO's Hephaestus",
-    body: "OmO is the full agent harness — a primary orchestrator, a deep worker, specialist agents, multi-model routing, and dozens of lifecycle hooks. LazyCodex does not ship all of that. It ports one role, Hephaestus, into Codex as a focused, repeatable setup: the deep worker plus the workflows that keep its runs honest.",
-    omoLabel: "OmO — the full harness",
+    title: "OmO, packaged for Codex",
+    body: "LazyCodex packages OmO as the Codex agent harness for complex codebases. It brings the discipline agents, parallel orchestration, skills, hooks, model routing, diagnostics, and verified-completion defaults into a repeatable Codex setup.",
+    omoLabel: "OmO — the core harness",
     omoPoints: [
-      "Sisyphus orchestrator with boulder.json session continuity",
-      "Hephaestus deep worker + specialist agents",
-      "54+ lifecycle hooks, multi-model routing, team mode",
+      "Discipline agents: Sisyphus, Hephaestus, Oracle, Librarian",
+      "Parallel orchestration, multi-model routing, team mode",
+      "Lifecycle hooks, skills, diagnostics, and project memory",
     ],
-    lazyLabel: "LazyCodex — the Hephaestus port",
+    lazyLabel: "LazyCodex — the Codex distribution",
     lazyPoints: [
-      "Hephaestus only: goals, not step-by-step recipes",
-      "$ulw-plan / $start-work / $ulw-loop workflows",
-      "Skills, hooks, and verification defaults for Codex",
+      "npx installer plus Codex marketplace plugin path",
+      "$init-deep / $ulw-plan / $start-work / $ulw-loop",
+      "Agent roles, MCP tools, hooks, and verification defaults",
     ],
   },
   hephaestus: {
@@ -57,7 +57,7 @@ export const SITE_CONFIG = {
     kicker: "What LazyCodex wires into Codex",
     title: "Harness the whole codebase",
     intro:
-      "LazyCodex installs OmO as a serious agent harness for complex repositories: project memory, planning, execution, skills, hooks, model routing, and verification defaults in one pass.",
+      "LazyCodex should be judged by the features it actually installs: project memory, planning, execution, verified completion, skills, hooks, model routing, and diagnostics.",
     points: [
       {
         label: "Context that survives",
@@ -76,8 +76,8 @@ export const SITE_CONFIG = {
   builtInSkills: {
     title: "Built-in skill coverage",
     summary:
-      "Skills auto-activate when a task matches their domain, so you do not need to study every one first. Add a skill name to your prompt when you want to call it explicitly; ulw-research is the maximum-saturation mode for deep codebase, web, official-docs, and OSS-repo research.",
-    skills: ["ulw-research", "review-work", "remove-ai-slops", "frontend", "programming", "visual-qa", "LSP", "AST-grep"],
+      "The command layer stays simple. The skill layer adds specialist judgment for review, cleanup, frontend work, programming discipline, LSP diagnostics, structural search, rules loading, and post-edit feedback.",
+    skills: ["init-deep", "review-work", "remove-ai-slops", "frontend-ui-ux", "programming", "LSP", "AST-grep", "comment-checker"],
   },
   // Copy grounded in content/docs/ultrawork.md and ulw-loop.md — see .omo/evidence/copy-ledger.md.
   ulwDemo: {

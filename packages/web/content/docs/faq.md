@@ -3,10 +3,10 @@ Quick answers to common sticking points. Start with **Install & environment** if
 ### Install & environment
 
 **What is LazyCodex?**
-A light port of OmO for Codex. It layers commands, skills, hooks, and model routing onto Codex so the agent plans before it edits, verifies before it claims done, and keeps project context across sessions.
+OmO packaged for Codex. It layers commands, skills, hooks, model routing, agent roles, diagnostics, and project memory onto Codex so the agent plans before it edits and verifies before it claims done.
 
 **Is LazyCodex a replacement for OmO?**
-No. It is a focused subset. The full OmO has deeper orchestration. LazyCodex takes the parts that work well inside Codex and packages them as a repeatable install.
+No. OmO is the core harness. LazyCodex is the Codex distribution: the `npx` installer plus the `omo@sisyphuslabs` marketplace plugin path that makes the OmO harness repeatable inside Codex.
 
 **Can I ask Codex to install it for me?**
 Yes. Open Codex and give it the LazyCodex GitHub link or `lazycodex.ai`, then ask it to install. Or run `npx lazycodex-ai install` yourself.

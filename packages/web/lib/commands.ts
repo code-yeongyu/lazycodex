@@ -10,7 +10,7 @@ export const COMMANDS: readonly LazyCommand[] = [
   {
     name: "$ulw-loop",
     glyph: "loop",
-    syntax: '$ulw-loop "task" [--strategy=reset|continue]',
+    syntax: '$ulw-loop "task" [--completion-promise=TEXT] [--strategy=reset|continue]',
     summary: "A self-referential loop that runs until VERIFIED completion.",
     facts: [
       "Emits <promise>DONE</promise> when it reaches a completion claim",

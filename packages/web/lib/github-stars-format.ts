@@ -1,4 +1,4 @@
-export const FALLBACK_GITHUB_STARS = 1_864
+export const FALLBACK_GITHUB_STARS = 2_375
 
 export function formatStarsCount(stars: number): string {
   if (stars >= 1_000_000) {

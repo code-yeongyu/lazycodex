@@ -1,4 +1,4 @@
-LazyCodex ports a single discipline agent from OmO into Codex: **Hephaestus**, the autonomous deep worker. There is no Sisyphus orchestrator in the Codex package — Hephaestus is the one role, and it carries the whole run itself with read-only subagents for parallel exploration.
+LazyCodex installs OmO's discipline-agent surface into Codex. **Hephaestus** remains the autonomous deep-worker voice for end-to-end implementation, while specialist roles support exploration, external research, planning, review, QA, and completion gates.
 
 ### What Hephaestus is
 
@@ -6,7 +6,7 @@ Named after the Greek god of the forge. Goal-oriented: you give it objectives, n
 
 ### Installed roles
 
-As of `4.12.1`, the following roles are installed. When Codex exposes `agent_type`, the role is set directly; otherwise the role description is included in the message as a fallback.
+The current install provides these roles. When Codex exposes `agent_type`, the role is set directly; otherwise the role description is included in the message as a fallback.
 
 | Role | Primary use |
 | --- | --- |
@@ -41,9 +41,9 @@ Hephaestus runs a short, tight loop on every unit of work:
 - **Never speculates about code it has not read.** Exploration is cheap; assumption is expensive.
 - **Never leaves work unresolved at end of turn.** Every plan step is reconciled: `completed`, blocked (one-line reason), or removed (one-line reason).
 
-### Delegation, not orchestration
+### Delegation and orchestration
 
-Hephaestus stays the parent. For parallel exploration it spawns read-only Codex subagent roles (`multi_agent_v1.spawn_agent`) and keeps the parent session live with brief status updates while children run. It does not hand the run off to a separate orchestrator — it owns the goal, delegates the grunt work, and verifies the results itself.
+The parent Codex session keeps final ownership of goals and verification. For parallel work it can spawn Codex subagent roles and keep the parent session live with brief status updates while children run. Team mode adds a durable named-team surface when coordination is worth the overhead.
 
 ### Boulder state
 
@@ -51,7 +51,7 @@ Hephaestus stays the parent. For parallel exploration it spawns read-only Codex 
 
 ### Where the boulder comes from
 
-The full OmO has a second primary agent, **Sisyphus**, the orchestrator with `.omo/boulder.json` session continuity. The Codex package is the Hephaestus-only light port, so on Codex the durable progress state lives in `.omo/boulder.json` as written by [`$start-work`](./start-work.md) and the Stop-hook continuation — without the Sisyphus orchestration layer.
+OmO's broader orchestration ideas show up in Codex through durable `.omo/boulder.json` progress, Stop-hook continuation, named team state, and reviewer/gate roles. [`$start-work`](./start-work.md) is the main visible path: it advances the plan until every checkbox is done and the final gate is satisfied.
 
 ### Reading more
 

@@ -252,7 +252,7 @@ LazyCodex is a thin distribution layer. The core engine is [oh-my-openagent (OmO
 lazycodex/
 ├── src/                     → oh-my-openagent (submodule)
 ├── packages/
-│   └── web/                 → Next.js 15 + Tailwind v4 + opennextjs-cloudflare
+│   └── web/                 → Next.js 16 + Tailwind v4 + opennextjs-cloudflare
 │                              (deployed to lazycodex.ai via Cloudflare Workers)
 ├── .github/workflows/       → web-ci.yml + web-deploy.yml
 ├── README.md

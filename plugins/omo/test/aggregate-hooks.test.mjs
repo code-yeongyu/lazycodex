@@ -87,6 +87,23 @@ test("#given aggregate PostCompact hooks #when hooks are inspected #then LSP dia
 	assert.equal(lspPostCompactHooks[0]?.handler.statusMessage, "(OmO) Resetting LSP Diagnostics Cache");
 });
 
+test("#given aggregate hook commands #when inspected #then every plugin-root command target exists", async () => {
+	// given
+	const commandHooks = await readAggregateCommandHooks();
+
+	// when
+	const missingTargets = [];
+	for (const hook of commandHooks) {
+		const match = hook.handler.command.match(/"\$\{PLUGIN_ROOT\}\/([^"]+)"/);
+		if (match === null) continue;
+		const target = match[1];
+		if (!(await exists(target))) missingTargets.push(`${hookLocation(hook)} -> ${target}`);
+	}
+
+	// then
+	assert.deepEqual(missingTargets, []);
+});
+
 test("#given aggregate hook commands #when inspected #then every command exposes a Codex status message", async () => {
 	// given
 	// when

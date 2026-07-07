@@ -286,7 +286,7 @@ function whereCommand(command) {
   }
 }
 // src/runner.ts
-import { spawn as spawn2 } from "node:child_process";
+import { spawn } from "node:child_process";
 import { closeSync, mkdtempSync, openSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -313,7 +313,7 @@ async function runGitBashCommand(input) {
       rmSync(outputDirectory, { recursive: true, force: true });
       return { stdout, stderr };
     }
-    const child = spawn2(input.bashPath, ["-lc", input.command], {
+    const child = spawn(input.bashPath, ["-lc", input.command], {
       cwd: input.cwd,
       env: input.env,
       windowsHide: true,

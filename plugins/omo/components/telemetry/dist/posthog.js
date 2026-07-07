@@ -166,9 +166,11 @@ function writePostHogActivityState(stateDir, nextState, diagnostics) {
     });
   }
 }
+
 // ../../../../telemetry-core/src/constants.ts
 var DEFAULT_POSTHOG_HOST = "https://us.i.posthog.com";
 var DEFAULT_POSTHOG_API_KEY = "phc_CFJhj5HyvA62QPhvyaUCtaq23aUfznnijg5VaaGkNk74";
+
 // ../../../../telemetry-core/src/diagnostics.ts
 import { appendFileSync, existsSync as existsSync2, mkdirSync as mkdirSync3, readFileSync as readFileSync2 } from "node:fs";
 import { join as join2 } from "node:path";
@@ -283,6 +285,7 @@ function trimToMaxBytes(lines) {
   }
   return retained;
 }
+
 // ../../../../telemetry-core/src/env.ts
 var TRUTHY_DISABLE_VALUES = ["1", "true", "yes"];
 var SEND_OPT_OUT_VALUES = ["0", "false", "no", "yes"];
@@ -319,6 +322,7 @@ function getTelemetryApiKey(env = process.env, defaultApiKey = DEFAULT_POSTHOG_A
 function getTelemetryHost(env = process.env, defaultHost = DEFAULT_POSTHOG_HOST) {
   return env["POSTHOG_HOST"]?.trim() || defaultHost;
 }
+
 // ../../../../telemetry-core/src/machine-id.ts
 import { createHash } from "node:crypto";
 import os2 from "node:os";
@@ -328,6 +332,7 @@ function getDefaultTelemetryOsProvider() {
 function getTelemetryDistinctId(machineIdPrefix, osProvider = getDefaultTelemetryOsProvider()) {
   return createHash("sha256").update(`${machineIdPrefix}${osProvider.hostname()}`).digest("hex");
 }
+
 // ../../../../../node_modules/.bun/posthog-node@5.35.12/node_modules/posthog-node/dist/extensions/error-tracking/modifiers/module.node.mjs
 import { dirname, posix, sep } from "path";
 function createModulerModifier() {
@@ -5653,6 +5658,7 @@ function getSafeCpuInfo(osProvider, input) {
     };
   }
 }
+
 // src/product-identity.ts
 import { readFileSync as readFileSync3 } from "node:fs";
 var PRODUCT_NAME = "omo-codex";

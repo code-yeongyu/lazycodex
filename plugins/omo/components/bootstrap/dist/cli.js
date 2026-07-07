@@ -146,7 +146,7 @@ async function downloadFromManifest(options) {
 }
 
 // components/bootstrap/src/hook.ts
-import { spawn as spawn2 } from "node:child_process";
+import { spawn } from "node:child_process";
 import { stat as stat6 } from "node:fs/promises";
 import { fileURLToPath as fileURLToPath3 } from "node:url";
 
@@ -493,6 +493,7 @@ function runtimeSlug(platform = process.platform, arch = process.arch) {
 function sgBinaryName(platform = process.platform) {
   return normalizeRuntimePlatform(platform) === "win32" ? "sg.exe" : "sg";
 }
+
 // ../../utils/src/ast-grep/sg-provisioner.ts
 import { createHash as createHash2, randomUUID as randomUUID2 } from "node:crypto";
 import { chmod, mkdir as mkdir3, rename as rename2, rm as rm3, writeFile as writeFile2 } from "node:fs/promises";
@@ -644,6 +645,7 @@ async function provisionSgBinary(options) {
     throw new SgProvisionError("write_failed", `failed to provision ast-grep ${SG_PINNED_VERSION} into ${targetDir}: ${describeFailure2(error)}`, { cause: error });
   }
 }
+
 // ../../utils/src/ast-grep/sg-resolver.ts
 import { execFileSync } from "node:child_process";
 import { existsSync, statSync } from "node:fs";
@@ -781,6 +783,7 @@ function findSgBinarySync(options = {}) {
     return null;
   }
 }
+
 // components/bootstrap/src/provision.ts
 var SG_PROVISION_COMPONENT = "ast_grep";
 var SG_FORCE_PROVISION_ENV_KEY = "OMO_BOOTSTRAP_FORCE_PROVISION";
@@ -2545,9 +2548,14 @@ function readBooleanSetting(sectionText, key) {
 // ../src/install/codex-config-toml.ts
 async function updateCodexConfig(input) {
   await mkdir6(dirname7(input.configPath), { recursive: true });
-  let config = "";
-  if (await exists3(input.configPath))
+  let config;
+  try {
     config = await readFile10(input.configPath, "utf8");
+  } catch (error) {
+    if (!isMissingFileError(error))
+      throw error;
+    config = "";
+  }
   const pluginSet = new Set(input.pluginNames);
   for (const legacyMarketplaceName of legacyMarketplaceNames(input.marketplaceName)) {
     config = removeMarketplaceBlock(config, legacyMarketplaceName);
@@ -2581,15 +2589,8 @@ async function updateCodexConfig(input) {
   await writeFileAtomic(input.configPath, `${config.trimEnd()}
 `);
 }
-async function exists3(path) {
-  try {
-    await readFile10(path, "utf8");
-    return true;
-  } catch (error) {
-    if (error instanceof Error)
-      return false;
-    return false;
-  }
+function isMissingFileError(error) {
+  return error instanceof Error && "code" in error && error.code === "ENOENT";
 }
 
 // ../src/install/codex-git-bash-mcp-env.ts
@@ -2653,7 +2654,7 @@ var EVENT_LABELS = new Map([
 ]);
 async function trustedHookStatesForPlugin(input) {
   const manifestPath = join17(input.pluginRoot, ".codex-plugin", "plugin.json");
-  if (!await exists4(manifestPath))
+  if (!await exists3(manifestPath))
     return [];
   const manifest = JSON.parse(await readFile12(manifestPath, "utf8"));
   if (!isPlainRecord(manifest))
@@ -2661,7 +2662,7 @@ async function trustedHookStatesForPlugin(input) {
   const states = [];
   for (const hookPath of hookManifestPaths(manifest.hooks)) {
     const hooksPath = join17(input.pluginRoot, hookPath);
-    if (!await exists4(hooksPath))
+    if (!await exists3(hooksPath))
       continue;
     const parsed = JSON.parse(await readFile12(hooksPath, "utf8"));
     if (!isPlainRecord(parsed) || !isPlainRecord(parsed.hooks))
@@ -2744,7 +2745,7 @@ function canonicalJson(value) {
 function stripDotSlash(value) {
   return value.startsWith("./") ? value.slice(2) : value;
 }
-async function exists4(path) {
+async function exists3(path) {
   try {
     await readFile12(path, "utf8");
     return true;
@@ -2769,6 +2770,7 @@ function resolveCodexInstallerBinDir(input) {
     return join18(resolvedCodexHome, "bin");
   return resolve6(homeDir, ".local", "bin");
 }
+
 // ../../utils/src/runtime/git-bash.ts
 import { execFileSync as execFileSync2 } from "node:child_process";
 import { existsSync as existsSync2 } from "node:fs";
@@ -2851,6 +2853,7 @@ function whereCommand(command) {
     throw error;
   }
 }
+
 // ../src/install/git-bash.ts
 var resolveGitBashForCurrentProcess2 = (input = {}) => {
   return toCodexResolution(resolveGitBashForCurrentProcess(input));
@@ -3306,7 +3309,7 @@ async function executeSessionStartHook(options) {
   return { action: "spawned", exitCode: 0 };
 }
 function spawnDetachedWorker(invocation) {
-  const child = spawn2(invocation.command, [...invocation.args], {
+  const child = spawn(invocation.command, [...invocation.args], {
     detached: true,
     env: invocation.env,
     stdio: "ignore"

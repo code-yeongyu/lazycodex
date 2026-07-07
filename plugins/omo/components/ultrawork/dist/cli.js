@@ -6,9 +6,58 @@ import { stdin as processStdin, stdout as processStdout } from "node:process";
 // components/ultrawork/src/codex-hook.ts
 import { readFileSync as readFileSync2 } from "node:fs";
 
+// components/ultrawork/src/skill-pointer.ts
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
 // components/ultrawork/src/directive.ts
 import { readFileSync } from "node:fs";
 var ULTRAWORK_DIRECTIVE = readFileSync(new URL("../directive.md", import.meta.url), "utf8");
+
+// components/ultrawork/src/skill-pointer.ts
+var ULTRAWORK_SKILL_POINTER_TEMPLATE = `<ultrawork-mode>
+ULTRAWORK MODE IS ACTIVE FOR THIS TASK.
+
+MANDATORY BOOTSTRAP: do all three steps, in order, before anything else.
+
+1. First user-visible line this turn MUST be exactly:
+\`ULTRAWORK MODE ENABLED!\`
+
+2. Call \`create_goal\` NOW with \`objective\` set to the user's request.
+Send \`objective\` only: no \`status\`, no budget fields. If the
+\`create_goal\` tool is unavailable, open your reply with a binding
+\`# Goal\` block instead. Never skip this step.
+
+3. Read the FULL ultrawork directive NOW, before any other tool call,
+plan, or edit. It is the \`ultrawork\` skill, stored at:
+
+{{ULTRAWORK_SKILL_PATH}}
+
+Read the whole file. If a read result comes back truncated, keep
+reading the remaining line ranges until you have seen every line.
+Every rule in that file is binding for this entire task: no
+compromise, no summarizing from memory, no skipping. If the file does
+not exist, tell the user the omo ultrawork skill is missing and
+continue with steps 1 and 2 plus evidence-bound execution.
+
+Do not start the requested work until all three steps are complete.
+</ultrawork-mode>
+`;
+var ULTRAWORK_SKILL_PATH_PLACEHOLDER = "{{ULTRAWORK_SKILL_PATH}}";
+var ULTRAWORK_SKILL_FILE_URL = new URL("../../../skills/ultrawork/SKILL.md", import.meta.url);
+function resolveUltraworkSkillFilePath() {
+  return fileURLToPath(ULTRAWORK_SKILL_FILE_URL);
+}
+function buildUltraworkSkillPointer(skillFilePath) {
+  return ULTRAWORK_SKILL_POINTER_TEMPLATE.replace(ULTRAWORK_SKILL_PATH_PLACEHOLDER, skillFilePath);
+}
+function buildUltraworkAdditionalContext(options = {}) {
+  const skillFilePath = options.skillFilePath === undefined ? resolveUltraworkSkillFilePath() : options.skillFilePath;
+  if (skillFilePath !== null && existsSync(skillFilePath)) {
+    return buildUltraworkSkillPointer(skillFilePath);
+  }
+  return ULTRAWORK_DIRECTIVE;
+}
 
 // components/ultrawork/src/codex-hook.ts
 var ULTRAWORK_CURRENT_PROMPT_PATTERN = /(?:ultrawork|ulw)/i;
@@ -23,7 +72,7 @@ var CONTEXT_PRESSURE_MARKERS = [
   "your input exceeds the context window",
   "long threads and multiple compactions"
 ];
-function runUserPromptSubmitHook(input) {
+function runUserPromptSubmitHook(input, options = {}) {
   if (!isCodexUserPromptSubmitInput(input))
     return "";
   if (isContextPressureRecoveryPrompt(input.prompt))
@@ -32,7 +81,7 @@ function runUserPromptSubmitHook(input) {
     return "";
   if (isContextPressureTranscript(input.transcript_path))
     return "";
-  return isUltraworkPrompt(input.prompt) ? formatAdditionalContextOutput(ULTRAWORK_DIRECTIVE) : "";
+  return isUltraworkPrompt(input.prompt) ? formatAdditionalContextOutput(buildUltraworkAdditionalContext(options)) : "";
 }
 function hasUltraworkDirectiveAlreadyInTranscript(transcriptPath) {
   if (transcriptPath === undefined || transcriptPath === null)

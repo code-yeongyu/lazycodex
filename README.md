@@ -7,7 +7,7 @@
   Project memory, planning, execution, and verified completion inside Codex.</p>
 
   <p>
-    <a href="https://github.com/code-yeongyu/lazycodex/stargazers">
+    <a href="https://github.com/code-yeongyu/lazycodex">
       <img alt="Stars" src="https://img.shields.io/github/stars/code-yeongyu/lazycodex?style=for-the-badge&color=c69ff5&logoColor=D9E0EE&labelColor=302D41" />
     </a>
   </p>

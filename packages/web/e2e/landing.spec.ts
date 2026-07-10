@@ -84,7 +84,7 @@ test.describe("landing page — install + commands", () => {
 })
 
 test.describe("landing page — links + footer", () => {
-  test("github stars pill links to the stargazers url with a count", async ({ page }) => {
+  test("github stars pill links to the github repo with a count", async ({ page }) => {
     await page.goto("/")
     const stars = page.locator(`a[href="${SITE_CONFIG.githubStarsUrl}"]`).first()
     await expect(stars).toBeVisible()

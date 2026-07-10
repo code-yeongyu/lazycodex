@@ -3,7 +3,9 @@ export const SITE_CONFIG = {
   installCommandAutonomous: "npx lazycodex-ai install --no-tui --codex-autonomous",
   installEquivalent: "npx --yes --package oh-my-openagent omo install --platform=codex",
   githubUrl: "https://github.com/code-yeongyu/lazycodex",
-  githubStarsUrl: "https://github.com/code-yeongyu/lazycodex/stargazers",
+  // GitHub returns 404 on /stargazers for logged-out visitors, so the stars
+  // pill links to the repo page — where the star button lives anyway.
+  githubStarsUrl: "https://github.com/code-yeongyu/lazycodex",
   omoUrl: "https://github.com/code-yeongyu/oh-my-openagent",
   siteUrl: "https://lazycodex.ai",
   docsPath: "/docs",

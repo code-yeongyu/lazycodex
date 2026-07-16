@@ -32,14 +32,15 @@ export class DaemonRequestCancelledError extends DaemonRequestError {
 export async function callToolViaDaemon(name, args, options) {
     const context = requireContext(options.context);
     const paths = options.paths ?? daemonPaths();
-    const ensure = options.ensure ?? ensureDaemonRunning;
+    const ensure = options.ensure ??
+        ((ensurePaths, signal) => ensureDaemonRunning(ensurePaths, undefined, signal === undefined ? {} : { signal }));
     const timeoutMs = options.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS;
     const requestArgs = withContext(args, context);
     let lastError;
     let authRefreshUsed = false;
     for (let attempt = 0; attempt < 3; attempt += 1) {
         try {
-            await ensure(paths);
+            await ensureDaemonAvailable(paths, ensure, options.signal);
             const token = readAuthToken(paths);
             if (!token)
                 throw new DaemonRequestError("daemon auth token missing", false);
@@ -81,6 +82,29 @@ function requireContext(context) {
 }
 function withContext(args, context) {
     return { ...args, [CONTEXT_KEY]: context };
+}
+function ensureDaemonAvailable(paths, ensure, signal) {
+    if (!signal)
+        return ensure(paths);
+    return new Promise((resolve, reject) => {
+        let settled = false;
+        const finish = (run) => {
+            if (settled)
+                return;
+            settled = true;
+            signal.removeEventListener("abort", onAbort);
+            run();
+        };
+        const onAbort = () => finish(() => reject(new DaemonRequestCancelledError(false)));
+        if (signal.aborted) {
+            onAbort();
+            return;
+        }
+        signal.addEventListener("abort", onAbort, { once: true });
+        Promise.resolve()
+            .then(() => ensure(paths, signal))
+            .then(() => finish(() => resolve()), (error) => finish(() => reject(signal.aborted ? new DaemonRequestCancelledError(false) : error)));
+    });
 }
 function daemonUnreachableResult(paths, error) {
     const text = [

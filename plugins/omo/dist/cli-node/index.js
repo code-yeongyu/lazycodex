@@ -2146,7 +2146,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "4.18.1",
+    version: "4.18.2",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2358,18 +2358,18 @@ var init_package = __esm(() => {
       typescript: "^6.0.3"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "4.18.1",
-      "oh-my-opencode-darwin-x64": "4.18.1",
-      "oh-my-opencode-darwin-x64-baseline": "4.18.1",
-      "oh-my-opencode-linux-arm64": "4.18.1",
-      "oh-my-opencode-linux-arm64-musl": "4.18.1",
-      "oh-my-opencode-linux-x64": "4.18.1",
-      "oh-my-opencode-linux-x64-baseline": "4.18.1",
-      "oh-my-opencode-linux-x64-musl": "4.18.1",
-      "oh-my-opencode-linux-x64-musl-baseline": "4.18.1",
-      "oh-my-opencode-windows-arm64": "4.18.1",
-      "oh-my-opencode-windows-x64": "4.18.1",
-      "oh-my-opencode-windows-x64-baseline": "4.18.1"
+      "oh-my-opencode-darwin-arm64": "4.18.2",
+      "oh-my-opencode-darwin-x64": "4.18.2",
+      "oh-my-opencode-darwin-x64-baseline": "4.18.2",
+      "oh-my-opencode-linux-arm64": "4.18.2",
+      "oh-my-opencode-linux-arm64-musl": "4.18.2",
+      "oh-my-opencode-linux-x64": "4.18.2",
+      "oh-my-opencode-linux-x64-baseline": "4.18.2",
+      "oh-my-opencode-linux-x64-musl": "4.18.2",
+      "oh-my-opencode-linux-x64-musl-baseline": "4.18.2",
+      "oh-my-opencode-windows-arm64": "4.18.2",
+      "oh-my-opencode-windows-x64": "4.18.2",
+      "oh-my-opencode-windows-x64-baseline": "4.18.2"
     },
     overrides: {
       "@earendil-works/pi-agent-core": "0.80.3",
@@ -9223,7 +9223,7 @@ var init_agent_model_requirements = __esm(() => {
     hephaestus: {
       fallbackChain: [
         {
-          providers: ["openai", "vercel"],
+          providers: ["openai", "github-copilot", "vercel"],
           model: "gpt-5.6-sol",
           variant: "high"
         },
@@ -9335,6 +9335,11 @@ var init_agent_model_requirements = __esm(() => {
           variant: "xhigh"
         },
         {
+          providers: ["github-copilot"],
+          model: "gpt-5.6-sol",
+          variant: "high"
+        },
+        {
           providers: ["openai", "github-copilot", "opencode", "vercel"],
           model: "gpt-5.5",
           variant: "xhigh"
@@ -9413,6 +9418,11 @@ var init_category_model_requirements = __esm(() => {
           variant: "xhigh"
         },
         {
+          providers: ["github-copilot"],
+          model: "gpt-5.6-sol",
+          variant: "high"
+        },
+        {
           providers: ["openai", "opencode", "vercel"],
           model: "gpt-5.5",
           variant: "xhigh"
@@ -9438,7 +9448,12 @@ var init_category_model_requirements = __esm(() => {
           variant: "xhigh"
         },
         {
-          providers: ["openai", "vercel"],
+          providers: ["github-copilot"],
+          model: "gpt-5.6-terra",
+          variant: "high"
+        },
+        {
+          providers: ["openai", "github-copilot", "vercel"],
           model: "gpt-5.6-sol",
           variant: "high"
         },
@@ -9504,6 +9519,11 @@ var init_category_model_requirements = __esm(() => {
           providers: ["openai", "vercel"],
           model: "gpt-5.6-luna",
           variant: "xhigh"
+        },
+        {
+          providers: ["github-copilot"],
+          model: "gpt-5.6-luna",
+          variant: "high"
         },
         {
           providers: ["anthropic", "github-copilot", "opencode", "vercel"],
@@ -9594,9 +9614,12 @@ function stripProviderPrefixForAliasLookup(normalizedModelID) {
   }
   return normalizedModelID.slice(slashIndex + 1);
 }
-function resolveModelIDAlias(modelID) {
+function resolveModelIDAlias(modelID, providerID) {
   const requestedModelID = normalizeLookupModelID(modelID);
   const aliasLookupModelID = stripProviderPrefixForAliasLookup(requestedModelID);
+  const normalizedProviderID = providerID ? normalizeLookupModelID(providerID) : undefined;
+  const providerPrefixEnd = requestedModelID.indexOf("/");
+  const embeddedProviderID = providerPrefixEnd > 0 ? requestedModelID.slice(0, providerPrefixEnd) : undefined;
   const exactRule = EXACT_ALIAS_RULES_BY_MODEL.get(aliasLookupModelID);
   if (exactRule) {
     return {
@@ -9607,6 +9630,13 @@ function resolveModelIDAlias(modelID) {
     };
   }
   for (const rule of PATTERN_ALIAS_RULES) {
+    if (rule.providerIDs) {
+      const matchesProviderID = normalizedProviderID !== undefined && rule.providerIDs.includes(normalizedProviderID);
+      const matchesEmbeddedProviderID = normalizedProviderID !== undefined && rule.allowedSubproviderHosts?.includes(normalizedProviderID) === true && embeddedProviderID !== undefined && rule.providerIDs.includes(embeddedProviderID);
+      if (!matchesProviderID && !matchesEmbeddedProviderID) {
+        continue;
+      }
+    }
     if (!rule.match(aliasLookupModelID)) {
       continue;
     }
@@ -9647,6 +9677,14 @@ var init_model_capability_aliases = __esm(() => {
   ];
   EXACT_ALIAS_RULES_BY_MODEL = new Map(EXACT_ALIAS_RULES.map((rule) => [rule.aliasModelID, rule]));
   PATTERN_ALIAS_RULES = [
+    {
+      ruleID: "openai-gpt-5.6-fast-service-tier-alias",
+      description: "Normalizes OpenCode's OpenAI GPT-5.6 fast service-tier IDs to canonical snapshot IDs.",
+      providerIDs: ["openai"],
+      allowedSubproviderHosts: ["vercel"],
+      match: (normalizedModelID) => /^gpt-5\.6-(?:sol|terra|luna)-fast$/.test(normalizedModelID),
+      canonicalize: (normalizedModelID) => normalizedModelID.slice(0, -"-fast".length)
+    },
     {
       ruleID: "claude-thinking-legacy-alias",
       description: "Normalizes the legacy claude-opus-4-7-thinking id to the canonical snapshot ID.",
@@ -10314,7 +10352,7 @@ function getProviderOverride(providerID, modelID) {
   return GITHUB_COPILOT_GPT5_MODEL.test(normalizeLookupModelID2(modelID)) ? GITHUB_COPILOT_GPT5_OVERRIDE : undefined;
 }
 function getModelCapabilities(input) {
-  const canonicalization = resolveModelIDAlias(input.modelID);
+  const canonicalization = resolveModelIDAlias(input.modelID, input.providerID);
   const override = getOverride(input.modelID);
   const providerOverride = getProviderOverride(input.providerID, canonicalization.canonicalModelID);
   const runtimeModel = readRuntimeModel(input.runtimeModel ?? input.providerCache?.findProviderModelMetadata(input.providerID, input.modelID));
@@ -11419,6 +11457,7 @@ var init_opencode_storage_detection = __esm(() => {
 var opencodePluginsCache;
 var init_load_opencode_plugins = __esm(() => {
   init_jsonc_parser2();
+  init_opencode_config_dir();
   opencodePluginsCache = new Map;
 });
 
@@ -72658,7 +72697,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "4.18.1",
+    version: "4.18.2",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",

@@ -70,6 +70,13 @@ failed, investigate the underlying uncertainty with the `debugging` skill when
 runtime behavior may be wrong, fix with evidence, and rerun the affected lane
 before claiming completion, creating or handing off a PR, or merging.
 
+After each lane reaches PASS, immediately append a durable task-evidence record
+to the active ledger with the lane name, exact full commit SHA, PASS verdict,
+and report artifact/source. Before reusing coverage after continuation or
+compaction, re-read that record and require the exact lane/SHA pair. Memory,
+chat history, or an unstamped report is not coverage; a new commit requires
+fresh applicable lane records.
+
 A rejecting lane must name its blockers inline in its final message — each
 blocker cites the violated goal criterion or requirement plus an evidence
 pointer. A bare REJECT/FAIL token without findings is not a verdict; treat it

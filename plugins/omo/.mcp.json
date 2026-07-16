@@ -28,7 +28,8 @@
 				"./components/lsp-daemon/dist/cli.js",
 				"mcp"
 			],
-			"cwd": "."
+			"cwd": ".",
+			"startup_timeout_sec": 10
 		}
 	}
 }

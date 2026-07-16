@@ -3006,7 +3006,7 @@ async function disposeDefaultLspManager() {
   }
 }
 // src/daemon-client.ts
-import { connect as connect2 } from "node:net";
+import { connect } from "node:net";
 import { homedir as homedir3 } from "node:os";
 import { join as join7 } from "node:path";
 
@@ -3187,7 +3187,7 @@ function isPlainRecord(value) {
 // src/ensure-daemon.ts
 import { spawn as spawn2 } from "node:child_process";
 import { closeSync as closeSync2, mkdirSync as mkdirSync2, openSync as openSync2 } from "node:fs";
-import { connect } from "node:net";
+import { Socket } from "node:net";
 import { dirname as dirname6 } from "node:path";
 import { execPath } from "node:process";
 
@@ -3594,42 +3594,48 @@ class DaemonUnreachableError extends Error {
 async function ensureDaemonRunning(paths, deps = defaultEnsureDaemonDeps(), options = {}) {
   const readyTimeoutMs = options.readyTimeoutMs ?? DEFAULT_READY_TIMEOUT_MS;
   const pollIntervalMs = options.pollIntervalMs ?? DEFAULT_POLL_INTERVAL_MS;
-  if (await deps.probe(paths))
+  const signal = options.signal;
+  throwIfAborted(signal);
+  if (await awaitWithSignal2(deps.probe(paths, signal), signal))
     return;
+  throwIfAborted(signal);
   deps.spawnDaemon(paths);
-  await waitUntilReachable(paths, deps, readyTimeoutMs, pollIntervalMs);
+  await waitUntilReachable(paths, deps, readyTimeoutMs, pollIntervalMs, signal);
 }
-async function waitUntilReachable(paths, deps, readyTimeoutMs, pollIntervalMs) {
+async function waitUntilReachable(paths, deps, readyTimeoutMs, pollIntervalMs, signal) {
   const deadline = deps.now() + readyTimeoutMs;
   for (;; ) {
-    if (await deps.probe(paths))
+    throwIfAborted(signal);
+    if (await awaitWithSignal2(deps.probe(paths, signal), signal))
       return;
     if (deps.now() >= deadline)
       throw new DaemonUnreachableError(paths.socket);
-    await deps.sleep(pollIntervalMs);
+    await awaitWithSignal2(deps.sleep(pollIntervalMs, signal), signal);
   }
 }
-async function probeDaemon(paths, timeoutMs = PROBE_TIMEOUT_MS) {
+async function probeDaemon(paths, timeoutMs = PROBE_TIMEOUT_MS, signal) {
   const token = readAuthToken(paths);
   if (!token)
     return false;
-  return await pingDaemon(paths, token, timeoutMs) !== null;
+  return await pingDaemon(paths, token, timeoutMs, signal) !== null;
 }
-function pingDaemon(paths, token, timeoutMs = PROBE_TIMEOUT_MS) {
+function pingDaemon(paths, token, timeoutMs = PROBE_TIMEOUT_MS, signal) {
   return new Promise((resolve7) => {
-    const socket = connect(paths.socket);
+    const socket = new Socket;
     let settled = false;
+    let timer;
     const finish = (value) => {
       if (settled)
         return;
       settled = true;
+      if (timer !== undefined)
+        clearTimeout(timer);
+      signal?.removeEventListener("abort", onAbort);
       socket.destroy();
       resolve7(value);
     };
-    const timer = setTimeout(() => finish(null), timeoutMs);
-    timer.unref?.();
+    const onAbort = () => finish(null);
     const decoder = createLineDecoder((message) => {
-      clearTimeout(timer);
       finish(parsePingResponse(message));
     });
     socket.once("connect", () => {
@@ -3637,9 +3643,16 @@ function pingDaemon(paths, token, timeoutMs = PROBE_TIMEOUT_MS) {
     });
     socket.on("data", (chunk) => decoder.push(chunk));
     socket.once("error", () => {
-      clearTimeout(timer);
       finish(null);
     });
+    timer = setTimeout(() => finish(null), timeoutMs);
+    timer.unref?.();
+    if (signal?.aborted) {
+      onAbort();
+      return;
+    }
+    signal?.addEventListener("abort", onAbort, { once: true });
+    socket.connect(paths.socket);
   });
 }
 function spawnDaemonProcess(paths) {
@@ -3657,13 +3670,61 @@ function spawnDaemonProcess(paths) {
 }
 function defaultEnsureDaemonDeps() {
   return {
-    probe: (paths) => probeDaemon(paths),
+    probe: (paths, signal) => probeDaemon(paths, PROBE_TIMEOUT_MS, signal),
     spawnDaemon: (paths) => spawnDaemonProcess(paths),
-    sleep: (ms) => new Promise((resolve7) => {
-      setTimeout(resolve7, ms);
-    }),
+    sleep: (ms, signal) => sleepWithSignal(ms, signal),
     now: () => Date.now()
   };
+}
+function sleepWithSignal(ms, signal) {
+  return new Promise((resolve7) => {
+    let settled = false;
+    const finish = () => {
+      if (settled)
+        return;
+      settled = true;
+      clearTimeout(timer);
+      signal?.removeEventListener("abort", finish);
+      resolve7();
+    };
+    const timer = setTimeout(finish, ms);
+    if (signal?.aborted) {
+      finish();
+      return;
+    }
+    signal?.addEventListener("abort", finish, { once: true });
+  });
+}
+function awaitWithSignal2(promise, signal) {
+  if (!signal)
+    return promise;
+  if (signal.aborted)
+    return Promise.reject(abortError3(signal));
+  return new Promise((resolve7, reject) => {
+    let settled = false;
+    const finish = (run) => {
+      if (settled)
+        return;
+      settled = true;
+      signal.removeEventListener("abort", onAbort);
+      run();
+    };
+    const onAbort = () => finish(() => reject(abortError3(signal)));
+    signal.addEventListener("abort", onAbort, { once: true });
+    promise.then((value) => finish(() => resolve7(value)), (error) => finish(() => reject(error)));
+  });
+}
+function throwIfAborted(signal) {
+  if (signal?.aborted)
+    throw abortError3(signal);
+}
+function abortError3(signal) {
+  const reason = signal.reason;
+  if (reason instanceof Error)
+    return reason;
+  const error = new Error(typeof reason === "string" ? reason : "daemon startup cancelled");
+  error.name = "AbortError";
+  return error;
 }
 function parsePingResponse(message) {
   if (!message || typeof message !== "object" || Array.isArray(message))
@@ -3704,6 +3765,9 @@ function errorResponse(id, code, message, data) {
 function jsonRpcId2(value) {
   return typeof value === "string" || typeof value === "number" || value === null ? value : null;
 }
+function messageFromError(error) {
+  return error instanceof Error ? error.message : String(error);
+}
 // ../mcp-stdio-core/src/transport.ts
 var HEADER_SEPARATOR2 = Buffer.from(`\r
 \r
@@ -3726,16 +3790,45 @@ async function* readStdioJsonRpcMessages(input) {
     yield parseJsonPayload(trailing, "line");
   }
 }
-function writeStdioJsonRpcResponse(output, response, responseMode) {
+async function writeStdioJsonRpcResponse(output, response, responseMode) {
   const body = JSON.stringify(response);
-  if (responseMode === "framed") {
-    output.write(`Content-Length: ${Buffer.byteLength(body, "utf8")}\r
+  const payload = responseMode === "framed" ? `Content-Length: ${Buffer.byteLength(body, "utf8")}\r
 \r
-${body}`);
-    return;
-  }
-  output.write(`${body}
-`);
+${body}` : `${body}
+`;
+  await writeChunk(output, payload);
+}
+function writeChunk(output, chunk) {
+  return new Promise((resolve7, reject) => {
+    let settled = false;
+    const onError = (error) => {
+      if (settled)
+        return;
+      settled = true;
+      reject(error);
+    };
+    output.once("error", onError);
+    try {
+      output.write(chunk, (error) => {
+        if (settled)
+          return;
+        settled = true;
+        if (error) {
+          queueMicrotask(() => output.removeListener("error", onError));
+          reject(error);
+          return;
+        }
+        output.removeListener("error", onError);
+        resolve7();
+      });
+    } catch (error) {
+      output.removeListener("error", onError);
+      if (settled)
+        return;
+      settled = true;
+      reject(error);
+    }
+  });
 }
 function readNextMessage(buffer) {
   if (buffer.length === 0)
@@ -3831,39 +3924,69 @@ async function runJsonRpcStdioServer(config) {
         break;
       idleTimer.arm();
       if (message.kind === "parse_error") {
-        handleParseError(message, config, log);
+        if (!await handleParseError(message, config, log))
+          break;
         continue;
       }
-      await handleRequest(message, config, log);
+      if (!await handleRequest(message, config, log))
+        break;
     }
   } finally {
     idleTimer.clear();
     log("stdio_stopped");
   }
 }
-function handleParseError(message, config, log) {
+async function handleParseError(message, config, log) {
   log("parse_error", { message: message.message });
   const response = config.parseErrorResponse?.(message.message) ?? errorResponse(null, -32700, "Parse error", message.message);
-  if (response !== undefined) {
-    writeStdioJsonRpcResponse(config.output, response, message.responseMode);
-  }
+  if (response === undefined)
+    return true;
+  return writeResponse(response, {
+    output: config.output,
+    responseMode: message.responseMode,
+    log
+  });
 }
 async function handleRequest(message, config, log) {
   const parsed = message.payload;
   const id = isPlainRecord(parsed) ? jsonRpcId2(parsed["id"]) : null;
   const method = isPlainRecord(parsed) && typeof parsed["method"] === "string" ? parsed["method"] : null;
   log("request", { id: id === null ? null : String(id), method });
+  let response;
   try {
-    const response = await config.handler(parsed, config.handlerOptions);
-    if (response === undefined)
-      return;
-    writeStdioJsonRpcResponse(config.output, response, message.responseMode);
-    log("response", { id: String(response.id), method, is_error: response.error !== undefined });
+    response = await config.handler(parsed, config.handlerOptions);
   } catch (error) {
     if (config.onHandlerError === undefined)
       throw error;
     config.onHandlerError(error);
+    return true;
   }
+  if (response === undefined)
+    return true;
+  if (!await writeResponse(response, {
+    output: config.output,
+    responseMode: message.responseMode,
+    log
+  }))
+    return false;
+  log("response", { id: String(response.id), method, is_error: response.error !== undefined });
+  return true;
+}
+async function writeResponse(response, context) {
+  try {
+    await writeStdioJsonRpcResponse(context.output, response, context.responseMode);
+    return true;
+  } catch (error) {
+    if (!isTerminalOutputError(error))
+      throw error;
+    context.log("output_error", { message: messageFromError(error) });
+    return false;
+  }
+}
+function isTerminalOutputError(error) {
+  if (!(error instanceof Error) || !("code" in error))
+    return false;
+  return error.code === "EPIPE" || error.code === "ERR_STREAM_DESTROYED" || error.code === "ERR_STREAM_WRITE_AFTER_END";
 }
 function createIdleTimer(idleTimeoutMs, log, onIdleTimeout) {
   let timer = null;
@@ -4747,7 +4870,7 @@ async function aggregateDiagnosticsForDirectory(directory, extension, severity, 
   const fileErrors = [];
   const maxConcurrency = Math.max(1, options.maxConcurrency ?? DIRECTORY_DIAGNOSTICS_MAX_CONCURRENCY);
   options.signal?.throwIfAborted();
-  const client = await manager.getClient(root, server2);
+  const client = await manager.getClient(root, server2, options.signal);
   try {
     let nextIndex = 0;
     const workers = Array.from({ length: Math.min(maxConcurrency, filesToProcess.length) }, async () => {
@@ -5617,14 +5740,14 @@ class DaemonRequestCancelledError extends DaemonRequestError {
 async function callToolViaDaemon(name, args, options) {
   const context = requireContext(options.context);
   const paths = options.paths ?? daemonPaths();
-  const ensure = options.ensure ?? ensureDaemonRunning;
+  const ensure = options.ensure ?? ((ensurePaths, signal) => ensureDaemonRunning(ensurePaths, undefined, signal === undefined ? {} : { signal }));
   const timeoutMs = options.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS;
   const requestArgs = withContext(args, context);
   let lastError;
   let authRefreshUsed = false;
   for (let attempt = 0;attempt < 3; attempt += 1) {
     try {
-      await ensure(paths);
+      await ensureDaemonAvailable(paths, ensure, options.signal);
       const token = readAuthToken(paths);
       if (!token)
         throw new DaemonRequestError("daemon auth token missing", false);
@@ -5666,6 +5789,27 @@ function requireContext(context) {
 function withContext(args, context) {
   return { ...args, [CONTEXT_KEY]: context };
 }
+function ensureDaemonAvailable(paths, ensure, signal) {
+  if (!signal)
+    return ensure(paths);
+  return new Promise((resolve9, reject) => {
+    let settled = false;
+    const finish = (run) => {
+      if (settled)
+        return;
+      settled = true;
+      signal.removeEventListener("abort", onAbort);
+      run();
+    };
+    const onAbort = () => finish(() => reject(new DaemonRequestCancelledError(false)));
+    if (signal.aborted) {
+      onAbort();
+      return;
+    }
+    signal.addEventListener("abort", onAbort, { once: true });
+    Promise.resolve().then(() => ensure(paths, signal)).then(() => finish(() => resolve9()), (error) => finish(() => reject(signal.aborted ? new DaemonRequestCancelledError(false) : error)));
+  });
+}
 function daemonUnreachableResult(paths, error) {
   const text2 = [
     `LSP daemon unreachable: ${errorText(error)}.`,
@@ -5679,7 +5823,7 @@ function daemonUnreachableResult(paths, error) {
 }
 function sendToolCall(paths, token, name, args, options) {
   return new Promise((resolve9, reject) => {
-    const socket = connect2(paths.socket);
+    const socket = connect(paths.socket);
     const requestId = allocateProxyRequestId();
     let settled = false;
     let requestWritten = false;
@@ -5781,38 +5925,93 @@ function errorText(error) {
 // src/proxy.ts
 import { existsSync as existsSync11, realpathSync as realpathSync4 } from "node:fs";
 import { basename as basename3, delimiter as delimiter4, dirname as dirname9, isAbsolute as isAbsolute4 } from "node:path";
+var DEFAULT_STARTUP_TIMEOUT_MS = 1e4;
 async function runMcpStdioProxy(options = {}) {
   const input = options.input ?? process.stdin;
   const output = options.output ?? process.stdout;
-  const paths = options.paths ?? daemonPaths();
-  const env = options.env ?? process.env;
-  const cwd = options.cwd ?? inferOpenCodeProjectCwd(env["LSP_TOOLS_MCP_PROJECT_CONFIG"]);
-  const contextEnv = cwd === undefined ? env : canonicalizeContextEnv(env);
-  const contextInput = {
-    env: contextEnv,
-    ...cwd === undefined ? {} : { cwd },
-    ...options.homeDir === undefined ? {} : { homeDir: options.homeDir }
+  const stderr = options.stderr ?? process.stderr;
+  const startupTimeoutMs = options.startupTimeoutMs ?? DEFAULT_STARTUP_TIMEOUT_MS;
+  const lifecycleController = new AbortController;
+  const abortFromInput = () => lifecycleController.abort();
+  let startupExpired = false;
+  let startupTimer;
+  const clearStartupWatchdog = () => {
+    if (startupTimer === undefined)
+      return;
+    clearTimeout(startupTimer);
+    startupTimer = undefined;
   };
-  const context = options.context ?? createStandaloneMcpRequestContext(contextInput);
-  const callOptions = { paths, context, ...options.ensure ? { ensure: options.ensure } : {} };
-  await runJsonRpcStdioServer({
-    input,
-    output,
-    idleTimeoutMs: 0,
-    handler: (request, requestOptions) => runWithRequestContext(context, () => handleProxyRequest(request, requestOptions)),
-    handlerOptions: callOptions,
-    onHandlerError: (error) => {
-      process.stderr.write(`[lsp-daemon] proxy error: ${error instanceof Error ? error.message : String(error)}
+  input.once("end", abortFromInput);
+  input.once("close", abortFromInput);
+  if (startupTimeoutMs > 0) {
+    startupTimer = setTimeout(() => {
+      startupExpired = true;
+      input.destroy();
+      try {
+        stderr.write(`[lsp-daemon] no MCP request received within ${startupTimeoutMs}ms; exiting
 `);
-    }
-  });
+      } catch (error) {
+        if (stderr !== process.stderr) {
+          process.stderr.write(`[lsp-daemon] startup diagnostic failed: ${error instanceof Error ? error.message : String(error)}
+`);
+        }
+      }
+    }, startupTimeoutMs);
+  }
+  try {
+    const paths = options.paths ?? daemonPaths();
+    const env = options.env ?? process.env;
+    const cwd = options.cwd ?? inferOpenCodeProjectCwd(env["LSP_TOOLS_MCP_PROJECT_CONFIG"]);
+    const contextEnv = cwd === undefined ? env : canonicalizeContextEnv(env);
+    const contextInput = {
+      env: contextEnv,
+      ...cwd === undefined ? {} : { cwd },
+      ...options.homeDir === undefined ? {} : { homeDir: options.homeDir }
+    };
+    const context = options.context ?? createStandaloneMcpRequestContext(contextInput);
+    const callOptions = {
+      paths,
+      context,
+      ...options.ensure ? { ensure: options.ensure } : {},
+      signal: lifecycleController.signal
+    };
+    await runJsonRpcStdioServer({
+      input,
+      output,
+      idleTimeoutMs: 0,
+      handler: (request, requestOptions) => {
+        clearStartupWatchdog();
+        return runWithRequestContext(context, () => handleProxyRequest(request, requestOptions));
+      },
+      handlerOptions: callOptions,
+      onHandlerError: (error) => {
+        stderr.write(`[lsp-daemon] proxy error: ${error instanceof Error ? error.message : String(error)}
+`);
+      }
+    });
+  } catch (error) {
+    if (!startupExpired || !isPrematureCloseError(error))
+      throw error;
+  } finally {
+    if (startupTimer !== undefined)
+      clearTimeout(startupTimer);
+    input.removeListener("end", abortFromInput);
+    input.removeListener("close", abortFromInput);
+  }
+}
+function isPrematureCloseError(error) {
+  return error instanceof Error && Reflect.get(error, "code") === "ERR_STREAM_PREMATURE_CLOSE";
 }
 async function handleProxyRequest(parsed, callOptions) {
   const toolCall = asToolCall(parsed);
   if (!toolCall)
     return handleLspMcpRequest(parsed);
   const result = await callToolViaDaemon(toolCall.name, toolCall.args, callOptions);
-  return successResponse(toolCall.id, { content: result.content, isError: result.isError ?? false, details: result.details });
+  return successResponse(toolCall.id, {
+    content: result.content,
+    isError: result.isError ?? false,
+    details: result.details
+  });
 }
 function asToolCall(parsed) {
   if (!isPlainRecord(parsed) || parsed["method"] !== "tools/call")

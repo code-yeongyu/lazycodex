@@ -6,18 +6,19 @@ export declare class DaemonUnreachableError extends Error {
     constructor(socketPath: string);
 }
 export interface EnsureDaemonDeps {
-    probe(paths: DaemonPaths): Promise<boolean>;
+    probe(paths: DaemonPaths, signal?: AbortSignal): Promise<boolean>;
     spawnDaemon(paths: DaemonPaths): void;
-    sleep(ms: number): Promise<void>;
+    sleep(ms: number, signal?: AbortSignal): Promise<void>;
     now(): number;
 }
 export interface EnsureDaemonOptions {
     readyTimeoutMs?: number;
     pollIntervalMs?: number;
+    readonly signal?: AbortSignal;
 }
 export declare function ensureDaemonRunning(paths: DaemonPaths, deps?: EnsureDaemonDeps, options?: EnsureDaemonOptions): Promise<void>;
-export declare function probeDaemon(paths: DaemonPaths, timeoutMs?: number): Promise<boolean>;
-export declare function pingDaemon(paths: DaemonPaths, token: string, timeoutMs?: number): Promise<OwnerPing | null>;
+export declare function probeDaemon(paths: DaemonPaths, timeoutMs?: number, signal?: AbortSignal): Promise<boolean>;
+export declare function pingDaemon(paths: DaemonPaths, token: string, timeoutMs?: number, signal?: AbortSignal): Promise<OwnerPing | null>;
 export declare function spawnDaemonProcess(paths: DaemonPaths): void;
 export declare function resolveDaemonCliPath(env?: NodeJS.ProcessEnv, defaults?: DaemonRuntimeDefaults): string;
 export declare function defaultEnsureDaemonDeps(): EnsureDaemonDeps;

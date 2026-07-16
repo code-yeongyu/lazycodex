@@ -4042,7 +4042,7 @@ async function aggregateDiagnosticsForDirectory(directory, extension, severity, 
   const fileErrors = [];
   const maxConcurrency = Math.max(1, options.maxConcurrency ?? DIRECTORY_DIAGNOSTICS_MAX_CONCURRENCY);
   options.signal?.throwIfAborted();
-  const client = await manager.getClient(root, server);
+  const client = await manager.getClient(root, server, options.signal);
   try {
     let nextIndex = 0;
     const workers = Array.from({ length: Math.min(maxConcurrency, filesToProcess.length) }, async () => {

@@ -3543,10 +3543,14 @@ async function linkBundledAgentsStep(options) {
   const agentsTarget = join21(options.codexHome, "agents");
   try {
     const stageRoot = join21(options.pluginData, "bootstrap", "agents-stage");
+    const previouslyInstalledAgents = await readInstalledAgentPaths(stageRoot);
     const existingConfig = await readConfigIfPresent(join21(options.codexHome, "config.toml"));
     const foreignAgentFiles = await stageBundledAgents(options.pluginRoot, stageRoot, existingConfig);
-    for (const agentFile of foreignAgentFiles)
-      await rm10(join21(agentsTarget, agentFile), { force: true });
+    for (const agentFile of foreignAgentFiles) {
+      const agentPath = join21(agentsTarget, agentFile);
+      if (previouslyInstalledAgents.has(agentPath))
+        await rm10(agentPath, { force: true });
+    }
     const preservedReasoning = await capturePreservedAgentReasoning({ codexHome: options.codexHome });
     const preservedServiceTier = await capturePreservedAgentServiceTier({ codexHome: options.codexHome });
     const linked = await linkCachedPluginAgents({
@@ -3568,6 +3572,18 @@ async function linkBundledAgentsStep(options) {
         }
       ]
     };
+  }
+}
+async function readInstalledAgentPaths(stageRoot) {
+  try {
+    const parsed = JSON.parse(await readFile(join21(stageRoot, ".installed-agents.json"), "utf8"));
+    if (!isRecord(parsed) || !Array.isArray(parsed["agents"]))
+      return new Set();
+    return new Set(parsed["agents"].filter((path) => typeof path === "string"));
+  } catch (error) {
+    if (error instanceof Error && "code" in error && error.code === "ENOENT")
+      return new Set();
+    throw error;
   }
 }
 async function stageBundledAgents(pluginRoot, stageRoot, existingConfig) {

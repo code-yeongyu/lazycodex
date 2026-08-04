@@ -1,7 +1,20 @@
-import { copyFile, mkdir, readdir, rm } from "node:fs/promises";
+import { copyFile, mkdir, readFile, readdir, rm } from "node:fs/promises";
 import { join } from "node:path";
 
 import { hasForeignAgentRegistration } from "../../../../src/install/codex-config-agents.ts";
+
+const AGENT_MANIFEST = ".installed-agents.json";
+
+export async function readInstalledAgentPaths(stageRoot: string): Promise<ReadonlySet<string>> {
+	try {
+		const parsed: unknown = JSON.parse(await readFile(join(stageRoot, AGENT_MANIFEST), "utf8"));
+		if (!isRecord(parsed) || !Array.isArray(parsed["agents"])) return new Set();
+		return new Set(parsed["agents"].filter((path): path is string => typeof path === "string"));
+	} catch (error) {
+		if (error instanceof Error && "code" in error && error.code === "ENOENT") return new Set();
+		throw error;
+	}
+}
 
 export async function stageBundledAgents(
 	pluginRoot: string,
@@ -44,7 +57,9 @@ async function fileNames(root: string): Promise<string[]> {
 
 async function entryNames(root: string, keep: (entry: { isDirectory(): boolean; isFile(): boolean }) => boolean): Promise<string[]> {
 	try {
-		const entries = await readdir(root, { withFileTypes: true });
+		const entries: readonly { isDirectory(): boolean; isFile(): boolean; name: string }[] = await readdir(root, {
+			withFileTypes: true,
+		});
 		return entries
 			.filter((entry) => keep(entry))
 			.map((entry) => entry.name)
@@ -53,4 +68,8 @@ async function entryNames(root: string, keep: (entry: { isDirectory(): boolean; 
 		if (error instanceof Error && "code" in error && error.code === "ENOENT") return [];
 		throw error;
 	}
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === "object" && value !== null && !Array.isArray(value);
 }

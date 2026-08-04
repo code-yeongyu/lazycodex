@@ -17,7 +17,7 @@ import { trustedHookStatesForPlugin } from "../../../../src/install/codex-hook-t
 import { resolveCodexInstallerBinDir } from "../../../../src/install/codex-installer-bin-dir.ts";
 import { prepareGitBashForInstall } from "../../../../src/install/git-bash.ts";
 import type { CodexAgentConfig, GitBashResolution } from "../../../../src/install/types.ts";
-import { agentNameFromToml, stageBundledAgents } from "./agent-staging.ts";
+import { agentNameFromToml, readInstalledAgentPaths, stageBundledAgents } from "./agent-staging.ts";
 import { appendBootstrapLog, BOOTSTRAP_DOCTOR_HINT } from "./worker.ts";
 import type { BootstrapDegradedEntry, BootstrapStepOutcome } from "./worker.ts";
 
@@ -92,9 +92,13 @@ async function linkBundledAgentsStep(options: WorkerSetupOptions): Promise<Agent
 		// first: bootstrap must never persist anything under PLUGIN_ROOT (the
 		// Codex-managed marketplace cache).
 		const stageRoot = join(options.pluginData, "bootstrap", "agents-stage");
+		const previouslyInstalledAgents = await readInstalledAgentPaths(stageRoot);
 		const existingConfig = await readConfigIfPresent(join(options.codexHome, "config.toml"));
 		const foreignAgentFiles = await stageBundledAgents(options.pluginRoot, stageRoot, existingConfig);
-		for (const agentFile of foreignAgentFiles) await rm(join(agentsTarget, agentFile), { force: true });
+		for (const agentFile of foreignAgentFiles) {
+			const agentPath = join(agentsTarget, agentFile);
+			if (previouslyInstalledAgents.has(agentPath)) await rm(agentPath, { force: true });
+		}
 		const preservedReasoning = await capturePreservedAgentReasoning({ codexHome: options.codexHome });
 		const preservedServiceTier = await capturePreservedAgentServiceTier({ codexHome: options.codexHome });
 		const linked = await linkCachedPluginAgents({

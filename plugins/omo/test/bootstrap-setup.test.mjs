@@ -176,6 +176,7 @@ test("#given a config.toml with no pre-existing agent entries #when the worker s
 test("#given an unmanaged local role with the same name as an Orca registration #when the worker setup runs #then the local role is preserved", async () => {
 	await withSetupFixture(async (fixture) => {
 		const userAgent = 'description = "User-owned explorer"\nmodel = "gpt-5.6"\n';
+		await runWorkerSetup(setupOptions(fixture));
 		await mkdir(join(fixture.codexHome, "agents"), { recursive: true });
 		await writeFile(join(fixture.codexHome, "agents", "explorer.toml"), userAgent);
 		await writeFile(

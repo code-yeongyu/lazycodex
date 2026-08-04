@@ -16,6 +16,28 @@ export async function readInstalledAgentPaths(stageRoot: string): Promise<Readon
 	}
 }
 
+export async function readStagedAgentContents(stageRoot: string): Promise<ReadonlyMap<string, string>> {
+	const contents = new Map<string, string>();
+	const componentsRoot = join(stageRoot, "components");
+	for (const componentName of await directoryNames(componentsRoot)) {
+		const agentsDir = join(componentsRoot, componentName, "agents");
+		for (const agentFile of await fileNames(agentsDir)) {
+			contents.set(agentFile, await readFile(join(agentsDir, agentFile), "utf8"));
+		}
+	}
+	return contents;
+}
+
+export async function matchesAgentContent(path: string, expectedContent: string | undefined): Promise<boolean> {
+	if (expectedContent === undefined) return false;
+	try {
+		return (await readFile(path, "utf8")) === expectedContent;
+	} catch (error) {
+		if (error instanceof Error && "code" in error && error.code === "ENOENT") return false;
+		throw error;
+	}
+}
+
 export async function stageBundledAgents(
 	pluginRoot: string,
 	stageRoot: string,

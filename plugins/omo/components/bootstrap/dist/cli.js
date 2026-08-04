@@ -3544,11 +3544,12 @@ async function linkBundledAgentsStep(options) {
   try {
     const stageRoot = join21(options.pluginData, "bootstrap", "agents-stage");
     const previouslyInstalledAgents = await readInstalledAgentPaths(stageRoot);
+    const previouslyStagedAgentContents = await readStagedAgentContents(stageRoot);
     const existingConfig = await readConfigIfPresent(join21(options.codexHome, "config.toml"));
     const foreignAgentFiles = await stageBundledAgents(options.pluginRoot, stageRoot, existingConfig);
     for (const agentFile of foreignAgentFiles) {
       const agentPath = join21(agentsTarget, agentFile);
-      if (previouslyInstalledAgents.has(agentPath))
+      if (previouslyInstalledAgents.has(agentPath) && await matchesAgentContent(agentPath, previouslyStagedAgentContents.get(agentFile)))
         await rm10(agentPath, { force: true });
     }
     const preservedReasoning = await capturePreservedAgentReasoning({ codexHome: options.codexHome });
@@ -3583,6 +3584,27 @@ async function readInstalledAgentPaths(stageRoot) {
   } catch (error) {
     if (error instanceof Error && "code" in error && error.code === "ENOENT")
       return new Set();
+    throw error;
+  }
+}
+async function readStagedAgentContents(stageRoot) {
+  const contents = new Map();
+  const componentsRoot = join21(stageRoot, "components");
+  for (const componentName of await directoryNames(componentsRoot)) {
+    const agentsDir = join21(componentsRoot, componentName, "agents");
+    for (const agentFile of await fileNames(agentsDir))
+      contents.set(agentFile, await readFile(join21(agentsDir, agentFile), "utf8"));
+  }
+  return contents;
+}
+async function matchesAgentContent(path, expectedContent) {
+  if (expectedContent === void 0)
+    return false;
+  try {
+    return await readFile(path, "utf8") === expectedContent;
+  } catch (error) {
+    if (error instanceof Error && "code" in error && error.code === "ENOENT")
+      return false;
     throw error;
   }
 }

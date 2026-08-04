@@ -127,7 +127,7 @@ test("#given a completed first run #when the worker setup runs again #then confi
 	});
 });
 
-test("#given a config.toml that already declares [agents.explorer] at a different path (Orca mirror) #when the worker setup runs #then no second colliding registration is added for that role", async () => {
+test("#given a config.toml that already declares [agents.explorer] at a different path (Orca mirror) #when the worker setup runs #then the mirrored role is not also linked into the runtime agents directory", async () => {
 	await withSetupFixture(async (fixture) => {
 		const orcaMirrorPath = "/orca-mirrored-home/.codex/agents/explorer.toml";
 		await writeFile(
@@ -149,11 +149,15 @@ test("#given a config.toml that already declares [agents.explorer] at a differen
 			"no colliding ./agents registration for the mirrored role",
 		);
 		assert.match(config, /\[agents\.metis\]\nconfig_file = "\.\/agents\/metis\.toml"/);
-		assert.equal(
-			await readFile(join(fixture.codexHome, "agents", "explorer.toml"), "utf8"),
-			BUNDLED_EXPLORER_TOML,
-			"the linked toml is still staged for Codex directory discovery",
+		await assert.rejects(() => stat(join(fixture.codexHome, "agents", "explorer.toml")), { code: "ENOENT" });
+		assert.equal(await readFile(join(fixture.codexHome, "agents", "metis.toml"), "utf8"), BUNDLED_METIS_TOML);
+		const manifest = JSON.parse(
+			await readFile(join(fixture.pluginData, "bootstrap", "agents-stage", ".installed-agents.json"), "utf8"),
 		);
+		assert.deepEqual(manifest.agents, [join(fixture.codexHome, "agents", "metis.toml")]);
+		await runWorkerSetup(setupOptions(fixture));
+		assert.equal(await readConfig(fixture), config);
+		await assert.rejects(() => stat(join(fixture.codexHome, "agents", "explorer.toml")), { code: "ENOENT" });
 	});
 });
 

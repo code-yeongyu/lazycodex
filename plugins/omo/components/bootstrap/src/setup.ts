@@ -1,4 +1,4 @@
-import { copyFile, mkdir, readFile, readdir, rm, stat } from "node:fs/promises";
+import { readFile, rm, stat } from "node:fs/promises";
 import { join } from "node:path";
 
 // These relative imports resolve at BUILD time in the monorepo; esbuild
@@ -17,6 +17,7 @@ import { trustedHookStatesForPlugin } from "../../../../src/install/codex-hook-t
 import { resolveCodexInstallerBinDir } from "../../../../src/install/codex-installer-bin-dir.ts";
 import { prepareGitBashForInstall } from "../../../../src/install/git-bash.ts";
 import type { CodexAgentConfig, GitBashResolution } from "../../../../src/install/types.ts";
+import { agentNameFromToml, stageBundledAgents } from "./agent-staging.ts";
 import { appendBootstrapLog, BOOTSTRAP_DOCTOR_HINT } from "./worker.ts";
 import type { BootstrapDegradedEntry, BootstrapStepOutcome } from "./worker.ts";
 
@@ -91,7 +92,9 @@ async function linkBundledAgentsStep(options: WorkerSetupOptions): Promise<Agent
 		// first: bootstrap must never persist anything under PLUGIN_ROOT (the
 		// Codex-managed marketplace cache).
 		const stageRoot = join(options.pluginData, "bootstrap", "agents-stage");
-		await stageBundledAgents(options.pluginRoot, stageRoot);
+		const existingConfig = await readConfigIfPresent(join(options.codexHome, "config.toml"));
+		const foreignAgentFiles = await stageBundledAgents(options.pluginRoot, stageRoot, existingConfig);
+		for (const agentFile of foreignAgentFiles) await rm(join(agentsTarget, agentFile), { force: true });
 		const preservedReasoning = await capturePreservedAgentReasoning({ codexHome: options.codexHome });
 		const preservedServiceTier = await capturePreservedAgentServiceTier({ codexHome: options.codexHome });
 		const linked = await linkCachedPluginAgents({
@@ -118,22 +121,6 @@ async function linkBundledAgentsStep(options: WorkerSetupOptions): Promise<Agent
 	}
 }
 
-async function stageBundledAgents(pluginRoot: string, stageRoot: string): Promise<void> {
-	await rm(stageRoot, { force: true, recursive: true });
-	await mkdir(stageRoot, { recursive: true });
-	const componentsRoot = join(pluginRoot, "components");
-	for (const componentName of await directoryNames(componentsRoot)) {
-		const agentsDir = join(componentsRoot, componentName, "agents");
-		const agentFiles = (await fileNames(agentsDir)).filter((name) => name.endsWith(".toml"));
-		if (agentFiles.length === 0) continue;
-		const stagedAgentsDir = join(stageRoot, "components", componentName, "agents");
-		await mkdir(stagedAgentsDir, { recursive: true });
-		for (const agentFile of agentFiles) {
-			await copyFile(join(agentsDir, agentFile), join(stagedAgentsDir, agentFile));
-		}
-	}
-}
-
 async function updateConfigStep(
 	options: WorkerSetupOptions,
 	inputs: { agentConfigs: readonly CodexAgentConfig[]; gitBashEnabled: boolean },
@@ -147,7 +134,7 @@ async function updateConfigStep(
 		// for such a role would collide with the mirrored entry once Codex
 		// discovers <codexHome>/agents/<name>.toml (two different file paths for
 		// one role name -> upstream warning), so foreign pre-existing blocks are
-		// left untouched; directory discovery still loads the linked toml.
+		// left untouched and their runtime-local copies are excluded from staging.
 		const existingConfig = await readConfigIfPresent(configPath);
 		const agentConfigs = inputs.agentConfigs.filter(
 			(agentConfig) => !hasForeignAgentRegistration(existingConfig, agentConfig),
@@ -266,31 +253,6 @@ async function stampGitBashEnvStep(options: WorkerSetupOptions, degraded: Bootst
 			reason: `failed to stamp ${join(options.pluginRoot, ".mcp.json")}: ${errorMessage(error)}`,
 		});
 	}
-}
-
-async function directoryNames(root: string): Promise<string[]> {
-	return entryNames(root, (entry) => entry.isDirectory());
-}
-
-async function fileNames(root: string): Promise<string[]> {
-	return entryNames(root, (entry) => entry.isFile());
-}
-
-async function entryNames(root: string, keep: (entry: { isDirectory(): boolean; isFile(): boolean }) => boolean): Promise<string[]> {
-	try {
-		const entries = await readdir(root, { withFileTypes: true });
-		return entries
-			.filter((entry) => keep(entry))
-			.map((entry) => entry.name)
-			.sort();
-	} catch (error) {
-		if (error instanceof Error && "code" in error && error.code === "ENOENT") return [];
-		throw error;
-	}
-}
-
-function agentNameFromToml(fileName: string): string {
-	return fileName.endsWith(".toml") ? fileName.slice(0, -".toml".length) : fileName;
 }
 
 function errorMessage(error: unknown): string {

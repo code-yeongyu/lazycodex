@@ -3543,7 +3543,10 @@ async function linkBundledAgentsStep(options) {
   const agentsTarget = join21(options.codexHome, "agents");
   try {
     const stageRoot = join21(options.pluginData, "bootstrap", "agents-stage");
-    await stageBundledAgents(options.pluginRoot, stageRoot);
+    const existingConfig = await readConfigIfPresent(join21(options.codexHome, "config.toml"));
+    const foreignAgentFiles = await stageBundledAgents(options.pluginRoot, stageRoot, existingConfig);
+    for (const agentFile of foreignAgentFiles)
+      await rm10(join21(agentsTarget, agentFile), { force: true });
     const preservedReasoning = await capturePreservedAgentReasoning({ codexHome: options.codexHome });
     const preservedServiceTier = await capturePreservedAgentServiceTier({ codexHome: options.codexHome });
     const linked = await linkCachedPluginAgents({
@@ -3567,9 +3570,10 @@ async function linkBundledAgentsStep(options) {
     };
   }
 }
-async function stageBundledAgents(pluginRoot, stageRoot) {
+async function stageBundledAgents(pluginRoot, stageRoot, existingConfig) {
   await rm10(stageRoot, { force: true, recursive: true });
   await mkdir7(stageRoot, { recursive: true });
+  const foreignAgentFiles = [];
   const componentsRoot = join21(pluginRoot, "components");
   for (const componentName of await directoryNames(componentsRoot)) {
     const agentsDir = join21(componentsRoot, componentName, "agents");
@@ -3579,9 +3583,15 @@ async function stageBundledAgents(pluginRoot, stageRoot) {
     const stagedAgentsDir = join21(stageRoot, "components", componentName, "agents");
     await mkdir7(stagedAgentsDir, { recursive: true });
     for (const agentFile of agentFiles) {
+      const agentConfig = { configFile: `./agents/${agentFile}`, name: agentNameFromToml3(agentFile) };
+      if (hasForeignAgentRegistration(existingConfig, agentConfig)) {
+        foreignAgentFiles.push(agentFile);
+        continue;
+      }
       await copyFile2(join21(agentsDir, agentFile), join21(stagedAgentsDir, agentFile));
     }
   }
+  return foreignAgentFiles;
 }
 async function updateConfigStep(options, inputs, degraded) {
   const configPath = join21(options.codexHome, "config.toml");

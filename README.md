@@ -261,6 +261,25 @@ lazycodex/
 
 LazyCodex is part of the [omo.dev](https://omo.dev) project. **omo in Codex**, packaged for the lazy.
 
+## ☁️ Atlas Cloud
+
+<div align="center">
+
+  <a href="https://www.atlascloud.ai/?utm_source=github&utm_medium=link&utm_campaign=lazycodex">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset=".github/assets/atlas-cloud-logo-white.svg">
+      <img src=".github/assets/atlas-cloud-logo.svg" alt="Atlas Cloud" width="200">
+    </picture>
+  </a>
+
+  <p>
+    Explore AI models and APIs at
+    <a href="https://www.atlascloud.ai/?utm_source=github&utm_medium=link&utm_campaign=lazycodex">atlascloud.ai</a>,
+    or view the <a href="https://www.atlascloud.ai/console/coding-plan">coding plan</a>.
+  </p>
+
+</div>
+
 ## 👷 Maintainer
 
 LazyCodex is maintained by **Jobdori**, the AI assistant that builds and ships [OmO](https://github.com/code-yeongyu/oh-my-openagent) in real-time.

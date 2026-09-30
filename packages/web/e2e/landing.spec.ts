@@ -98,11 +98,16 @@ test.describe("landing page — links + footer", () => {
   })
 
   test("updates the github stars pill from the live API", async ({ page }) => {
+    // A count the fallback label can never show, served before navigation, so
+    // the pill passes only when the API response actually reaches the DOM.
+    await page.route("**/api/github-stars", (route) =>
+      route.fulfill({ json: { stars: 987_654, formatted: "987.7k", source: "github" } }),
+    )
     await page.goto("/")
 
     const stars = page.locator(`a[href="${SITE_CONFIG.githubUrl}"]`).first()
-    await expect(stars).toContainText(/^\d+(?:\.\d+[kM])?\sstars$/)
-    await expect(stars).toHaveAttribute("aria-label", /\d+(?:\.\d+[kM])?\sstars on GitHub/)
+    await expect(stars).toHaveText("987.7k stars")
+    await expect(stars).toHaveAttribute("aria-label", "987.7k stars on GitHub")
   })
 
   test("has a Docs link pointing at /docs", async ({ page }) => {

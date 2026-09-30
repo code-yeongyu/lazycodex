@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "version": "5.1.5",
-  "inputDigest": "sha256:ce1030fda9d0a09a2739fc8318901714ddc3c2245a9f5eb4cce5a6b327ddedcc",
+  "version": "5.1.6",
+  "inputDigest": "sha256:5fed95326ac014f60c76d07d954ae544627555bd0fd71e5d7175ca389b1898fb",
   "outputs": [
     {
       "path": "cli.d.ts",

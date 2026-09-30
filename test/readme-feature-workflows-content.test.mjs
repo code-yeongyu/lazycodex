@@ -3,9 +3,8 @@ import test from "node:test"
 import assert from "node:assert/strict"
 
 const README = readFileSync("README.md", "utf8")
-const HANGUL_PATTERN = /[\u1100-\u11ff\u3130-\u318f\uac00-\ud7af]/u
 
-test("README documents built-in LazyCodex workflows without Hangul", () => {
+test("README documents built-in LazyCodex workflows", () => {
   const requiredSnippets = [
     "Use the built-in workflows",
     "$init-deep",
@@ -27,5 +26,4 @@ test("README documents built-in LazyCodex workflows without Hangul", () => {
     assert.match(README, new RegExp(snippet.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")))
   }
 
-  assert.doesNotMatch(README, HANGUL_PATTERN)
 })

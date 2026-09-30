@@ -64,7 +64,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.6",
+    version: "5.1.7",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -299,18 +299,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.6",
-      "oh-my-opencode-darwin-x64": "5.1.6",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.6",
-      "oh-my-opencode-linux-arm64": "5.1.6",
-      "oh-my-opencode-linux-arm64-musl": "5.1.6",
-      "oh-my-opencode-linux-x64": "5.1.6",
-      "oh-my-opencode-linux-x64-baseline": "5.1.6",
-      "oh-my-opencode-linux-x64-musl": "5.1.6",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.6",
-      "oh-my-opencode-windows-arm64": "5.1.6",
-      "oh-my-opencode-windows-x64": "5.1.6",
-      "oh-my-opencode-windows-x64-baseline": "5.1.6"
+      "oh-my-opencode-darwin-arm64": "5.1.7",
+      "oh-my-opencode-darwin-x64": "5.1.7",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.7",
+      "oh-my-opencode-linux-arm64": "5.1.7",
+      "oh-my-opencode-linux-arm64-musl": "5.1.7",
+      "oh-my-opencode-linux-x64": "5.1.7",
+      "oh-my-opencode-linux-x64-baseline": "5.1.7",
+      "oh-my-opencode-linux-x64-musl": "5.1.7",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.7",
+      "oh-my-opencode-windows-arm64": "5.1.7",
+      "oh-my-opencode-windows-x64": "5.1.7",
+      "oh-my-opencode-windows-x64-baseline": "5.1.7"
     },
     overrides: {
       hono: "^4.13.8",
@@ -89377,7 +89377,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.6",
+    version: "5.1.7",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -95097,6 +95097,12 @@ ${featureName} = true
   }
   return replaceOrInsertSetting(config, section, featureName, "true");
 }
+function removeFeature(config, featureName) {
+  const section = findTomlSection(config, "features");
+  if (section !== null)
+    return removeSetting(config, section, featureName);
+  return removeRootSetting(config, `features.${featureName}`);
+}
 
 // packages/omo-codex/src/install/codex-config-marketplaces.ts
 var SISYPHUS_LEGACY_MARKETPLACES = ["lazycodex", "code-yeongyu-codex-plugins"];
@@ -95689,6 +95695,7 @@ async function updateCodexConfig(input) {
   config = ensureFeatureEnabled(config, "plugins");
   config = ensureFeatureEnabled(config, "plugin_hooks");
   config = ensureFeatureEnabled(config, "multi_agent");
+  config = removeFeature(config, "child_agents_md");
   config = removeUnsupportedCodexMultiAgentModeConfig(config);
   config = ensureCodexReasoningConfig(config, applyReasoningOverride(await readCodexModelCatalog(input.repoRoot), input.reasoning));
   config = ensureCodexMultiAgentV2Config(config, {
@@ -105346,17 +105353,34 @@ async function resolveRunnableRunAgent(client, resolvedAgent, config = {}) {
     })?.name;
     if (configuredAgent)
       return configuredAgent;
-    return agents.find((agent) => {
+    const matched = agents.find((agent) => {
       if (!agent.name)
         return false;
       return getAgentConfigKey(agent.name) === resolvedConfigKey;
-    })?.name ?? resolvedAgent;
+    })?.name;
+    if (matched)
+      return matched;
+    const registered = agents.map((agent) => agent.name).filter((name) => Boolean(name));
+    const parsedCategory = BuiltinCategoryNameSchema.safeParse(resolvedConfigKey);
+    if (parsedCategory.success) {
+      throw new UnknownRunAgentError(`"${resolvedAgent}" is a task() category, not a CLI agent. Categories: ${BuiltinCategoryNameSchema.options.join(", ")}. Runnable agents: ${registered.join(", ") || "(none)"}.`);
+    }
+    if (registered.length > 0) {
+      throw new UnknownRunAgentError(`Unknown agent "${resolvedAgent}". Runnable agents: ${registered.join(", ")}.`);
+    }
+    return resolvedAgent;
   } catch (error) {
+    if (error instanceof UnknownRunAgentError)
+      throw error;
     if (!(error instanceof Error)) {
       throw error;
     }
     return resolvedAgent;
   }
+}
+
+class UnknownRunAgentError extends Error {
+  name = "UnknownRunAgentError";
 }
 
 // packages/omo-opencode/src/cli/run/runner.ts

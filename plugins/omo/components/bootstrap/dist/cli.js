@@ -11223,6 +11223,12 @@ ${featureName} = true
   }
   return replaceOrInsertSetting(config, section, featureName, "true");
 }
+function removeFeature(config, featureName) {
+  const section = findTomlSection(config, "features");
+  if (section !== null)
+    return removeSetting(config, section, featureName);
+  return removeRootSetting(config, `features.${featureName}`);
+}
 
 // ../src/install/codex-config-marketplaces.ts
 var SISYPHUS_LEGACY_MARKETPLACES = ["lazycodex", "code-yeongyu-codex-plugins"];
@@ -11815,6 +11821,7 @@ async function updateCodexConfig(input) {
   config = ensureFeatureEnabled(config, "plugins");
   config = ensureFeatureEnabled(config, "plugin_hooks");
   config = ensureFeatureEnabled(config, "multi_agent");
+  config = removeFeature(config, "child_agents_md");
   config = removeUnsupportedCodexMultiAgentModeConfig(config);
   config = ensureCodexReasoningConfig(config, applyReasoningOverride(await readCodexModelCatalog(input.repoRoot), input.reasoning));
   config = ensureCodexMultiAgentV2Config(config, {

@@ -65,7 +65,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.7",
+    version: "5.1.8",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -242,7 +242,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.9.30",
+      "@code-yeongyu/senpi": "2026.10.1-2",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -300,18 +300,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.7",
-      "oh-my-opencode-darwin-x64": "5.1.7",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.7",
-      "oh-my-opencode-linux-arm64": "5.1.7",
-      "oh-my-opencode-linux-arm64-musl": "5.1.7",
-      "oh-my-opencode-linux-x64": "5.1.7",
-      "oh-my-opencode-linux-x64-baseline": "5.1.7",
-      "oh-my-opencode-linux-x64-musl": "5.1.7",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.7",
-      "oh-my-opencode-windows-arm64": "5.1.7",
-      "oh-my-opencode-windows-x64": "5.1.7",
-      "oh-my-opencode-windows-x64-baseline": "5.1.7"
+      "oh-my-opencode-darwin-arm64": "5.1.8",
+      "oh-my-opencode-darwin-x64": "5.1.8",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.8",
+      "oh-my-opencode-linux-arm64": "5.1.8",
+      "oh-my-opencode-linux-arm64-musl": "5.1.8",
+      "oh-my-opencode-linux-x64": "5.1.8",
+      "oh-my-opencode-linux-x64-baseline": "5.1.8",
+      "oh-my-opencode-linux-x64-musl": "5.1.8",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.8",
+      "oh-my-opencode-windows-arm64": "5.1.8",
+      "oh-my-opencode-windows-x64": "5.1.8",
+      "oh-my-opencode-windows-x64-baseline": "5.1.8"
     },
     overrides: {
       hono: "^4.13.8",
@@ -7408,7 +7408,7 @@ var init_category_model_requirements = __esm(() => {
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-6-astra",
-          variant: "xhigh"
+          variant: "high"
         }
       ]
     },
@@ -9517,7 +9517,7 @@ var init_openai_categories = __esm(() => {
     },
     {
       name: "deep-high",
-      config: { model: "openai/gpt-6-astra", variant: "xhigh" },
+      config: { model: "openai/gpt-6-astra", variant: "high" },
       description: "Escalation deep lane: a goal whose central decision cannot be settled from evidence alone. Same one-goal, one-deliverable contract as deep-low.",
       callerGuidance: DEEP_HIGH_CATEGORY_CALLER_GUIDANCE,
       promptAppend: DEEP_HIGH_CATEGORY_PROMPT_APPEND,
@@ -68270,28 +68270,6 @@ var init_legacy_workspace_migration = __esm(() => {
 // packages/omo-opencode/src/shared/model-string-parser.ts
 var init_model_string_parser2 = () => {};
 
-// packages/omo-opencode/src/shared/excluded-dirs.ts
-var EXCLUDED_DIR_NAMES, EXCLUDED_DIRS;
-var init_excluded_dirs = __esm(() => {
-  EXCLUDED_DIR_NAMES = [
-    "node_modules",
-    ".git",
-    "dist",
-    "build",
-    ".next",
-    ".omo",
-    ".sisyphus",
-    ".turbo",
-    "coverage",
-    "out",
-    ".cache",
-    ".vscode-test",
-    "target",
-    ".local-ignore"
-  ];
-  EXCLUDED_DIRS = Object.freeze(new Set(EXCLUDED_DIR_NAMES));
-});
-
 // packages/omo-opencode/src/shared/replace-tool-args.ts
 var init_replace_tool_args = () => {};
 
@@ -68302,7 +68280,6 @@ var init_shared = __esm(() => {
   init_model_resolution_pipeline();
   init_session_category_registry();
   init_model_string_parser2();
-  init_excluded_dirs();
   init_frontmatter2();
   init_command_executor2();
   init_contains_path2();
@@ -74689,7 +74666,8 @@ var init_memory = __esm(() => {
     event_caps: OmoMemoryRecallEventCapsSchema.default({ tool_args: 400, result_head: 600, assistant: 1500, prompt: 4000 }),
     sidecar_max_tokens: number2().int().positive().default(48000),
     max_concurrent_wakes: number2().int().positive().default(2),
-    tool_budget: number2().int().positive().default(8)
+    tool_budget: number2().int().positive().default(8),
+    query_expansion: boolean2().default(false)
   }).strict();
   OmoMemoryNudgeSchema = object({
     enabled: boolean2().default(true),
@@ -74750,7 +74728,8 @@ var init_memory = __esm(() => {
     event_caps: OmoMemoryRecallEventCapsLayerSchema.optional(),
     sidecar_max_tokens: number2().int().positive().optional(),
     max_concurrent_wakes: number2().int().positive().optional(),
-    tool_budget: number2().int().positive().optional()
+    tool_budget: number2().int().positive().optional(),
+    query_expansion: boolean2().optional()
   }).strict();
   OmoMemoryNudgeLayerSchema = object({
     enabled: boolean2().optional(),
@@ -74827,7 +74806,8 @@ var init_memory = __esm(() => {
       event_caps: { tool_args: 400, result_head: 600, assistant: 1500, prompt: 4000 },
       sidecar_max_tokens: 48000,
       max_concurrent_wakes: 2,
-      tool_budget: 8
+      tool_budget: 8,
+      query_expansion: false
     }),
     compile_warn_tokens: number2().int().positive().default(30000),
     agents: record(string2(), OmoMemoryAgentOverridesSchema).default({})
@@ -89456,7 +89436,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.7",
+    version: "5.1.8",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",

@@ -64,7 +64,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.8",
+    version: "5.1.9",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -241,7 +241,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.10.1-2",
+      "@code-yeongyu/senpi": "2026.10.1-3",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -299,18 +299,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.8",
-      "oh-my-opencode-darwin-x64": "5.1.8",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.8",
-      "oh-my-opencode-linux-arm64": "5.1.8",
-      "oh-my-opencode-linux-arm64-musl": "5.1.8",
-      "oh-my-opencode-linux-x64": "5.1.8",
-      "oh-my-opencode-linux-x64-baseline": "5.1.8",
-      "oh-my-opencode-linux-x64-musl": "5.1.8",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.8",
-      "oh-my-opencode-windows-arm64": "5.1.8",
-      "oh-my-opencode-windows-x64": "5.1.8",
-      "oh-my-opencode-windows-x64-baseline": "5.1.8"
+      "oh-my-opencode-darwin-arm64": "5.1.9",
+      "oh-my-opencode-darwin-x64": "5.1.9",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.9",
+      "oh-my-opencode-linux-arm64": "5.1.9",
+      "oh-my-opencode-linux-arm64-musl": "5.1.9",
+      "oh-my-opencode-linux-x64": "5.1.9",
+      "oh-my-opencode-linux-x64-baseline": "5.1.9",
+      "oh-my-opencode-linux-x64-musl": "5.1.9",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.9",
+      "oh-my-opencode-windows-arm64": "5.1.9",
+      "oh-my-opencode-windows-x64": "5.1.9",
+      "oh-my-opencode-windows-x64-baseline": "5.1.9"
     },
     overrides: {
       hono: "^4.13.8",
@@ -75014,6 +75014,13 @@ var init_format_on_mutation = __esm(() => {
   }).strict();
 });
 
+// packages/omo-config-core/src/schema/gateway.ts
+var OmoGatewaySectionSchema;
+var init_gateway = __esm(() => {
+  init_zod();
+  OmoGatewaySectionSchema = record(string2(), unknown()).describe("Chat-surface gateway settings, owned and validated by a separately installed gateway package. omo accepts the key and never reads it.");
+});
+
 // packages/omo-config-core/src/schema/config.ts
 var OmoOpenCodeHarnessConfigSchema, OmoDisabledSkillsSchema, OmoTypedHarnessConfigSchema, OmoConfigProfileSchema, OmoConfigSchema, OmoConfigLayerSchema;
 var init_config = __esm(() => {
@@ -75029,10 +75036,12 @@ var init_config = __esm(() => {
   init_team();
   init_telemetry();
   init_format_on_mutation();
+  init_gateway();
   OmoOpenCodeHarnessConfigSchema = record(string2(), unknown());
   OmoDisabledSkillsSchema = array(string2());
   OmoTypedHarnessConfigSchema = object({
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
+    gateway: OmoGatewaySectionSchema.optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
     git_master: OmoGitMasterSettingsLayerSchema.optional(),
@@ -75067,6 +75076,7 @@ var init_config = __esm(() => {
   }).strict();
   OmoConfigSchema = object({
     formatOnMutation: OmoFormatOnMutationSchema.optional(),
+    gateway: OmoGatewaySectionSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -75090,6 +75100,7 @@ var init_config = __esm(() => {
   }).strict();
   OmoConfigLayerSchema = object({
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
+    gateway: OmoGatewaySectionSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -75236,6 +75247,7 @@ var init_schema = __esm(() => {
   init_config();
   init_fallback_models();
   init_format_on_mutation();
+  init_gateway();
   init_git_master();
   init_harness();
   init_legacy_category_names();
@@ -89357,7 +89369,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.8",
+    version: "5.1.9",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",

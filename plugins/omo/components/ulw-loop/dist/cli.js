@@ -4360,25 +4360,82 @@ function readAll(stdin) {
 
 // components/ulw-loop/src/spawn-guard.ts
 import { mkdirSync as mkdirSync3 } from "node:fs";
-import { join as join7 } from "node:path";
+import { join as join8 } from "node:path";
+
+// components/ulw-loop/src/registered-agent-roles.ts
+import { readdirSync as readdirSync3, readFileSync as readFileSync6 } from "node:fs";
+import { homedir } from "node:os";
+import { basename, dirname as dirname3, join as join6, resolve as resolve5 } from "node:path";
+var NAME_LINE = /^\s*name\s*=\s*"([^"\n]+)"\s*(?:#.*)?$/m;
+var AGENT_TABLE = /^\s*\[agents\.(?:"([^"\n]+)"|([A-Za-z0-9_-]+))\]\s*(?:#.*)?$/gm;
+function readText(path) {
+  try {
+    return readFileSync6(path, "utf8");
+  } catch {
+    return null;
+  }
+}
+function standaloneRoleNames(agentsDir) {
+  let entries;
+  try {
+    entries = readdirSync3(agentsDir);
+  } catch {
+    return [];
+  }
+  const names = [];
+  for (const entry of entries) {
+    if (!entry.endsWith(".toml"))
+      continue;
+    const text = readText(join6(agentsDir, entry));
+    if (text === null)
+      continue;
+    names.push(text.match(NAME_LINE)?.[1] ?? basename(entry, ".toml"));
+  }
+  return names;
+}
+function configTableRoleNames(configPath) {
+  const text = readText(configPath);
+  if (text === null)
+    return [];
+  return [...text.matchAll(AGENT_TABLE)].map((match) => match[1] ?? match[2] ?? "").filter(Boolean);
+}
+function codexDirs(cwd, env) {
+  const dirs = [resolve5(env["CODEX_HOME"]?.trim() || join6(homedir(), ".codex"))];
+  for (let dir = resolve5(cwd);; dir = dirname3(dir)) {
+    dirs.push(join6(dir, ".codex"));
+    if (dirname3(dir) === dir)
+      break;
+  }
+  return [...new Set(dirs)];
+}
+function registeredAgentRoles(cwd, env = process.env) {
+  const names = new Set;
+  for (const dir of codexDirs(cwd, env)) {
+    for (const name of standaloneRoleNames(join6(dir, "agents")))
+      names.add(name);
+    for (const name of configTableRoleNames(join6(dir, "config.toml")))
+      names.add(name);
+  }
+  return names;
+}
 
 // components/ulw-loop/src/spawn-budget-io.ts
 import { randomBytes } from "node:crypto";
-import { existsSync as existsSync7, readFileSync as readFileSync6, renameSync as renameSync2, statSync as statSync3, writeFileSync as writeFileSync2 } from "node:fs";
-import { dirname as dirname3, join as join6 } from "node:path";
+import { existsSync as existsSync7, readFileSync as readFileSync7, renameSync as renameSync2, statSync as statSync3, writeFileSync as writeFileSync2 } from "node:fs";
+import { dirname as dirname4, join as join7 } from "node:path";
 function readAdmissionBreaker(sessionId) {
   const dataDir = process.env["PLUGIN_DATA"];
   if (typeof dataDir !== "string")
     return null;
   try {
-    const value = JSON.parse(readFileSync6(join6(dataDir, "spawn-breaker", `${sessionId}.json`), "utf8"));
+    const value = JSON.parse(readFileSync7(join7(dataDir, "spawn-breaker", `${sessionId}.json`), "utf8"));
     return typeof value === "object" && value !== null && "reason" in value && typeof value.reason === "string" ? value.reason : "capacity limit";
   } catch {
     return null;
   }
 }
 function atomicWriteJson(targetPath, data) {
-  const tmp = join6(dirname3(targetPath), `.tmp-${randomBytes(6).toString("hex")}`);
+  const tmp = join7(dirname4(targetPath), `.tmp-${randomBytes(6).toString("hex")}`);
   writeFileSync2(tmp, JSON.stringify(data));
   renameSync2(tmp, targetPath);
 }
@@ -4393,7 +4450,7 @@ function isNonEmptyFile(path) {
 }
 function readCount(counterPath) {
   try {
-    const parsed = JSON.parse(readFileSync6(counterPath, "utf8"));
+    const parsed = JSON.parse(readFileSync7(counterPath, "utf8"));
     return typeof parsed === "object" && parsed !== null && "count" in parsed && typeof parsed.count === "number" && parsed.count >= 0 ? parsed.count : 0;
   } catch (error) {
     if (error instanceof Error)
@@ -4403,7 +4460,7 @@ function readCount(counterPath) {
 }
 function readCounts(counterPath) {
   try {
-    const parsed = JSON.parse(readFileSync6(counterPath, "utf8"));
+    const parsed = JSON.parse(readFileSync7(counterPath, "utf8"));
     if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed))
       return {};
     const counts = {};
@@ -4433,11 +4490,15 @@ var LAZYCODEX_SPAWN_ROLES = new Set([
   "momus",
   "plan"
 ]);
-function spawnRoleDenial(input) {
+function spawnRoleDenial(input, registeredRoles = () => new Set) {
   const role = typeof input === "object" && input !== null && "agent_type" in input ? input.agent_type : undefined;
   if (typeof role === "string" && LAZYCODEX_SPAWN_ROLES.has(role))
     return null;
-  return `LazyCodex requires an explicit registered agent_type: ${[...LAZYCODEX_SPAWN_ROLES].join(", ")}. Received ${JSON.stringify(role) ?? "no agent_type"}. Use the matching role and fork_turns: "none" (V2) or fork_context: false (V1), unless full history is deliberately required. The hook cannot see the tool schema; if agent_type is unavailable, stop and report incompatible role routing rather than spawning a generic agent. Describing a role in message does not select its TOML.`;
+  const registered = typeof role === "string" && role.trim() !== "" ? registeredRoles() : new Set;
+  if (typeof role === "string" && registered.has(role))
+    return null;
+  const known = [...new Set([...LAZYCODEX_SPAWN_ROLES, ...registered])];
+  return `LazyCodex requires an explicit registered agent_type: ${known.join(", ")}. Received ${JSON.stringify(role) ?? "no agent_type"}. Use the matching role and fork_turns: "none" (V2) or fork_context: false (V1), unless full history is deliberately required. The hook cannot see the tool schema; if agent_type is unavailable, stop and report incompatible role routing rather than spawning a generic agent. Describing a role in message does not select its TOML.`;
 }
 
 // components/ulw-loop/src/spawn-guard.ts
@@ -4461,7 +4522,7 @@ function applySpawnGuards(payload, options = {}) {
   if (payload.hook_event_name !== "PreToolUse" || !SPAWN_TOOL_TOKENS.has(payload.tool_name))
     return "";
   if (resolveToolkitSurface() === "lazycodex") {
-    const reason = spawnRoleDenial(payload.tool_input);
+    const reason = spawnRoleDenial(payload.tool_input, () => registeredAgentRoles(payload.cwd));
     if (reason !== null)
       return deny(reason);
   }
@@ -4514,10 +4575,10 @@ async function runSpawnAdmissionRecorderCli(stdin, stdout) {
     const dataDir = process.env["PLUGIN_DATA"];
     if (typeof dataDir !== "string" || typeof payload["session_id"] !== "string")
       return;
-    const markerDir = join7(dataDir, "spawn-breaker");
+    const markerDir = join8(dataDir, "spawn-breaker");
     try {
       mkdirSync3(markerDir, { recursive: true });
-      atomicWriteJson(join7(markerDir, `${payload["session_id"]}.json`), {
+      atomicWriteJson(join8(markerDir, `${payload["session_id"]}.json`), {
         reason: response,
         at: new Date().toISOString()
       });
@@ -4546,7 +4607,7 @@ async function runSpawnGuardCli(stdin, stdout) {
   }
 }
 function peekFanOutBudget(stateDir) {
-  const counterPath = join7(stateDir, "spawn-count.json");
+  const counterPath = join8(stateDir, "spawn-count.json");
   const count = readCount(counterPath) + 1;
   const limit = fanOutLimit();
   if (count <= limit)
@@ -4554,7 +4615,7 @@ function peekFanOutBudget(stateDir) {
   return `ulw-loop spawn fan-out cap reached (${count}/${limit}). Consolidate work into the agents already running, or raise OMO_SPAWN_FANOUT_LIMIT if this volume is intentional.`;
 }
 function consumeFanOutBudget(stateDir) {
-  const counterPath = join7(stateDir, "spawn-count.json");
+  const counterPath = join8(stateDir, "spawn-count.json");
   const count = readCount(counterPath) + 1;
   atomicWriteJson(counterPath, { count });
   const limit = fanOutLimit();
@@ -4569,7 +4630,7 @@ function consumeReviewSpawnBudget(payload, plan, stateDir) {
   const goal = plan.goals.find((candidate) => candidate.id === plan.activeGoalId) ?? plan.goals.find((candidate) => isFinalRunCompletionCandidate(plan, candidate));
   if (goal === undefined)
     return null;
-  const counterPath = join7(stateDir, "review-spawn-counts.json");
+  const counterPath = join8(stateDir, "review-spawn-counts.json");
   const limit = reviewSpawnLimit();
   const counts = readCounts(counterPath);
   const key = `${agentType}:${goal.id}:a${goal.attempt}`;
@@ -4594,13 +4655,13 @@ function missingGateArtifact(payload, plan) {
     const attemptDir = ulwLoopAttemptEvidenceDir(goal.id, goal.attempt, scope);
     for (const name of requiredArtifacts) {
       const relative = `${attemptDir}/${name}`;
-      if (!isNonEmptyFile(join7(payload.cwd, relative)))
+      if (!isNonEmptyFile(join8(payload.cwd, relative)))
         return relative;
     }
     return null;
   }
   const manualQa = `.omo/evidence/${goal.id}-manual-qa.md`;
-  return isNonEmptyFile(join7(payload.cwd, manualQa)) ? null : manualQa;
+  return isNonEmptyFile(join8(payload.cwd, manualQa)) ? null : manualQa;
 }
 function isGateReviewerSpawn(toolInput) {
   const agentType = reviewAgentType(toolInput);
@@ -4684,8 +4745,8 @@ function readPlan(repoRoot, sessionId) {
 }
 
 // components/ulw-loop/src/stop-resume-hook.ts
-import { existsSync as existsSync8, readFileSync as readFileSync7, writeFileSync as writeFileSync3 } from "node:fs";
-import { isAbsolute as isAbsolute3, join as join8, resolve as resolve5, sep as sep3 } from "node:path";
+import { existsSync as existsSync8, readFileSync as readFileSync8, writeFileSync as writeFileSync3 } from "node:fs";
+import { isAbsolute as isAbsolute3, join as join9, resolve as resolve6, sep as sep3 } from "node:path";
 var RESUME_CAP = 2;
 var CONTEXT_PRESSURE_MARKERS2 = [
   "context compacted",
@@ -4753,8 +4814,8 @@ function consumeResumeBudgetLocked(lockPath, stateDir, goalId) {
 }
 function consumeResumeBudget(stateDir, goalId) {
   const ledgerLineCount = readLedgerAt(stateDir).length;
-  const counterPath = resolve5(stateDir, `auto-resume-${goalId}.json`);
-  const stuckPath = resolve5(stateDir, `auto-resume-${goalId}.stuck`);
+  const counterPath = resolve6(stateDir, `auto-resume-${goalId}.json`);
+  const stuckPath = resolve6(stateDir, `auto-resume-${goalId}.stuck`);
   if (!isInsideDir(stateDir, counterPath) || !isInsideDir(stateDir, stuckPath))
     return false;
   const previous = readCounter(counterPath);
@@ -4768,7 +4829,7 @@ function consumeResumeBudget(stateDir, goalId) {
   return true;
 }
 function isInsideDir(dir, candidate) {
-  return candidate.startsWith(resolve5(dir) + sep3);
+  return candidate.startsWith(resolve6(dir) + sep3);
 }
 function renderResumeDirective(plan, goal, sessionId) {
   const normalized = normalizeUlwLoopSessionId(sessionId);
@@ -4796,7 +4857,7 @@ function readCounter(counterPath) {
   try {
     if (!existsSync8(counterPath))
       return null;
-    const parsed = JSON.parse(readFileSync7(counterPath, "utf8"));
+    const parsed = JSON.parse(readFileSync8(counterPath, "utf8"));
     if (typeof parsed["count"] !== "number" || typeof parsed["ledgerLineCount"] !== "number")
       return null;
     return { count: parsed["count"], ledgerLineCount: parsed["ledgerLineCount"] };
@@ -4808,7 +4869,7 @@ function readCounter(counterPath) {
 }
 function boulderContinuationWillFire(cwd, sessionId) {
   try {
-    const raw = JSON.parse(readFileSync7(join8(cwd, ".omo", "boulder.json"), "utf8"));
+    const raw = JSON.parse(readFileSync8(join9(cwd, ".omo", "boulder.json"), "utf8"));
     const works = raw["works"];
     const entries = typeof works === "object" && works !== null ? Object.values(works) : [raw];
     return entries.some((work) => {
@@ -4827,7 +4888,7 @@ function boulderContinuationWillFire(cwd, sessionId) {
 }
 function transcriptShowsContextPressure(transcriptPath) {
   try {
-    const transcript = readFileSync7(transcriptPath, "utf8").toLowerCase();
+    const transcript = readFileSync8(transcriptPath, "utf8").toLowerCase();
     return CONTEXT_PRESSURE_MARKERS2.some((marker) => transcript.includes(marker));
   } catch (error) {
     if (error instanceof Error)
@@ -4839,12 +4900,12 @@ function boulderPlanHasChecklist(cwd, entry) {
   const activePlan = entry["active_plan"];
   if (typeof activePlan !== "string" || activePlan.trim().length === 0)
     return false;
-  const planPath = isAbsolute3(activePlan) ? activePlan : join8(cwd, activePlan);
+  const planPath = isAbsolute3(activePlan) ? activePlan : join9(cwd, activePlan);
   const worktree = entry["worktree_path"];
-  const candidates = typeof worktree === "string" && worktree.trim().length > 0 && !isAbsolute3(activePlan) ? [join8(isAbsolute3(worktree) ? worktree : join8(cwd, worktree), activePlan), planPath] : [planPath];
+  const candidates = typeof worktree === "string" && worktree.trim().length > 0 && !isAbsolute3(activePlan) ? [join9(isAbsolute3(worktree) ? worktree : join9(cwd, worktree), activePlan), planPath] : [planPath];
   for (const candidate of candidates) {
     try {
-      return readFileSync7(candidate, "utf8").split(/\r?\n/).some((line) => line.startsWith("- [ ] ") || line.startsWith("- [x] ") || line.startsWith("- [X] "));
+      return readFileSync8(candidate, "utf8").split(/\r?\n/).some((line) => line.startsWith("- [ ] ") || line.startsWith("- [x] ") || line.startsWith("- [X] "));
     } catch (error) {
       if (!(error instanceof Error))
         throw error;

@@ -65,7 +65,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.12",
+    version: "5.1.13",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -242,7 +242,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.10.2",
+      "@code-yeongyu/senpi": "2026.10.3",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -300,18 +300,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.12",
-      "oh-my-opencode-darwin-x64": "5.1.12",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.12",
-      "oh-my-opencode-linux-arm64": "5.1.12",
-      "oh-my-opencode-linux-arm64-musl": "5.1.12",
-      "oh-my-opencode-linux-x64": "5.1.12",
-      "oh-my-opencode-linux-x64-baseline": "5.1.12",
-      "oh-my-opencode-linux-x64-musl": "5.1.12",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.12",
-      "oh-my-opencode-windows-arm64": "5.1.12",
-      "oh-my-opencode-windows-x64": "5.1.12",
-      "oh-my-opencode-windows-x64-baseline": "5.1.12"
+      "oh-my-opencode-darwin-arm64": "5.1.13",
+      "oh-my-opencode-darwin-x64": "5.1.13",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.13",
+      "oh-my-opencode-linux-arm64": "5.1.13",
+      "oh-my-opencode-linux-arm64-musl": "5.1.13",
+      "oh-my-opencode-linux-x64": "5.1.13",
+      "oh-my-opencode-linux-x64-baseline": "5.1.13",
+      "oh-my-opencode-linux-x64-musl": "5.1.13",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.13",
+      "oh-my-opencode-windows-arm64": "5.1.13",
+      "oh-my-opencode-windows-x64": "5.1.13",
+      "oh-my-opencode-windows-x64-baseline": "5.1.13"
     },
     overrides: {
       hono: "^4.13.8",
@@ -89448,7 +89448,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.12",
+    version: "5.1.13",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -98780,6 +98780,7 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
   join63("extensions", "assets.generated.json"),
   join63("extensions", "omo-member.js"),
   join63("extensions", "memory-run-supervisor.mjs"),
+  join63("extensions", "gateway-store-worker.mjs"),
   ...PERSONA_ASSET_FILES.map((filename) => join63("extensions", filename)),
   join63("skills", "ast-grep", "SKILL.md"),
   join63("skills", "browser", "SKILL.md"),
@@ -98802,6 +98803,7 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
   join63("skills", "visual-qa", "SKILL.md"),
   join63("skills-conditional", "x-search", "SKILL.md"),
   join63("runtime", "agent-toolkit-sdk", "sdk.js"),
+  join63("runtime", "thread-sdk", "sdk.js"),
   join63("runtime", "ast-grep-mcp", "cli.js"),
   join63("runtime", "lsp-daemon", "dist", "cli.js"),
   join63("runtime", "lsp-daemon", "dist", "index.js"),
@@ -105319,8 +105321,12 @@ function resolveOsProvider2() {
 function resolveTransportFactory() {
   return transportFactoryOverride2 ?? createDefaultPostHogTransport;
 }
+var PLUGIN_TRANSPORT_OPTIONS = { flushAt: 20 };
 var NO_OP_POSTHOG2 = {
   trackActive: () => {
+    return;
+  },
+  flush: async () => {
     return;
   },
   shutdown: async () => {
@@ -105359,6 +105365,16 @@ function logTelemetryDiagnostic(input) {
     source: input.source
   });
 }
+function createProductConfig(source) {
+  const product = createOpencodeTelemetryProductConfig();
+  if (source !== "plugin") {
+    return product;
+  }
+  return {
+    ...product,
+    transportOptions: { ...product.transportOptions, ...PLUGIN_TRANSPORT_OPTIONS }
+  };
+}
 function createPostHogClient2(source, options = {}) {
   const env = process.env;
   if (shouldDisablePostHog(env, options.configEnabled)) {
@@ -105368,7 +105384,7 @@ function createPostHogClient2(source, options = {}) {
     diagnostics: logTelemetryDiagnostic,
     env: createCoreCompatibleTelemetryEnv(env),
     osProvider: resolveOsProvider2(),
-    product: createOpencodeTelemetryProductConfig(),
+    product: createProductConfig(source),
     source,
     transportFactory: resolveTransportFactory()
   });
@@ -105386,6 +105402,17 @@ function createPostHogClient2(source, options = {}) {
         distinctId,
         reason
       });
+    },
+    flush: async () => {
+      try {
+        await client.flush();
+      } catch (error) {
+        log2("[posthog] telemetry flush failed", {
+          error: String(error),
+          errorKind: error instanceof Error ? "error" : "non_error",
+          source
+        });
+      }
     },
     shutdown: async () => {
       await client.shutdown();

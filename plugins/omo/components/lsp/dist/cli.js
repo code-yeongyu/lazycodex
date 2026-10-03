@@ -5958,7 +5958,11 @@ async function collectPostEditDiagnostics(input) {
         observations.push({ filePath: result.filePath, kind: "not_configured" });
         break;
       case "block":
-        blocks.push({ filePath: result.filePath, diagnostics: classification.diagnostics });
+        blocks.push({ filePath: result.filePath, diagnostics: classification.diagnostics, blocking: true });
+        observations.push({ filePath: result.filePath, kind: "block" });
+        break;
+      case "guidance":
+        blocks.push({ filePath: result.filePath, diagnostics: classification.text, blocking: false });
         observations.push({ filePath: result.filePath, kind: "block" });
         break;
       default: {
@@ -6020,7 +6024,7 @@ function normalizeDiagnosticsOutcome(outcome) {
   return outcome;
 }
 function classifyNotInstalled(guidance) {
-  return guidance === undefined ? { kind: "not_installed" } : { kind: "block", diagnostics: guidance };
+  return guidance === undefined ? { kind: "not_installed" } : { kind: "guidance", text: guidance };
 }
 function normalizeDiagnosticsText(text) {
   return text.trim();
@@ -6277,22 +6281,33 @@ async function runLspDiagnosticsText(filePath) {
   return postEditOutcomeFromDaemonResult(result);
 }
 function postEditOutcomeFromDaemonResult(result) {
-  const availability = notConfiguredAvailability(result.details);
-  if (availability !== undefined)
-    return { kind: "not_configured", extension: availability.extension };
-  return result.content.map((block) => block.text).join(`
+  const text = result.content.map((block) => block.text).join(`
 `);
+  const availability = availabilityDetails2(result.details);
+  if (availability === undefined)
+    return text;
+  if (availability["kind"] === "not_configured") {
+    const extension = availability["extension"];
+    return typeof extension === "string" && extension.length > 0 ? { kind: "not_configured", extension } : text;
+  }
+  if (availability["kind"] === "not_installed")
+    return notInstalledOutcome(availability, text) ?? text;
+  return text;
 }
-function notConfiguredAvailability(details) {
+function availabilityDetails2(details) {
   if (!isRecord11(details))
     return;
   const availability = details["availability"];
-  if (!isRecord11(availability))
+  return isRecord11(availability) ? availability : undefined;
+}
+function notInstalledOutcome(availability, text) {
+  const serverId = availability["serverId"];
+  const installDecisionTool = availability["installDecisionTool"];
+  if (typeof serverId !== "string" || serverId.length === 0 || typeof installDecisionTool !== "boolean")
     return;
-  if (availability["kind"] !== "not_configured")
-    return;
-  const extension = availability["extension"];
-  return typeof extension === "string" && extension.length > 0 ? { extension } : undefined;
+  const decision = availability["decision"];
+  const base = { kind: "not_installed", serverId, installDecisionTool, text };
+  return decision === "declined" || decision === "allowed" ? { ...base, decision } : base;
 }
 function codexLspRequestContext(env = process.env, cwd = process.cwd()) {
   const canonicalCwd = realpathSync7(resolve11(cwd));
@@ -6320,14 +6335,13 @@ async function runLspPostToolUseHook(input, runDiagnostics = runLspDiagnosticsTe
 
 `);
   const reason = limitHookText(rawReason, hookFeedbackLimit(input.transcript_path));
-  const output = {
-    decision: "block",
-    reason,
-    hookSpecificOutput: {
-      hookEventName: "PostToolUse",
-      additionalContext: reason
-    }
+  const context = {
+    hookSpecificOutput: { hookEventName: "PostToolUse", additionalContext: reason }
   };
+  if (!blocks.some((block) => block.blocking))
+    return `${JSON.stringify(context)}
+`;
+  const output = { decision: "block", reason, ...context };
   return `${JSON.stringify(output)}
 `;
 }

@@ -65,7 +65,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.13",
+    version: "5.1.14",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -242,7 +242,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.10.3",
+      "@code-yeongyu/senpi": "2026.10.5",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -300,18 +300,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.13",
-      "oh-my-opencode-darwin-x64": "5.1.13",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.13",
-      "oh-my-opencode-linux-arm64": "5.1.13",
-      "oh-my-opencode-linux-arm64-musl": "5.1.13",
-      "oh-my-opencode-linux-x64": "5.1.13",
-      "oh-my-opencode-linux-x64-baseline": "5.1.13",
-      "oh-my-opencode-linux-x64-musl": "5.1.13",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.13",
-      "oh-my-opencode-windows-arm64": "5.1.13",
-      "oh-my-opencode-windows-x64": "5.1.13",
-      "oh-my-opencode-windows-x64-baseline": "5.1.13"
+      "oh-my-opencode-darwin-arm64": "5.1.14",
+      "oh-my-opencode-darwin-x64": "5.1.14",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.14",
+      "oh-my-opencode-linux-arm64": "5.1.14",
+      "oh-my-opencode-linux-arm64-musl": "5.1.14",
+      "oh-my-opencode-linux-x64": "5.1.14",
+      "oh-my-opencode-linux-x64-baseline": "5.1.14",
+      "oh-my-opencode-linux-x64-musl": "5.1.14",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.14",
+      "oh-my-opencode-windows-arm64": "5.1.14",
+      "oh-my-opencode-windows-x64": "5.1.14",
+      "oh-my-opencode-windows-x64-baseline": "5.1.14"
     },
     overrides: {
       hono: "^4.13.8",
@@ -9494,7 +9494,7 @@ You are working on tasks that don't fit specific categories but require moderate
 </Category_Context>`, UNSPECIFIED_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits, effort is moderate, and scope stays within a few files/modules. Prefer any matching specialist category.</Selection_Gate>
 <Caller_Warning>Provide explicit must-do steps, forbidden scope, and concrete success criteria.</Caller_Warning>`, UNSPECIFIED_HIGH_CATEGORY_PROMPT_APPEND = `<Category_Context>
 You are working on tasks that don't fit specific categories but require substantial effort.
-</Category_Context>`, UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits and substantial effort spans systems/modules with broad impact. Use unspecified-low for contained moderate work.</Selection_Gate>`, DEEP_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Route here when one subsystem plus its callers holds the mechanism and the evidence, once read, leaves one right answer. Wide but mechanical work belongs here or in a quick batch. When unsure, choose deep-low: a misrouted child returns \`ESCALATE: deep-high\` after one cheap attempt; re-spawn the same brief as deep-high with its findings.</Selection_Gate>`, DEEP_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Route here only when you can name the decision evidence cannot settle: a trade-off with no single right answer, a contract change crossing a package or process boundary, a mechanism with no in-repo pattern to copy, or correctness argued from invariants rather than observed in a test. Wide scope with easy decisions is deep-low or unspecified-high; reasoning as the deliverable is ultrabrain.</Selection_Gate>`, DEEP_LOW_GATE_MODELS, DEEP_HIGH_GATE_MODEL = "gpt-6-astra", OPENAI_CATEGORIES;
+</Category_Context>`, UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits and substantial effort spans systems/modules with broad impact. Use unspecified-low for contained moderate work.</Selection_Gate>`, DEEP_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Of the two deep lanes this is the default: the child settles its decisions from what it reads. When unsure, choose deep-low; a misrouted child returns \`ESCALATE: deep-high\` after one cheap attempt, and you re-spawn the same brief as deep-high with its findings.</Selection_Gate>`, DEEP_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Route here only when you can name the decision evidence cannot settle: a trade-off with no single right answer, a contract change crossing a package or process boundary, a mechanism with no in-repo pattern to copy, or correctness argued from invariants rather than observed in a test. Wide scope with easy decisions is deep-low or unspecified-high; reasoning as the deliverable is ultrabrain.</Selection_Gate>`, DEEP_LOW_GATE_MODELS, DEEP_HIGH_GATE_MODEL = "gpt-6-astra", OPENAI_CATEGORIES;
 var init_openai_categories = __esm(() => {
   init_types();
   DEEP_LOW_GATE_MODELS = ["gpt-6.1-sol", "gpt-6.1-sol-fast", "gpt-5.6-sol-fast", "gpt-5.6-sol"];
@@ -9509,7 +9509,7 @@ var init_openai_categories = __esm(() => {
     {
       name: "deep-low",
       config: { model: "openai/gpt-6.1-sol", variant: "medium" },
-      description: "Default deep lane: one goal, one deliverable, decisions the child can settle from what it reads. **3D graphics, computer/browser use, CAPTCHA, multimodal, backend, logic, and algorithm work is routed here.** Multiple goals fan out as parallel calls.",
+      description: "Default deep lane: one goal, one deliverable, decisions the child can settle from what it reads; preferred over deep-high for 3D graphics, computer/browser use, CAPTCHA, multimodal, backend, logic, and algorithm work. Multiple goals fan out as parallel calls.",
       callerGuidance: DEEP_LOW_CATEGORY_CALLER_GUIDANCE,
       promptAppend: DEEP_LOW_CATEGORY_PROMPT_APPEND,
       resolvePromptAppend: resolveDeepLowCategoryPromptAppend,
@@ -89448,7 +89448,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.13",
+    version: "5.1.14",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "version": "5.1.13",
-  "inputDigest": "sha256:1987f296d40fe07041a3d11da647afb8018ce55fed91453f9ed0c42fa6523d38",
+  "version": "5.1.14",
+  "inputDigest": "sha256:d1ee8c51725f4649bd6437bbe0a02cf6f922ce19e2229d12d02c4d3ddccdafde",
   "outputs": [
     {
       "path": "cli.d.ts",
@@ -9,7 +9,7 @@
     },
     {
       "path": "cli.js",
-      "sha256": "d793d83fb82b1fafe52e619f545c5195398498d1f95f15d84904fe3d0a20befe"
+      "sha256": "f2776c0f9c2a893136e9e8e36c2e086172f10c0ab3566a730cff4443b712f956"
     },
     {
       "path": "codex-hook-cli.d.ts",
@@ -25,7 +25,7 @@
     },
     {
       "path": "codex-hook.js",
-      "sha256": "9a4f53b980521752f603c9a46de8001294c1b964a31f7945eb48ecdae4bf12ac"
+      "sha256": "6e054189fe9efc941916d3469f1342344aadc20215c91fa6209e2f98139d6ed5"
     },
     {
       "path": "daemon-cli-path.d.ts",

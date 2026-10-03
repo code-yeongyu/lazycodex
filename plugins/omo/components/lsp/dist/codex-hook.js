@@ -27,21 +27,32 @@ export async function runLspDiagnosticsText(filePath) {
     return postEditOutcomeFromDaemonResult(result);
 }
 function postEditOutcomeFromDaemonResult(result) {
-    const availability = notConfiguredAvailability(result.details);
-    if (availability !== undefined)
-        return { kind: "not_configured", extension: availability.extension };
-    return result.content.map((block) => block.text).join("\n");
+    const text = result.content.map((block) => block.text).join("\n");
+    const availability = availabilityDetails(result.details);
+    if (availability === undefined)
+        return text;
+    if (availability["kind"] === "not_configured") {
+        const extension = availability["extension"];
+        return typeof extension === "string" && extension.length > 0 ? { kind: "not_configured", extension } : text;
+    }
+    if (availability["kind"] === "not_installed")
+        return notInstalledOutcome(availability, text) ?? text;
+    return text;
 }
-function notConfiguredAvailability(details) {
+function availabilityDetails(details) {
     if (!isRecord(details))
         return undefined;
     const availability = details["availability"];
-    if (!isRecord(availability))
+    return isRecord(availability) ? availability : undefined;
+}
+function notInstalledOutcome(availability, text) {
+    const serverId = availability["serverId"];
+    const installDecisionTool = availability["installDecisionTool"];
+    if (typeof serverId !== "string" || serverId.length === 0 || typeof installDecisionTool !== "boolean")
         return undefined;
-    if (availability["kind"] !== "not_configured")
-        return undefined;
-    const extension = availability["extension"];
-    return typeof extension === "string" && extension.length > 0 ? { extension } : undefined;
+    const decision = availability["decision"];
+    const base = { kind: "not_installed", serverId, installDecisionTool, text };
+    return decision === "declined" || decision === "allowed" ? { ...base, decision } : base;
 }
 export function codexLspRequestContext(env = process.env, cwd = process.cwd()) {
     const canonicalCwd = realpathSync(resolve(cwd));
@@ -67,14 +78,13 @@ export async function runLspPostToolUseHook(input, runDiagnostics = runLspDiagno
         return "";
     const rawReason = blocks.map(formatDiagnosticBlock).join("\n\n");
     const reason = limitHookText(rawReason, hookFeedbackLimit(input.transcript_path));
-    const output = {
-        decision: "block",
-        reason,
-        hookSpecificOutput: {
-            hookEventName: "PostToolUse",
-            additionalContext: reason,
-        },
+    const context = {
+        hookSpecificOutput: { hookEventName: "PostToolUse", additionalContext: reason },
     };
+    // Missing-server guidance alone is a note for the model; only real diagnostics block the edit.
+    if (!blocks.some((block) => block.blocking))
+        return `${JSON.stringify(context)}\n`;
+    const output = { decision: "block", reason, ...context };
     return `${JSON.stringify(output)}\n`;
 }
 export async function runLspPostCompactHook(input) {

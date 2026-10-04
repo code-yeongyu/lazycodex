@@ -70,7 +70,7 @@ Write only what the current correct path needs: no handlers, fallbacks, retries,
 
 At a handoff - turn start (after the one-line read), a todo phase change, a blocker or plan change, the final message - first work out what the user asked for and what they need to know now, then open with one block:
 
-> [Outcome so far] toward [the user's original ask and the result they wanted]. You need: [ledger N/M done, findings, blockers]. Now: [todo task in progress]. Next: [next open task].
+[Outcome so far] toward [the user's original ask and the result they wanted]. You need: [ledger N/M done, findings, blockers]. Now: [todo task in progress]. Next: [next open task].
 
 Now and Next are todo labels verbatim; the Next stated is executed in this same response with tool calls. Between handoffs, no narration.
 

@@ -65,7 +65,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.19",
+    version: "5.1.21",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -242,7 +242,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.10.10",
+      "@code-yeongyu/senpi": "2026.10.10-3",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -300,18 +300,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.19",
-      "oh-my-opencode-darwin-x64": "5.1.19",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.19",
-      "oh-my-opencode-linux-arm64": "5.1.19",
-      "oh-my-opencode-linux-arm64-musl": "5.1.19",
-      "oh-my-opencode-linux-x64": "5.1.19",
-      "oh-my-opencode-linux-x64-baseline": "5.1.19",
-      "oh-my-opencode-linux-x64-musl": "5.1.19",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.19",
-      "oh-my-opencode-windows-arm64": "5.1.19",
-      "oh-my-opencode-windows-x64": "5.1.19",
-      "oh-my-opencode-windows-x64-baseline": "5.1.19"
+      "oh-my-opencode-darwin-arm64": "5.1.21",
+      "oh-my-opencode-darwin-x64": "5.1.21",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.21",
+      "oh-my-opencode-linux-arm64": "5.1.21",
+      "oh-my-opencode-linux-arm64-musl": "5.1.21",
+      "oh-my-opencode-linux-x64": "5.1.21",
+      "oh-my-opencode-linux-x64-baseline": "5.1.21",
+      "oh-my-opencode-linux-x64-musl": "5.1.21",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.21",
+      "oh-my-opencode-windows-arm64": "5.1.21",
+      "oh-my-opencode-windows-x64": "5.1.21",
+      "oh-my-opencode-windows-x64-baseline": "5.1.21"
     },
     overrides: {
       hono: "^4.13.8",
@@ -89448,7 +89448,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.19",
+    version: "5.1.21",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -94088,6 +94088,14 @@ async function installCachedPlugin(input) {
     await rewriteCachedManifestRoot(tempPath, tempPath, targetPath);
     await assertHookCommandTargets(tempPath);
     await promoteDirectory(tempPath, targetPath, input.renameDirectory ?? rename);
+    const versions = await readdir4(dirname13(targetPath), { withFileTypes: true });
+    for (const entry of versions) {
+      if (!entry.isDirectory() || entry.name === input.version || entry.name.startsWith("."))
+        continue;
+      if (!/^[a-zA-Z0-9_+-][a-zA-Z0-9._+-]*$/.test(entry.name))
+        continue;
+      await rm4(join31(dirname13(targetPath), entry.name), { recursive: true, force: true });
+    }
   } catch (error) {
     await rm4(tempPath, { recursive: true, force: true });
     throw error;

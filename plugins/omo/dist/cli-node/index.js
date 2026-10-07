@@ -65,7 +65,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.21",
+    version: "5.1.22",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -242,7 +242,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.10.10-3",
+      "@code-yeongyu/senpi": "2026.10.10-5",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -300,18 +300,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.21",
-      "oh-my-opencode-darwin-x64": "5.1.21",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.21",
-      "oh-my-opencode-linux-arm64": "5.1.21",
-      "oh-my-opencode-linux-arm64-musl": "5.1.21",
-      "oh-my-opencode-linux-x64": "5.1.21",
-      "oh-my-opencode-linux-x64-baseline": "5.1.21",
-      "oh-my-opencode-linux-x64-musl": "5.1.21",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.21",
-      "oh-my-opencode-windows-arm64": "5.1.21",
-      "oh-my-opencode-windows-x64": "5.1.21",
-      "oh-my-opencode-windows-x64-baseline": "5.1.21"
+      "oh-my-opencode-darwin-arm64": "5.1.22",
+      "oh-my-opencode-darwin-x64": "5.1.22",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.22",
+      "oh-my-opencode-linux-arm64": "5.1.22",
+      "oh-my-opencode-linux-arm64-musl": "5.1.22",
+      "oh-my-opencode-linux-x64": "5.1.22",
+      "oh-my-opencode-linux-x64-baseline": "5.1.22",
+      "oh-my-opencode-linux-x64-musl": "5.1.22",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.22",
+      "oh-my-opencode-windows-arm64": "5.1.22",
+      "oh-my-opencode-windows-x64": "5.1.22",
+      "oh-my-opencode-windows-x64-baseline": "5.1.22"
     },
     overrides: {
       hono: "^4.13.8",
@@ -7519,6 +7519,79 @@ var init_model_requirements = __esm(() => {
   init_category_model_requirements();
 });
 
+// packages/model-core/src/reasoning-level.ts
+function isReasoningLevelOrAuto(value) {
+  return REASONING_LEVEL_OR_AUTO_SET.has(value);
+}
+function clampReasoningLevel(value, allowed) {
+  const ladder = REASONING_LEVELS;
+  const requestedIndex = ladder.indexOf(value);
+  if (requestedIndex === -1)
+    return;
+  for (let index = requestedIndex;index >= 0; index -= 1) {
+    const candidate = REASONING_LEVELS[index];
+    if (candidate !== undefined && allowed.includes(candidate))
+      return candidate;
+  }
+  return;
+}
+function splitReasoningSuffix(model, options) {
+  if (typeof model !== "string")
+    return { base: "" };
+  const trimmed = model.trim();
+  if (!trimmed)
+    return { base: "" };
+  const separatorIndex = trimmed.lastIndexOf(":");
+  if (separatorIndex === -1)
+    return { base: trimmed };
+  const base = trimmed.slice(0, separatorIndex).trim();
+  const token = trimmed.slice(separatorIndex + 1).trim().toLowerCase();
+  if (!base || !isReasoningLevelOrAuto(token))
+    return { base: trimmed };
+  if (token === "max" && !(options?.allowMaxSuffix ?? base.includes("/")))
+    return { base: trimmed };
+  return { base, level: token };
+}
+var REASONING_LEVELS, REASONING_AUTO = "auto", REASONING_LEVEL_SET, REASONING_LEVEL_OR_AUTO_SET;
+var init_reasoning_level = __esm(() => {
+  REASONING_LEVELS = ["off", "minimal", "low", "medium", "high", "xhigh", "max"];
+  REASONING_LEVEL_SET = new Set(REASONING_LEVELS);
+  REASONING_LEVEL_OR_AUTO_SET = new Set([...REASONING_LEVELS, REASONING_AUTO]);
+});
+
+// packages/model-core/src/model-string-parser.ts
+function parseVariantFromModelID(rawModelID, options) {
+  if (typeof rawModelID !== "string") {
+    return { modelID: "" };
+  }
+  const trimmedModelID = rawModelID.trim();
+  if (!trimmedModelID) {
+    return { modelID: "" };
+  }
+  const parenthesizedVariant = trimmedModelID.match(/^(.*)\(([^()]+)\)\s*$/);
+  if (parenthesizedVariant) {
+    const modelID = parenthesizedVariant[1]?.trim() ?? "";
+    const variant = parenthesizedVariant[2]?.trim();
+    return variant ? { modelID, variant } : { modelID };
+  }
+  const suffixedModel = splitReasoningSuffix(trimmedModelID, options);
+  if (suffixedModel.level) {
+    return { modelID: suffixedModel.base, variant: suffixedModel.level };
+  }
+  const spaceVariant = trimmedModelID.match(/^(.*\S)\s+([a-z][a-z0-9_-]*)$/i);
+  if (spaceVariant) {
+    const modelID = spaceVariant[1]?.trim() ?? "";
+    const variant = spaceVariant[2]?.trim().toLowerCase();
+    if (variant) {
+      return { modelID, variant };
+    }
+  }
+  return { modelID: trimmedModelID };
+}
+var init_model_string_parser = __esm(() => {
+  init_reasoning_level();
+});
+
 // packages/model-core/src/model-family-detectors.ts
 function extractModelName(model) {
   return model.includes("/") ? model.split("/").pop() ?? model : model;
@@ -7636,79 +7709,6 @@ var init_model_capability_aliases = __esm(() => {
 function normalizeModelID(modelID) {
   return modelID.replace(/\.(\d+)/g, "-$1");
 }
-
-// packages/model-core/src/reasoning-level.ts
-function isReasoningLevelOrAuto(value) {
-  return REASONING_LEVEL_OR_AUTO_SET.has(value);
-}
-function clampReasoningLevel(value, allowed) {
-  const ladder = REASONING_LEVELS;
-  const requestedIndex = ladder.indexOf(value);
-  if (requestedIndex === -1)
-    return;
-  for (let index = requestedIndex;index >= 0; index -= 1) {
-    const candidate = REASONING_LEVELS[index];
-    if (candidate !== undefined && allowed.includes(candidate))
-      return candidate;
-  }
-  return;
-}
-function splitReasoningSuffix(model, options) {
-  if (typeof model !== "string")
-    return { base: "" };
-  const trimmed = model.trim();
-  if (!trimmed)
-    return { base: "" };
-  const separatorIndex = trimmed.lastIndexOf(":");
-  if (separatorIndex === -1)
-    return { base: trimmed };
-  const base = trimmed.slice(0, separatorIndex).trim();
-  const token = trimmed.slice(separatorIndex + 1).trim().toLowerCase();
-  if (!base || !isReasoningLevelOrAuto(token))
-    return { base: trimmed };
-  if (token === "max" && !(options?.allowMaxSuffix ?? base.includes("/")))
-    return { base: trimmed };
-  return { base, level: token };
-}
-var REASONING_LEVELS, REASONING_AUTO = "auto", REASONING_LEVEL_SET, REASONING_LEVEL_OR_AUTO_SET;
-var init_reasoning_level = __esm(() => {
-  REASONING_LEVELS = ["off", "minimal", "low", "medium", "high", "xhigh", "max"];
-  REASONING_LEVEL_SET = new Set(REASONING_LEVELS);
-  REASONING_LEVEL_OR_AUTO_SET = new Set([...REASONING_LEVELS, REASONING_AUTO]);
-});
-
-// packages/model-core/src/model-string-parser.ts
-function parseVariantFromModelID(rawModelID, options) {
-  if (typeof rawModelID !== "string") {
-    return { modelID: "" };
-  }
-  const trimmedModelID = rawModelID.trim();
-  if (!trimmedModelID) {
-    return { modelID: "" };
-  }
-  const parenthesizedVariant = trimmedModelID.match(/^(.*)\(([^()]+)\)\s*$/);
-  if (parenthesizedVariant) {
-    const modelID = parenthesizedVariant[1]?.trim() ?? "";
-    const variant = parenthesizedVariant[2]?.trim();
-    return variant ? { modelID, variant } : { modelID };
-  }
-  const suffixedModel = splitReasoningSuffix(trimmedModelID, options);
-  if (suffixedModel.level) {
-    return { modelID: suffixedModel.base, variant: suffixedModel.level };
-  }
-  const spaceVariant = trimmedModelID.match(/^(.*\S)\s+([a-z][a-z0-9_-]*)$/i);
-  if (spaceVariant) {
-    const modelID = spaceVariant[1]?.trim() ?? "";
-    const variant = spaceVariant[2]?.trim().toLowerCase();
-    if (variant) {
-      return { modelID, variant };
-    }
-  }
-  return { modelID: trimmedModelID };
-}
-var init_model_string_parser = __esm(() => {
-  init_reasoning_level();
-});
 
 // packages/model-core/src/model-capability-heuristics.ts
 function detectHeuristicModelFamily(modelID) {
@@ -74631,7 +74631,7 @@ var init_harness = __esm(() => {
 });
 
 // packages/omo-config-core/src/schema/memory.ts
-var OmoMemoryReflectionTriggerSchema, OmoMemoryReflectionSchema, OmoMemorySyncSchema, OmoMemorySearchSchema, OmoMemoryRecallEventCapsSchema, OmoMemoryRecallSchema, OmoMemoryNudgeSchema, OmoMemoryFactsSchema, OmoMemoryDreamSchema, OmoMemoryPeopleSchema, OmoMemorySoulSchema, OmoMemoryWriteNoticeSchema, OmoMemoryReflectionTriggerLayerSchema, OmoMemoryReflectionLayerSchema, OmoMemorySyncLayerSchema, OmoMemorySearchLayerSchema, OmoMemoryRecallEventCapsLayerSchema, OmoMemoryRecallLayerSchema, OmoMemoryNudgeLayerSchema, OmoMemoryFactsLayerSchema, OmoMemoryDreamLayerSchema, OmoMemoryPeopleLayerSchema, OmoMemorySoulLayerSchema, OmoMemoryWriteNoticeLayerSchema, OmoMemoryAgentOverridesSchema, OmoMemorySettingsSchema, OmoMemorySettingsLayerSchema;
+var OmoMemoryReflectionTriggerSchema, OmoMemoryReflectionSchema, OmoMemorySyncSchema, OmoMemorySearchSchema, OmoMemoryRecallEventCapsSchema, OmoMemoryRecallSchema, OmoMemoryNudgeSchema, OmoMemoryFactsSchema, OmoMemoryDreamSchema, OmoMemoryPeopleSchema, OmoMemorySoulSchema, OmoMemoryWriteNoticeSchema, OmoMemoryReflectionTriggerLayerSchema, OmoMemoryReflectionLayerSchema, OmoMemorySyncLayerSchema, OmoMemorySearchLayerSchema, OmoMemoryRecallEventCapsLayerSchema, OmoMemoryRecallLayerSchema, OmoMemoryNudgeLayerSchema, OmoMemoryFactsLayerSchema, OmoMemoryDreamLayerSchema, OmoMemoryPeopleLayerSchema, OmoMemorySoulLayerSchema, OmoMemoryWriteNoticeLayerSchema, OmoMemoryProjectionSchema, OmoMemoryProjectionLayerSchema, OmoMemoryAgentOverridesSchema, OmoMemorySettingsSchema, OmoMemorySettingsLayerSchema;
 var init_memory = __esm(() => {
   init_zod();
   OmoMemoryReflectionTriggerSchema = object({
@@ -74758,6 +74758,14 @@ var init_memory = __esm(() => {
   OmoMemoryWriteNoticeLayerSchema = object({
     enabled: boolean2().optional()
   }).strict();
+  OmoMemoryProjectionSchema = object({
+    max_entries_per_directory: number2().int().min(0).default(40),
+    max_bytes: number2().int().min(0).default(24576)
+  }).strict();
+  OmoMemoryProjectionLayerSchema = object({
+    max_entries_per_directory: number2().int().min(0).optional(),
+    max_bytes: number2().int().min(0).optional()
+  }).strict();
   OmoMemoryAgentOverridesSchema = object({
     enabled: boolean2().optional(),
     agent: string2().min(1).optional(),
@@ -74771,6 +74779,7 @@ var init_memory = __esm(() => {
     sync: OmoMemorySyncLayerSchema.optional(),
     search: OmoMemorySearchLayerSchema.optional(),
     recall: OmoMemoryRecallLayerSchema.optional(),
+    projection: OmoMemoryProjectionLayerSchema.optional(),
     compile_warn_tokens: number2().int().positive().optional()
   }).strict();
   OmoMemorySettingsSchema = object({
@@ -74809,6 +74818,7 @@ var init_memory = __esm(() => {
       tool_budget: 8,
       query_expansion: false
     }),
+    projection: OmoMemoryProjectionSchema.default({ max_entries_per_directory: 40, max_bytes: 24576 }),
     compile_warn_tokens: number2().int().positive().default(30000),
     agents: record(string2(), OmoMemoryAgentOverridesSchema).default({})
   }).strict();
@@ -74825,6 +74835,7 @@ var init_memory = __esm(() => {
     sync: OmoMemorySyncLayerSchema.optional(),
     search: OmoMemorySearchLayerSchema.optional(),
     recall: OmoMemoryRecallLayerSchema.optional(),
+    projection: OmoMemoryProjectionLayerSchema.optional(),
     compile_warn_tokens: number2().int().positive().optional(),
     agents: record(string2(), OmoMemoryAgentOverridesSchema).optional()
   }).strict();
@@ -89448,7 +89459,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.21",
+    version: "5.1.22",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -98794,6 +98805,8 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
   ...PERSONA_ASSET_FILES.map((filename) => join63("extensions", filename)),
   join63("skills", "ast-grep", "SKILL.md"),
   join63("skills", "browser", "SKILL.md"),
+  join63("skills", "browser", "runtime", "omowright", "index.js"),
+  join63("skills", "browser", "runtime", "omowright", "page-bundle.js"),
   join63("skills", "coding-agent-sessions", "SKILL.md"),
   join63("skills", "debugging", "SKILL.md"),
   join63("skills", "frontend", "SKILL.md"),

@@ -64,7 +64,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.24",
+    version: "5.1.26",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -241,7 +241,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.10.10-6",
+      "@code-yeongyu/senpi": "2026.10.10-8",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -299,18 +299,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.24",
-      "oh-my-opencode-darwin-x64": "5.1.24",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.24",
-      "oh-my-opencode-linux-arm64": "5.1.24",
-      "oh-my-opencode-linux-arm64-musl": "5.1.24",
-      "oh-my-opencode-linux-x64": "5.1.24",
-      "oh-my-opencode-linux-x64-baseline": "5.1.24",
-      "oh-my-opencode-linux-x64-musl": "5.1.24",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.24",
-      "oh-my-opencode-windows-arm64": "5.1.24",
-      "oh-my-opencode-windows-x64": "5.1.24",
-      "oh-my-opencode-windows-x64-baseline": "5.1.24"
+      "oh-my-opencode-darwin-arm64": "5.1.26",
+      "oh-my-opencode-darwin-x64": "5.1.26",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.26",
+      "oh-my-opencode-linux-arm64": "5.1.26",
+      "oh-my-opencode-linux-arm64-musl": "5.1.26",
+      "oh-my-opencode-linux-x64": "5.1.26",
+      "oh-my-opencode-linux-x64-baseline": "5.1.26",
+      "oh-my-opencode-linux-x64-musl": "5.1.26",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.26",
+      "oh-my-opencode-windows-arm64": "5.1.26",
+      "oh-my-opencode-windows-x64": "5.1.26",
+      "oh-my-opencode-windows-x64-baseline": "5.1.26"
     },
     overrides: {
       hono: "^4.13.8",
@@ -68184,92 +68184,6 @@ var init_log_legacy_plugin_startup_warning = __esm(() => {
   init_plugin_identity();
 });
 
-// packages/omo-opencode/src/shared/legacy-workspace-migration.ts
-var init_legacy_workspace_migration = __esm(() => {
-  init_logger2();
-});
-// packages/omo-opencode/src/shared/model-string-parser.ts
-var init_model_string_parser2 = () => {};
-
-// packages/omo-opencode/src/shared/replace-tool-args.ts
-var init_replace_tool_args = () => {};
-
-// packages/omo-opencode/src/shared/index.ts
-var init_shared = __esm(() => {
-  init_model_normalization();
-  init_model_resolver2();
-  init_model_resolution_pipeline();
-  init_session_category_registry();
-  init_model_string_parser2();
-  init_frontmatter2();
-  init_command_executor2();
-  init_contains_path2();
-  init_file_reference_resolver();
-  init_model_sanitizer();
-  init_logger2();
-  init_snake_case2();
-  init_tool_name2();
-  init_pattern_matcher();
-  init_deep_merge2();
-  init_file_utils2();
-  init_dynamic_truncator();
-  init_data_path();
-  init_config_errors();
-  init_claude_config_dir();
-  init_jsonc_parser2();
-  init_migration2();
-  init_opencode_config_dir();
-  init_opencode_plugin_sandbox();
-  init_resolve_agent_definition_paths();
-  init_opencode_version();
-  init_opencode_storage_detection();
-  init_external_plugin_detector();
-  init_zip_extractor();
-  init_binary_downloader();
-  init_write_file_atomically();
-  init_agent_variant();
-  init_session_cursor();
-  init_shell_env();
-  init_system_directive();
-  init_agent_tool_restrictions();
-  init_model_requirements2();
-  init_model_resolver2();
-  init_model_availability();
-  init_model_capabilities2();
-  init_model_capabilities_cache();
-  init_model_settings_compatibility2();
-  init_fallback_model_availability();
-  init_connected_providers_cache();
-  init_context_limit_resolver2();
-  init_session_utils();
-  init_event_session_id();
-  init_tmux();
-  init_model_suggestion_retry();
-  init_opencode_server_auth();
-  init_opencode_provider_auth();
-  init_opencode_http_api();
-  init_port_utils2();
-  init_git_worktree2();
-  init_safe_create_hook();
-  init_opencode_storage_paths();
-  init_opencode_message_dir();
-  init_opencode_command_dirs();
-  init_project_discovery_dirs();
-  init_record_type_guard();
-  init_session_directory_resolver();
-  init_session_route();
-  init_prompt_tools();
-  init_prompt_failure_classifier();
-  init_compaction_marker();
-  init_internal_initiator_marker2();
-  init_runtime_fallback_retry_marker();
-  init_plugin_command_discovery();
-  init_plugin_identity();
-  init_log_legacy_plugin_startup_warning();
-  init_legacy_workspace_migration();
-  init_replace_tool_args();
-});
-
 // node_modules/.bun/zod@4.6.5/node_modules/zod/v4/core/util.js
 function getEnumValues(entries) {
   const numericValues = Object.values(entries).filter((v) => typeof v === "number");
@@ -74805,6 +74719,60 @@ var init_model_profile = __esm(() => {
   OmoModelProfilesLayerSchema = record(string2(), OmoModelProfileLayerSchema);
 });
 
+// packages/omo-config-core/src/schema/side-panel.ts
+var OmoSidePanelWidthSchema, OmoSidePanelSectionsShape, OmoSidePanelSectionsLayerSchema, OmoSidePanelSectionsSchema, OmoSidePanelSettingsShape, OmoSidePanelSettingsLayerSchema, OmoSidePanelSettingsSchema;
+var init_side_panel = __esm(() => {
+  init_zod();
+  OmoSidePanelWidthSchema = union([number2().int().min(24).max(160), string2().regex(/^(?:1\d|[2-4]\d|50)%$/)]);
+  OmoSidePanelSectionsShape = {
+    session: boolean2(),
+    goal: boolean2(),
+    context: boolean2(),
+    usage: boolean2(),
+    agents: boolean2(),
+    tools: boolean2(),
+    files: boolean2(),
+    memory: boolean2()
+  };
+  OmoSidePanelSectionsLayerSchema = object(OmoSidePanelSectionsShape).partial().strict();
+  OmoSidePanelSectionsSchema = OmoSidePanelSectionsLayerSchema.extend({
+    session: boolean2().default(true),
+    goal: boolean2().default(true),
+    context: boolean2().default(true),
+    usage: boolean2().default(false),
+    agents: boolean2().default(true),
+    tools: boolean2().default(true),
+    files: boolean2().default(true),
+    memory: boolean2().default(true)
+  }).strict();
+  OmoSidePanelSettingsShape = {
+    enabled: boolean2(),
+    width: OmoSidePanelWidthSchema,
+    min_columns: number2().int().min(60).max(400),
+    clickable: boolean2(),
+    usage_poll_seconds: number2().int().min(60).max(3600),
+    sections: OmoSidePanelSectionsLayerSchema
+  };
+  OmoSidePanelSettingsLayerSchema = object(OmoSidePanelSettingsShape).partial().strict();
+  OmoSidePanelSettingsSchema = OmoSidePanelSettingsLayerSchema.extend({
+    enabled: boolean2().default(false),
+    width: OmoSidePanelWidthSchema.default("26%"),
+    min_columns: number2().int().min(60).max(400).default(120),
+    clickable: boolean2().default(true),
+    usage_poll_seconds: number2().int().min(60).max(3600).default(150),
+    sections: OmoSidePanelSectionsSchema.default({
+      session: true,
+      goal: true,
+      context: true,
+      usage: false,
+      agents: true,
+      tools: true,
+      files: true,
+      memory: true
+    })
+  }).strict();
+});
+
 // packages/omo-config-core/src/schema/task.ts
 import { availableParallelism } from "os";
 function resolveOmoTaskSettings(input, resolveParallelism = availableParallelism) {
@@ -75043,6 +75011,7 @@ var init_config = __esm(() => {
   init_memory();
   init_model_catalog();
   init_model_profile();
+  init_side_panel();
   init_task();
   init_team();
   init_telemetry();
@@ -75063,6 +75032,7 @@ var init_config = __esm(() => {
     model_profile: string2().optional(),
     memory: OmoMemorySettingsLayerSchema.optional(),
     telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+    side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional()
   }).strict();
@@ -75078,6 +75048,7 @@ var init_config = __esm(() => {
     model_profile: string2().optional(),
     memory: OmoMemorySettingsLayerSchema.optional(),
     telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+    side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
     "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
@@ -75099,6 +75070,7 @@ var init_config = __esm(() => {
     model_profile: string2().optional(),
     memory: OmoMemorySettingsSchema.optional(),
     telemetry: OmoTelemetrySettingsSchema.optional(),
+    side_panel: OmoSidePanelSettingsSchema.optional(),
     computer: OmoComputerSettingsSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
     "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
@@ -75123,6 +75095,7 @@ var init_config = __esm(() => {
     model_profile: string2().optional(),
     memory: OmoMemorySettingsLayerSchema.optional(),
     telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+    side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
     "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
@@ -75267,6 +75240,7 @@ var init_schema = __esm(() => {
   init_model_catalog();
   init_model_profile();
   init_model_ref();
+  init_side_panel();
   init_task();
   init_team();
   init_telemetry();
@@ -77155,6 +77129,92 @@ var init_src4 = __esm(() => {
   init_models();
   init_writer2();
   init_migration3();
+});
+
+// packages/omo-opencode/src/shared/legacy-workspace-migration.ts
+var init_legacy_workspace_migration = __esm(() => {
+  init_logger2();
+});
+// packages/omo-opencode/src/shared/model-string-parser.ts
+var init_model_string_parser2 = () => {};
+
+// packages/omo-opencode/src/shared/replace-tool-args.ts
+var init_replace_tool_args = () => {};
+
+// packages/omo-opencode/src/shared/index.ts
+var init_shared = __esm(() => {
+  init_model_normalization();
+  init_model_resolver2();
+  init_model_resolution_pipeline();
+  init_session_category_registry();
+  init_model_string_parser2();
+  init_frontmatter2();
+  init_command_executor2();
+  init_contains_path2();
+  init_file_reference_resolver();
+  init_model_sanitizer();
+  init_logger2();
+  init_snake_case2();
+  init_tool_name2();
+  init_pattern_matcher();
+  init_deep_merge2();
+  init_file_utils2();
+  init_dynamic_truncator();
+  init_data_path();
+  init_config_errors();
+  init_claude_config_dir();
+  init_jsonc_parser2();
+  init_migration2();
+  init_opencode_config_dir();
+  init_opencode_plugin_sandbox();
+  init_resolve_agent_definition_paths();
+  init_opencode_version();
+  init_opencode_storage_detection();
+  init_external_plugin_detector();
+  init_zip_extractor();
+  init_binary_downloader();
+  init_write_file_atomically();
+  init_agent_variant();
+  init_session_cursor();
+  init_shell_env();
+  init_system_directive();
+  init_agent_tool_restrictions();
+  init_model_requirements2();
+  init_model_resolver2();
+  init_model_availability();
+  init_model_capabilities2();
+  init_model_capabilities_cache();
+  init_model_settings_compatibility2();
+  init_fallback_model_availability();
+  init_connected_providers_cache();
+  init_context_limit_resolver2();
+  init_session_utils();
+  init_event_session_id();
+  init_tmux();
+  init_model_suggestion_retry();
+  init_opencode_server_auth();
+  init_opencode_provider_auth();
+  init_opencode_http_api();
+  init_port_utils2();
+  init_git_worktree2();
+  init_safe_create_hook();
+  init_opencode_storage_paths();
+  init_opencode_message_dir();
+  init_opencode_command_dirs();
+  init_project_discovery_dirs();
+  init_record_type_guard();
+  init_session_directory_resolver();
+  init_session_route();
+  init_prompt_tools();
+  init_prompt_failure_classifier();
+  init_compaction_marker();
+  init_internal_initiator_marker2();
+  init_runtime_fallback_retry_marker();
+  init_plugin_command_discovery();
+  init_plugin_identity();
+  init_log_legacy_plugin_startup_warning();
+  init_legacy_workspace_migration();
+  init_replace_tool_args();
 });
 
 // packages/omo-opencode/src/cli/config-manager/config-context.ts
@@ -89380,7 +89440,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.24",
+    version: "5.1.26",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",

@@ -65,7 +65,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.27",
+    version: "5.1.28",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -242,7 +242,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.10.10-9",
+      "@code-yeongyu/senpi": "2026.10.10-10",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -300,18 +300,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.27",
-      "oh-my-opencode-darwin-x64": "5.1.27",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.27",
-      "oh-my-opencode-linux-arm64": "5.1.27",
-      "oh-my-opencode-linux-arm64-musl": "5.1.27",
-      "oh-my-opencode-linux-x64": "5.1.27",
-      "oh-my-opencode-linux-x64-baseline": "5.1.27",
-      "oh-my-opencode-linux-x64-musl": "5.1.27",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.27",
-      "oh-my-opencode-windows-arm64": "5.1.27",
-      "oh-my-opencode-windows-x64": "5.1.27",
-      "oh-my-opencode-windows-x64-baseline": "5.1.27"
+      "oh-my-opencode-darwin-arm64": "5.1.28",
+      "oh-my-opencode-darwin-x64": "5.1.28",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.28",
+      "oh-my-opencode-linux-arm64": "5.1.28",
+      "oh-my-opencode-linux-arm64-musl": "5.1.28",
+      "oh-my-opencode-linux-x64": "5.1.28",
+      "oh-my-opencode-linux-x64-baseline": "5.1.28",
+      "oh-my-opencode-linux-x64-musl": "5.1.28",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.28",
+      "oh-my-opencode-windows-arm64": "5.1.28",
+      "oh-my-opencode-windows-x64": "5.1.28",
+      "oh-my-opencode-windows-x64-baseline": "5.1.28"
     },
     overrides: {
       hono: "^4.13.8",
@@ -4852,7 +4852,7 @@ function applyEdits(text, edits) {
   }
   return text;
 }
-var ScanError, SyntaxKind, parse2, ParseErrorCode;
+var ScanError, SyntaxKind, parse2, parseTree2, findNodeAtLocation2, ParseErrorCode;
 var init_main = __esm(() => {
   init_format();
   init_edit();
@@ -4887,6 +4887,8 @@ var init_main = __esm(() => {
     SyntaxKind[SyntaxKind["EOF"] = 17] = "EOF";
   })(SyntaxKind || (SyntaxKind = {}));
   parse2 = parse;
+  parseTree2 = parseTree;
+  findNodeAtLocation2 = findNodeAtLocation;
   (function(ParseErrorCode) {
     ParseErrorCode[ParseErrorCode["InvalidSymbol"] = 1] = "InvalidSymbol";
     ParseErrorCode[ParseErrorCode["InvalidNumberFormat"] = 2] = "InvalidNumberFormat";
@@ -7246,20 +7248,20 @@ var init_agent_model_requirements = __esm(() => {
       fallbackChain: [
         { providers: ["kimi-for-coding"], model: "kimi-for-coding-highspeed", variant: "off" },
         { providers: ["openai", "chatgpt-subscription"], model: "gpt-6-luna-fast", variant: "low" },
+        { providers: ["anthropic", "github-copilot"], model: "claude-haiku-5-5", variant: "medium" },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "max" },
         { providers: ["opencode-go", "bailian-coding-plan"], model: "qwen3.7-plus" },
-        { providers: ["opencode-go"], model: "minimax-m2.7" },
-        { providers: ["anthropic", "github-copilot"], model: "claude-haiku-4-5" }
+        { providers: ["opencode-go"], model: "minimax-m2.7" }
       ]
     },
     explore: {
       fallbackChain: [
         { providers: ["kimi-for-coding"], model: "kimi-for-coding-highspeed", variant: "off" },
         { providers: ["openai", "chatgpt-subscription"], model: "gpt-6-luna-fast", variant: "low" },
+        { providers: ["anthropic", "github-copilot"], model: "claude-haiku-5-5", variant: "medium" },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "max" },
         { providers: ["opencode-go", "bailian-coding-plan"], model: "qwen3.7-plus" },
-        { providers: ["opencode-go"], model: "minimax-m2.7" },
-        { providers: ["anthropic", "github-copilot"], model: "claude-haiku-4-5" }
+        { providers: ["opencode-go"], model: "minimax-m2.7" }
       ]
     },
     "multimodal-looker": {
@@ -7434,6 +7436,11 @@ var init_category_model_requirements = __esm(() => {
     quick: {
       fallbackChain: [
         { providers: ["openai", "chatgpt-subscription"], model: "gpt-6-luna-fast", variant: "low" },
+        {
+          providers: ["anthropic", "anthropic-api", "github-copilot"],
+          model: "claude-haiku-5-5",
+          variant: "medium"
+        },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "off" },
         {
           providers: ["qwen-token-plan", "alibaba-token-plan", "bailian-coding-plan"],
@@ -7443,11 +7450,6 @@ var init_category_model_requirements = __esm(() => {
         { providers: ["opencode-go"], model: "minimax-m3", variant: "max" },
         { providers: ["opencode-go"], model: "minimax-m2.7", variant: "max" },
         { providers: ["xai"], model: "grok-4.20-0309-non-reasoning" },
-        {
-          providers: ["anthropic", "anthropic-api", "github-copilot"],
-          model: "claude-haiku-4-5",
-          variant: "off"
-        },
         { providers: ["zai-coding-plan"], model: "glm-5.3-flash", variant: "low" },
         { providers: ["xiaomi"], model: "mimo-v2.6-flash", variant: "low" }
       ]
@@ -64910,6 +64912,237 @@ var init_model_capabilities_generated = __esm(() => {
           input: 1048576,
           output: 131072
         }
+      },
+      "claude-haiku-5-5": {
+        id: "claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "claude-haiku-5-5@default": {
+        id: "claude-haiku-5-5@default",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "au.anthropic.claude-haiku-5-5": {
+        id: "au.anthropic.claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "anthropic.claude-haiku-5-5": {
+        id: "anthropic.claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "eu.anthropic.claude-haiku-5-5": {
+        id: "eu.anthropic.claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "global.anthropic.claude-haiku-5-5": {
+        id: "global.anthropic.claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "jp.anthropic.claude-haiku-5-5": {
+        id: "jp.anthropic.claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "us.anthropic.claude-haiku-5-5": {
+        id: "us.anthropic.claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "anthropic/claude-haiku-5-5": {
+        id: "anthropic/claude-haiku-5-5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "claude-haiku-5.5": {
+        id: "claude-haiku-5.5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          output: 128000
+        }
+      },
+      "anthropic/claude-haiku-5.5": {
+        id: "anthropic/claude-haiku-5.5",
+        family: "claude-haiku",
+        reasoning: true,
+        temperature: false,
+        toolCall: true,
+        modalities: {
+          input: [
+            "text",
+            "image",
+            "pdf"
+          ],
+          output: [
+            "text"
+          ]
+        },
+        limit: {
+          context: 1e6,
+          input: 1e6,
+          output: 128000
+        }
       }
     }
   };
@@ -68052,7 +68285,7 @@ var init_claude_model_mapper = __esm(() => {
   CLAUDE_CODE_ALIAS_MAP = new Map([
     ["sonnet", `${ANTHROPIC_PREFIX}claude-sonnet-4-6`],
     ["opus", `${ANTHROPIC_PREFIX}claude-opus-4-8`],
-    ["haiku", `${ANTHROPIC_PREFIX}claude-haiku-4-5`]
+    ["haiku", `${ANTHROPIC_PREFIX}claude-haiku-5-5`]
   ]);
 });
 
@@ -76240,6 +76473,187 @@ var init_jsonc_parse = __esm(() => {
   init_main();
 });
 
+// packages/omo-config-core/src/writer/surgical-edit.ts
+function applyOmoConfigEdit(content, edit) {
+  const fallback = formattedModify(content, edit);
+  const surgical = surgicalEditPreservingEol(content, edit);
+  if (surgical === undefined)
+    return fallback;
+  if (parses(fallback))
+    return sameData(surgical, fallback) ? surgical : fallback;
+  return parses(surgical) ? surgical : fallback;
+}
+function surgicalEditPreservingEol(content, edit) {
+  const crlf = content.includes(`\r
+`);
+  if (crlf && /(?<!\r)\n/.test(content))
+    return;
+  const text = crlf ? content.replaceAll(`\r
+`, `
+`) : content;
+  const edited = surgicalEdit(text, edit);
+  if (edited === undefined)
+    return;
+  return crlf ? edited.replaceAll(`
+`, `\r
+`) : edited;
+}
+function parses(content) {
+  return parseJsoncSafe3(content).errors.length === 0;
+}
+function surgicalEdit(content, edit) {
+  const root = parseTree2(content);
+  if (root === undefined)
+    return;
+  const target = findNodeAtLocation2(root, [...edit.path]);
+  if (target !== undefined)
+    return edit.value === undefined ? removeMember(content, target) : undefined;
+  if (edit.value === undefined)
+    return content;
+  return insertMember(content, root, edit);
+}
+function sameData(surgical, fallback) {
+  const left = parseJsoncSafe3(surgical);
+  const right = parseJsoncSafe3(fallback);
+  if (left.errors.length > 0 || right.errors.length > 0)
+    return false;
+  return JSON.stringify(left.data) === JSON.stringify(right.data);
+}
+function formattedModify(content, edit) {
+  return applyEdits(content, modify(content, [...edit.path], edit.value, { formattingOptions: FORMATTING_OPTIONS }));
+}
+function lineStart(content, offset) {
+  return content.lastIndexOf(`
+`, offset - 1) + 1;
+}
+function lineEnd(content, offset) {
+  const end = content.indexOf(`
+`, offset);
+  return end === -1 ? content.length : end;
+}
+function leadingWhitespace(content, offset) {
+  const start = lineStart(content, offset);
+  return /^[ \t]*/.exec(content.slice(start))?.[0] ?? "";
+}
+function onlyWhitespaceBefore(content, offset) {
+  return /^[ \t]*$/.test(content.slice(lineStart(content, offset), offset));
+}
+function commaAfter(content, offset) {
+  const match = /^[ \t]*,/.exec(content.slice(offset));
+  return match === null ? undefined : offset + match[0].length - 1;
+}
+function lineRestIsTrivia(content, offset) {
+  const rest = content.slice(offset, lineEnd(content, offset));
+  return /^[ \t]*,?[ \t]*(?:\/\/.*|\/\*(?:(?!\*\/).)*\*\/[ \t]*)?$/.test(rest);
+}
+function memberNodes(objectNode) {
+  return (objectNode.children ?? []).filter((child) => child.type === "property");
+}
+function fileIndentUnit(content) {
+  const indents = [...content.matchAll(/\n([ \t]+)\S/g)].map((match) => match[1] ?? "");
+  if (indents.some((indent) => indent.startsWith("\t")))
+    return "\t";
+  const widths = indents.map((indent) => indent.length).filter((width) => width > 0);
+  return " ".repeat(widths.length === 0 ? 2 : Math.min(...widths));
+}
+function indentUnit(content, memberIndent, objectIndent) {
+  if (memberIndent.startsWith(objectIndent) && memberIndent.length > objectIndent.length) {
+    return memberIndent.slice(objectIndent.length);
+  }
+  return fileIndentUnit(content);
+}
+function renderMember(key, value, memberIndent, unit) {
+  const rendered = JSON.stringify(value, null, unit).split(`
+`).join(`
+${memberIndent}`);
+  return `${JSON.stringify(key)}: ${rendered}`;
+}
+function nestedValue(path, value) {
+  return path.reduceRight((inner, segment) => ({ [String(segment)]: inner }), value);
+}
+function insertMember(content, root, edit) {
+  let depth = edit.path.length - 1;
+  let parent;
+  while (depth >= 0) {
+    parent = depth === 0 ? root : findNodeAtLocation2(root, [...edit.path.slice(0, depth)]);
+    if (parent !== undefined)
+      break;
+    depth -= 1;
+  }
+  if (parent === undefined || parent.type !== "object")
+    return;
+  const key = edit.path[depth];
+  if (typeof key !== "string")
+    return;
+  const value = nestedValue(edit.path.slice(depth + 1), edit.value);
+  const objectIndent = leadingWhitespace(content, parent.offset);
+  const closeBrace = parent.offset + parent.length - 1;
+  const members = memberNodes(parent);
+  const last = members.at(-1);
+  if (last === undefined) {
+    if (!/^\{\s*\}$/.test(content.slice(parent.offset, closeBrace + 1)))
+      return;
+    const unit = fileIndentUnit(content);
+    const memberIndent = `${objectIndent}${unit}`;
+    const member = renderMember(key, value, memberIndent, unit);
+    return `${content.slice(0, parent.offset)}{
+${memberIndent}${member}
+${objectIndent}}${content.slice(closeBrace + 1)}`;
+  }
+  if (!onlyWhitespaceBefore(content, last.offset))
+    return;
+  const lastEnd = last.offset + last.length;
+  if (!lineRestIsTrivia(content, lastEnd))
+    return;
+  const insertAt = lineEnd(content, lastEnd);
+  if (insertAt >= closeBrace)
+    return;
+  const memberIndent = leadingWhitespace(content, last.offset);
+  const unit = indentUnit(content, memberIndent, objectIndent);
+  const trailingComma = commaAfter(content, lastEnd);
+  const member = renderMember(key, value, memberIndent, unit);
+  const head = trailingComma === undefined ? `${content.slice(0, lastEnd)},${content.slice(lastEnd, insertAt)}` : content.slice(0, insertAt);
+  return `${head}
+${memberIndent}${member}${trailingComma === undefined ? "" : ","}${content.slice(insertAt)}`;
+}
+function removeMember(content, valueNode) {
+  const property = valueNode.parent;
+  if (property?.type !== "property" || property.parent?.type !== "object")
+    return;
+  if (!onlyWhitespaceBefore(content, property.offset))
+    return;
+  const end = property.offset + property.length;
+  if (!lineRestIsTrivia(content, end))
+    return;
+  const members = memberNodes(property.parent);
+  const index = members.indexOf(property);
+  const isLast = index === members.length - 1;
+  const removeFrom = lineStart(content, property.offset);
+  const lineAfter = lineEnd(content, end);
+  const removeTo = lineAfter < content.length ? lineAfter + 1 : lineAfter;
+  const removed = `${content.slice(0, removeFrom)}${content.slice(removeTo)}`;
+  if (!isLast || commaAfter(content, end) !== undefined || index === 0)
+    return removed;
+  const previous = members[index - 1];
+  if (previous === undefined)
+    return removed;
+  const previousComma = commaAfter(content, previous.offset + previous.length);
+  if (previousComma === undefined)
+    return removed;
+  return `${removed.slice(0, previousComma)}${removed.slice(previousComma + 1)}`;
+}
+var FORMATTING_OPTIONS;
+var init_surgical_edit = __esm(() => {
+  init_main();
+  init_jsonc_parse();
+  FORMATTING_OPTIONS = {
+    eol: `
+`,
+    insertSpaces: true,
+    tabSize: 2
+  };
+});
+
 // packages/omo-config-core/src/writer/writer.ts
 import { randomUUID as randomUUID2 } from "node:crypto";
 import { dirname as dirname5, join as join16, posix as posix3 } from "node:path";
@@ -76367,7 +76781,7 @@ function updateOmoConfig(options) {
   }
   let nextContent = content;
   for (const edit of options.edits) {
-    nextContent = applyEdits(nextContent, modify(nextContent, [...edit.path], edit.value, { formattingOptions: FORMATTING_OPTIONS }));
+    nextContent = applyOmoConfigEdit(nextContent, edit);
   }
   writeAtomically(path, nextContent, fileSystem);
   return backupPath === undefined ? { path } : { backupPath, path };
@@ -76375,18 +76789,12 @@ function updateOmoConfig(options) {
 var EMPTY_OMO_CONFIG = `// OMO configuration
 {
 }
-`, FORMATTING_OPTIONS;
+`;
 var init_writer = __esm(() => {
   init_jsonc_parse();
-  init_main();
   init_loader3();
+  init_surgical_edit();
   init_types4();
-  FORMATTING_OPTIONS = {
-    eol: `
-`,
-    insertSpaces: true,
-    tabSize: 2
-  };
 });
 
 // packages/omo-config-core/src/writer/index.ts
@@ -76421,6 +76829,57 @@ function moveMigrationBackup(fileSystem, sourcePath, backupPath) {
     fileSystem.unlinkSync(sourcePath);
   }
 }
+
+// packages/omo-config-core/src/migration/diff-edits.ts
+function deepEqual(left, right) {
+  if (left === right)
+    return true;
+  if (Array.isArray(left) || Array.isArray(right)) {
+    if (!Array.isArray(left) || !Array.isArray(right) || left.length !== right.length)
+      return false;
+    return left.every((entry, index) => deepEqual(entry, right[index]));
+  }
+  if (!isPlainObject5(left) || !isPlainObject5(right))
+    return false;
+  const leftKeys = Object.keys(left);
+  if (leftKeys.length !== Object.keys(right).length)
+    return false;
+  return leftKeys.every((key) => Object.prototype.hasOwnProperty.call(right, key) && deepEqual(left[key], right[key]));
+}
+function withoutMarker(document) {
+  const { _migrations: _marker, ...rest } = document;
+  return rest;
+}
+function diffEdits(before, after, path = []) {
+  const edits = [];
+  for (const key of Object.keys(before)) {
+    if (isUnsafeObjectKey3(key))
+      continue;
+    if (!Object.prototype.hasOwnProperty.call(after, key))
+      edits.push({ path: [...path, key], value: undefined });
+  }
+  for (const [key, value] of Object.entries(after)) {
+    if (isUnsafeObjectKey3(key))
+      continue;
+    const nextPath = [...path, key];
+    if (!Object.prototype.hasOwnProperty.call(before, key)) {
+      edits.push({ path: nextPath, value });
+      continue;
+    }
+    const previous = before[key];
+    if (deepEqual(previous, value))
+      continue;
+    if (isPlainObject5(previous) && isPlainObject5(value)) {
+      edits.push(...diffEdits(previous, value, nextPath));
+      continue;
+    }
+    edits.push({ path: nextPath, value });
+  }
+  return edits;
+}
+var init_diff_edits = __esm(() => {
+  init_plain_object();
+});
 
 // packages/omo-config-core/src/migration/merge.ts
 function displayValue(value) {
@@ -76672,17 +77131,11 @@ function prepareTargetReplacement(input) {
   const marker = markerValue(input.target, input.migrationId, input.targetPath);
   const document = { ...documentCleanup.document, _migrations: marker };
   validateTarget(input.targetPath, document);
-  const edits = [...targetCleanup.edits];
-  for (const key of Object.keys(targetCleanup.document)) {
-    if (key !== "_migrations" && !Object.prototype.hasOwnProperty.call(documentCleanup.document, key)) {
-      edits.push({ path: [key], value: undefined });
-    }
-  }
-  for (const [key, value] of Object.entries(documentCleanup.document)) {
-    if (key !== "_migrations")
-      edits.push({ path: [key], value });
-  }
-  edits.push({ path: ["_migrations"], value: marker });
+  const edits = [
+    ...targetCleanup.edits,
+    ...diffEdits(withoutMarker(targetCleanup.document), withoutMarker(documentCleanup.document)),
+    { path: ["_migrations"], value: marker }
+  ];
   return {
     diagnostics: uniqueDiagnostics([...targetCleanup.diagnostics, ...documentCleanup.diagnostics]),
     document,
@@ -76717,6 +77170,7 @@ var init_commit = __esm(() => {
   init_loader3();
   init_schema();
   init_writer2();
+  init_diff_edits();
   init_merge2();
   init_types5();
   OMO_HARNESS_BLOCKS = [...OMO_CONFIG_HARNESS_IDS, ...OMO_CONFIG_LEGACY_HARNESS_IDS].map(harnessBlockKey);
@@ -78015,7 +78469,7 @@ function generateModelConfig(config) {
       if (avail.native.openai) {
         agentConfig = { model: "openai/gpt-6-luna-fast", variant: "low" };
       } else if (avail.native.claude) {
-        agentConfig = { model: "anthropic/claude-haiku-4-5" };
+        agentConfig = { model: "anthropic/claude-haiku-5-5", variant: "medium" };
       } else if (avail.opencodeZen) {
         agentConfig = { model: "opencode/gpt-5-nano" };
       } else if (avail.opencodeGo) {
@@ -89519,7 +89973,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.27",
+    version: "5.1.28",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",

@@ -2132,7 +2132,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.54",
+    version: "5.1.55",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2156,6 +2156,7 @@ var init_package = __esm(() => {
       "packages/openclaw-core",
       "packages/boulder-state",
       "packages/memory-core",
+      "packages/device-service-core",
       "packages/isolation-core",
       "packages/telemetry-core",
       "packages/claude-code-compat-core",
@@ -2276,7 +2277,7 @@ var init_package = __esm(() => {
       "check:copy": "bun script/check-copy.ts",
       typecheck: "bun run check:copy && bun check --no-script --all -p tsconfig.json && bun run typecheck:script && bun run typecheck:packages && bun run typecheck:skill-scripts",
       "typecheck:skill-scripts": "bun check --no-script --all -p packages/shared-skills/skills/frontend/scripts/detect/tsconfig.json",
-      "typecheck:packages": "bun check --no-script --all -p packages/rules-engine/tsconfig.json && bun check --no-script --all -p packages/delegate-core/tsconfig.json && bun check --no-script --all -p packages/mcp-stdio-core/tsconfig.json && bun check --no-script --all -p packages/mcp-client-core/tsconfig.json && bun check --no-script --all -p packages/git-bash-mcp/tsconfig.json && bun check --no-script --all -p packages/ast-grep-mcp/tsconfig.json && bun check --no-script --all -p packages/lsp-core/tsconfig.json && bun check --no-script --all -p packages/utils/tsconfig.json && bun check --no-script --all -p packages/model-core/tsconfig.json && bun check --no-script --all -p packages/omo-config-core/tsconfig.json && bun check --no-script --all -p packages/prompts-core/tsconfig.json && bun check --no-script --all -p packages/comment-checker-core/tsconfig.json && bun check --no-script --all -p packages/hashline-core/tsconfig.json && bun check --no-script --all -p packages/tmux-core/tsconfig.json && bun check --no-script --all -p packages/team-core/tsconfig.json && bun check --no-script --all -p packages/openclaw-core/tsconfig.json && bun check --no-script --all -p packages/boulder-state/tsconfig.json && bun check --no-script --all -p packages/isolation-core/tsconfig.json && bun check --no-script --all -p packages/memory-core/tsconfig.json && bun check --no-script --all -p packages/telemetry-core/tsconfig.json && bun check --no-script --all -p packages/claude-code-compat-core/tsconfig.json && bun check --no-script --all -p packages/skills-loader-core/tsconfig.json && bun check --no-script --all -p packages/agents-md-core/tsconfig.json && bun check --no-script --all -p packages/omo-codex/plugin/shared/tsconfig.json && bun check --no-script --all -p packages/omo-codex/tsconfig.json && bun check --no-script --all -p packages/omo-senpi/tsconfig.json && bun check --no-script --all -p packages/senpi-task/tsconfig.json && bun check --no-script --all -p packages/omo-opencode/tsconfig.json && bun check --no-script --all -p packages/omo-native/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-protocol/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-engine/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-prelude/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-service/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-tool/tsconfig.json",
+      "typecheck:packages": "bun check --no-script --all -p packages/rules-engine/tsconfig.json && bun check --no-script --all -p packages/delegate-core/tsconfig.json && bun check --no-script --all -p packages/mcp-stdio-core/tsconfig.json && bun check --no-script --all -p packages/mcp-client-core/tsconfig.json && bun check --no-script --all -p packages/git-bash-mcp/tsconfig.json && bun check --no-script --all -p packages/ast-grep-mcp/tsconfig.json && bun check --no-script --all -p packages/lsp-core/tsconfig.json && bun check --no-script --all -p packages/utils/tsconfig.json && bun check --no-script --all -p packages/device-service-core/tsconfig.json && bun check --no-script --all -p packages/model-core/tsconfig.json && bun check --no-script --all -p packages/omo-config-core/tsconfig.json && bun check --no-script --all -p packages/prompts-core/tsconfig.json && bun check --no-script --all -p packages/comment-checker-core/tsconfig.json && bun check --no-script --all -p packages/hashline-core/tsconfig.json && bun check --no-script --all -p packages/tmux-core/tsconfig.json && bun check --no-script --all -p packages/team-core/tsconfig.json && bun check --no-script --all -p packages/openclaw-core/tsconfig.json && bun check --no-script --all -p packages/boulder-state/tsconfig.json && bun check --no-script --all -p packages/isolation-core/tsconfig.json && bun check --no-script --all -p packages/memory-core/tsconfig.json && bun check --no-script --all -p packages/telemetry-core/tsconfig.json && bun check --no-script --all -p packages/claude-code-compat-core/tsconfig.json && bun check --no-script --all -p packages/skills-loader-core/tsconfig.json && bun check --no-script --all -p packages/agents-md-core/tsconfig.json && bun check --no-script --all -p packages/omo-codex/plugin/shared/tsconfig.json && bun check --no-script --all -p packages/omo-codex/tsconfig.json && bun check --no-script --all -p packages/omo-senpi/tsconfig.json && bun check --no-script --all -p packages/senpi-task/tsconfig.json && bun check --no-script --all -p packages/omo-opencode/tsconfig.json && bun check --no-script --all -p packages/omo-native/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-protocol/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-engine/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-prelude/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-service/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-tool/tsconfig.json",
       "typecheck:script": "bun check --no-script --all -p script/tsconfig.json",
       test: "bun test --timeout 20000",
       "changelog:section": "bun script/changelog-section.ts",
@@ -2323,6 +2324,7 @@ var init_package = __esm(() => {
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
       "@oh-my-opencode/boulder-state": "workspace:*",
+      "@oh-my-opencode/device-service-core": "workspace:*",
       "@oh-my-opencode/claude-code-compat-core": "workspace:*",
       "@oh-my-opencode/comment-checker-core": "workspace:*",
       "@oh-my-opencode/delegate-core": "workspace:*",
@@ -2382,18 +2384,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.54",
-      "oh-my-opencode-darwin-x64": "5.1.54",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.54",
-      "oh-my-opencode-linux-arm64": "5.1.54",
-      "oh-my-opencode-linux-arm64-musl": "5.1.54",
-      "oh-my-opencode-linux-x64": "5.1.54",
-      "oh-my-opencode-linux-x64-baseline": "5.1.54",
-      "oh-my-opencode-linux-x64-musl": "5.1.54",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.54",
-      "oh-my-opencode-windows-arm64": "5.1.54",
-      "oh-my-opencode-windows-x64": "5.1.54",
-      "oh-my-opencode-windows-x64-baseline": "5.1.54"
+      "oh-my-opencode-darwin-arm64": "5.1.55",
+      "oh-my-opencode-darwin-x64": "5.1.55",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.55",
+      "oh-my-opencode-linux-arm64": "5.1.55",
+      "oh-my-opencode-linux-arm64-musl": "5.1.55",
+      "oh-my-opencode-linux-x64": "5.1.55",
+      "oh-my-opencode-linux-x64-baseline": "5.1.55",
+      "oh-my-opencode-linux-x64-musl": "5.1.55",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.55",
+      "oh-my-opencode-windows-arm64": "5.1.55",
+      "oh-my-opencode-windows-x64": "5.1.55",
+      "oh-my-opencode-windows-x64-baseline": "5.1.55"
     },
     overrides: {
       hono: "^4.13.8",
@@ -76953,6 +76955,7 @@ var init_agent = __esm(() => {
     prompt: string2().optional(),
     model: string2().optional(),
     models: array(OmoAgentModelEntrySchema).optional(),
+    models_distribution: _enum(["sequential", "round_robin"]).optional(),
     reasoning: OmoReasoningSchema.optional(),
     variant: string2().optional(),
     reasoningEffort: OmoReasoningEffortSchema.optional(),
@@ -76985,6 +76988,7 @@ var init_category = __esm(() => {
     description: string2().optional(),
     model: string2().optional(),
     models: array(union([string2(), OmoFallbackModelObjectSchema])).optional(),
+    models_distribution: _enum(["sequential", "round_robin"]).optional(),
     reasoning: OmoReasoningSchema.optional(),
     temperature: number2().min(0).max(2).optional(),
     top_p: number2().min(0).max(1).optional(),
@@ -78828,9 +78832,13 @@ function resolveModelReferences(view) {
 }
 var init_model_reference_resolution = () => {};
 
+// packages/omo-config-core/src/models/models-distribution.ts
+var init_models_distribution = () => {};
+
 // packages/omo-config-core/src/models/index.ts
 var init_models = __esm(() => {
   init_model_reference_resolution();
+  init_models_distribution();
 });
 
 // packages/omo-config-core/src/writer/types.ts
@@ -92677,7 +92685,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.54",
+    version: "5.1.55",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -104130,11 +104138,11 @@ function recordFields(value, fields) {
 }
 function modelInput(view) {
   const agents = isPlainRecord(view.agents) ? Object.fromEntries(Object.entries(view.agents).flatMap(([name, definition]) => {
-    const fields = recordFields(definition, ["description", "prompt", "model", "models", "variant", "reasoningEffort", "tools", "temperature", "disable"]);
+    const fields = recordFields(definition, ["description", "prompt", "model", "models", "models_distribution", "variant", "reasoningEffort", "tools", "temperature", "disable"]);
     return fields === undefined ? [] : [[name, fields]];
   })) : undefined;
   const categories = isPlainRecord(view.categories) ? Object.fromEntries(Object.entries(view.categories).flatMap(([name, definition]) => {
-    const fields = recordFields(definition, ["description", "model", "fallback_models", "variant", "temperature", "top_p", "maxTokens", "thinking", "reasoningEffort", "textVerbosity", "tools", "prompt_append", "max_prompt_tokens", "is_unstable_agent", "disable"]);
+    const fields = recordFields(definition, ["description", "model", "models", "models_distribution", "fallback_models", "variant", "temperature", "top_p", "maxTokens", "thinking", "reasoningEffort", "textVerbosity", "tools", "prompt_append", "max_prompt_tokens", "is_unstable_agent", "disable"]);
     return fields === undefined ? [] : [[name, fields]];
   })) : undefined;
   return {
@@ -104408,6 +104416,7 @@ var AgentPermissionSchema = object({
 var AgentOverrideConfigSchema = object({
   model: string2().optional(),
   models: array(union([string2(), FallbackModelObjectSchema])).optional(),
+  models_distribution: _enum(["sequential", "round_robin"]).optional(),
   fallback_models: FallbackModelsSchema.optional(),
   reasoning: OmoReasoningSchema.optional(),
   variant: string2().optional(),
@@ -104508,6 +104517,7 @@ var CategoryConfigSchema = object({
   description: string2().optional(),
   model: string2().optional(),
   models: array(union([string2(), FallbackModelObjectSchema])).optional(),
+  models_distribution: _enum(["sequential", "round_robin"]).optional(),
   fallback_models: FallbackModelsSchema.optional(),
   reasoning: OmoReasoningSchema.optional(),
   variant: string2().optional(),
@@ -105071,7 +105081,8 @@ function materializeAgentModelChains(config) {
     return [name, {
       ...rest,
       ...primarySettings,
-      fallback_models: fallbacks
+      fallback_models: fallbacks,
+      ...agent.models_distribution === "round_robin" ? { models: agent.models } : {}
     }];
   }));
   return changed ? { ...config, agents } : config;

@@ -2132,7 +2132,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.59",
+    version: "5.1.60",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2384,18 +2384,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.59",
-      "oh-my-opencode-darwin-x64": "5.1.59",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.59",
-      "oh-my-opencode-linux-arm64": "5.1.59",
-      "oh-my-opencode-linux-arm64-musl": "5.1.59",
-      "oh-my-opencode-linux-x64": "5.1.59",
-      "oh-my-opencode-linux-x64-baseline": "5.1.59",
-      "oh-my-opencode-linux-x64-musl": "5.1.59",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.59",
-      "oh-my-opencode-windows-arm64": "5.1.59",
-      "oh-my-opencode-windows-x64": "5.1.59",
-      "oh-my-opencode-windows-x64-baseline": "5.1.59"
+      "oh-my-opencode-darwin-arm64": "5.1.60",
+      "oh-my-opencode-darwin-x64": "5.1.60",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.60",
+      "oh-my-opencode-linux-arm64": "5.1.60",
+      "oh-my-opencode-linux-arm64-musl": "5.1.60",
+      "oh-my-opencode-linux-x64": "5.1.60",
+      "oh-my-opencode-linux-x64-baseline": "5.1.60",
+      "oh-my-opencode-linux-x64-musl": "5.1.60",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.60",
+      "oh-my-opencode-windows-arm64": "5.1.60",
+      "oh-my-opencode-windows-x64": "5.1.60",
+      "oh-my-opencode-windows-x64-baseline": "5.1.60"
     },
     overrides: {
       hono: "^4.13.8",
@@ -9392,7 +9392,7 @@ var init_agent_model_requirements = __esm(() => {
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "high"
+          variant: "medium"
         },
         { providers: ["zai-coding-plan", "opencode", "bailian-coding-plan"], model: "glm-5.2" },
         { providers: ["opencode"], model: "big-pickle" }
@@ -9404,12 +9404,12 @@ var init_agent_model_requirements = __esm(() => {
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-6-sol",
-          variant: "high"
+          variant: "medium"
         },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "high"
+          variant: "medium"
         }
       ],
       requiresProvider: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
@@ -9417,7 +9417,7 @@ var init_agent_model_requirements = __esm(() => {
     },
     oracle: {
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-5.6-sol", variant: "high" },
+        { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-5.6-sol", variant: "xhigh" },
         { providers: ["github-copilot"], model: "gpt-5.6-sol", variant: "high" },
         {
           providers: ["google", "google-vertex", "opencode"],
@@ -9441,7 +9441,7 @@ var init_agent_model_requirements = __esm(() => {
       fallbackChain: [
         { providers: ["kimi-for-coding"], model: "kimi-for-coding-highspeed", variant: "off" },
         { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptLunaFast, variant: "low" },
-        { providers: ["anthropic", "github-copilot"], model: LATEST_MODEL_BY_FAMILY.claudeHaiku, variant: "high" },
+        { providers: ["anthropic", "github-copilot"], model: LATEST_MODEL_BY_FAMILY.claudeHaiku, variant: "medium" },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "max" },
         { providers: ["opencode-go", "bailian-coding-plan"], model: "qwen3.7-plus" },
         { providers: ["opencode-go"], model: "minimax-m2.7" }
@@ -9451,7 +9451,7 @@ var init_agent_model_requirements = __esm(() => {
       fallbackChain: [
         { providers: ["kimi-for-coding"], model: "kimi-for-coding-highspeed", variant: "off" },
         { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptLunaFast, variant: "low" },
-        { providers: ["anthropic", "github-copilot"], model: LATEST_MODEL_BY_FAMILY.claudeHaiku, variant: "high" },
+        { providers: ["anthropic", "github-copilot"], model: LATEST_MODEL_BY_FAMILY.claudeHaiku, variant: "medium" },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "max" },
         { providers: ["opencode-go", "bailian-coding-plan"], model: "qwen3.7-plus" },
         { providers: ["opencode-go"], model: "minimax-m2.7" }
@@ -9470,12 +9470,12 @@ var init_agent_model_requirements = __esm(() => {
         {
           providers: ["anthropic", "github-copilot", "opencode"],
           model: FABLE_55_LAUNCH.id,
-          variant: "high"
+          variant: "xhigh"
         },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.claudeFable,
-          variant: "high"
+          variant: "xhigh"
         },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
@@ -9517,7 +9517,7 @@ var init_agent_model_requirements = __esm(() => {
     },
     momus: {
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "high" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "xhigh" },
         { providers: ["github-copilot"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "high" },
         { providers: ["openai", "chatgpt-subscription", "opencode"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "high" },
         {
@@ -9545,7 +9545,7 @@ var init_agent_model_requirements = __esm(() => {
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "high"
+          variant: "medium"
         },
         { providers: ["opencode-go"], model: "minimax-m3" },
         { providers: ["minimax-coding-plan", "minimax-cn-coding-plan"], model: "MiniMax-M3" },
@@ -9559,7 +9559,7 @@ var init_agent_model_requirements = __esm(() => {
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "high"
+          variant: "medium"
         },
         { providers: ["opencode-go"], model: "minimax-m3" },
         { providers: ["minimax-coding-plan", "minimax-cn-coding-plan"], model: "MiniMax-M3" },
@@ -9614,14 +9614,14 @@ var init_category_model_requirements = __esm(() => {
     },
     "deep-low": {
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "high" },
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSolFast, variant: "high" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "medium" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSolFast, variant: "medium" },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "high"
+          variant: "medium"
         },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-5.6-sol-fast", variant: "high" }
+        { providers: ["openai", "chatgpt-subscription"], model: "gpt-5.6-sol-fast", variant: "medium" }
       ]
     },
     "deep-high": {
@@ -9664,7 +9664,7 @@ var init_category_model_requirements = __esm(() => {
         {
           providers: ["anthropic", "anthropic-api", "github-copilot"],
           model: LATEST_MODEL_BY_FAMILY.claudeHaiku,
-          variant: "high"
+          variant: "medium"
         },
         { providers: ["deepseek"], model: "deepseek-flash", variant: "off" },
         {
@@ -9684,16 +9684,16 @@ var init_category_model_requirements = __esm(() => {
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.claudeSonnet,
-          variant: "high"
+          variant: "medium"
         },
         { providers: ["xiaomi", "opencode-go"], model: "mimo-v2.6-pro", variant: "max" },
-        { providers: ["xai", "github-copilot", "opencode-go"], model: "grok-4.7", variant: "high" },
+        { providers: ["xai", "github-copilot", "opencode-go"], model: "grok-4.7", variant: "xhigh" },
         { providers: ["zai-coding-plan", "opencode-go"], model: LATEST_MODEL_BY_FAMILY.glm, variant: "high" },
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "high" },
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "medium" },
         {
           providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
           model: "gpt-5.6-sol",
-          variant: "high"
+          variant: "medium"
         },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
@@ -9714,7 +9714,7 @@ var init_category_model_requirements = __esm(() => {
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.claudeOpus,
-          variant: "high"
+          variant: "medium"
         },
         { providers: ["zai-coding-plan", "opencode-go"], model: LATEST_MODEL_BY_FAMILY.glm, variant: "max" },
         {
@@ -11791,7 +11791,7 @@ var init_openai_categories = __esm(() => {
     },
     {
       name: "deep-low",
-      config: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptSol}`, variant: "high" },
+      config: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptSol}`, variant: "medium" },
       description: "Default deep lane: one goal, one deliverable, decisions the child can settle from what it reads; preferred over deep-high for 3D graphics, computer/browser use, CAPTCHA, multimodal, backend, logic, and algorithm work. Multiple goals fan out as parallel calls.",
       callerGuidance: DEEP_LOW_CATEGORY_CALLER_GUIDANCE,
       promptAppend: DEEP_LOW_CATEGORY_PROMPT_APPEND,
@@ -11816,14 +11816,14 @@ var init_openai_categories = __esm(() => {
     },
     {
       name: "unspecified-low",
-      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeSonnet}`, variant: "high" },
+      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeSonnet}`, variant: "medium" },
       description: "Tasks that don't fit other categories, low effort required",
       callerGuidance: UNSPECIFIED_LOW_CATEGORY_CALLER_GUIDANCE,
       promptAppend: UNSPECIFIED_LOW_CATEGORY_PROMPT_APPEND
     },
     {
       name: "unspecified-high",
-      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeOpus}`, variant: "high" },
+      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeOpus}`, variant: "medium" },
       description: "Tasks that don't fit other categories, high effort required",
       callerGuidance: UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE,
       promptAppend: UNSPECIFIED_HIGH_CATEGORY_PROMPT_APPEND,
@@ -80742,7 +80742,7 @@ var init_openai_only_model_catalog = __esm(() => {
     librarian: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptLunaFast}`, variant: "low" }
   };
   OPENAI_ONLY_CATEGORY_OVERRIDES = {
-    artistry: { model: "openai/gpt-5.6-sol", variant: "high" },
+    artistry: { model: "openai/gpt-5.6-sol", variant: "xhigh" },
     quick: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptLunaFast}` },
     "visual-engineering": { model: "openai/gpt-5.6-sol", variant: "high" }
   };
@@ -80954,7 +80954,7 @@ function generateModelConfig(config) {
       if (avail.native.openai) {
         agentConfig = { model: `openai/${LATEST_MODEL_BY_FAMILY.gptLunaFast}`, variant: "low" };
       } else if (avail.native.claude) {
-        agentConfig = { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeHaiku}`, variant: "high" };
+        agentConfig = { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeHaiku}`, variant: "medium" };
       } else if (avail.opencodeZen) {
         agentConfig = { model: "opencode/gpt-5-nano" };
       } else if (avail.opencodeGo) {
@@ -92689,7 +92689,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.59",
+    version: "5.1.60",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",

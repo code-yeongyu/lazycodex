@@ -2133,7 +2133,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.60",
+    version: "5.1.61",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2320,7 +2320,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.11.2-3",
+      "@code-yeongyu/senpi": "2026.11.3-3",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -2385,18 +2385,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.60",
-      "oh-my-opencode-darwin-x64": "5.1.60",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.60",
-      "oh-my-opencode-linux-arm64": "5.1.60",
-      "oh-my-opencode-linux-arm64-musl": "5.1.60",
-      "oh-my-opencode-linux-x64": "5.1.60",
-      "oh-my-opencode-linux-x64-baseline": "5.1.60",
-      "oh-my-opencode-linux-x64-musl": "5.1.60",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.60",
-      "oh-my-opencode-windows-arm64": "5.1.60",
-      "oh-my-opencode-windows-x64": "5.1.60",
-      "oh-my-opencode-windows-x64-baseline": "5.1.60"
+      "oh-my-opencode-darwin-arm64": "5.1.61",
+      "oh-my-opencode-darwin-x64": "5.1.61",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.61",
+      "oh-my-opencode-linux-arm64": "5.1.61",
+      "oh-my-opencode-linux-arm64-musl": "5.1.61",
+      "oh-my-opencode-linux-x64": "5.1.61",
+      "oh-my-opencode-linux-x64-baseline": "5.1.61",
+      "oh-my-opencode-linux-x64-musl": "5.1.61",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.61",
+      "oh-my-opencode-windows-arm64": "5.1.61",
+      "oh-my-opencode-windows-x64": "5.1.61",
+      "oh-my-opencode-windows-x64-baseline": "5.1.61"
     },
     overrides: {
       hono: "^4.13.8",
@@ -7491,7 +7491,7 @@ function createLogger(options) {
   function scheduleFlush() {
     if (flushTimer)
       return;
-    flushTimer = setTimeout(() => {
+    flushTimer = scheduleTimeout(() => {
       flushTimer = null;
       flush();
     }, flushIntervalMs);
@@ -7518,7 +7518,7 @@ function createLogger(options) {
   function _setLoggerForTesting(overrides) {
     buffer = [];
     if (flushTimer) {
-      clearTimeout(flushTimer);
+      cancelTimeout(flushTimer);
       flushTimer = null;
     }
     if (overrides.filePath !== undefined)
@@ -7534,13 +7534,13 @@ function createLogger(options) {
     maxLogFileBackups = maxLogFileBackupsDefault;
     buffer = [];
     if (flushTimer) {
-      clearTimeout(flushTimer);
+      cancelTimeout(flushTimer);
       flushTimer = null;
     }
   }
   function _flushForTesting() {
     if (flushTimer) {
-      clearTimeout(flushTimer);
+      cancelTimeout(flushTimer);
       flushTimer = null;
     }
     flush();
@@ -7553,8 +7553,10 @@ function createLogger(options) {
     _flushForTesting
   };
 }
-var DEFAULT_MAX_LOG_FILE_SIZE_BYTES, DEFAULT_MAX_LOG_FILE_BACKUPS = 2, DEFAULT_LOG_FLUSH_INTERVAL_MS = 500, DEFAULT_LOG_BUFFER_SIZE_LIMIT = 50;
+var scheduleTimeout, cancelTimeout, DEFAULT_MAX_LOG_FILE_SIZE_BYTES, DEFAULT_MAX_LOG_FILE_BACKUPS = 2, DEFAULT_LOG_FLUSH_INTERVAL_MS = 500, DEFAULT_LOG_BUFFER_SIZE_LIMIT = 50;
 var init_logger = __esm(() => {
+  scheduleTimeout = globalThis.setTimeout;
+  cancelTimeout = globalThis.clearTimeout;
   DEFAULT_MAX_LOG_FILE_SIZE_BYTES = 50 * 1024 * 1024;
 });
 
@@ -77716,6 +77718,19 @@ var init_telemetry = __esm(() => {
   }).strict();
 });
 
+// packages/omo-config-core/src/schema/device-service.ts
+var OmoDeviceServiceSettingsShape, OmoDeviceServiceSettingsLayerSchema, OmoDeviceServiceSettingsSchema;
+var init_device_service = __esm(() => {
+  init_zod();
+  OmoDeviceServiceSettingsShape = {
+    enabled: boolean2()
+  };
+  OmoDeviceServiceSettingsLayerSchema = object(OmoDeviceServiceSettingsShape).partial().strict();
+  OmoDeviceServiceSettingsSchema = OmoDeviceServiceSettingsLayerSchema.extend({
+    enabled: boolean2().default(true)
+  }).strict();
+});
+
 // packages/omo-config-core/src/schema/format-on-mutation.ts
 var mode, languages, OmoFormatOnMutationLayerSchema, OmoFormatOnMutationSchema;
 var init_format_on_mutation = __esm(() => {
@@ -77764,6 +77779,7 @@ var init_config = __esm(() => {
   init_task();
   init_team();
   init_telemetry();
+  init_device_service();
   init_format_on_mutation();
   init_provenance();
   OmoOpenCodeHarnessConfigSchema = record(string2(), unknown());
@@ -77783,6 +77799,7 @@ var init_config = __esm(() => {
     model_pad: OmoModelPadSchema.optional(),
     memory: OmoMemorySettingsLayerSchema.optional(),
     telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+    device_service: OmoDeviceServiceSettingsLayerSchema.optional(),
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
@@ -77802,6 +77819,7 @@ var init_config = __esm(() => {
     model_pad: OmoModelPadSchema.optional(),
     memory: OmoMemorySettingsLayerSchema.optional(),
     telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+    device_service: OmoDeviceServiceSettingsLayerSchema.optional(),
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
@@ -77826,6 +77844,7 @@ var init_config = __esm(() => {
     model_pad: OmoModelPadSchema.optional(),
     memory: OmoMemorySettingsSchema.optional(),
     telemetry: OmoTelemetrySettingsSchema.optional(),
+    device_service: OmoDeviceServiceSettingsSchema.optional(),
     side_panel: OmoSidePanelSettingsSchema.optional(),
     computer: OmoComputerSettingsSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
@@ -77853,6 +77872,7 @@ var init_config = __esm(() => {
     model_pad: OmoModelPadSchema.optional(),
     memory: OmoMemorySettingsLayerSchema.optional(),
     telemetry: OmoTelemetrySettingsLayerSchema.optional(),
+    device_service: OmoDeviceServiceSettingsLayerSchema.optional(),
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
@@ -78004,6 +78024,7 @@ var init_schema = __esm(() => {
   init_task();
   init_team();
   init_telemetry();
+  init_device_service();
   init_computer();
 });
 
@@ -92768,7 +92789,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.60",
+    version: "5.1.61",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -100144,6 +100165,7 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
   join66("extensions", "omo-memory-commands.js"),
   join66("extensions", "omo-session-history.js"),
   join66("extensions", "omo-recall-store.js"),
+  join66("extensions", "omo-device-service.js"),
   join66("extensions", "omo-telemetry-posthog.js"),
   join66("extensions", "omo-telemetry-otlp.js"),
   join66("extensions", "omo-memory-sync.js"),
@@ -109528,8 +109550,8 @@ var package_default3 = {
   },
   dependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.11.2-3",
-    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.2-3",
+    "@code-yeongyu/senpi": "2026.11.3-3",
+    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.3-3",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/boulder-state": "workspace:*",

@@ -2132,7 +2132,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.61",
+    version: "5.1.62",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2319,7 +2319,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.11.3-3",
+      "@code-yeongyu/senpi": "2026.11.5-1",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -2384,18 +2384,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.61",
-      "oh-my-opencode-darwin-x64": "5.1.61",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.61",
-      "oh-my-opencode-linux-arm64": "5.1.61",
-      "oh-my-opencode-linux-arm64-musl": "5.1.61",
-      "oh-my-opencode-linux-x64": "5.1.61",
-      "oh-my-opencode-linux-x64-baseline": "5.1.61",
-      "oh-my-opencode-linux-x64-musl": "5.1.61",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.61",
-      "oh-my-opencode-windows-arm64": "5.1.61",
-      "oh-my-opencode-windows-x64": "5.1.61",
-      "oh-my-opencode-windows-x64-baseline": "5.1.61"
+      "oh-my-opencode-darwin-arm64": "5.1.62",
+      "oh-my-opencode-darwin-x64": "5.1.62",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.62",
+      "oh-my-opencode-linux-arm64": "5.1.62",
+      "oh-my-opencode-linux-arm64-musl": "5.1.62",
+      "oh-my-opencode-linux-x64": "5.1.62",
+      "oh-my-opencode-linux-x64-baseline": "5.1.62",
+      "oh-my-opencode-linux-x64-musl": "5.1.62",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.62",
+      "oh-my-opencode-windows-arm64": "5.1.62",
+      "oh-my-opencode-windows-x64": "5.1.62",
+      "oh-my-opencode-windows-x64-baseline": "5.1.62"
     },
     overrides: {
       hono: "^4.13.8",
@@ -92710,7 +92710,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.61",
+    version: "5.1.62",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -104373,6 +104373,7 @@ var BuiltinSkillNameSchema = _enum([
   "debugging",
   "security-research",
   "security-review",
+  "hyperplan",
   "visual-qa",
   "team-mode"
 ]);
@@ -109471,8 +109472,8 @@ var package_default3 = {
   },
   dependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.11.3-3",
-    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.3-3",
+    "@code-yeongyu/senpi": "2026.11.5-1",
+    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.5-1",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/boulder-state": "workspace:*",
@@ -112744,6 +112745,24 @@ function retryOnEintrSync(operation) {
 
 // packages/memory-core/src/fs/rename-contention.ts
 var CONTENTION_CODES = new Set(["EPERM", "EBUSY", "EACCES"]);
+var CONTENTION_DELAYS_MS = [10, 25, 50, 100, 200, 400];
+var sleepFor = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+async function renameWithContentionRetry(from, to, deps) {
+  const delays = deps.platform === "win32" ? deps.delaysMs ?? CONTENTION_DELAYS_MS : [];
+  const sleep = deps.sleep ?? sleepFor;
+  for (let attempt = 0;; attempt += 1) {
+    try {
+      await retryOnEintr(() => deps.admit === undefined ? deps.rename(from, to) : deps.admit(() => deps.rename(from, to)));
+      return;
+    } catch (error) {
+      const delay = delays[attempt];
+      const code = fsErrorCode(error);
+      if (delay === undefined || code === undefined || !CONTENTION_CODES.has(code))
+        throw error;
+      await sleep(delay);
+    }
+  }
+}
 
 // packages/memory-core/src/fs/resilient.ts
 function isFunction2(value) {
@@ -112776,6 +112795,13 @@ function resilientNamespace(namespace, kind) {
 }
 var IDEMPOTENT_HANDLE_METHODS = new Set(["stat", "sync", "datasync", "chmod", "chown", "utimes", "truncate"]);
 var promises = resilientNamespace(fsp, "async");
+function rename8(from, to, admit) {
+  return renameWithContentionRetry(from, to, {
+    rename: (source, target) => fsp.rename(source, target),
+    platform: process.platform,
+    ...admit === undefined ? {} : { admit }
+  });
+}
 var sync = resilientNamespace(fsSync, "sync");
 var {
   access: access3,
@@ -113671,15 +113697,60 @@ async function loginLoopback(session, options) {
   }
 }
 
-// packages/omo-opencode/src/cli/service-auth/session.ts
+// packages/memory-core/src/sync/device-retire.ts
+import { createHash as createHash14, randomBytes as randomBytes6 } from "crypto";
+import { join as join109 } from "path";
+
+// packages/memory-core/src/identity/layout.ts
 import { homedir as homedir32 } from "os";
+import { join as join107, resolve as resolve31 } from "path";
+var MEMORY_ROOT_ENV_VAR = "OMO_MEMORY_HOME";
+function defaultMemoryRoot() {
+  return join107(homedir32(), ".omo", "memory");
+}
+function resolveMemoryRoot(env, cwd) {
+  const override = env[MEMORY_ROOT_ENV_VAR];
+  if (override === undefined || override.trim() === "") {
+    return defaultMemoryRoot();
+  }
+  return resolve31(cwd, override);
+}
+// packages/memory-core/src/sync/pin-dir.ts
+import { join as join108 } from "path";
+var syncPinDir = (memoryRoot) => join108(memoryRoot, "sync-device");
+
+// packages/memory-core/src/sync/device-retire.ts
+var trustAnchorRoot = (pinDir) => join109(pinDir, "trust-anchor");
+var trustAnchorKey = (account) => createHash14("sha256").update(account, "utf8").digest("base64url");
+var trustAnchorDir = (pinDir, account) => join109(trustAnchorRoot(pinDir), trustAnchorKey(account));
+var hasLiveTrustAnchor = async (pinDir) => {
+  try {
+    return (await readdir17(trustAnchorRoot(pinDir))).some((name) => !name.includes(".retired-"));
+  } catch (error) {
+    if (error instanceof Error && "code" in error && error.code === "ENOENT")
+      return false;
+    throw error;
+  }
+};
+var retireSyncDevice = async (input) => {
+  const dir = trustAnchorDir(input.pinDir, input.account);
+  try {
+    await rename8(dir, `${dir}.retired-${Date.now()}-${randomBytes6(4).toString("hex")}`);
+  } catch (error) {
+    if (!(error instanceof Error && ("code" in error) && error.code === "ENOENT"))
+      throw error;
+  }
+};
+
+// packages/omo-opencode/src/cli/service-auth/session.ts
+import { homedir as homedir33 } from "os";
 
 // packages/omo-opencode/src/cli/service-auth/signed-out-marker.ts
 init_zod();
-import { mkdir as mkdir12, readFile as readFile35, rename as rename8, rm as rm17, writeFile as writeFile17 } from "fs/promises";
-import { dirname as dirname43, join as join107 } from "path";
+import { mkdir as mkdir12, readFile as readFile35, rename as rename9, rm as rm17, writeFile as writeFile17 } from "fs/promises";
+import { dirname as dirname43, join as join110 } from "path";
 var markerSchema = object({ device: string2().nullable(), at: string2() });
-var signedOutMarkerPath = (home, credential) => join107(home, ".omo", "account-state", `${credential}.signed-out.json`);
+var signedOutMarkerPath = (home, credential) => join110(home, ".omo", "account-state", `${credential}.signed-out.json`);
 async function readSignedOutMarker(path) {
   const text = await readFile35(path, "utf8").catch(() => null);
   if (text === null)
@@ -113697,7 +113768,7 @@ async function writeSignedOutMarker(path, device) {
   await mkdir12(dirname43(path), { recursive: true, mode: 448 });
   const staging = `${path}.${process.pid}.tmp`;
   await writeFile17(staging, JSON.stringify({ device, at: new Date().toISOString() }), { mode: 384 });
-  await rename8(staging, path);
+  await rename9(staging, path);
 }
 var clearSignedOutMarker = (path) => rm17(path, { force: true });
 
@@ -113712,11 +113783,18 @@ class SessionEnded extends SignInError {
   }
 }
 var DEVICE_REVOKING_REFUSALS = new Set(["account_deleted", "reauth_required", "device_revoked"]);
+var discardedOf = (credentials, cause) => ({
+  kind: "credential",
+  deviceId: credentials.device.id,
+  accountId: credentials.accountId,
+  owner: credentials.owner,
+  cause
+});
 function createSession(options) {
   const api = serviceOrigin(options.api);
   const now = options.now ?? Date.now;
-  const { store, signal } = options;
-  const markerPath = signedOutMarkerPath(options.home ?? homedir32(), credentialId(api));
+  const { store, signal, beforeKeysDiscarded } = options;
+  const markerPath = signedOutMarkerPath(options.home ?? homedir33(), credentialId(api));
   async function locked(action) {
     signal?.throwIfAborted();
     return withCredentialLock(api, async () => {
@@ -113725,6 +113803,11 @@ function createSession(options) {
     }, options.home);
   }
   const request = (path, init) => requestApi(api, path, init, signal);
+  const accountOf = async (access) => {
+    const body = await request("/v1/me", { headers: { authorization: `Bearer ${access}` } }).catch(() => null);
+    const id = typeof body === "object" && body !== null && "account" in body && typeof body.account === "object" && body.account !== null && "id" in body.account ? body.account.id : undefined;
+    return typeof id === "string" && id !== "" ? id : undefined;
+  };
   async function refreshed(current) {
     if (current.refreshState === "uncertain" || current.refreshAttempt !== undefined) {
       throw new SessionEnded(`Refresh recovery can no longer be proved safe. ${signInHint("again")}`, false, "refresh_recovery_expired");
@@ -113741,6 +113824,7 @@ function createSession(options) {
       if (error instanceof CredentialStoreError)
         throw error;
       if (error instanceof ApiRefusal && error.status < 500 && ["unauthorized", "account_deleted", "reauth_required", "invalid_grant", "device_revoked"].includes(error.code)) {
+        await beforeKeysDiscarded(discardedOf(current, "refused"));
         await store.clear();
         throw new SessionEnded(error.code === "reauth_required" ? `This session was ended because its refresh token was reused. ${signInHint("again")}` : refusalMessage(refusalGuidance(error.code, error.status)), DEVICE_REVOKING_REFUSALS.has(error.code), error.code);
       }
@@ -113766,6 +113850,17 @@ function createSession(options) {
     },
     async save(value) {
       await locked(async () => {
+        let stored;
+        try {
+          stored = await store.readAuthoritative();
+        } catch (error) {
+          if (!(error instanceof InvalidCredentialState))
+            throw error;
+          await beforeKeysDiscarded({ kind: "unreadable" });
+          stored = null;
+        }
+        if (stored !== null && stored.device.id !== value.device.id)
+          await beforeKeysDiscarded(discardedOf(stored, "replaced"));
         await store.write(value);
         await clearSignedOutMarker(markerPath);
       });
@@ -113792,12 +113887,16 @@ function createSession(options) {
     async logout() {
       return locked(async () => {
         let current = null;
+        let account;
         try {
           current = await store.readAuthoritative();
           if (current !== null) {
             if (current.refreshState === "uncertain")
               return false;
             const access = Date.parse(current.accessTokenExpiresAt) <= now() ? (await refreshed(current)).accessToken : current.accessToken;
+            if (current.accountId === undefined && current.owner === undefined && await beforeKeysDiscarded.wantsAccount?.() === true) {
+              account = await accountOf(access);
+            }
             await request(`/v1/devices/${encodeURIComponent(current.device.id)}`, {
               method: "DELETE",
               headers: { authorization: `Bearer ${access}` }
@@ -113812,6 +113911,9 @@ function createSession(options) {
           throw error;
         } finally {
           await writeSignedOutMarker(markerPath, current?.device.id ?? null);
+          const stored = current === null ? null : await store.read().catch(() => current);
+          if (stored !== null)
+            await beforeKeysDiscarded(discardedOf(stored.accountId === undefined && account !== undefined ? { ...stored, accountId: account } : stored, "logout"));
           await store.clear();
         }
       });
@@ -113846,6 +113948,26 @@ function createSession(options) {
       return true;
     }
   };
+}
+
+// packages/omo-opencode/src/cli/service-auth/sync-pin-retire.ts
+var reason = (error) => error instanceof Error && ("code" in error) && typeof error.code === "string" ? error.code : "unknown";
+function retireSyncPinOnDiscard(options) {
+  const hook = async (discarded) => {
+    if (discarded.kind === "unreadable") {
+      options.log("memory sync: a stored sign-in could not be read while it was replaced; its sync pin was left in place");
+      return;
+    }
+    const account = discarded.owner?.accountId ?? discarded.accountId;
+    if (account === undefined)
+      return;
+    try {
+      await retireSyncDevice({ pinDir: options.pinDir(), account });
+    } catch (error) {
+      options.log(`memory sync: the sync pin could not be retired (${reason(error)}); it was left in place`);
+    }
+  };
+  return Object.assign(hook, { wantsAccount: () => hasLiveTrustAnchor(options.pinDir()).catch(() => false) });
 }
 
 // packages/omo-opencode/src/cli/service-auth/commands.ts
@@ -113890,7 +114012,12 @@ async function run2(action, options) {
   try {
     const api = serviceOrigin(options.api ?? process.env.OMO_SERVICE_API_URL ?? "https://api.omo.dev");
     const store = createCredentialStore(api, { wait: INTERACTIVE_READ_WAIT });
-    const session = createSession({ api, store, signal: controller.signal });
+    const session = createSession({
+      api,
+      store,
+      signal: controller.signal,
+      beforeKeysDiscarded: retireSyncPinOnDiscard({ pinDir: () => syncPinDir(resolveMemoryRoot(process.env, process.cwd())), log: (line) => console.error(line) })
+    });
     if (action === "logout") {
       const revoked = await session.logout();
       console.log("Signed out of OmO. Stored credentials and device keys were removed.");
@@ -114158,11 +114285,11 @@ async function boulder(options) {
 // packages/omo-opencode/src/cli/codex-ulw-loop.ts
 import { spawn as spawn6 } from "child_process";
 import { existsSync as existsSync67, readFileSync as readFileSync45, realpathSync as realpathSync14 } from "fs";
-import { homedir as homedir33 } from "os";
+import { homedir as homedir34 } from "os";
 var ULW_LOOP_DELEGATION_SENTINEL = "OMO_ULW_LOOP_DELEGATED";
 function resolveCodexUlwLoopCommand(input = {}) {
   const env = input.env ?? process.env;
-  const homeDir = input.homeDir ?? homedir33();
+  const homeDir = input.homeDir ?? homedir34();
   const localComponentBin = resolveLocalUlwLoopBin(env, homeDir);
   if (localComponentBin !== null)
     return { executable: localComponentBin, argsPrefix: [] };

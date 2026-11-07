@@ -2132,7 +2132,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.62",
+    version: "5.1.63",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2384,18 +2384,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.62",
-      "oh-my-opencode-darwin-x64": "5.1.62",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.62",
-      "oh-my-opencode-linux-arm64": "5.1.62",
-      "oh-my-opencode-linux-arm64-musl": "5.1.62",
-      "oh-my-opencode-linux-x64": "5.1.62",
-      "oh-my-opencode-linux-x64-baseline": "5.1.62",
-      "oh-my-opencode-linux-x64-musl": "5.1.62",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.62",
-      "oh-my-opencode-windows-arm64": "5.1.62",
-      "oh-my-opencode-windows-x64": "5.1.62",
-      "oh-my-opencode-windows-x64-baseline": "5.1.62"
+      "oh-my-opencode-darwin-arm64": "5.1.63",
+      "oh-my-opencode-darwin-x64": "5.1.63",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.63",
+      "oh-my-opencode-linux-arm64": "5.1.63",
+      "oh-my-opencode-linux-arm64-musl": "5.1.63",
+      "oh-my-opencode-linux-x64": "5.1.63",
+      "oh-my-opencode-linux-x64-baseline": "5.1.63",
+      "oh-my-opencode-linux-x64-musl": "5.1.63",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.63",
+      "oh-my-opencode-windows-arm64": "5.1.63",
+      "oh-my-opencode-windows-x64": "5.1.63",
+      "oh-my-opencode-windows-x64-baseline": "5.1.63"
     },
     overrides: {
       hono: "^4.13.8",
@@ -7339,7 +7339,34 @@ var init_which = __esm(() => {
 });
 
 // packages/utils/src/runtime/file.ts
-var init_file = () => {};
+import { access, readFile, unlink, writeFile } from "fs/promises";
+function createNodeFile(path) {
+  return {
+    text() {
+      return readFile(path, "utf8");
+    },
+    async arrayBuffer() {
+      const buffer = await readFile(path);
+      return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength);
+    },
+    exists() {
+      return access(path).then(() => true, () => false);
+    },
+    delete() {
+      return unlink(path);
+    }
+  };
+}
+function bunFile(path) {
+  const bun = runtime3.Bun;
+  if (bun)
+    return bun.file(path);
+  return createNodeFile(path);
+}
+var runtime3;
+var init_file = __esm(() => {
+  runtime3 = globalThis;
+});
 
 // packages/utils/src/runtime/git-bash.ts
 import { execFileSync } from "child_process";
@@ -12283,7 +12310,9 @@ var init_zip_extractor = __esm(() => {
 });
 
 // packages/omo-opencode/src/shared/bun-file-shim.ts
-var init_bun_file_shim = () => {};
+var init_bun_file_shim = __esm(() => {
+  init_runtime();
+});
 
 // packages/omo-opencode/src/shared/binary-downloader.ts
 import { chmodSync, existsSync as existsSync9, mkdirSync as mkdirSync4, unlinkSync as unlinkSync3 } from "fs";
@@ -92710,7 +92739,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.62",
+    version: "5.1.63",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -93326,7 +93355,7 @@ var init_check_for_update = __esm(() => {
 });
 
 // packages/omo-opencode/src/hooks/auto-update-checker/checker/sync-package-json.ts
-import * as crypto from "crypto";
+import * as crypto2 from "crypto";
 import * as fs8 from "fs";
 import * as path11 from "path";
 function safeUnlink(filePath) {
@@ -93350,7 +93379,7 @@ function getPackageNameFromIntent(pluginInfo) {
   return ACCEPTED_PACKAGE_NAMES2.find((packageName) => pluginInfo.entry === packageName || pluginInfo.entry.startsWith(`${packageName}@`)) ?? PACKAGE_NAME3;
 }
 function writeCachePackageJson(cachePackageJsonPath, pkgJson) {
-  const tmpPath = `${cachePackageJsonPath}.${crypto.randomUUID()}`;
+  const tmpPath = `${cachePackageJsonPath}.${crypto2.randomUUID()}`;
   try {
     fs8.mkdirSync(path11.dirname(cachePackageJsonPath), { recursive: true });
     fs8.writeFileSync(tmpPath, JSON.stringify(pkgJson, null, 2));
@@ -94271,7 +94300,7 @@ import { existsSync as existsSync27 } from "fs";
 import { homedir as homedir7 } from "os";
 
 // packages/omo-codex/src/install/codex-cache-bins.ts
-import { chmod, lstat as lstat4, mkdir, readFile as readFile3, readdir as readdir2, readlink as readlink3, rm as rm3, stat as stat2, symlink, writeFile } from "fs/promises";
+import { chmod, lstat as lstat4, mkdir, readFile as readFile4, readdir as readdir2, readlink as readlink3, rm as rm3, stat as stat2, symlink, writeFile as writeFile2 } from "fs/promises";
 import { basename as basename4, isAbsolute as isAbsolute2, join as join26, relative, resolve as resolve6, sep } from "path";
 
 // packages/omo-codex/src/install/codex-cache-command-shim.ts
@@ -94315,7 +94344,7 @@ function windowsCommandShim(targetPath) {
 }
 
 // packages/omo-codex/src/install/codex-cache-dangling-bins.ts
-import { lstat as lstat2, readFile, readdir, readlink, rm, stat } from "fs/promises";
+import { lstat as lstat2, readFile as readFile2, readdir, readlink, rm, stat } from "fs/promises";
 import { dirname as dirname10, isAbsolute, join as join23, resolve as resolve5 } from "path";
 
 // packages/omo-codex/src/install/codex-cache-fs.ts
@@ -94377,7 +94406,7 @@ async function removeDanglingGeneratedCommandShim(linkPath) {
     const linkStat = await lstat2(linkPath);
     if (!linkStat.isFile())
       return;
-    const content = await readFile(linkPath, "utf8");
+    const content = await readFile2(linkPath, "utf8");
     if (!content.includes(COMMAND_SHIM_MARKER))
       return;
     const target = extractCommandShimTarget(content);
@@ -94425,7 +94454,7 @@ function hasOmoCodexPluginPrefix(parts, endExclusive) {
 }
 
 // packages/omo-codex/src/install/codex-cache-legacy-bins.ts
-import { lstat as lstat3, readFile as readFile2, readlink as readlink2, rm as rm2 } from "fs/promises";
+import { lstat as lstat3, readFile as readFile3, readlink as readlink2, rm as rm2 } from "fs/promises";
 import { join as join24 } from "path";
 var LEGACY_CODEX_COMPONENT_BINS = [
   { name: "omo", component: "ulw-loop" },
@@ -94460,7 +94489,7 @@ async function removeLegacyCodexComponentBin(linkPath, component, platform) {
     }
     if (!stat.isFile())
       return;
-    const content = await readFile2(linkPath, "utf8");
+    const content = await readFile3(linkPath, "utf8");
     if (content.includes(COMMAND_SHIM_MARKER))
       await rm2(linkPath, { force: true });
   } catch (error) {
@@ -94697,7 +94726,7 @@ async function collectPackageBins(directory, root, links) {
   }
 }
 async function appendPackageBinLinks(packageJsonPath, packageRoot, root, links) {
-  const packageJson = JSON.parse(await readFile3(packageJsonPath, "utf8"));
+  const packageJson = JSON.parse(await readFile4(packageJsonPath, "utf8"));
   if (!isPlainRecord4(packageJson))
     return;
   const packageName = packageJson.name;
@@ -94749,13 +94778,13 @@ async function replaceSymlink(linkPath, targetPath) {
 async function replaceCommandShim(linkPath, targetPath) {
   if (await existingNonShim(linkPath))
     throw new Error(`${linkPath} already exists and is not a command shim`);
-  await writeFile(linkPath, windowsCommandShim(targetPath));
+  await writeFile2(linkPath, windowsCommandShim(targetPath));
 }
 async function replaceRuntimeWrapper(linkPath, content) {
   if (await existingNonRuntimeWrapper(linkPath))
     throw new Error(`${linkPath} already exists and is not a generated OMO runtime wrapper`);
   await rm3(linkPath, { force: true });
-  await writeFile(linkPath, content);
+  await writeFile2(linkPath, content);
 }
 async function removeGeneratedRuntimeWrapper(path) {
   try {
@@ -94773,7 +94802,7 @@ async function removeGeneratedRuntimeWrapper(path) {
 }
 async function readGeneratedWrapperContent(path) {
   try {
-    return await readFile3(path, "utf8");
+    return await readFile4(path, "utf8");
   } catch (error) {
     if (isNodeErrorWithCode(error) && (error.code === "ENOENT" || error.code === "EISDIR"))
       return "";
@@ -94787,7 +94816,7 @@ async function existingNonRuntimeWrapper(path) {
       return false;
     if (!stat.isFile())
       return true;
-    const content = await readFile3(path, "utf8");
+    const content = await readFile4(path, "utf8");
     return !content.includes(RUNTIME_WRAPPER_MARKER);
   } catch (error) {
     if (isNodeErrorWithCode(error) && error.code === "ENOENT")
@@ -94800,7 +94829,7 @@ async function existingNonShim(path) {
     const stat = await lstat4(path);
     if (!stat.isFile())
       return true;
-    const content = await readFile3(path, "utf8");
+    const content = await readFile4(path, "utf8");
     if (content.includes(COMMAND_SHIM_MARKER))
       return false;
     throw new Error(`${path} already exists and is not a generated command shim`);
@@ -94824,11 +94853,11 @@ async function existingNonSymlink(path) {
   }
 }
 // packages/omo-codex/src/install/codex-cache-install.ts
-import { cp as cp3, mkdir as mkdir3, readFile as readFile8, readdir as readdir5, rename as rename2, rm as rm5 } from "fs/promises";
+import { cp as cp3, mkdir as mkdir3, readFile as readFile9, readdir as readdir5, rename as rename2, rm as rm5 } from "fs/promises";
 import { basename as basename5, dirname as dirname13, join as join33, sep as sep6 } from "path";
 
 // packages/omo-codex/src/install/codex-cache-bundled-mcps.ts
-import { cp, mkdir as mkdir2, readFile as readFile4, stat as stat3 } from "fs/promises";
+import { cp, mkdir as mkdir2, readFile as readFile5, stat as stat3 } from "fs/promises";
 import { dirname as dirname11, join as join27, resolve as resolve7 } from "path";
 var BUNDLED_MCP_RUNTIMES = [
   {
@@ -94870,7 +94899,7 @@ async function copyBundledMcpRuntimeDist(pluginRoot, sourceRoot, runtime) {
 async function readSourceMcpArgs(path) {
   let parsed;
   try {
-    parsed = JSON.parse(await readFile4(path, "utf8"));
+    parsed = JSON.parse(await readFile5(path, "utf8"));
   } catch (error) {
     if (error instanceof Error)
       return new Set;
@@ -94901,7 +94930,7 @@ async function isDirectory(path) {
 
 // packages/omo-codex/src/install/codex-cache-local-dependencies.ts
 import { realpathSync as realpathSync7 } from "fs";
-import { readFile as readFile5, readdir as readdir3, writeFile as writeFile2 } from "fs/promises";
+import { readFile as readFile6, readdir as readdir3, writeFile as writeFile3 } from "fs/promises";
 import { dirname as dirname12, isAbsolute as isAbsolute4, join as join29, relative as relative3, resolve as resolve9, sep as sep2 } from "path";
 
 // packages/omo-codex/src/install/codex-cache-paths.ts
@@ -94967,7 +94996,7 @@ async function rewriteCachedPackageLocalFileDependencies(pluginRoot, sourceRoot)
   const packageLock = await readPackageLock(pluginRoot);
   let rewroteAnyPackageJson = false;
   for (const packageJsonPath of packageJsonPaths) {
-    const raw = await readFile5(packageJsonPath, "utf8");
+    const raw = await readFile6(packageJsonPath, "utf8");
     const parsed = JSON.parse(raw);
     if (!isPlainRecord4(parsed))
       continue;
@@ -95002,20 +95031,20 @@ async function rewriteCachedPackageLocalFileDependencies(pluginRoot, sourceRoot)
       }
     }
     if (changed) {
-      await writeFile2(packageJsonPath, `${JSON.stringify(parsed, null, "\t")}
+      await writeFile3(packageJsonPath, `${JSON.stringify(parsed, null, "\t")}
 `);
       rewroteAnyPackageJson = true;
     }
   }
   if (packageLock.changed)
-    await writeFile2(packageLock.path, `${JSON.stringify(packageLock.value, null, "\t")}
+    await writeFile3(packageLock.path, `${JSON.stringify(packageLock.value, null, "\t")}
 `);
   return rewroteAnyPackageJson;
 }
 async function readPackageLock(pluginRoot) {
   const path = join29(pluginRoot, "package-lock.json");
   try {
-    const parsed = JSON.parse(await readFile5(path, "utf8"));
+    const parsed = JSON.parse(await readFile6(path, "utf8"));
     return { path, value: isPlainRecord4(parsed) ? parsed : null, changed: false };
   } catch (error) {
     if (error instanceof Error && "code" in error && error.code === "ENOENT") {
@@ -95089,14 +95118,14 @@ async function collectPackageJsonPaths(directory, root, paths) {
 }
 
 // packages/omo-codex/src/install/codex-cache-mcp-manifest.ts
-import { readFile as readFile6, writeFile as writeFile3 } from "fs/promises";
+import { readFile as readFile7, writeFile as writeFile4 } from "fs/promises";
 import { join as join30, sep as sep3 } from "path";
 var CONTEXT7_API_KEY_ENV = "CONTEXT7_API_KEY";
 async function rewriteCachedMcpManifest(pluginRoot, sourceRoot = pluginRoot) {
   const manifestPath = join30(pluginRoot, ".mcp.json");
   if (!await fileExistsStrict(manifestPath))
     return;
-  const raw = await readFile6(manifestPath, "utf8");
+  const raw = await readFile7(manifestPath, "utf8");
   const parsed = JSON.parse(raw);
   if (!isPlainRecord4(parsed) || !isPlainRecord4(parsed.mcpServers))
     return;
@@ -95130,7 +95159,7 @@ async function rewriteCachedMcpManifest(pluginRoot, sourceRoot = pluginRoot) {
     }
   }
   if (changed)
-    await writeFile3(manifestPath, `${JSON.stringify(parsed, null, "\t")}
+    await writeFile4(manifestPath, `${JSON.stringify(parsed, null, "\t")}
 `);
 }
 function sanitizeContext7Auth(server) {
@@ -95189,7 +95218,7 @@ async function rewriteCachedManifestRoot(pluginRoot, fromRoot, toRoot) {
   const manifestPath = join30(pluginRoot, ".mcp.json");
   if (!await fileExistsStrict(manifestPath))
     return;
-  const raw = await readFile6(manifestPath, "utf8");
+  const raw = await readFile7(manifestPath, "utf8");
   const parsed = JSON.parse(raw);
   if (!isPlainRecord4(parsed) || !isPlainRecord4(parsed.mcpServers))
     return;
@@ -95216,7 +95245,7 @@ async function rewriteCachedManifestRoot(pluginRoot, fromRoot, toRoot) {
     }
   }
   if (changed)
-    await writeFile3(manifestPath, `${JSON.stringify(parsed, null, "\t")}
+    await writeFile4(manifestPath, `${JSON.stringify(parsed, null, "\t")}
 `);
 }
 
@@ -95278,7 +95307,7 @@ async function unsupportedEntries(root, directory) {
 }
 
 // packages/omo-codex/src/install/codex-hook-targets.ts
-import { readFile as readFile7 } from "fs/promises";
+import { readFile as readFile8 } from "fs/promises";
 import { join as join32, sep as sep5 } from "path";
 var PLUGIN_ROOT_TARGET_PATTERN = /\$\{PLUGIN_ROOT\}[\\/]+([^"']+)/g;
 async function findMissingHookCommandTargets(pluginRoot) {
@@ -95286,7 +95315,7 @@ async function findMissingHookCommandTargets(pluginRoot) {
   for (const manifestPath of await hookManifestPaths(pluginRoot)) {
     if (!await fileExistsStrict(manifestPath))
       continue;
-    const parsed = JSON.parse(await readFile7(manifestPath, "utf8"));
+    const parsed = JSON.parse(await readFile8(manifestPath, "utf8"));
     collectCommands(parsed, commands);
   }
   const missing = [];
@@ -95310,7 +95339,7 @@ async function hookManifestPaths(pluginRoot) {
   const pluginManifestPath = join32(pluginRoot, ".codex-plugin", "plugin.json");
   if (!await fileExistsStrict(pluginManifestPath))
     return [join32(pluginRoot, "hooks", "hooks.json")];
-  const parsed = JSON.parse(await readFile7(pluginManifestPath, "utf8"));
+  const parsed = JSON.parse(await readFile8(pluginManifestPath, "utf8"));
   if (!isPlainRecord4(parsed))
     return [];
   if (typeof parsed.hooks === "string" && parsed.hooks.trim() !== "") {
@@ -95397,7 +95426,7 @@ async function maybeRunNpmInstall(cwd, runCommand, env, args = ["install"]) {
 async function maybeRunNpmBuild(cwd, runCommand, env) {
   if (!await fileExistsStrict(join33(cwd, "package.json")))
     return;
-  const packageJson = JSON.parse(await readFile8(join33(cwd, "package.json"), "utf8"));
+  const packageJson = JSON.parse(await readFile9(join33(cwd, "package.json"), "utf8"));
   if (!isPlainRecord4(packageJson))
     return;
   const scripts = packageJson.scripts;
@@ -95408,7 +95437,7 @@ async function maybeRunNpmBuild(cwd, runCommand, env) {
 async function maybeRunNpmSyncSkills(cwd, runCommand, env) {
   if (!await fileExistsStrict(join33(cwd, "package.json")))
     return;
-  const packageJson = JSON.parse(await readFile8(join33(cwd, "package.json"), "utf8"));
+  const packageJson = JSON.parse(await readFile9(join33(cwd, "package.json"), "utf8"));
   if (!isPlainRecord4(packageJson))
     return;
   const scripts = packageJson.scripts;
@@ -95471,7 +95500,7 @@ var removedSparkshellPromptSurfaceFiles = new Set(["directive.md", "plugin.json"
 var removedSparkshellTextFilePattern = /\.(?:json|md|toml|ya?ml)$/i;
 async function assertNoRemovedSparkshellPromptReferences(pluginRoot) {
   for (const filePath of await listRemovedSparkshellPromptSurfaceFiles(pluginRoot, "")) {
-    const content = await readFile8(join33(pluginRoot, filePath), "utf8");
+    const content = await readFile9(join33(pluginRoot, filePath), "utf8");
     if (!removedSparkshellReferencePattern.test(content))
       continue;
     throw new Error(`removed sparkshell reference found in Codex plugin prompt surface: ${filePath}`);
@@ -95620,7 +95649,7 @@ async function isBrokenCacheSymlink(path) {
   }
 }
 // packages/omo-codex/src/install/codex-cached-marketplace-manifest.ts
-import { mkdir as mkdir4, rename as rename3, rm as rm7, stat as stat5, writeFile as writeFile4 } from "fs/promises";
+import { mkdir as mkdir4, rename as rename3, rm as rm7, stat as stat5, writeFile as writeFile5 } from "fs/promises";
 import { join as join35 } from "path";
 async function writeCachedMarketplaceManifest(input) {
   const marketplaceDir = join35(input.marketplaceRoot, ".agents", "plugins");
@@ -95633,7 +95662,7 @@ async function writeCachedMarketplaceManifest(input) {
   const manifestPath = join35(marketplaceDir, "marketplace.json");
   const tempPath = join35(marketplaceDir, `.marketplace.json.tmp-${process.pid}-${Date.now()}`);
   try {
-    await writeFile4(tempPath, `${JSON.stringify({
+    await writeFile5(tempPath, `${JSON.stringify({
       name: input.marketplaceName,
       plugins: input.plugins.map((plugin) => ({
         name: plugin.name,
@@ -95659,7 +95688,7 @@ async function isDirectory2(path) {
 
 // packages/omo-codex/src/install/codex-package-layout.ts
 import { existsSync as existsSync24 } from "fs";
-import { readFile as readFile9 } from "fs/promises";
+import { readFile as readFile10 } from "fs/promises";
 import { join as join36 } from "path";
 var PACKAGED_CODEX_INSTALLER_NAMES = new Set([
   "@code-yeongyu/lazycodex",
@@ -95675,14 +95704,14 @@ async function shouldBuildSourcePackages(repoRoot) {
   const packageJsonPath = join36(repoRoot, "package.json");
   if (!existsSync24(packageJsonPath))
     return true;
-  const packageJson = JSON.parse(await readFile9(packageJsonPath, "utf8"));
+  const packageJson = JSON.parse(await readFile10(packageJsonPath, "utf8"));
   if (!isPlainRecord4(packageJson) || typeof packageJson.name !== "string")
     return true;
   return !PACKAGED_CODEX_INSTALLER_NAMES.has(packageJson.name);
 }
 
 // packages/omo-codex/src/install/codex-config-toml.ts
-import { mkdir as mkdir5, readFile as readFile11 } from "fs/promises";
+import { mkdir as mkdir5, readFile as readFile12 } from "fs/promises";
 import { dirname as dirname16 } from "path";
 
 // packages/omo-codex/src/install/toml-section-editor.ts
@@ -96279,18 +96308,18 @@ function tomlKeySegment(value) {
 }
 
 // packages/omo-codex/src/install/codex-config-atomic-write.ts
-import { lstat as lstat7, readlink as readlink4, realpath, rename as rename4, unlink, writeFile as writeFile5 } from "fs/promises";
+import { lstat as lstat7, readlink as readlink4, realpath, rename as rename4, unlink as unlink2, writeFile as writeFile6 } from "fs/promises";
 import { basename as basename6, dirname as dirname14, isAbsolute as isAbsolute5, join as join37, resolve as resolve10 } from "path";
 var RENAME_RETRY_DELAYS_MS = [10, 25, 50];
 var RETRIABLE_RENAME_CODES = new Set(["EPERM", "EBUSY"]);
 async function writeFileAtomic(targetPath, data) {
   const writeTarget = await resolveSymlinkTarget(targetPath);
   const temporaryPath = join37(dirname14(writeTarget), `.tmp-${basename6(writeTarget)}-${process.pid}-${Date.now()}`);
-  await writeFile5(temporaryPath, data);
+  await writeFile6(temporaryPath, data);
   try {
     await renameWithRetry(temporaryPath, writeTarget);
   } catch (error) {
-    await unlink(temporaryPath).catch((unlinkError) => {
+    await unlink2(temporaryPath).catch((unlinkError) => {
       if (unlinkError instanceof Error)
         return;
       return;
@@ -96785,7 +96814,7 @@ function isRootSetting(line, key) {
 
 // packages/omo-codex/src/install/codex-model-catalog.ts
 init_latest_models();
-import { readFile as readFile10 } from "fs/promises";
+import { readFile as readFile11 } from "fs/promises";
 import { join as join38 } from "path";
 var FALLBACK_CODEX_MODEL_CATALOG = {
   current: {
@@ -96819,7 +96848,7 @@ var FALLBACK_CODEX_MODEL_CATALOG = {
 async function readCodexModelCatalog(codexPackageRoot) {
   const catalogPath = join38(codexPackageRoot, "plugin", "model-catalog.json");
   try {
-    const parsed = JSON.parse(await readFile10(catalogPath, "utf8"));
+    const parsed = JSON.parse(await readFile11(catalogPath, "utf8"));
     return parseCodexModelCatalog(parsed) ?? FALLBACK_CODEX_MODEL_CATALOG;
   } catch (error) {
     if (error instanceof Error)
@@ -97044,7 +97073,7 @@ async function updateCodexConfig(input) {
   await mkdir5(dirname16(input.configPath), { recursive: true });
   let config;
   try {
-    config = await readFile11(input.configPath, "utf8");
+    config = await readFile12(input.configPath, "utf8");
   } catch (error) {
     if (!isMissingFileError(error))
       throw error;
@@ -97092,7 +97121,7 @@ function isMissingFileError(error) {
 
 // packages/omo-codex/src/install/codex-hook-trust.ts
 import { createHash as createHash3 } from "crypto";
-import { readFile as readFile12 } from "fs/promises";
+import { readFile as readFile13 } from "fs/promises";
 import { join as join40 } from "path";
 var EVENT_LABELS = new Map([
   ["PreToolUse", "pre_tool_use"],
@@ -97110,7 +97139,7 @@ async function trustedHookStatesForPlugin(input) {
   const manifestPath = join40(input.pluginRoot, ".codex-plugin", "plugin.json");
   if (!await exists(manifestPath))
     return [];
-  const manifest = JSON.parse(await readFile12(manifestPath, "utf8"));
+  const manifest = JSON.parse(await readFile13(manifestPath, "utf8"));
   if (!isPlainRecord4(manifest))
     return [];
   const states = [];
@@ -97118,7 +97147,7 @@ async function trustedHookStatesForPlugin(input) {
     const hooksPath = join40(input.pluginRoot, hookPath);
     if (!await exists(hooksPath))
       continue;
-    const parsed = JSON.parse(await readFile12(hooksPath, "utf8"));
+    const parsed = JSON.parse(await readFile13(hooksPath, "utf8"));
     if (!isPlainRecord4(parsed) || !isPlainRecord4(parsed.hooks))
       continue;
     states.push(...trustedHookStatesForHooksFile({
@@ -97201,7 +97230,7 @@ function stripDotSlash2(value) {
 }
 async function exists(path) {
   try {
-    await readFile12(path, "utf8");
+    await readFile13(path, "utf8");
     return true;
   } catch (error) {
     if (error instanceof Error)
@@ -97301,7 +97330,7 @@ function recordAt2(value, key) {
 }
 
 // packages/omo-codex/src/install/codex-marketplace-snapshot.ts
-import { cp as cp4, mkdir as mkdir6, rename as rename5, rm as rm8, writeFile as writeFile6 } from "fs/promises";
+import { cp as cp4, mkdir as mkdir6, rename as rename5, rm as rm8, writeFile as writeFile7 } from "fs/promises";
 import { join as join41, sep as sep7 } from "path";
 var INSTALLED_MARKETPLACES_DIR = ".tmp/marketplaces";
 async function writeInstalledMarketplaceSnapshot(input) {
@@ -97321,7 +97350,7 @@ async function writeMarketplaceManifest(marketplaceRoot, marketplace) {
   const manifestDir = join41(marketplaceRoot, ".agents", "plugins");
   await mkdir6(manifestDir, { recursive: true });
   const tempPath = join41(manifestDir, `.marketplace-${process.pid}-${Date.now()}.json.tmp`);
-  await writeFile6(tempPath, `${JSON.stringify(marketplace, null, "\t")}
+  await writeFile7(tempPath, `${JSON.stringify(marketplace, null, "\t")}
 `);
   await rename5(tempPath, join41(manifestDir, "marketplace.json"));
 }
@@ -97350,15 +97379,15 @@ function shouldCopyMarketplaceSourcePath(path, root) {
 }
 
 // packages/omo-codex/src/install/link-cached-plugin-agents.ts
-import { copyFile, lstat as lstat11, mkdir as mkdir7, readdir as readdir8, readFile as readFile17, rm as rm12, writeFile as writeFile9 } from "fs/promises";
+import { copyFile, lstat as lstat11, mkdir as mkdir7, readdir as readdir8, readFile as readFile18, rm as rm12, writeFile as writeFile10 } from "fs/promises";
 import { basename as basename7, join as join46 } from "path";
 
 // packages/omo-codex/src/install/agent-model-overrides.ts
-import { readFile as readFile14, rm as rm9, writeFile as writeFile8 } from "fs/promises";
+import { readFile as readFile15, rm as rm9, writeFile as writeFile9 } from "fs/promises";
 import { join as join43 } from "path";
 
 // packages/omo-codex/src/install/preserved-agent-settings.ts
-import { lstat as lstat8, readFile as readFile13, readdir as readdir7, writeFile as writeFile7 } from "fs/promises";
+import { lstat as lstat8, readFile as readFile14, readdir as readdir7, writeFile as writeFile8 } from "fs/promises";
 import { join as join42 } from "path";
 
 // packages/omo-codex/src/install/managed-agent-reasoning-defaults.ts
@@ -97593,7 +97622,7 @@ async function capturePreservedAgentServiceTier(input) {
 async function restorePreservedReasoning(input) {
   if (input.value === undefined)
     return;
-  const content = await readFile13(input.target, "utf8");
+  const content = await readFile14(input.target, "utf8");
   const bundledEffort = extractReasoningEffort(content);
   const effort = resolveManagedAgentReasoning({
     agentName: input.agentName,
@@ -97606,33 +97635,33 @@ async function restorePreservedReasoning(input) {
   const replacement = replaceTopLevelStringSetting(content, "model_reasoning_effort", effort, { insertIfMissing: false });
   if (!replacement.replaced)
     return;
-  await writeFile7(input.linkPath, replacement.content);
+  await writeFile8(input.linkPath, replacement.content);
 }
 async function restorePreservedServiceTier(input) {
   if (!input.preserved)
     return;
-  const content = await readFile13(input.linkPath, "utf8");
+  const content = await readFile14(input.linkPath, "utf8");
   if (extractServiceTier(content) === input.value)
     return;
   const replacement = replaceTopLevelStringSetting(content, "service_tier", input.value, { insertIfMissing: true });
   if (!replacement.replaced)
     return;
-  await writeFile7(input.linkPath, replacement.content);
+  await writeFile8(input.linkPath, replacement.content);
 }
 async function restorePreservedModel(input) {
   if (input.value === null)
     return;
-  const content = await readFile13(input.linkPath, "utf8");
+  const content = await readFile14(input.linkPath, "utf8");
   if (extractModel(content) === input.value)
     return;
   const replacement = replaceTopLevelStringSetting(content, "model", input.value, { insertIfMissing: true });
   if (!replacement.replaced)
     return;
-  await writeFile7(input.linkPath, replacement.content);
+  await writeFile8(input.linkPath, replacement.content);
 }
 async function readTextIfExists(path) {
   try {
-    return await readFile13(path, "utf8");
+    return await readFile14(path, "utf8");
   } catch (error) {
     if (nodeErrorCode(error) === "ENOENT")
       return null;
@@ -97754,13 +97783,13 @@ async function writeAgentModelReceipts(codexHome, receipts) {
     await rm9(path, { force: true });
     return;
   }
-  await writeFile8(path, `${JSON.stringify(Object.fromEntries(receipts), null, "\t")}
+  await writeFile9(path, `${JSON.stringify(Object.fromEntries(receipts), null, "\t")}
 `);
 }
 async function applyAgentOverride(input) {
   if (input.override === undefined)
     return;
-  let content = await readFile14(input.linkPath, "utf8");
+  let content = await readFile15(input.linkPath, "utf8");
   if (input.override.model !== undefined) {
     content = replaceTopLevelStringSetting(content, "model", input.override.model, { insertIfMissing: true }).content;
   }
@@ -97769,7 +97798,7 @@ async function applyAgentOverride(input) {
       insertIfMissing: true
     }).content;
   }
-  await writeFile8(input.linkPath, content);
+  await writeFile9(input.linkPath, content);
 }
 function receiptPath(codexHome) {
   return join43(codexHome, "agents", RECEIPT_FILE);
@@ -97804,7 +97833,7 @@ function handEditedAgentModel(installedModel, receipt) {
 }
 
 // packages/omo-codex/src/install/retired-managed-agent-purge.ts
-import { lstat as lstat9, readFile as readFile15, rm as rm10 } from "fs/promises";
+import { lstat as lstat9, readFile as readFile16, rm as rm10 } from "fs/promises";
 import { join as join44 } from "path";
 var RETIRED_MANAGED_AGENT_FILES = [
   {
@@ -97838,7 +97867,7 @@ function hasRequiredMarkers(content, markers) {
 }
 async function readTextIfExists2(path) {
   try {
-    return await readFile15(path, "utf8");
+    return await readFile16(path, "utf8");
   } catch (error) {
     if (nodeErrorCode2(error) === "ENOENT")
       return null;
@@ -97863,7 +97892,7 @@ function nodeErrorCode2(error) {
 
 // packages/omo-codex/src/install/default-agent-role.ts
 import { createHash as createHash4 } from "crypto";
-import { lstat as lstat10, readFile as readFile16, rm as rm11 } from "fs/promises";
+import { lstat as lstat10, readFile as readFile17, rm as rm11 } from "fs/promises";
 import { join as join45 } from "path";
 var REGISTRATION = { name: "default", configFile: "./agents/default.toml" };
 async function installDefaultAgentRole(input) {
@@ -97900,7 +97929,7 @@ async function installDefaultAgentRole(input) {
   if (foreign || existing !== null && !owned) {
     throw new Error("Preserved user-owned agents.default / agents/default.toml. Move it aside to install the LazyCodex fallback, or set [codex].agents.default.disable = true in omo.jsonc. Explicit LazyCodex roles remain required.");
   }
-  const worker = await readFile16(input.worker.path, "utf8");
+  const worker = await readFile17(input.worker.path, "utf8");
   const content = worker.replace(/^name\s*=\s*["']lazycodex-worker-medium["']\s*$/m, 'name = "default"');
   if (content === worker)
     throw new Error("Cannot derive default: medium worker has no matching internal name");
@@ -97910,7 +97939,7 @@ async function installDefaultAgentRole(input) {
 }
 async function readIfPresent(path) {
   try {
-    return await readFile16(path, "utf8");
+    return await readFile17(path, "utf8");
   } catch (error) {
     if (error instanceof Error && "code" in error && error.code === "ENOENT")
       return null;
@@ -97971,7 +98000,7 @@ async function syncAgentFile(input) {
     value: input.preservedServiceTier?.get(input.agentName) ?? null
   });
   await applyAgentOverride({ linkPath: input.linkPath, override });
-  const model = override?.model ?? extractModel(await readFile17(input.agentPath, "utf8"));
+  const model = override?.model ?? extractModel(await readFile18(input.agentPath, "utf8"));
   return {
     ...model === null ? {} : { model },
     ...override?.reasoningEffort === undefined ? {} : { reasoningEffort: override.reasoningEffort }
@@ -98015,7 +98044,7 @@ async function prepareReplacement(linkPath) {
 async function writeManifest(pluginRoot, agentPaths) {
   const manifestPath = join46(pluginRoot, MANIFEST_FILE);
   const payload = { agents: [...agentPaths].sort() };
-  await writeFile9(manifestPath, `${JSON.stringify(payload, null, "\t")}
+  await writeFile10(manifestPath, `${JSON.stringify(payload, null, "\t")}
 `);
 }
 function agentNameFromToml2(fileName) {
@@ -98084,12 +98113,12 @@ function agentNameFromToml3(fileName) {
 }
 
 // packages/omo-codex/src/install/codex-marketplace.ts
-import { readFile as readFile18 } from "fs/promises";
+import { readFile as readFile19 } from "fs/promises";
 import { join as join47 } from "path";
 var DEFAULT_MARKETPLACE_PATH = "packages/omo-codex/marketplace.json";
 async function readMarketplace(repoRoot, options) {
   const marketplacePath = options?.marketplacePath ?? join47(repoRoot, DEFAULT_MARKETPLACE_PATH);
-  const raw = await readFile18(marketplacePath, "utf8");
+  const raw = await readFile19(marketplacePath, "utf8");
   const parsed = JSON.parse(raw);
   if (!isPlainRecord4(parsed))
     throw new Error("marketplace.json must be an object");
@@ -98110,7 +98139,7 @@ function resolvePluginSource(repoRoot, plugin, options) {
   return join47(repoRoot, ...relativePath.split(/[\\/]/));
 }
 async function readPluginManifest(pluginRoot) {
-  const raw = await readFile18(join47(pluginRoot, ".codex-plugin", "plugin.json"), "utf8");
+  const raw = await readFile19(join47(pluginRoot, ".codex-plugin", "plugin.json"), "utf8");
   const parsed = JSON.parse(raw);
   if (!isPlainRecord4(parsed))
     throw new Error(`${pluginRoot} plugin.json must be an object`);
@@ -98191,11 +98220,11 @@ function validateLocalSourcePath(path) {
 }
 
 // packages/omo-codex/src/install/lazycodex-version-stamp.ts
-import { readdir as readdir9, readFile as readFile19, writeFile as writeFile10 } from "fs/promises";
+import { readdir as readdir9, readFile as readFile20, writeFile as writeFile11 } from "fs/promises";
 import { join as join48 } from "path";
 async function readDistributionManifest(repoRoot) {
   try {
-    const parsed = JSON.parse(await readFile19(join48(repoRoot, "package.json"), "utf8"));
+    const parsed = JSON.parse(await readFile20(join48(repoRoot, "package.json"), "utf8"));
     if (!isPlainRecord4(parsed) || typeof parsed.version !== "string" || parsed.version.trim().length === 0)
       return;
     return {
@@ -98231,7 +98260,7 @@ async function stampLazyCodexPluginVersion(input) {
 async function writeLazyCodexInstallSnapshot(input) {
   if (input.distributionManifest === undefined)
     return;
-  await writeFile10(join48(input.pluginRoot, "lazycodex-install.json"), `${JSON.stringify({
+  await writeFile11(join48(input.pluginRoot, "lazycodex-install.json"), `${JSON.stringify({
     packageName: input.distributionManifest.name,
     version: input.distributionManifest.version
   }, null, "\t")}
@@ -98239,11 +98268,11 @@ async function writeLazyCodexInstallSnapshot(input) {
 }
 async function stampJsonVersion(path, version) {
   try {
-    const parsed = JSON.parse(await readFile19(path, "utf8"));
+    const parsed = JSON.parse(await readFile20(path, "utf8"));
     if (!isPlainRecord4(parsed))
       return;
     parsed.version = version;
-    await writeFile10(path, `${JSON.stringify(parsed, null, "\t")}
+    await writeFile11(path, `${JSON.stringify(parsed, null, "\t")}
 `);
   } catch (error) {
     if (error instanceof Error)
@@ -98253,7 +98282,7 @@ async function stampJsonVersion(path, version) {
 }
 async function readPluginHookPaths(manifestPath) {
   try {
-    const parsed = JSON.parse(await readFile19(manifestPath, "utf8"));
+    const parsed = JSON.parse(await readFile20(manifestPath, "utf8"));
     if (!isPlainRecord4(parsed))
       return [];
     if (typeof parsed.hooks === "string" && parsed.hooks.trim().length > 0)
@@ -98273,11 +98302,11 @@ function stripDotSlash3(path) {
 }
 async function stampHookStatusMessages(path, version) {
   try {
-    const parsed = JSON.parse(await readFile19(path, "utf8"));
+    const parsed = JSON.parse(await readFile20(path, "utf8"));
     if (!isPlainRecord4(parsed))
       return;
     stampHookGroups(parsed.hooks, version);
-    await writeFile10(path, `${JSON.stringify(parsed, null, "\t")}
+    await writeFile11(path, `${JSON.stringify(parsed, null, "\t")}
 `);
   } catch (error) {
     if (error instanceof Error)
@@ -98354,7 +98383,7 @@ var defaultRunCommand = async (command, args, options) => {
 };
 
 // packages/omo-codex/src/install/codex-project-local-cleanup.ts
-import { copyFile as copyFile2, lstat as lstat12, readFile as readFile20, writeFile as writeFile11 } from "fs/promises";
+import { copyFile as copyFile2, lstat as lstat12, readFile as readFile21, writeFile as writeFile12 } from "fs/promises";
 import { dirname as dirname17, join as join49, resolve as resolve11 } from "path";
 var LEGACY_AGENT_CONFLICT_KEYS = ["max_threads"];
 var PROJECT_LOCAL_ARTIFACT_PATHS = [
@@ -98374,7 +98403,7 @@ async function repairNearestProjectLocalCodexArtifacts(input) {
   const artifacts = await collectProjectLocalArtifacts(project.artifactRoots);
   const configs = [];
   for (const configPath of project.configPaths) {
-    const original = await readFile20(configPath, "utf8");
+    const original = await readFile21(configPath, "utf8");
     const repair = repairProjectLocalCodexConfigText(original);
     if (!repair.changed) {
       configs.push({
@@ -98387,7 +98416,7 @@ async function repairNearestProjectLocalCodexArtifacts(input) {
     }
     const backupPath = `${configPath}.backup-${formatBackupTimestamp(input.now?.() ?? new Date)}`;
     await copyFile2(configPath, backupPath);
-    await writeFile11(configPath, `${repair.config.trimEnd()}
+    await writeFile12(configPath, `${repair.config.trimEnd()}
 `);
     configs.push({
       projectRoot: project.projectRoot,
@@ -98584,13 +98613,13 @@ function formatUnknownError(error) {
 
 // packages/omo-codex/src/install/lsp-daemon-reaper.ts
 import { createHash as createHash5 } from "crypto";
-import { lstat as lstat13, readFile as readFile22, readdir as readdir11, rm as rm13 } from "fs/promises";
+import { lstat as lstat13, readFile as readFile23, readdir as readdir11, rm as rm13 } from "fs/promises";
 import { tmpdir as tmpdir4 } from "os";
 import { join as join50, posix as posix6 } from "path";
 
 // packages/omo-codex/src/install/lsp-daemon-reaper-attestation.ts
 import { execFile } from "child_process";
-import { readFile as readFile21, readdir as readdir10, readlink as readlink5 } from "fs/promises";
+import { readFile as readFile22, readdir as readdir10, readlink as readlink5 } from "fs/promises";
 import { connect } from "net";
 import { basename as basename8 } from "path";
 var PROBE_TIMEOUT_MS = 500;
@@ -98632,7 +98661,7 @@ async function attestLegacyDaemonOwnership(input, deps = {}) {
   return false;
 }
 async function attestLinuxOwnership(input, deps) {
-  const readFileImpl = deps.readFile ?? readFile21;
+  const readFileImpl = deps.readFile ?? readFile22;
   const readDirImpl = deps.readDir ?? readdir10;
   const readLinkImpl = deps.readLink ?? readlink5;
   const procNetUnix = await readText(readFileImpl, "/proc/net/unix");
@@ -98857,7 +98886,7 @@ async function readRegularTrimmedFile(path) {
     return null;
   if (!stats.isFile())
     return "non_regular";
-  const content = (await readFile22(path, "utf8")).trim();
+  const content = (await readFile23(path, "utf8")).trim();
   return content.length > 0 ? content : null;
 }
 function shortDigest(value) {
@@ -98918,11 +98947,11 @@ function resolveCodexInstallerBinDir(input) {
 }
 
 // packages/omo-codex/src/install/codex-installed-bin-dir.ts
-import { readFile as readFile23, readdir as readdir12, writeFile as writeFile12 } from "fs/promises";
+import { readFile as readFile24, readdir as readdir12, writeFile as writeFile13 } from "fs/promises";
 import { join as join52 } from "path";
 var INSTALLED_BIN_DIR_MANIFEST = ".installed-bin-dir.json";
 async function writeInstalledCodexBinDir(input) {
-  await writeFile12(join52(input.pluginRoot, INSTALLED_BIN_DIR_MANIFEST), `${JSON.stringify({ binDir: input.binDir }, null, 2)}
+  await writeFile13(join52(input.pluginRoot, INSTALLED_BIN_DIR_MANIFEST), `${JSON.stringify({ binDir: input.binDir }, null, 2)}
 `);
 }
 async function readInstalledCodexBinDir(codexHome) {
@@ -98948,7 +98977,7 @@ async function installedBinDirManifestPaths(codexHome) {
   return paths;
 }
 async function readBinDirFromManifest(manifestPath) {
-  const raw = await readFile23(manifestPath, "utf8").catch(() => null);
+  const raw = await readFile24(manifestPath, "utf8").catch(() => null);
   if (raw === null)
     return null;
   let parsed;
@@ -98966,7 +98995,7 @@ async function readBinDirFromManifest(manifestPath) {
 }
 
 // packages/omo-codex/src/install/codex-git-bash-hooks.ts
-import { readFile as readFile24, writeFile as writeFile13 } from "fs/promises";
+import { readFile as readFile25, writeFile as writeFile14 } from "fs/promises";
 import { join as join53 } from "path";
 var WINDOWS_ONLY_GIT_BASH_HOOKS = new Set([
   "./hooks/pre-tool-use-recommending-git-bash-mcp.json",
@@ -98976,13 +99005,13 @@ async function removeGitBashHooksOffWindows(input) {
   if (input.platform === "win32")
     return;
   const manifestPath = join53(input.pluginRoot, ".codex-plugin", "plugin.json");
-  const parsed = JSON.parse(await readFile24(manifestPath, "utf8"));
+  const parsed = JSON.parse(await readFile25(manifestPath, "utf8"));
   if (!isPlainRecord4(parsed) || !Array.isArray(parsed.hooks))
     return;
   const hooks = parsed.hooks.filter((hook) => typeof hook !== "string" || !WINDOWS_ONLY_GIT_BASH_HOOKS.has(hook));
   if (hooks.length === parsed.hooks.length)
     return;
-  await writeFile13(manifestPath, `${JSON.stringify({ ...parsed, hooks }, null, "\t")}
+  await writeFile14(manifestPath, `${JSON.stringify({ ...parsed, hooks }, null, "\t")}
 `);
 }
 
@@ -99353,12 +99382,12 @@ function defaultRunCommand2(command, args) {
   });
 }
 // packages/omo-codex/src/install/codex-cleanup.ts
-import { lstat as lstat16, readFile as readFile27, readdir as readdir14, rm as rm15, rmdir } from "fs/promises";
+import { lstat as lstat16, readFile as readFile28, readdir as readdir14, rm as rm15, rmdir } from "fs/promises";
 import { homedir as homedir9 } from "os";
 import { isAbsolute as isAbsolute11, join as join62, relative as relative7, resolve as resolve16 } from "path";
 
 // packages/omo-codex/src/install/codex-cleanup-bins.ts
-import { lstat as lstat14, readFile as readFile25, readdir as readdir13, readlink as readlink6, rm as rm14 } from "fs/promises";
+import { lstat as lstat14, readFile as readFile26, readdir as readdir13, readlink as readlink6, rm as rm14 } from "fs/promises";
 import { dirname as dirname20, isAbsolute as isAbsolute9, join as join60, resolve as resolve14 } from "path";
 var ROOT_RUNTIME_BIN_NAME = "omo";
 var MANAGED_CODEX_BIN_NAMES = new Set([
@@ -99420,12 +99449,12 @@ async function isManagedCodexBin(linkPath, platform, binName) {
   }
   if (!entryStat.isFile())
     return false;
-  const content = await readFile25(linkPath, "utf8");
+  const content = await readFile26(linkPath, "utf8");
   return content.includes(RUNTIME_WRAPPER_MARKER) || content.includes(COMMAND_SHIM_MARKER);
 }
 
 // packages/omo-codex/src/install/codex-cleanup-config.ts
-import { lstat as lstat15, mkdir as mkdir8, readFile as readFile26, writeFile as writeFile14 } from "fs/promises";
+import { lstat as lstat15, mkdir as mkdir8, readFile as readFile27, writeFile as writeFile15 } from "fs/promises";
 import { dirname as dirname21 } from "path";
 var MANAGED_MARKETPLACES = ["sisyphuslabs", "lazycodex", "code-yeongyu-codex-plugins"];
 var LEGACY_MANAGED_CODEX_AGENT_NAMES_TO_PURGE2 = ["codex-ultrawork-reviewer"];
@@ -99458,14 +99487,14 @@ function cleanupCodexLightConfigText(config) {
 async function cleanupCodexConfig(configPath, now) {
   if (!await configExists(configPath))
     return { changed: false };
-  const original = await readFile26(configPath, "utf8");
+  const original = await readFile27(configPath, "utf8");
   const next = cleanupCodexLightConfigText(original);
   if (next === original)
     return { changed: false };
   const backupPath = `${configPath}.backup-${formatBackupTimestamp2(now?.() ?? new Date)}`;
   await mkdir8(dirname21(configPath), { recursive: true });
-  await writeFile14(backupPath, original);
-  await writeFile14(configPath, `${next.trimEnd()}
+  await writeFile15(backupPath, original);
+  await writeFile15(configPath, `${next.trimEnd()}
 `);
   return { changed: true, backupPath };
 }
@@ -99742,13 +99771,13 @@ async function collectInstalledAgentPaths(codexHome, configPath) {
 async function readManagedAgentPathsFromConfig(codexHome, configPath) {
   if (!await exists6(configPath))
     return [];
-  const config = await readFile27(configPath, "utf8");
+  const config = await readFile28(configPath, "utf8");
   return MANAGED_CODEX_AGENT_NAMES2.filter((agentName) => config.includes(`config_file = ${JSON.stringify(`./agents/${agentName}.toml`)}`)).map((agentName) => join62(codexHome, "agents", `${agentName}.toml`));
 }
 async function readInstalledAgentManifest(manifestPath) {
   if (!await exists6(manifestPath))
     return [];
-  const parsed = JSON.parse(await readFile27(manifestPath, "utf8"));
+  const parsed = JSON.parse(await readFile28(manifestPath, "utf8"));
   if (!isPlainRecord4(parsed) || !Array.isArray(parsed.agents))
     return [];
   return parsed.agents.filter((path) => typeof path === "string");
@@ -99940,7 +99969,7 @@ node "%~dp0omo" %*\r
 // packages/omo-senpi/src/install/plugin-artifacts.ts
 import { createHash as createHash7 } from "crypto";
 import { constants as constants9 } from "fs";
-import { access as access2, readFile as readFile29, stat as stat6 } from "fs/promises";
+import { access as access3, readFile as readFile30, stat as stat6 } from "fs/promises";
 import { dirname as dirname25, join as join66 } from "path";
 
 // packages/memory-core/src/personas/manifest.ts
@@ -99959,7 +99988,7 @@ var PERSONA_ASSET_FILES = [
 
 // packages/omo-senpi/src/install/senpi-settings.ts
 import { constants as constants8 } from "fs";
-import { access, copyFile as copyFile3, mkdir as mkdir9, readFile as readFile28, rename as rename6, writeFile as writeFile15 } from "fs/promises";
+import { access as access2, copyFile as copyFile3, mkdir as mkdir9, readFile as readFile29, rename as rename6, writeFile as writeFile16 } from "fs/promises";
 import { basename as basename10, dirname as dirname24, join as join65, resolve as resolve19 } from "path";
 var OMO_SENPI_PACKAGE_NAME = "@code-yeongyu/omo-senpi";
 var GENERATED_PLUGIN_BASENAME = /^omo-senpi-cli-plugin-[A-Za-z0-9]{6}$/;
@@ -99970,7 +99999,7 @@ var LEGACY_BUILTIN_SHADOW_PACKAGES = [
 async function readSettings(settingsPath) {
   let raw;
   try {
-    raw = await readFile28(settingsPath, "utf8");
+    raw = await readFile29(settingsPath, "utf8");
   } catch (error) {
     if (isErrno(error, "ENOENT"))
       return {};
@@ -100017,11 +100046,11 @@ async function writeSettingsAtomically(settingsPath, settings) {
   if (await fileExists(settingsPath)) {
     await copyFile3(settingsPath, backupPath);
   } else {
-    await writeFile15(backupPath, `{}
+    await writeFile16(backupPath, `{}
 `, "utf8");
   }
   const tempPath = `${settingsPath}.${process.pid}.${Date.now()}.tmp`;
-  await writeFile15(tempPath, `${JSON.stringify(settings, null, 2)}
+  await writeFile16(tempPath, `${JSON.stringify(settings, null, 2)}
 `, "utf8");
   await rename6(tempPath, settingsPath);
   return backupPath;
@@ -100044,7 +100073,7 @@ function isRecord15(value) {
 async function readPackageName(packagePath) {
   let raw;
   try {
-    raw = await readFile28(join65(packagePath, "package.json"), "utf8");
+    raw = await readFile29(join65(packagePath, "package.json"), "utf8");
   } catch (error) {
     if (isErrno(error, "ENOENT") || isErrno(error, "ENOTDIR"))
       return;
@@ -100062,7 +100091,7 @@ async function readPackageName(packagePath) {
 }
 async function fileExists(path) {
   try {
-    await access(path, constants8.F_OK);
+    await access2(path, constants8.F_OK);
     return true;
   } catch (error) {
     if (isErrno(error, "ENOENT"))
@@ -100125,6 +100154,7 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
   join66("skills", "visual-qa", "SKILL.md"),
   join66("skills-conditional", "x-search", "SKILL.md"),
   join66("runtime", "agent-toolkit-sdk", "sdk.js"),
+  join66("runtime", "bunshin-ts", "sdk.js"),
   join66("runtime", "thread-sdk", "sdk.js"),
   join66("runtime", "ast-grep-mcp", "cli.js"),
   join66("runtime", "lsp-daemon", "dist", "cli.js"),
@@ -100167,7 +100197,7 @@ async function verifyAstGrepRuntimeIntegrity(pluginPath, platform) {
     runtimeStat = await stat6(runtimeEntry);
     if (!runtimeStat.isFile())
       throw new Error("runtime is not a file");
-    await access2(runtimeEntry, constants9.R_OK | constants9.X_OK);
+    await access3(runtimeEntry, constants9.R_OK | constants9.X_OK);
   } catch (error) {
     throw astGrepIntegrityError(runtimeEntry, `runtime is unreadable or non-executable: ${messageOf(error)}`);
   }
@@ -100176,7 +100206,7 @@ async function verifyAstGrepRuntimeIntegrity(pluginPath, platform) {
   }
   let manifest;
   try {
-    manifest = JSON.parse(await readFile29(manifestPath, "utf8"));
+    manifest = JSON.parse(await readFile30(manifestPath, "utf8"));
   } catch (error) {
     throw astGrepIntegrityError(runtimeEntry, `manifest is unreadable or invalid JSON: ${messageOf(error)}`);
   }
@@ -100185,7 +100215,7 @@ async function verifyAstGrepRuntimeIntegrity(pluginPath, platform) {
   }
   let actualSha256;
   try {
-    actualSha256 = createHash7("sha256").update(await readFile29(runtimeEntry)).digest("hex");
+    actualSha256 = createHash7("sha256").update(await readFile30(runtimeEntry)).digest("hex");
   } catch (error) {
     throw astGrepIntegrityError(runtimeEntry, `runtime hash could not be computed: ${messageOf(error)}`);
   }
@@ -100210,7 +100240,7 @@ function messageOf(error) {
 }
 async function fileExists2(path) {
   try {
-    await access2(path, constants9.F_OK);
+    await access3(path, constants9.F_OK);
     return true;
   } catch (error) {
     if (isErrno2(error, "ENOENT"))
@@ -107903,7 +107933,7 @@ function getSuggestedInstallTag(currentVersion) {
 // packages/omo-opencode/src/cli/doctor/checks/system.ts
 init_jsonc_parser2();
 init_plugin_identity();
-var runtime4 = globalThis;
+var runtime5 = globalThis;
 var defaultDeps5 = {
   findOpenCodeBinary,
   getOpenCodeVersion: getOpenCodeVersion3,
@@ -107964,7 +107994,7 @@ async function gatherSystemInfo(deps = defaultDeps5) {
     opencodePath: binaryInfo?.path ?? null,
     pluginVersion,
     loadedVersion: loadedInfo.loadedVersion,
-    bunVersion: runtime4.Bun?.version ?? "unavailable",
+    bunVersion: runtime5.Bun?.version ?? "unavailable",
     configPath: pluginInfo.configPath,
     configValid: isConfigValid(pluginInfo.configPath, deps),
     isLocalDev: pluginInfo.isLocalDev
@@ -109443,7 +109473,7 @@ async function pathExists2(dir) {
 // packages/omo-opencode/src/cli/doctor/checks/codex.ts
 init_src();
 import { existsSync as existsSync61 } from "fs";
-import { lstat as lstat17, readdir as readdir15, readFile as readFile30 } from "fs/promises";
+import { lstat as lstat17, readdir as readdir15, readFile as readFile31 } from "fs/promises";
 import { homedir as homedir26 } from "os";
 import { basename as basename13, join as join99, resolve as resolve27 } from "path";
 // packages/omo-opencode/package.json
@@ -109668,7 +109698,7 @@ async function readCodexConfigSummary(configPath) {
       companionLifecycleHookStateEvents: []
     };
   }
-  const content = await readFile30(configPath, "utf8");
+  const content = await readFile31(configPath, "utf8");
   return {
     exists: true,
     marketplaceConfigured: content.includes("[marketplaces.sisyphuslabs]"),
@@ -109696,7 +109726,7 @@ async function readLinkedAgents(codexHome) {
 }
 async function readJson(path) {
   try {
-    const parsed = JSON.parse(await readFile30(path, "utf8"));
+    const parsed = JSON.parse(await readFile31(path, "utf8"));
     return isPlainRecord(parsed) ? parsed : null;
   } catch (error) {
     if (error instanceof Error)
@@ -109820,7 +109850,7 @@ function resolveLatestVersion(input) {
 
 // packages/omo-opencode/src/cli/doctor/checks/codex-components.ts
 init_src();
-import { readdir as readdir16, readFile as readFile31, stat as stat7 } from "fs/promises";
+import { readdir as readdir16, readFile as readFile32, stat as stat7 } from "fs/promises";
 import { homedir as homedir27 } from "os";
 import { dirname as dirname40, isAbsolute as isAbsolute15, join as join100, relative as relative10, resolve as resolve28, sep as sep11 } from "path";
 var CODEX_COMPONENTS_CHECK_ID = "codex-components";
@@ -110073,7 +110103,7 @@ function degradedDetailLines(entries) {
 }
 async function readJson2(path) {
   try {
-    const parsed = JSON.parse(await readFile31(path, "utf8"));
+    const parsed = JSON.parse(await readFile32(path, "utf8"));
     return isRecord18(parsed) ? parsed : null;
   } catch (error) {
     if (error instanceof Error)
@@ -110101,7 +110131,7 @@ function isRecord18(value) {
 
 // packages/omo-opencode/src/cli/doctor/checks/codex-runtime-wrapper.ts
 import { existsSync as existsSync62 } from "fs";
-import { readFile as readFile32 } from "fs/promises";
+import { readFile as readFile33 } from "fs/promises";
 import { homedir as homedir28 } from "os";
 import { join as join101, resolve as resolve29 } from "path";
 var RUNTIME_WRAPPER_MARKER2 = "OMO_GENERATED_RUNTIME_WRAPPER";
@@ -110146,7 +110176,7 @@ async function checkCodexRuntimeWrapper(deps = {}) {
 }
 async function readRuntimeWrapper(path) {
   try {
-    return await readFile32(path, "utf8");
+    return await readFile33(path, "utf8");
   } catch (error) {
     if (error instanceof Error)
       return null;
@@ -112070,6 +112100,73 @@ async function loadDeviceKeyring(store) {
 import { execFile as execFile5 } from "child_process";
 import { homedir as homedir30 } from "os";
 import { join as join105 } from "path";
+
+// packages/omo-opencode/src/shared/bun-ffi-shim.ts
+async function loadBunFfi() {
+  return import("bun:ffi");
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/process-state.ts
+var KEY = Symbol.for("omo.keychain-helper.process.v1");
+function keychainProcessState() {
+  const holder = globalThis;
+  holder[KEY] ??= {
+    secretsQueue: Promise.resolve(),
+    interactionSwitch: undefined,
+    approvalCache: undefined,
+    entryCandidates: [],
+    helperAccess: undefined,
+    heldPromptLocks: new Set,
+    handOff: undefined
+  };
+  return holder[KEY];
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/secrets-gate.ts
+async function loadInteractionSwitch() {
+  const state = keychainProcessState();
+  if (state.interactionSwitch !== undefined)
+    return state.interactionSwitch;
+  if (process.platform !== "darwin")
+    return state.interactionSwitch = null;
+  try {
+    const { dlopen, FFIType } = await loadBunFfi();
+    const security = dlopen("/System/Library/Frameworks/Security.framework/Security", {
+      SecKeychainSetUserInteractionAllowed: { args: [FFIType.u8], returns: FFIType.i32 }
+    });
+    state.interactionSwitch = (allowed) => {
+      security.symbols.SecKeychainSetUserInteractionAllowed(allowed ? 1 : 0);
+    };
+  } catch {
+    state.interactionSwitch = null;
+  }
+  return state.interactionSwitch;
+}
+function gatedSecrets(run) {
+  const state = keychainProcessState();
+  const next = state.secretsQueue.then(run, run);
+  state.secretsQueue = next.then(() => {
+    return;
+  }, () => {
+    return;
+  });
+  return next;
+}
+function silentSecrets(run) {
+  return gatedSecrets(async () => {
+    const setInteraction = await loadInteractionSwitch();
+    if (setInteraction === null)
+      throw new Error("Keychain interaction cannot be switched off on this host.");
+    setInteraction(false);
+    try {
+      return await run();
+    } finally {
+      setInteraction(true);
+    }
+  });
+}
+
+// packages/omo-opencode/src/cli/account-keys/keystore.ts
 var DEFAULT_SERVICE = "omo-cli";
 function defaultRun(argv, input) {
   const [file, ...args] = argv;
@@ -112093,7 +112190,7 @@ function createOsKeyStore(name, platform = process.platform, run = defaultRun, s
   const resolved = secrets === undefined ? run === defaultRun && typeof Bun !== "undefined" ? Bun.secrets : null : secrets;
   switch (platform) {
     case "darwin":
-      return resolved !== null ? createBunSecretsKeyStore(name, resolved) : createMacOsKeychainKeyStore(name, run);
+      return resolved !== null ? createBunSecretsKeyStore(name, gateRealSecrets(resolved)) : createMacOsKeychainKeyStore(name, run);
     case "linux":
       return resolved !== null ? createBunSecretsKeyStore(name, resolved) : createLibsecretKeyStore(name, run);
     case "win32":
@@ -112112,6 +112209,10 @@ async function guarded(run, fail, argv, input) {
     throw fail();
   }
 }
+var gateRealSecrets = (secrets) => typeof Bun !== "undefined" && secrets === Bun.secrets ? {
+  get: (key) => gatedSecrets(() => secrets.get(key)),
+  set: (entry) => gatedSecrets(() => secrets.set(entry))
+} : secrets;
 function createBunSecretsKeyStore(name, secrets) {
   const key = { service: DEFAULT_SERVICE, name };
   const unavailable = () => new Error("omo account keys: cannot access the OS credential store. Unlock the login keychain (macOS), the Secret Service keyring (Linux), or DPAPI (Windows), then try again. " + "Private keys are only ever stored through the OS credential facility.");
@@ -112649,64 +112750,705 @@ async function loginDevice(session, options) {
 }
 
 // packages/omo-opencode/src/cli/service-auth/keystore.ts
-import { createHash as createHash12, randomUUID as randomUUID7 } from "crypto";
-import { basename as basename15 } from "path";
+import { createHash as createHash12, randomUUID as randomUUID8 } from "crypto";
+import { basename as basename17 } from "path";
 
-// packages/omo-opencode/src/cli/service-auth/secret-service-lock.ts
-import { spawn as spawn5 } from "child_process";
-var DEFAULT_COLLECTION = "/org/freedesktop/secrets/aliases/default";
-var PROBE_TIMEOUT_MS2 = 1e4;
-var parseLockedReply = (stdout) => {
-  const match = /<\s*(true|false)\s*>/.exec(stdout);
-  if (match === null)
-    return null;
-  return match[1] === "true" ? "locked" : "unlocked";
-};
-var probeSecretServiceLock = () => new Promise((resolve) => {
-  const child = spawn5("gdbus", [
-    "call",
-    "--session",
-    "--dest",
-    "org.freedesktop.secrets",
-    "--object-path",
-    DEFAULT_COLLECTION,
-    "--method",
-    "org.freedesktop.DBus.Properties.Get",
-    "org.freedesktop.Secret.Collection",
-    "Locked"
-  ], { stdio: ["ignore", "pipe", "ignore"] });
-  let stdout = "";
-  const timer = setTimeout(() => {
-    child.kill();
-    resolve("unknown");
-  }, PROBE_TIMEOUT_MS2);
-  child.stdout.on("data", (chunk) => {
-    stdout += chunk.toString();
-  });
-  child.on("error", () => {
-    clearTimeout(timer);
-    resolve("unknown");
-  });
-  child.on("close", (code) => {
-    clearTimeout(timer);
-    resolve(code === 0 ? parseLockedReply(stdout) ?? "absent" : "absent");
-  });
-});
-
-// packages/omo-opencode/src/cli/service-auth/credential-lock.ts
-import { AsyncLocalStorage as AsyncLocalStorage3 } from "async_hooks";
-import { createHash as createHash11 } from "crypto";
-import { mkdir as mkdir11 } from "fs/promises";
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/darwin-backend.ts
 import { homedir as homedir31 } from "os";
-import { join as join106 } from "path";
+import { join as join109 } from "path";
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/client.ts
+init_zod();
+init_bun_spawn_shim();
+var MUTATING = new Set(["write", "stage", "retire", "promote", "remove"]);
+var helperReplySchema = object({
+  owned: boolean2(),
+  value: string2(),
+  marker: boolean2(),
+  cdat: number2(),
+  mdat: number2(),
+  partition: _enum(["ours", "other", "none", "unknown"]),
+  present: object({ staging: boolean2(), old: boolean2(), oldSlots: array(number2().int().min(0).max(7)).optional() }).strict(),
+  missing: boolean2(),
+  recover: boolean2(),
+  ok: boolean2(),
+  created: boolean2(),
+  skipped: boolean2(),
+  slot: number2().int().min(0).max(7),
+  error: _enum(["locked", "store", "not-owned", "exists", "missing", "denied", "refused"]),
+  reason: string2(),
+  status: number2()
+}).partial().strict();
+
+class HelperProtocolError extends Error {
+}
+async function firstLine(stream) {
+  const reader = stream.getReader();
+  const decoder = new TextDecoder;
+  let text = "";
+  for (;; ) {
+    const newline = text.indexOf(`
+`);
+    if (newline !== -1)
+      return text.slice(0, newline);
+    const chunk = await reader.read();
+    if (chunk.done)
+      return null;
+    text += decoder.decode(chunk.value, { stream: true });
+  }
+}
+function isFlushable(stream) {
+  return typeof stream.flush === "function";
+}
+var spawnDetachedHelper = (path) => {
+  const child = spawn([path], {
+    stdin: "pipe",
+    stdout: "pipe",
+    stderr: "ignore",
+    detached: true,
+    env: process.env.HOME === undefined ? {} : { HOME: process.env.HOME }
+  });
+  const pid = child.pid;
+  if (pid === undefined)
+    throw new HelperProtocolError("The keychain helper did not start.");
+  const stdin = child.stdin;
+  return {
+    pid,
+    send: (line) => {
+      stdin.write(line);
+      if (isFlushable(stdin))
+        stdin.flush();
+    },
+    reply: firstLine(child.stdout),
+    close: () => {
+      stdin.end();
+    }
+  };
+};
+async function callHelper(path, call, options = {}) {
+  const mutates = MUTATING.has(call.verb);
+  if (mutates && options.lease === undefined)
+    throw new HelperProtocolError(`The ${call.verb} helper call needs the session lock.`);
+  const helper = (options.spawn ?? spawnDetachedHelper)(path);
+  let handedOver = false;
+  try {
+    if (mutates && options.lease !== undefined) {
+      await options.lease.handOver(helper.pid);
+      handedOver = true;
+    }
+    helper.send(`${JSON.stringify({ v: 1, verb: call.verb, account: call.account, ...call.value === undefined ? {} : { value: call.value } })}
+`);
+    const line = await helper.reply;
+    if (handedOver && options.lease !== undefined) {
+      handedOver = false;
+      await options.lease.restore();
+    }
+    if (line === null)
+      throw new HelperProtocolError(`The keychain helper exited without answering ${call.verb}.`);
+    let json;
+    try {
+      json = JSON.parse(line);
+    } catch {
+      throw new HelperProtocolError(`The keychain helper sent a ${call.verb} reply that is not JSON.`);
+    }
+    const parsed = helperReplySchema.safeParse(json);
+    if (!parsed.success)
+      throw new HelperProtocolError(`The keychain helper sent an unexpected ${call.verb} reply.`);
+    return parsed.data;
+  } catch (error) {
+    if (handedOver && options.lease !== undefined) {
+      try {
+        await options.lease.restore();
+      } catch (restoreError) {
+        throw new AggregateError([error, restoreError], `The ${call.verb} helper call failed and the session lock could not be restored.`);
+      }
+    }
+    throw error;
+  } finally {
+    helper.close();
+  }
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/location.ts
+import { dirname as dirname42, join as join106, posix as posix13 } from "path";
+import { fileURLToPath as fileURLToPath8 } from "url";
+function bundleCandidates(moduleUrl) {
+  const root = dirname42(dirname42(dirname42(fileURLToPath8(moduleUrl))));
+  return [join106(root, "bin", "darwin", "omo-keychain"), join106(root, "omo-keychain")];
+}
+function machineCandidates(home, arch = process.arch) {
+  const runtimeArch = arch === "arm64" ? "arm64" : "x64";
+  return [
+    `/Applications/OmO.app/Contents/Resources/omo-runtime/darwin-${runtimeArch}/omo-keychain`,
+    posix13.join(home, "Applications", "OmO.app", "Contents", "Resources", "omo-runtime", `darwin-${runtimeArch}`, "omo-keychain"),
+    posix13.join(home, ".bun", "install", "global", "node_modules", "omo-ai", "bin", "darwin", "omo-keychain")
+  ];
+}
+async function locateHelper(candidates, verify) {
+  const rejected = [];
+  for (const path of candidates) {
+    const verdict = await verify(path);
+    if (verdict === "valid")
+      return { kind: "found", path };
+    if (verdict === "invalid")
+      rejected.push(path);
+  }
+  return rejected.length === 0 ? { kind: "missing" } : { kind: "invalid", rejected };
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/pin.ts
+import { readdirSync as readdirSync14, rmSync as rmSync9 } from "fs";
+import { chmod as chmod2, copyFile as copyFile4, constants as constants13, mkdtemp as mkdtemp2, rm as rm16, stat as stat8 } from "fs/promises";
+import { tmpdir as tmpdir6 } from "os";
+import { basename as basename15, join as join107 } from "path";
+var DIR_PREFIX = "omo-keychain-";
+var OWNED_DIR = new RegExp(`^${DIR_PREFIX}(\\d+)-`);
+var isAlive = (pid) => {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return !(error instanceof Error && ("code" in error) && error.code === "ESRCH");
+  }
+};
+function sweepDeadPinDirs(root = tmpdir6()) {
+  const removed = [];
+  let entries;
+  try {
+    entries = readdirSync14(root);
+  } catch {
+    return removed;
+  }
+  for (const entry of entries) {
+    const owner = OWNED_DIR.exec(entry)?.[1];
+    if (owner === undefined || Number(owner) === process.pid || isAlive(Number(owner)))
+      continue;
+    try {
+      rmSync9(join107(root, entry), { recursive: true, force: true });
+    } catch {
+      continue;
+    }
+    removed.push(entry);
+  }
+  return removed;
+}
+var processDir;
+async function processPinDir() {
+  if (processDir !== undefined)
+    return processDir;
+  sweepDeadPinDirs();
+  const dir = await mkdtemp2(join107(tmpdir6(), `${DIR_PREFIX}${process.pid}-`));
+  process.once("exit", () => rmSync9(dir, { recursive: true, force: true }));
+  processDir = dir;
+  return dir;
+}
+var pinned = new Map;
+async function sourceIdentity(source) {
+  const info = await stat8(source);
+  return `${source}\x00${info.dev}\x00${info.ino}\x00${info.size}\x00${info.mtimeMs}\x00${info.ctimeMs}`;
+}
+async function copyAndVerify(source, verify, dir) {
+  const target = join107(dir, `${crypto.randomUUID()}-${basename15(source)}`);
+  try {
+    await copyFile4(source, target, constants13.COPYFILE_EXCL);
+    await chmod2(target, 320);
+  } catch (error) {
+    await rm16(target, { force: true });
+    return { kind: "unavailable", reason: error instanceof Error ? error.message : String(error) };
+  }
+  let verdict;
+  try {
+    verdict = await verify(target);
+  } catch (error) {
+    await rm16(target, { force: true });
+    return { kind: "unavailable", reason: error instanceof Error ? error.message : String(error) };
+  }
+  if (verdict === "valid")
+    return { kind: "pinned", path: target };
+  await rm16(target, { force: true });
+  return { kind: "invalid" };
+}
+async function pinVerifiedCopy(source, verify, dir) {
+  let identity;
+  try {
+    identity = `${dir ?? ""}\x00${await sourceIdentity(source)}`;
+  } catch (error) {
+    return { kind: "unavailable", reason: error instanceof Error ? error.message : String(error) };
+  }
+  const known = pinned.get(identity);
+  if (known !== undefined) {
+    const result = await known;
+    if (result.kind !== "pinned")
+      return result;
+    let verdict;
+    try {
+      verdict = await verify(result.path);
+    } catch (error) {
+      pinned.delete(identity);
+      await rm16(result.path, { force: true });
+      return { kind: "unavailable", reason: error instanceof Error ? error.message : String(error) };
+    }
+    if (verdict === "valid")
+      return result;
+  }
+  const created = Promise.resolve(dir ?? processPinDir()).then((target) => copyAndVerify(source, verify, target), (error) => ({ kind: "unavailable", reason: error instanceof Error ? error.message : String(error) }));
+  pinned.set(identity, created);
+  const result = await created;
+  if (result.kind !== "pinned")
+    pinned.delete(identity);
+  return result;
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/signature.ts
+import { stat as stat9 } from "fs/promises";
+init_bun_spawn_shim();
+var KEYCHAIN_HELPER_REQUIREMENT = 'identifier "com.mengmota.omo-keychain-helper" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] ' + 'and certificate leaf[field.1.2.840.113635.100.6.1.13] and certificate leaf[subject.OU] = "523JNR86LZ"';
+var STRICT_ALL_ARCHITECTURES = 1 << 4 | 1 << 0;
+var UTF8 = 134217984;
+var security;
+async function loadSecurity() {
+  if (security !== undefined)
+    return security;
+  try {
+    const { dlopen, FFIType, ptr } = await loadBunFfi();
+    const cf = dlopen("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation", {
+      CFStringCreateWithCString: { args: [FFIType.u64, FFIType.ptr, FFIType.u32], returns: FFIType.u64 },
+      CFURLCreateFromFileSystemRepresentation: { args: [FFIType.u64, FFIType.ptr, FFIType.i64, FFIType.bool], returns: FFIType.u64 },
+      CFRelease: { args: [FFIType.u64], returns: FFIType.void }
+    });
+    const sec = dlopen("/System/Library/Frameworks/Security.framework/Security", {
+      SecStaticCodeCreateWithPath: { args: [FFIType.u64, FFIType.u32, FFIType.ptr], returns: FFIType.i32 },
+      SecRequirementCreateWithString: { args: [FFIType.u64, FFIType.u32, FFIType.ptr], returns: FFIType.i32 },
+      SecStaticCodeCheckValidityWithErrors: { args: [FFIType.u64, FFIType.u32, FFIType.u64, FFIType.u64], returns: FFIType.i32 }
+    });
+    const cString = (text) => Buffer.from(`${text}\x00`, "utf8");
+    security = {
+      check(path, requirement) {
+        const pathBytes = Buffer.from(path, "utf8");
+        const url = BigInt(cf.symbols.CFURLCreateFromFileSystemRepresentation(0n, ptr(pathBytes), pathBytes.length, false));
+        const text = BigInt(cf.symbols.CFStringCreateWithCString(0n, ptr(cString(requirement)), UTF8));
+        const codeOut = new BigUint64Array(1);
+        const requirementOut = new BigUint64Array(1);
+        try {
+          if (url === 0n || text === 0n)
+            return false;
+          if (sec.symbols.SecStaticCodeCreateWithPath(url, 0, ptr(codeOut)) !== 0)
+            return false;
+          if (sec.symbols.SecRequirementCreateWithString(text, 0, ptr(requirementOut)) !== 0)
+            return false;
+          const code = codeOut[0] ?? 0n;
+          const designated = requirementOut[0] ?? 0n;
+          return sec.symbols.SecStaticCodeCheckValidityWithErrors(code, STRICT_ALL_ARCHITECTURES, designated, 0n) === 0;
+        } finally {
+          for (const ref of [url, text, codeOut[0] ?? 0n, requirementOut[0] ?? 0n])
+            if (ref !== 0n)
+              cf.symbols.CFRelease(ref);
+        }
+      }
+    };
+  } catch {
+    security = null;
+  }
+  return security;
+}
+async function verifyWithCodesign(path, requirement) {
+  const child = spawn(["/usr/bin/codesign", "--verify", "--strict", `-R=${requirement}`, path], {
+    stdout: "ignore",
+    stderr: "ignore",
+    env: {}
+  });
+  return await child.exited === 0;
+}
+var verifyWithSecurityFramework = async (path, requirement) => {
+  const loaded = await loadSecurity();
+  return loaded === null ? verifyWithCodesign(path, requirement) : loaded.check(path, requirement);
+};
+async function fileIdentity(path) {
+  try {
+    const info = await stat9(path);
+    if (!info.isFile())
+      return null;
+    return `${path}\x00${info.dev}\x00${info.ino}\x00${info.size}\x00${info.mtimeMs}\x00${info.ctimeMs}`;
+  } catch {
+    return null;
+  }
+}
+function createSignatureChecker(check = verifyWithSecurityFramework, requirement = KEYCHAIN_HELPER_REQUIREMENT) {
+  const verdicts = new Map;
+  const checker = async (path) => {
+    const before = await fileIdentity(path);
+    if (before === null)
+      return "missing";
+    const known = verdicts.get(before);
+    if (known !== undefined)
+      return known;
+    const passed = await check(path, requirement);
+    if (await fileIdentity(path) !== before)
+      return "invalid";
+    const verdict = passed ? "valid" : "invalid";
+    verdicts.set(before, verdict);
+    return verdict;
+  };
+  return checker;
+}
+var processChecker;
+var processSignatureChecker = () => processChecker ??= createSignatureChecker();
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/access.ts
+async function resolveHelperAccess(candidates, options = {}) {
+  const verify = options.verify ?? processSignatureChecker();
+  let source;
+  let pin;
+  try {
+    const location = await locateHelper(candidates, verify);
+    if (location.kind !== "found")
+      return location;
+    source = location.path;
+    pin = await (options.pin ?? pinVerifiedCopy)(source, verify);
+  } catch (error) {
+    return { kind: "unavailable", reason: error instanceof Error ? error.message : String(error) };
+  }
+  if (pin.kind === "invalid")
+    return { kind: "invalid", rejected: [source] };
+  if (pin.kind === "unavailable")
+    return { kind: "unavailable", reason: pin.reason };
+  const pinned = pin.path;
+  const spawn = options.spawn ?? spawnDetachedHelper;
+  return {
+    kind: "ready",
+    path: pinned,
+    call: async (call, lease) => {
+      const verdict = await verify(pinned).catch((error) => {
+        throw new HelperProtocolError(`OmO's keychain helper could not be checked before it ran: ${error instanceof Error ? error.message : String(error)}`);
+      });
+      if (verdict !== "valid")
+        throw new HelperProtocolError("OmO's keychain helper changed on disk and failed its signature check; it was not run.");
+      return callHelper(pinned, call, { spawn, ...lease === undefined ? {} : { lease } });
+    }
+  };
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/approval-cache.ts
+var systemClock = { nowSeconds: () => Date.now() / 1000, sleepMs: (ms) => new Promise((resolve) => setTimeout(resolve, ms)) };
+function isEntryValid(entry, current, nowSeconds) {
+  if (nowSeconds < entry.readStartedAt)
+    return false;
+  return current.cdat === entry.cdat && current.mdat === entry.mdat && Math.floor(current.mdat) < Math.floor(entry.readStartedAt);
+}
+function createApprovalCache(clock = systemClock) {
+  let entry = null;
+  let deniedForBackground = false;
+  let pending = null;
+  return {
+    consume(current) {
+      if (entry === null)
+        return null;
+      if (!isEntryValid(entry, current, clock.nowSeconds())) {
+        entry = null;
+        return null;
+      }
+      return entry.value;
+    },
+    deniedForBackground: () => deniedForBackground,
+    inFlight: () => pending,
+    approve(run) {
+      if (pending !== null)
+        return pending;
+      const readStartedAt = clock.nowSeconds();
+      const started = run().then((answer) => {
+        if (answer.kind === "approved") {
+          entry = { value: answer.value, ...answer.attributes, readStartedAt };
+          deniedForBackground = false;
+        } else if (answer.kind === "denied")
+          deniedForBackground = true;
+        return answer;
+      });
+      const settled = () => {
+        if (pending === started)
+          pending = null;
+      };
+      started.then(settled, settled);
+      pending = started;
+      return started;
+    },
+    async afterOwnWrite(value, readAttributes) {
+      if (entry === null)
+        return;
+      const written = await readAttributes();
+      if (written === null) {
+        entry = null;
+        return;
+      }
+      while (Math.floor(clock.nowSeconds()) <= Math.floor(written.mdat)) {
+        await clock.sleepMs(Math.max(1, Math.ceil((Math.floor(written.mdat) + 1 - clock.nowSeconds()) * 1000)));
+      }
+      const readStartedAt = clock.nowSeconds();
+      const fresh = await readAttributes();
+      entry = fresh === null ? null : { value, ...fresh, readStartedAt };
+    },
+    drop() {
+      entry = null;
+    }
+  };
+}
+var processApprovalCache = () => {
+  const state = keychainProcessState();
+  state.approvalCache ??= createApprovalCache();
+  return state.approvalCache;
+};
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/darwin-read.ts
+var ROW_8B_DEFAULT = "re-login";
+
+class HelperReadError extends Error {
+  failure;
+  constructor(failure, message) {
+    super(message);
+    this.failure = failure;
+  }
+}
+function failure2(reply) {
+  if (reply.error === "locked")
+    return new HelperReadError("locked", "The keychain is locked.");
+  return new HelperReadError("store", `The keychain helper answered ${reply.error ?? "unexpectedly"}.`);
+}
+async function approveOnce(deps) {
+  const running = deps.cache.inFlight();
+  if (running !== null)
+    return running;
+  const release = await deps.takePromptLock();
+  if (release === null)
+    throw new HelperReadError("pending", "Another omo process is waiting for your keychain approval.");
+  try {
+    return await deps.cache.approve(async () => {
+      const reply = await deps.access.call({ verb: "approve", account: deps.account });
+      if (reply.missing === true)
+        return { kind: "missing" };
+      if (reply.error === "denied")
+        return { kind: "denied" };
+      if (reply.error !== undefined || reply.value === undefined || reply.cdat === undefined || reply.mdat === undefined)
+        throw failure2(reply);
+      return { kind: "approved", value: reply.value, attributes: { cdat: reply.cdat, mdat: reply.mdat } };
+    });
+  } finally {
+    await release();
+  }
+}
+async function readThroughHelper(deps, allowPrompt) {
+  const reply = await deps.access.call({ verb: "read", account: deps.account });
+  if (reply.error !== undefined)
+    throw failure2(reply);
+  if (reply.missing === true)
+    return { kind: "missing", reply };
+  if (reply.owned === true && reply.value !== undefined)
+    return { kind: "value", value: reply.value, source: reply.marker === true || reply.recover === true ? "owned" : "owned-unmarked", reply };
+  const own = await deps.ownSilentGet().catch(() => {
+    return;
+  });
+  if (typeof own === "string")
+    return { kind: "value", value: own, source: "own-identity", reply };
+  if (reply.cdat === undefined || reply.mdat === undefined)
+    throw failure2(reply);
+  const cached = deps.cache.consume({ cdat: reply.cdat, mdat: reply.mdat });
+  if (cached !== null)
+    return { kind: "value", value: cached, source: "approved", reply };
+  const reloginInstead = reply.partition !== "ours" && reply.partition !== "none" && (deps.row8b ?? ROW_8B_DEFAULT) === "re-login";
+  if (!allowPrompt) {
+    if (reloginInstead)
+      return { kind: "missing", reply };
+    throw new HelperReadError("pending", "The keychain needs your approval; run an omo command in a terminal.");
+  }
+  if (deps.background && deps.cache.deniedForBackground())
+    throw new HelperReadError("pending", "Keychain access was denied; run an omo command in a terminal to approve it.");
+  if (reloginInstead)
+    return { kind: "missing", reply };
+  if (deps.noDialog === true)
+    throw new HelperReadError("pending", "The keychain hand-off cannot show a dialog.");
+  if (deps.handOff !== undefined && await deps.handOff()) {
+    const after = await deps.access.call({ verb: "read", account: deps.account });
+    if (after.owned === true && after.value !== undefined)
+      return { kind: "value", value: after.value, source: "owned", reply: after };
+  }
+  const answer = await approveOnce(deps);
+  if (answer.kind === "approved")
+    return { kind: "value", value: answer.value, source: "approved", reply };
+  if (answer.kind === "missing")
+    return { kind: "missing", reply };
+  throw new HelperReadError("denied", "Keychain access was denied.");
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/recovery.ts
+var OLD_SLOT_COUNT = 8;
+var oldSlotName = (account, slot) => slot === 0 ? `${account}.old` : `${account}.old.${slot}`;
+function recoveryPlan(names) {
+  if (!names.original && names.staging)
+    return names.old ? ["promote", "delete-old"] : ["promote"];
+  if (!names.original && names.old)
+    return ["delete-old"];
+  if (names.original && names.staging)
+    return names.old ? ["remove-staging", "delete-old"] : ["remove-staging"];
+  if (names.original && names.old)
+    return ["delete-old"];
+  return [];
+}
+function oldSlotsOf(reply) {
+  return reply.present?.oldSlots ?? (reply.present?.old === true ? [0] : []);
+}
+function namesFromRead(reply) {
+  const original = reply.owned === false || reply.owned === true && reply.recover !== true;
+  return { original, staging: reply.present?.staging === true, old: reply.present?.old === true, oldSlots: oldSlotsOf(reply) };
+}
+async function deleteOld(name, helper, deleteOwn) {
+  const removed = await helper({ verb: "remove", account: name }).catch(() => null);
+  if (removed?.ok === true)
+    return true;
+  return deleteOwn(name).catch(() => false);
+}
+async function deleteOldSlots(account, slots, helper, deleteOwn) {
+  let cleared = true;
+  for (const slot of slots)
+    if (!await deleteOld(oldSlotName(account, slot), helper, deleteOwn))
+      cleared = false;
+  return cleared;
+}
+async function runRecovery(account, names, helper, deleteOwnOld) {
+  const applied = [];
+  for (const step of recoveryPlan(names)) {
+    const ok = step === "promote" ? (await helper({ verb: "promote", account })).ok === true : step === "remove-staging" ? (await helper({ verb: "remove", account: `${account}.staging` })).ok === true : await deleteOldSlots(account, names.oldSlots, helper, deleteOwnOld);
+    if (!ok && step !== "delete-old")
+      return { applied, failed: step };
+    if (ok)
+      applied.push(step);
+  }
+  return { applied, failed: null };
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/migration.ts
+var MIGRATABLE = new Set(["own-identity", "owned-unmarked", "approved"]);
+async function migrate(account, value, source, helper, deleteOwnOld) {
+  if (!MIGRATABLE.has(source))
+    return { kind: "skipped", reason: "not-migratable" };
+  if ((await helper({ verb: "stage", account, value })).ok !== true)
+    return { kind: "failed", step: "stage" };
+  const retired = await helper({ verb: "retire", account });
+  if (retired.error === "exists" && retired.reason === "old-slots-full" || retired.ok === true && retired.skipped === true) {
+    await helper({ verb: "remove", account: `${account}.staging` });
+    return { kind: "skipped", reason: "old-slots-full" };
+  }
+  if (retired.ok !== true)
+    return { kind: "failed", step: "retire" };
+  const slot = retired.slot ?? 0;
+  if ((await helper({ verb: "promote", account })).ok !== true)
+    return { kind: "failed", step: "promote" };
+  return { kind: "migrated", oldDeleted: await deleteOld(oldSlotName(account, slot), helper, deleteOwnOld) };
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/darwin-store.ts
+class HelperOldSlotsFull extends Error {
+}
+var ALL_OLD_SLOTS = Array.from({ length: OLD_SLOT_COUNT }, (_, slot) => slot);
+var OLD_SLOTS_FULL_MESSAGE = 'The macOS keychain holds 8 earlier OmO sign-ins that cannot be removed automatically. Open Keychain Access, delete the items whose account name ends in ".old" or ".old.1" to ".old.7" for OmO, then sign in again.';
+var failed = (reply, verb) => new HelperReadError(reply.error === "locked" ? "locked" : "store", `The keychain helper could not ${verb} the sign-in (${reply.error ?? "no answer"}).`);
+function lockedDarwinStore(deps, lease) {
+  const helper = (call) => deps.access.call(call, lease);
+  const deleteOwnOld = (name) => deps.ownDelete(name);
+  let lastRead = null;
+  const read = async () => {
+    const result = await readThroughHelper(deps, false);
+    lastRead = result.kind === "value" ? result : null;
+    return result.kind === "value" ? result.value : null;
+  };
+  return {
+    async recover() {
+      const reply = await deps.access.call({ verb: "read", account: deps.account });
+      if (reply.error === undefined)
+        await runRecovery(deps.account, namesFromRead(reply), helper, deleteOwnOld);
+    },
+    read,
+    async settle() {
+      if (lastRead === null)
+        return;
+      const outcome = await migrate(deps.account, lastRead.value, lastRead.source, helper, deleteOwnOld);
+      if (outcome.kind === "skipped" && outcome.reason === "old-slots-full")
+        deps.notice(`omo: ${OLD_SLOTS_FULL_MESSAGE}`);
+      if (outcome.kind === "failed")
+        deps.notice(`omo: the macOS keychain item could not be moved to OmO's keychain helper (${outcome.step}); it keeps working as before.`);
+    },
+    async write(value, intent, beforeRetire) {
+      const state = await deps.access.call({ verb: "read", account: deps.account });
+      if (state.error !== undefined)
+        throw failed(state, "check");
+      if (state.owned === false) {
+        const approved = state.cdat !== undefined && state.mdat !== undefined && deps.cache.consume({ cdat: state.cdat, mdat: state.mdat }) !== null;
+        const readable = lastRead !== null || approved || await deps.ownSilentGet().catch(() => {
+          return;
+        }) !== undefined;
+        if (readable || intent !== "fresh-sign-in") {
+          await deps.ownOverwrite(value);
+          if (lastRead?.source === "approved")
+            await deps.cache.afterOwnWrite(value, async () => {
+              const after = await deps.access.call({ verb: "read", account: deps.account });
+              return after.cdat === undefined || after.mdat === undefined ? null : { cdat: after.cdat, mdat: after.mdat };
+            });
+          return;
+        }
+        await beforeRetire?.();
+        const retired = await helper({ verb: "retire", account: deps.account });
+        if (retired.reason === "old-slots-full" || retired.ok === true && retired.skipped === true)
+          throw new HelperOldSlotsFull(OLD_SLOTS_FULL_MESSAGE);
+        if (retired.ok !== true)
+          throw failed(retired, "replace");
+      }
+      const written = await helper({ verb: "write", account: deps.account, value });
+      if (written.ok !== true)
+        throw failed(written, "save");
+      lastRead = { kind: "value", value, source: "owned", reply: written };
+    },
+    async clear() {
+      const removed = await helper({ verb: "remove", account: deps.account });
+      if (removed.error === "not-owned")
+        await deps.ownDelete(deps.account);
+      else if (removed.ok !== true)
+        throw failed(removed, "remove");
+      await helper({ verb: "remove", account: `${deps.account}.staging` });
+      const present = await helper({ verb: "read", account: deps.account });
+      const slots = present.error === undefined ? oldSlotsOf(present) : ALL_OLD_SLOTS;
+      await deleteOldSlots(deps.account, slots, helper, deleteOwnOld);
+      lastRead = null;
+    }
+  };
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/owner-marker.ts
+init_bun_spawn_shim();
+var MARKER_LINE = /^\s*"gena"<blob>="omo-owner\/1"\s*$/m;
+var ITEM_NOT_FOUND = 44;
+var probeOwnerMarker = async (service, account, keychain) => {
+  const args = ["find-generic-password", "-s", service, "-a", account, ...keychain === undefined ? [] : [keychain]];
+  const child = spawn(["/usr/bin/security", ...args], {
+    stdout: "pipe",
+    stderr: "ignore",
+    env: process.env.HOME === undefined ? {} : { HOME: process.env.HOME }
+  });
+  const [stdout, code] = await Promise.all([new Response(child.stdout).text(), child.exited]);
+  if (code === ITEM_NOT_FOUND)
+    return "absent";
+  if (code !== 0)
+    return "unknown";
+  return MARKER_LINE.test(stdout) ? "helper-owned" : "other";
+};
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/prompt-lock.ts
+import { mkdir as mkdir11 } from "fs/promises";
+import { dirname as dirname45 } from "path";
 
 // packages/team-core/src/team-state-store/lock-publish.ts
-import { access as access4, open as open3, unlink as unlink3 } from "fs/promises";
-import { dirname as dirname42 } from "path";
+import { access as access5, open as open3, unlink as unlink4 } from "fs/promises";
+import { dirname as dirname43 } from "path";
 
 // packages/team-core/src/team-state-store/lock-record.ts
 import { randomUUID as randomUUID6 } from "crypto";
-import { readFile as readFile34, stat as stat9 } from "fs/promises";
+import { readFile as readFile35, stat as stat11 } from "fs/promises";
 
 // packages/memory-core/src/locks/process-identity.ts
 import { execFile as execFile7 } from "child_process";
@@ -112804,23 +113546,23 @@ function rename8(from, to, admit) {
 }
 var sync = resilientNamespace(fsSync, "sync");
 var {
-  access: access3,
-  chmod: chmod2,
-  copyFile: copyFile4,
+  access: access4,
+  chmod: chmod3,
+  copyFile: copyFile5,
   cp: cp5,
   link,
   lstat: lstat18,
   mkdir: mkdir10,
-  mkdtemp: mkdtemp2,
-  readFile: readFile33,
+  mkdtemp: mkdtemp3,
+  readFile: readFile34,
   readdir: readdir17,
   readlink: readlink7,
   realpath: realpath2,
-  rm: rm16,
+  rm: rm17,
   rmdir: rmdir2,
-  stat: stat8,
+  stat: stat10,
   statfs,
-  unlink: unlink2
+  unlink: unlink3
 } = promises;
 var {
   accessSync: accessSync5,
@@ -112830,7 +113572,7 @@ var {
   lstatSync: lstatSync5,
   mkdirSync: mkdirSync19,
   readFileSync: readFileSync44,
-  readdirSync: readdirSync14,
+  readdirSync: readdirSync15,
   realpathSync: realpathSync13,
   statSync: statSync8,
   unlinkSync: unlinkSync10,
@@ -112943,7 +113685,7 @@ async function execFileText(command, args) {
 }
 async function readLinuxStartIdentity(pid) {
   try {
-    const stat = await readFile33(`/proc/${pid}/stat`, "utf8");
+    const stat = await readFile34(`/proc/${pid}/stat`, "utf8");
     const commandEnd = stat.lastIndexOf(")");
     if (commandEnd < 0)
       return null;
@@ -113182,13 +113924,16 @@ async function isWorkerLockReleased(incarnation, record) {
 // packages/team-core/src/team-state-store/lock-record.ts
 async function buildLockRecord(ownerTag) {
   await registerLockWorker();
-  const processStart = await getProcessStartIdentity(process.pid);
+  const processStart = await lockProcessStartLine(process.pid);
   return `${ownerTag} ${randomUUID6()}
 ${process.pid}
 ${Date.now()}
 ${lockOwnerInstanceId}
-${processStart ?? "unavailable"}
+${processStart}
 `;
+}
+async function lockProcessStartLine(pid) {
+  return await getProcessStartIdentity(pid) ?? "unavailable";
 }
 function errorCode2(error) {
   if (!(error instanceof Error) || !("code" in error))
@@ -113218,8 +113963,8 @@ function parseLockOwner(content) {
 }
 async function readLockRecord(lockPath) {
   try {
-    const content = await readFile34(lockPath, "utf8");
-    const { mtimeMs } = await stat9(lockPath);
+    const content = await readFile35(lockPath, "utf8");
+    const { mtimeMs } = await stat11(lockPath);
     return { content, modifiedAtEpochMs: mtimeMs };
   } catch (error) {
     if (!(error instanceof Error))
@@ -113250,7 +113995,7 @@ async function isLockRecordStale(record, staleAfterMs) {
 
 // packages/team-core/src/team-state-store/lock-publish.ts
 async function pathMayExist(path, deps = {}) {
-  const accessPath = deps.access ?? access4;
+  const accessPath = deps.access ?? access5;
   try {
     await accessPath(path);
     return true;
@@ -113267,7 +114012,7 @@ async function assertRetryableLockOpenError(lockPath, error, deps) {
   if (code === "EPERM") {
     if (await pathMayExist(lockPath, deps))
       return;
-    if ((deps?.platform ?? process.platform) === "win32" && await pathMayExist(dirname42(lockPath), deps))
+    if ((deps?.platform ?? process.platform) === "win32" && await pathMayExist(dirname43(lockPath), deps))
       return;
   }
   throw error;
@@ -113287,7 +114032,7 @@ async function publishLockRecord(lockPath, record) {
   } catch (error) {
     markLockRecordReleased(record);
     await fileHandle.close();
-    await unlink3(lockPath).catch(() => {
+    await unlink4(lockPath).catch(() => {
       return;
     });
     throw error;
@@ -113296,9 +114041,14 @@ async function publishLockRecord(lockPath, record) {
   return true;
 }
 
+// packages/team-core/src/team-state-store/lock-lease.ts
+import { randomUUID as randomUUID7 } from "crypto";
+import { open as open4, readdir as readdir18, readFile as readFile36, rename as rename9, rm as rm18 } from "fs/promises";
+import { basename as basename16, dirname as dirname44, join as join108 } from "path";
+
 // packages/team-core/src/team-state-store/lock-reclaim.ts
 import { createHash as createHash10 } from "crypto";
-import { unlink as unlink4 } from "fs/promises";
+import { unlink as unlink5 } from "fs/promises";
 var RECLAIM_UNLINK_ATTEMPTS = 3;
 var RECLAIM_UNLINK_RETRY_MS = 25;
 function delay2(ms) {
@@ -113311,7 +114061,7 @@ function reclaimGuardPath(lockPath, record) {
 }
 async function unlinkWithRetry(path, deps) {
   const wait = deps.delay ?? delay2;
-  const unlinkFile = deps.unlink ?? unlink4;
+  const unlinkFile = deps.unlink ?? unlink5;
   for (let attempt = 1;; attempt += 1) {
     try {
       await unlinkFile(path);
@@ -113329,6 +114079,19 @@ async function unlinkWithRetry(path, deps) {
   }
 }
 async function removeLockRecordIfUnchanged(lockPath, expectedRecord, staleAfterMs, deps = {}) {
+  return withRecordGuard(lockPath, expectedRecord, staleAfterMs, deps, async () => {
+    const current = await readLockRecord(lockPath);
+    if (current === null)
+      return "absent";
+    if (current.content !== expectedRecord || !await isLockRecordStale(current, staleAfterMs))
+      return "changed";
+    const unlinked = await unlinkWithRetry(lockPath, deps);
+    if (unlinked !== "stuck")
+      forgetLockRecord(expectedRecord);
+    return unlinked === "absent" ? "absent" : unlinked;
+  });
+}
+async function withRecordGuard(lockPath, expectedRecord, staleAfterMs, deps, act) {
   const guardPath = reclaimGuardPath(lockPath, expectedRecord);
   const guardRecord = await buildLockRecord("lock-reclaim");
   if (!await publishLockRecord(guardPath, guardRecord)) {
@@ -113339,20 +114102,103 @@ async function removeLockRecordIfUnchanged(lockPath, expectedRecord, staleAfterM
     return "busy";
   }
   try {
-    const current = await readLockRecord(lockPath);
-    if (current === null)
-      return "absent";
-    if (current.content !== expectedRecord || !await isLockRecordStale(current, staleAfterMs))
-      return "changed";
-    const unlinked = await unlinkWithRetry(lockPath, deps);
-    if (unlinked !== "stuck")
-      forgetLockRecord(expectedRecord);
-    return unlinked === "absent" ? "absent" : unlinked;
+    return await act();
   } finally {
     markLockRecordReleased(guardRecord);
     if (await unlinkWithRetry(guardPath, deps) !== "stuck")
       forgetLockRecord(guardRecord);
   }
+}
+
+// packages/team-core/src/team-state-store/lock-lease.ts
+class LockLeaseLostError extends Error {
+  constructor(lockPath) {
+    super(`The lock at ${lockPath} changed while it was handed over; the critical section was aborted.`);
+    this.name = "LockLeaseLostError";
+  }
+}
+var leaseTempPrefix = (lockPath) => `.${basename16(lockPath)}.`;
+var LEASE_TEMP_SUFFIX = ".lease";
+var UUID2 = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+var escapeRegExp2 = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+var leaseTempPattern = (lockPath) => new RegExp(`^\\.${escapeRegExp2(basename16(lockPath))}\\.${UUID2}\\.lease$`);
+async function replaceRecord(lockPath, content) {
+  const temporary = join108(dirname44(lockPath), `${leaseTempPrefix(lockPath)}${randomUUID7()}${LEASE_TEMP_SUFFIX}`);
+  try {
+    const handle = await open4(temporary, "wx", 384);
+    try {
+      await handle.writeFile(content);
+    } finally {
+      await handle.close();
+    }
+    await rename9(temporary, lockPath);
+  } catch (error) {
+    await rm18(temporary, { force: true });
+    throw error;
+  }
+}
+async function removeLeftoverTemps(lockPath) {
+  const pattern = leaseTempPattern(lockPath);
+  let entries;
+  try {
+    entries = await readdir18(dirname44(lockPath));
+  } catch (error) {
+    if (error instanceof Error && "code" in error && error.code === "ENOENT")
+      return;
+    throw error;
+  }
+  for (const entry of entries) {
+    if (pattern.test(entry))
+      await rm18(join108(dirname44(lockPath), entry), { force: true });
+  }
+}
+async function currentRecord(lockPath) {
+  try {
+    return await readFile36(lockPath, "utf8");
+  } catch (error) {
+    if (error instanceof Error && "code" in error && (error.code === "ENOENT" || error.code === "ENOTDIR"))
+      return null;
+    throw error;
+  }
+}
+function createLockLease(lockPath, ownerRecord, ownerTag, options = {}) {
+  const staleAfterMs = options.staleAfterMs ?? Number.POSITIVE_INFINITY;
+  let handedTo = null;
+  return {
+    async handOver(pid) {
+      if (handedTo !== null)
+        throw new Error("The lock is already handed over; restore it first.");
+      if (!Number.isInteger(pid) || pid <= 0 || pid === process.pid)
+        throw new Error(`Cannot hand the lock to pid ${pid}.`);
+      if (await currentRecord(lockPath) !== ownerRecord)
+        throw new LockLeaseLostError(lockPath);
+      await removeLeftoverTemps(lockPath);
+      const processStart = await lockProcessStartLine(pid);
+      const record = `${ownerTag} ${randomUUID7()}
+${pid}
+${Date.now()}
+${randomUUID7()}
+${processStart}
+`;
+      await replaceRecord(lockPath, record);
+      handedTo = record;
+    },
+    async restore() {
+      if (handedTo === null)
+        throw new Error("The lock is not handed over.");
+      const expected = handedTo;
+      handedTo = null;
+      const outcome = await withRecordGuard(lockPath, expected, staleAfterMs, {}, async () => {
+        if (await currentRecord(lockPath) !== expected)
+          return "lost";
+        await options.beforeRestoreRename?.();
+        await replaceRecord(lockPath, ownerRecord);
+        return "restored";
+      });
+      if (outcome !== "restored")
+        throw new LockLeaseLostError(lockPath);
+    }
+  };
 }
 
 // packages/team-core/src/team-state-store/locks.ts
@@ -113384,7 +114230,7 @@ async function withLock(lockPath, fn, opts) {
   const ownerTag = opts?.ownerTag ?? "owner";
   const record = await acquireLock(lockPath, ownerTag, staleAfterMs);
   try {
-    return await fn();
+    return await fn(createLockLease(lockPath, record, ownerTag, { staleAfterMs }));
   } finally {
     markLockRecordReleased(record);
     const outcome = await removeLockRecordIfUnchanged(lockPath, record, staleAfterMs);
@@ -113401,20 +114247,382 @@ async function reapStaleLock(lockPath, staleAfterMs = DEFAULT_STALE_AFTER_MS, de
   return await removeLockRecordIfUnchanged(lockPath, observed.content, staleAfterMs, deps);
 }
 
-// packages/omo-opencode/src/cli/service-auth/credential-lock.ts
-var held = new AsyncLocalStorage3;
-function credentialLockPaths(api, home = homedir31()) {
-  const id = createHash11("sha256").update(serviceOrigin(api)).digest("hex");
-  const directory = join106(home, ".omo", "session-locks");
-  return { directory, lock: join106(directory, `${id}.lock`), desktopRecord: join106(directory, `${id}.desktop-generation.json`) };
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/prompt-lock.ts
+function promptLockAt(path, hooks = {}) {
+  return async () => {
+    const held = keychainProcessState().heldPromptLocks;
+    if (held.has(path))
+      return null;
+    held.add(path);
+    let granted = false;
+    try {
+      await mkdir11(dirname45(path), { recursive: true, mode: 448 });
+      await hooks.beforePublish?.();
+      for (let attempt = 0;attempt < 2; attempt++) {
+        const record = await buildLockRecord("keychain-prompt");
+        if (await publishLockRecord(path, record)) {
+          granted = true;
+          return async () => {
+            markLockRecordReleased(record);
+            try {
+              await (hooks.removeRecord ?? ((target, owned) => removeLockRecordIfUnchanged(target, owned, Number.POSITIVE_INFINITY)))(path, record);
+            } finally {
+              held.delete(path);
+            }
+          };
+        }
+        if (await reapStaleLock(path, Number.POSITIVE_INFINITY) !== "removed")
+          return null;
+      }
+      return null;
+    } finally {
+      if (!granted)
+        held.delete(path);
+    }
+  };
 }
-async function withCredentialLock(api, action, home = homedir31(), ownerTag = "cli-session") {
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/darwin-backend.ts
+var ROW_9B_DEFAULT = "reinstall-notice";
+var helperAccess = () => sharedHelperAccess(() => {
+  const { entryCandidates } = keychainProcessState();
+  return resolveHelperAccess([...entryCandidates, ...bundleCandidates(import.meta.url), ...machineCandidates(homedir31())]);
+});
+function sharedHelperAccess(resolve) {
+  const state = keychainProcessState();
+  if (state.helperAccess !== undefined)
+    return state.helperAccess;
+  const started = resolve();
+  state.helperAccess = started;
+  started.then((access) => {
+    if (access.kind === "unavailable" && state.helperAccess === started)
+      state.helperAccess = undefined;
+  }, () => {
+    if (state.helperAccess === started)
+      state.helperAccess = undefined;
+  });
+  return started;
+}
+
+class HelperMissingForOwnedItem extends Error {
+}
+function asKeystoreError(error, pending) {
+  if (!(error instanceof HelperReadError))
+    return error;
+  if (error.failure === "pending")
+    return pending(error.message);
+  if (error.failure === "locked")
+    return Object.assign(new Error(error.message), { code: "-25308" });
+  return error;
+}
+function createDarwinBackend(options) {
+  const silently = options.silently ?? silentSecrets;
+  const key = { service: options.service, name: options.account };
+  const deps = {
+    account: options.account,
+    access: options.access,
+    cache: options.cache ?? processApprovalCache(),
+    background: options.background,
+    takePromptLock: promptLockAt(join109(options.home ?? homedir31(), ".omo", "session-locks", `${options.account}.keychain-prompt`)),
+    ownSilentGet: () => silently(() => options.secrets.get(key)),
+    ownOverwrite: (value) => silently(() => options.secrets.set({ ...key, value })),
+    ownDelete: (name) => name === options.account ? gatedSecrets(() => options.secrets.delete({ ...key, name })) : silently(() => options.secrets.delete({ ...key, name })),
+    notice: options.notice,
+    ...options.row8b === undefined ? {} : { row8b: options.row8b },
+    ...options.handOff === undefined ? {} : { handOff: options.handOff },
+    noDialog: options.noDialog === true
+  };
+  let unowned = false;
+  return {
+    read: async () => {
+      const result = await readThroughHelper(deps, true);
+      unowned = result.kind === "value" && result.source !== "owned";
+      return result.kind === "value" ? result.value : null;
+    },
+    underLock: (lease) => lockedDarwinStore(deps, lease),
+    migrationPending: () => unowned
+  };
+}
+async function guardHelperlessRead(service, account, choice = ROW_9B_DEFAULT, probe = probeOwnerMarker) {
+  if (choice === "dialog")
+    return;
+  if (await probe(service, account) === "helper-owned")
+    throw new HelperMissingForOwnedItem("OmO's keychain helper is missing or damaged on this Mac. Reinstall omo, then try again.");
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/store-binding.ts
+import { homedir as homedir32 } from "os";
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/creator-handoff.ts
+init_bun_file_shim();
+init_bun_spawn_shim();
+import { dirname as dirname47, posix as posix14 } from "path";
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/runtime-capabilities.ts
+init_zod();
+import { readFile as readFile37 } from "fs/promises";
+import { dirname as dirname46, join as join110 } from "path";
+var RUNTIME_CAPABILITIES_FILE = "omo-runtime-capabilities.json";
+var RUNTIME_CAPABILITIES = { keychainHandoff: 1 };
+var capabilitiesSchema = object({ keychainHandoff: number2().int() }).passthrough();
+async function runtimeDeclaresKeychainHandoff(runtime) {
+  const text = await readFile37(join110(dirname46(runtime), RUNTIME_CAPABILITIES_FILE), "utf8").catch(() => null);
+  if (text === null)
+    return false;
+  try {
+    const parsed = capabilitiesSchema.safeParse(JSON.parse(text));
+    return parsed.success && parsed.data.keychainHandoff >= RUNTIME_CAPABILITIES.keychainHandoff;
+  } catch {
+    return false;
+  }
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/creator-handoff.ts
+var DEVELOPER_ID_TEAM = 'anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] and certificate leaf[field.1.2.840.113635.100.6.1.13] and certificate leaf[subject.OU] = "523JNR86LZ"';
+var DESKTOP_RUNTIME_REQUIREMENT = `identifier "com.mengmota.omo-desktop-runtime" and ${DEVELOPER_ID_TEAM}`;
+var DESKTOP_APP_REQUIREMENT = DEVELOPER_ID_TEAM;
+var HANDOFF_ENV = "OMO_KEYCHAIN_HANDOFF";
+var HANDOFF_DEADLINE_MS = 45000;
+function desktopRuntimeCandidates(home, arch = process.arch) {
+  const runtimeArch = arch === "arm64" ? "arm64" : "x64";
+  return ["/Applications/OmO.app", posix14.join(home, "Applications", "OmO.app")].map((app) => ({
+    app,
+    runtime: posix14.join(app, "Contents", "Resources", "omo-runtime", `darwin-${runtimeArch}`, "omo")
+  }));
+}
+var verifyBundle = async (app, requirement) => {
+  const child = spawn(["/usr/bin/codesign", "--verify", "--deep", "--strict", `-R=${requirement}`, app], {
+    stdin: "ignore",
+    stdout: "ignore",
+    stderr: "ignore"
+  });
+  return await child.exited === 0;
+};
+var runBounded = async (path, args, env, deadlineMs) => {
+  const child = spawn([path, ...args], { cwd: dirname47(path), stdin: "ignore", stdout: "ignore", stderr: "ignore", env });
+  let killed = false;
+  const timer = setTimeout(() => {
+    killed = true;
+    child.kill("SIGKILL");
+  }, deadlineMs);
+  try {
+    const code = await child.exited;
+    return killed ? null : code;
+  } finally {
+    clearTimeout(timer);
+  }
+};
+function createCreatorHandOff(options) {
+  return async () => {
+    const env = options.env ?? process.env;
+    if (env[HANDOFF_ENV] === "1")
+      return false;
+    const checkRuntime = options.checkRuntime ?? verifyWithSecurityFramework;
+    const checkBundle = options.checkBundle ?? verifyBundle;
+    const declaresHandOff = options.declaresHandOff ?? runtimeDeclaresKeychainHandoff;
+    const self = options.selfPath ?? process.execPath;
+    for (const { app, runtime } of options.candidates) {
+      if (runtime === self || !await bunFile(runtime).exists())
+        continue;
+      const verified = await Promise.resolve().then(async () => await checkBundle(app, DESKTOP_APP_REQUIREMENT) && await checkRuntime(runtime, DESKTOP_RUNTIME_REQUIREMENT) && await declaresHandOff(runtime)).catch(() => false);
+      if (!verified)
+        continue;
+      const childEnv = { [HANDOFF_ENV]: "1" };
+      if (env.HOME !== undefined)
+        childEnv.HOME = env.HOME;
+      const origin = options.origin ?? env.OMO_SERVICE_API_URL;
+      if (origin !== undefined)
+        childEnv.OMO_SERVICE_API_URL = origin;
+      try {
+        return await (options.run ?? runBounded)(runtime, ["account", "token"], childEnv, HANDOFF_DEADLINE_MS) === 0;
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  };
+}
+
+// packages/omo-opencode/src/cli/service-auth/keychain-helper/store-binding.ts
+var readers = new Map;
+var INJECTED_SECRETS = Symbol.for("omo.test.injectedSecrets");
+var isInjectedSecrets = (api) => api[INJECTED_SECRETS] === true;
+var backends = new Map;
+function processHandOff(origin) {
+  return () => {
+    const state = keychainProcessState();
+    state.handOff ??= createCreatorHandOff({ candidates: desktopRuntimeCandidates(homedir32()), origin })();
+    return state.handOff;
+  };
+}
+function bindKeychainHelper(input) {
+  const { secrets: real, key, options } = input;
+  const eligible = input.platform === "darwin" && input.namespace === "omo-cli" && (options !== undefined || typeof Bun !== "undefined" && real === Bun.secrets && !isInjectedSecrets(real));
+  const secrets = !eligible ? real : {
+    get: (entry) => gatedSecrets(() => real.get(entry)),
+    set: (entry) => gatedSecrets(() => real.set(entry)),
+    delete: (entry) => gatedSecrets(() => real.delete(entry))
+  };
+  const cacheKey = `${key.service}
+${key.name}
+${input.background ? "bounded" : "interactive"}`;
+  let own;
+  const backend = () => {
+    if (!eligible)
+      return Promise.resolve(null);
+    const known = options === undefined ? backends.get(cacheKey) : own;
+    if (known !== undefined)
+      return known;
+    const created = (options?.access ?? helperAccess)().then((access) => access.kind !== "ready" ? null : createDarwinBackend({
+      access,
+      secrets: real,
+      service: key.service,
+      account: key.name,
+      background: input.background,
+      noDialog: options?.noDialog ?? process.env[HANDOFF_ENV] === "1",
+      notice: input.notice,
+      ...options?.home === undefined ? {} : { home: options.home },
+      ...options?.row8b === undefined ? {} : { row8b: options.row8b },
+      ...options?.silently === undefined ? {} : { silently: options.silently },
+      ...options?.cache === undefined ? {} : { cache: options.cache },
+      handOff: options === undefined ? processHandOff(input.origin) : options.handOff ?? (async () => false)
+    }));
+    if (options === undefined) {
+      backends.set(cacheKey, created);
+      created.then((found) => {
+        if (found === null && backends.get(cacheKey) === created)
+          backends.delete(cacheKey);
+      });
+    } else
+      own = created;
+    return created;
+  };
+  const reader = (helper) => {
+    const known = readers.get(helper);
+    if (known !== undefined)
+      return known;
+    const refuse = async () => {
+      throw new Error("OmO's keychain helper changes the sign-in only under the session lock.");
+    };
+    const created = {
+      get: async () => {
+        try {
+          return await helper.read();
+        } catch (error) {
+          throw asKeystoreError(error, (message) => input.pending(`${message} Credentials are never saved to a file.`));
+        }
+      },
+      set: refuse,
+      delete: refuse
+    };
+    readers.set(helper, created);
+    return created;
+  };
+  return {
+    secrets,
+    eligible,
+    backend,
+    reader,
+    isHelperReader: (api) => [...readers.values()].includes(api),
+    guardHelperless: async () => {
+      if (!eligible)
+        return;
+      if ((options?.noDialog ?? process.env[HANDOFF_ENV] === "1") === true)
+        throw input.pending("The keychain hand-off cannot show a dialog.");
+      await guardHelperlessRead(key.service, key.name, options?.row9b, options?.ownerMarker);
+    }
+  };
+}
+function lockedStoreView(helper, lease, codec, mapError, done) {
+  const locked = helper.underLock(lease);
+  const run = async (step) => {
+    try {
+      return await step();
+    } catch (error) {
+      throw mapError(error);
+    } finally {
+      done();
+    }
+  };
+  return {
+    read: () => run(async () => {
+      const text = await locked.read();
+      return text === null ? null : codec.parse(text);
+    }),
+    write: (value, intent = "update", beforeRetire) => run(async () => {
+      const next = codec.amend === undefined ? value : codec.amend(await locked.read(), value);
+      await locked.write(codec.serialize(next), intent, beforeRetire);
+    }),
+    clear: () => run(() => locked.clear()),
+    recover: () => run(() => locked.recover()),
+    settle: () => run(() => locked.settle())
+  };
+}
+
+// packages/omo-opencode/src/cli/service-auth/secret-service-lock.ts
+import { spawn as spawn5 } from "child_process";
+var DEFAULT_COLLECTION = "/org/freedesktop/secrets/aliases/default";
+var PROBE_TIMEOUT_MS2 = 1e4;
+var parseLockedReply = (stdout) => {
+  const match = /<\s*(true|false)\s*>/.exec(stdout);
+  if (match === null)
+    return null;
+  return match[1] === "true" ? "locked" : "unlocked";
+};
+var probeSecretServiceLock = () => new Promise((resolve) => {
+  const child = spawn5("gdbus", [
+    "call",
+    "--session",
+    "--dest",
+    "org.freedesktop.secrets",
+    "--object-path",
+    DEFAULT_COLLECTION,
+    "--method",
+    "org.freedesktop.DBus.Properties.Get",
+    "org.freedesktop.Secret.Collection",
+    "Locked"
+  ], { stdio: ["ignore", "pipe", "ignore"] });
+  let stdout = "";
+  const timer = setTimeout(() => {
+    child.kill();
+    resolve("unknown");
+  }, PROBE_TIMEOUT_MS2);
+  child.stdout.on("data", (chunk) => {
+    stdout += chunk.toString();
+  });
+  child.on("error", () => {
+    clearTimeout(timer);
+    resolve("unknown");
+  });
+  child.on("close", (code) => {
+    clearTimeout(timer);
+    resolve(code === 0 ? parseLockedReply(stdout) ?? "absent" : "absent");
+  });
+});
+
+// packages/omo-opencode/src/cli/service-auth/credential-lock.ts
+import { AsyncLocalStorage as AsyncLocalStorage3 } from "async_hooks";
+import { createHash as createHash11 } from "crypto";
+import { mkdir as mkdir12 } from "fs/promises";
+import { homedir as homedir33 } from "os";
+import { join as join112 } from "path";
+var held = new AsyncLocalStorage3;
+function credentialLockPaths(api, home = homedir33()) {
+  const id = createHash11("sha256").update(serviceOrigin(api)).digest("hex");
+  const directory = join112(home, ".omo", "session-locks");
+  return { directory, lock: join112(directory, `${id}.lock`), desktopRecord: join112(directory, `${id}.desktop-generation.json`) };
+}
+function heldCredentialLease(api, home = homedir33()) {
+  return held.getStore()?.get(credentialLockPaths(api, home).lock);
+}
+async function withCredentialLock(api, action, home = homedir33(), ownerTag = "cli-session") {
   const { directory, lock } = credentialLockPaths(api, home);
   const owned = held.getStore();
-  if (owned?.has(lock))
-    return action();
-  await mkdir11(directory, { recursive: true, mode: 448 });
-  return withLock(lock, () => held.run(new Set([...owned ?? [], lock]), action), {
+  const outer = owned?.get(lock);
+  if (outer !== undefined)
+    return action(outer);
+  await mkdir12(directory, { recursive: true, mode: 448 });
+  return withLock(lock, (lease) => held.run(new Map([...owned ?? [], [lock, lease]]), () => action(lease)), {
     ownerTag,
     staleAfterMs: Number.POSITIVE_INFINITY
   });
@@ -113466,17 +114674,51 @@ function createCredentialStore(api, options = {}) {
     return {
       ...value,
       ...accountId === undefined ? {} : { accountId },
-      credentialGeneration: sameIdentity ? current?.credentialGeneration ?? randomUUID7() : randomUUID7()
+      credentialGeneration: sameIdentity ? current?.credentialGeneration ?? randomUUID8() : randomUUID8()
     };
-  });
+  }, options.keychainHelper);
+  const sections = new WeakMap;
+  const underLock = (lease) => {
+    const known = sections.get(lease);
+    if (known !== undefined)
+      return known;
+    const view = (async () => {
+      const opened = await store.underLock?.(lease) ?? null;
+      await opened?.recover();
+      return opened;
+    })();
+    sections.set(lease, view);
+    return view;
+  };
+  const held = async () => {
+    const lease = heldCredentialLease(api, options.home);
+    return lease === undefined ? null : underLock(lease);
+  };
+  const locked = async (helper, plain) => {
+    if (heldCredentialLease(api, options.home) === undefined)
+      await store.prepare?.();
+    await withCredentialLock(api, async (lease) => {
+      const view = await underLock(lease);
+      await (view === null ? plain() : helper(view));
+    }, options.home);
+  };
   return {
-    read: store.read,
-    readAuthoritative: store.readAuthoritative,
-    write: (value) => withCredentialLock(api, () => store.write(value), options.home),
-    clear: () => withCredentialLock(api, store.clear, options.home)
+    read: async () => {
+      const view = await held();
+      return view === null ? store.read() : view.read();
+    },
+    readAuthoritative: async () => {
+      const view = await held();
+      return view === null ? store.readAuthoritative() : view.read();
+    },
+    write: (value, intent, beforeRetire) => locked((view) => view.write(value, intent, beforeRetire), () => store.write(value)),
+    clear: () => locked((view) => view.clear(), store.clear),
+    ...store.prepare === undefined ? {} : { prepare: store.prepare },
+    underLock,
+    ...store.migrationPending === undefined ? {} : { migrationPending: store.migrationPending }
   };
 }
-function createSealedStore(api, namespace, schema, secrets = typeof Bun === "undefined" ? null : Bun.secrets, platform = process.platform, lockProbe = probeSecretServiceLock, notice = stderrNoticeOncePerProcess, wait = SESSION_READ_WAIT, amendWrite) {
+function createSealedStore(api, namespace, schema, secrets = typeof Bun === "undefined" ? null : Bun.secrets, platform = process.platform, lockProbe = probeSecretServiceLock, notice = stderrNoticeOncePerProcess, wait = SESSION_READ_WAIT, amendWrite, keychainHelper) {
   if (!secrets)
     throw new SignInError("OmO sign-in needs Bun 1.4 or newer with OS credential storage. No file fallback is available.");
   const platformName = platform === "darwin" ? "macOS Keychain" : platform === "linux" ? "Linux Secret Service (libsecret and an unlocked keyring)" : platform === "win32" ? "Windows Credential Manager" : null;
@@ -113485,6 +114727,18 @@ function createSealedStore(api, namespace, schema, secrets = typeof Bun === "und
   const key = { service: namespace, name: credentialId(api) };
   const slot = `${key.service}
 ${key.name}`;
+  const helper = bindKeychainHelper({
+    platform,
+    namespace,
+    secrets,
+    key,
+    background: wait.kind === "bounded",
+    origin: api,
+    notice,
+    pending: (message) => new KeychainApprovalPendingError(message),
+    ...keychainHelper === undefined ? {} : { options: keychainHelper }
+  });
+  secrets = helper.secrets;
   const readsOf = (api) => {
     const known = processReads.get(api);
     if (known !== undefined)
@@ -113510,17 +114764,19 @@ ${key.name}`;
     reads.set(slot, read);
     return read;
   };
-  const waiting = platform === "darwin" ? `macOS Keychain is waiting for your approval: answer the "${basename15(process.execPath)} wants to access key ${namespace}" dialog ("Always Allow" stops it asking again)` : `${platformName} has not answered; it may be waiting for your approval or an unlock in a system dialog`;
+  const waiting = platform === "darwin" ? `macOS Keychain is waiting for your approval: answer the "${basename17(process.execPath)} wants to access key ${namespace}" dialog ("Always Allow" stops it asking again)` : `${platformName} has not answered; it may be waiting for your approval or an unlock in a system dialog`;
+  const helperWaiting = `macOS Keychain is waiting for your approval: answer the "OmO's keychain helper wants to access key ${namespace}" dialog`;
   const answered = async (api, fresh = false) => {
+    const waitingFor = helper.isHelperReader(api) ? helperWaiting : waiting;
     const read = fresh ? Promise.resolve().then(() => api.get(key)) : sharedRead(api);
     let timer;
     try {
       if (wait.kind === "interactive") {
-        timer = setTimeout(() => wait.notice(`omo: ${waiting}.`), wait.noticeAfterMs);
+        timer = setTimeout(() => wait.notice(`omo: ${waitingFor}.`), wait.noticeAfterMs);
         return await read;
       }
       const expired = new Promise((_, reject) => {
-        timer = setTimeout(() => reject(new KeychainApprovalPendingError(`${waiting}, then try again. Credentials are never saved to a file.`)), wait.deadlineMs);
+        timer = setTimeout(() => reject(new KeychainApprovalPendingError(`${waitingFor}, then try again. Credentials are never saved to a file.`)), wait.deadlineMs);
       });
       return await Promise.race([read, expired]);
     } finally {
@@ -113545,41 +114801,76 @@ ${key.name}`;
       notice("omo: could not check whether the keyring is locked (gdbus or the Secret Service did not answer); using libsecret directly.");
     }
   };
-  const parsedRead = async (fresh) => {
-    await assertUsable();
-    let value;
-    try {
-      value = await answered(secrets, fresh);
-    } catch (error) {
-      if (error instanceof KeychainApprovalPendingError)
-        throw error;
-      throw unavailable(error);
-    }
-    if (value === null)
-      return null;
+  const parseStored = (value) => {
     try {
       return schema.parse(JSON.parse(value));
     } catch {
       throw new InvalidCredentialState(signInRoute() === "cli" ? "Stored sign-in data is invalid. Run omo account forget, then omo login." : "The OmO sign-in saved on this computer can't be read. Run omo account forget to remove it, then sign in again in the desktop app.");
     }
   };
+  const previousOf = (raw) => {
+    if (raw === null)
+      return null;
+    try {
+      return schema.parse(JSON.parse(raw));
+    } catch {
+      return null;
+    }
+  };
+  const rawRead = async (fresh) => {
+    await assertUsable();
+    const backend = await helper.backend();
+    try {
+      if (backend === null)
+        await helper.guardHelperless();
+      return await answered(backend === null ? secrets : helper.reader(backend), fresh);
+    } catch (error) {
+      if (error instanceof KeychainApprovalPendingError)
+        throw error;
+      if (error instanceof HelperMissingForOwnedItem)
+        throw new CredentialStoreError(error.message);
+      throw unavailable(error);
+    }
+  };
+  const parsedRead = async (fresh) => {
+    const value = await rawRead(fresh);
+    return value === null ? null : parseStored(value);
+  };
+  const lockedFailure = (error) => {
+    const mapped = asKeystoreError(error, (message) => new KeychainApprovalPendingError(message));
+    if (error instanceof HelperOldSlotsFull)
+      return new CredentialStoreError(error.message);
+    if (mapped instanceof KeychainApprovalPendingError || mapped instanceof SignInError)
+      return mapped;
+    if (mapped instanceof Error && mapped.name === "LockLeaseLostError")
+      return mapped;
+    return unavailable(mapped);
+  };
   return {
     read: () => parsedRead(false),
     readAuthoritative: () => parsedRead(true),
+    async prepare() {
+      if (await helper.backend() !== null)
+        await rawRead(false);
+    },
+    async underLock(lease) {
+      const backend = await helper.backend();
+      if (backend === null)
+        return null;
+      const codec = {
+        parse: parseStored,
+        serialize: (value) => JSON.stringify(schema.parse(value)),
+        ...amendWrite === undefined ? {} : { amend: (raw, next) => amendWrite(previousOf(raw), next) }
+      };
+      return lockedStoreView(backend, lease, codec, lockedFailure, () => forget(helper.reader(backend)));
+    },
+    migrationPending: async () => (await helper.backend())?.migrationPending() ?? false,
     async write(value) {
       await assertUsable();
+      if (await helper.backend() !== null)
+        throw new Error("OmO's keychain helper writes only under the session lock.");
       try {
-        let next = value;
-        if (amendWrite !== undefined) {
-          const raw = await answered(secrets, true);
-          let previous = null;
-          if (raw !== null) {
-            try {
-              previous = schema.parse(JSON.parse(raw));
-            } catch {}
-          }
-          next = amendWrite(previous, value);
-        }
+        const next = amendWrite === undefined ? value : amendWrite(previousOf(await answered(secrets, true)), value);
         await secrets.set({ ...key, value: JSON.stringify(schema.parse(next)) });
       } catch (error) {
         throw unavailable(error);
@@ -113588,6 +114879,8 @@ ${key.name}`;
     },
     async clear() {
       await assertUsable();
+      if (await helper.backend() !== null)
+        throw new Error("OmO's keychain helper deletes only under the session lock.");
       try {
         await secrets.delete(key);
       } catch (error) {
@@ -113699,14 +114992,14 @@ async function loginLoopback(session, options) {
 
 // packages/memory-core/src/sync/device-retire.ts
 import { createHash as createHash14, randomBytes as randomBytes6 } from "crypto";
-import { join as join109 } from "path";
+import { join as join115 } from "path";
 
 // packages/memory-core/src/identity/layout.ts
-import { homedir as homedir32 } from "os";
-import { join as join107, resolve as resolve31 } from "path";
+import { homedir as homedir34 } from "os";
+import { join as join113, resolve as resolve31 } from "path";
 var MEMORY_ROOT_ENV_VAR = "OMO_MEMORY_HOME";
 function defaultMemoryRoot() {
-  return join107(homedir32(), ".omo", "memory");
+  return join113(homedir34(), ".omo", "memory");
 }
 function resolveMemoryRoot(env, cwd) {
   const override = env[MEMORY_ROOT_ENV_VAR];
@@ -113716,13 +115009,13 @@ function resolveMemoryRoot(env, cwd) {
   return resolve31(cwd, override);
 }
 // packages/memory-core/src/sync/pin-dir.ts
-import { join as join108 } from "path";
-var syncPinDir = (memoryRoot) => join108(memoryRoot, "sync-device");
+import { join as join114 } from "path";
+var syncPinDir = (memoryRoot) => join114(memoryRoot, "sync-device");
 
 // packages/memory-core/src/sync/device-retire.ts
-var trustAnchorRoot = (pinDir) => join109(pinDir, "trust-anchor");
+var trustAnchorRoot = (pinDir) => join115(pinDir, "trust-anchor");
 var trustAnchorKey = (account) => createHash14("sha256").update(account, "utf8").digest("base64url");
-var trustAnchorDir = (pinDir, account) => join109(trustAnchorRoot(pinDir), trustAnchorKey(account));
+var trustAnchorDir = (pinDir, account) => join115(trustAnchorRoot(pinDir), trustAnchorKey(account));
 var hasLiveTrustAnchor = async (pinDir) => {
   try {
     return (await readdir17(trustAnchorRoot(pinDir))).some((name) => !name.includes(".retired-"));
@@ -113743,16 +115036,16 @@ var retireSyncDevice = async (input) => {
 };
 
 // packages/omo-opencode/src/cli/service-auth/session.ts
-import { homedir as homedir33 } from "os";
+import { homedir as homedir35 } from "os";
 
 // packages/omo-opencode/src/cli/service-auth/signed-out-marker.ts
 init_zod();
-import { mkdir as mkdir12, readFile as readFile35, rename as rename9, rm as rm17, writeFile as writeFile17 } from "fs/promises";
-import { dirname as dirname43, join as join110 } from "path";
+import { mkdir as mkdir13, readFile as readFile38, rename as rename10, rm as rm19, writeFile as writeFile18 } from "fs/promises";
+import { dirname as dirname48, join as join116 } from "path";
 var markerSchema = object({ device: string2().nullable(), at: string2() });
-var signedOutMarkerPath = (home, credential) => join110(home, ".omo", "account-state", `${credential}.signed-out.json`);
+var signedOutMarkerPath = (home, credential) => join116(home, ".omo", "account-state", `${credential}.signed-out.json`);
 async function readSignedOutMarker(path) {
-  const text = await readFile35(path, "utf8").catch(() => null);
+  const text = await readFile38(path, "utf8").catch(() => null);
   if (text === null)
     return null;
   let value;
@@ -113765,12 +115058,12 @@ async function readSignedOutMarker(path) {
   return parsed.success ? parsed.data : null;
 }
 async function writeSignedOutMarker(path, device) {
-  await mkdir12(dirname43(path), { recursive: true, mode: 448 });
+  await mkdir13(dirname48(path), { recursive: true, mode: 448 });
   const staging = `${path}.${process.pid}.tmp`;
-  await writeFile17(staging, JSON.stringify({ device, at: new Date().toISOString() }), { mode: 384 });
-  await rename9(staging, path);
+  await writeFile18(staging, JSON.stringify({ device, at: new Date().toISOString() }), { mode: 384 });
+  await rename10(staging, path);
 }
-var clearSignedOutMarker = (path) => rm17(path, { force: true });
+var clearSignedOutMarker = (path) => rm19(path, { force: true });
 
 // packages/omo-opencode/src/cli/service-auth/session.ts
 class SessionEnded extends SignInError {
@@ -113794,12 +115087,14 @@ function createSession(options) {
   const api = serviceOrigin(options.api);
   const now = options.now ?? Date.now;
   const { store, signal, beforeKeysDiscarded } = options;
-  const markerPath = signedOutMarkerPath(options.home ?? homedir33(), credentialId(api));
+  const markerPath = signedOutMarkerPath(options.home ?? homedir35(), credentialId(api));
   async function locked(action) {
     signal?.throwIfAborted();
-    return withCredentialLock(api, async () => {
+    if (heldCredentialLease(api, options.home) === undefined)
+      await store.prepare?.();
+    return withCredentialLock(api, async (lease) => {
       signal?.throwIfAborted();
-      return action();
+      return action(await store.underLock?.(lease) ?? null);
     }, options.home);
   }
   const request = (path, init) => requestApi(api, path, init, signal);
@@ -113836,9 +115131,12 @@ function createSession(options) {
     }
   }
   async function snapshot() {
-    return locked(async () => {
+    return locked(async (view) => {
       const current = await store.read();
-      return current === null ? null : refreshed(current);
+      if (current === null)
+        return null;
+      await view?.settle();
+      return refreshed(current);
     });
   }
   return {
@@ -113861,7 +115159,7 @@ function createSession(options) {
         }
         if (stored !== null && stored.device.id !== value.device.id)
           await beforeKeysDiscarded(discardedOf(stored, "replaced"));
-        await store.write(value);
+        await store.write(value, "fresh-sign-in", () => beforeKeysDiscarded({ kind: "unreadable" }));
         await clearSignedOutMarker(markerPath);
       });
     },
@@ -113922,14 +115220,15 @@ function createSession(options) {
       signal?.throwIfAborted();
       const snapshot = await store.read();
       signal?.throwIfAborted();
-      if (snapshot !== null && snapshot.refreshState !== "uncertain" && snapshot.refreshAttempt === undefined && Date.parse(snapshot.accessTokenExpiresAt) > now() + 30000 && (expect === undefined || expect(snapshot)))
+      if (snapshot !== null && snapshot.refreshState !== "uncertain" && snapshot.refreshAttempt === undefined && Date.parse(snapshot.accessTokenExpiresAt) > now() + 30000 && (expect === undefined || expect(snapshot)) && !await store.migrationPending?.())
         return snapshot.accessToken;
-      return locked(async () => {
+      return locked(async (view) => {
         const current = await store.readAuthoritative();
         if (current === null)
           throw new SignInError(`Not signed in. ${signInHint("first")}`);
         if (expect !== undefined && !expect(current))
           throw new CredentialIdentityChanged;
+        await view?.settle();
         return (await refreshed(current)).accessToken;
       });
     },
@@ -114077,12 +115376,27 @@ function refuseClosedServiceAuth() {
 }
 function configureClosedServiceAuthCommands(program) {
   for (const name of SERVICE_AUTH_COMMANDS) {
+    if (name === "login") {
+      configureClosedDeviceLogin(program);
+      continue;
+    }
     const command = program.command(name, { hidden: true }).helpOption(false).allowUnknownOption().allowExcessArguments().action(() => {
       console.error(SERVICE_ACCOUNTS_CLOSED_MESSAGE);
       process.exitCode = 1;
     });
     command.help = refuseClosedServiceAuth;
   }
+}
+function configureClosedDeviceLogin(program) {
+  const command = program.command("login", { hidden: true }).helpOption(false).allowUnknownOption().allowExcessArguments().option("--device").option("--no-browser").option("--api <url>").action((options) => {
+    if (options.device !== true && options.browser !== false || command.args.length > 0) {
+      console.error(SERVICE_ACCOUNTS_CLOSED_MESSAGE);
+      process.exitCode = 1;
+      return;
+    }
+    return run2("login", { ...options, device: true });
+  });
+  command.help = refuseClosedServiceAuth;
 }
 function configureServiceAuthCommands(program, open = serviceAccountsOpen()) {
   if (!open) {
@@ -114285,11 +115599,11 @@ async function boulder(options) {
 // packages/omo-opencode/src/cli/codex-ulw-loop.ts
 import { spawn as spawn6 } from "child_process";
 import { existsSync as existsSync67, readFileSync as readFileSync45, realpathSync as realpathSync14 } from "fs";
-import { homedir as homedir34 } from "os";
+import { homedir as homedir36 } from "os";
 var ULW_LOOP_DELEGATION_SENTINEL = "OMO_ULW_LOOP_DELEGATED";
 function resolveCodexUlwLoopCommand(input = {}) {
   const env = input.env ?? process.env;
-  const homeDir = input.homeDir ?? homedir34();
+  const homeDir = input.homeDir ?? homedir36();
   const localComponentBin = resolveLocalUlwLoopBin(env, homeDir);
   if (localComponentBin !== null)
     return { executable: localComponentBin, argsPrefix: [] };
@@ -114532,7 +115846,7 @@ function linkedWorktrees(records) {
 }
 // packages/omo-opencode/src/cli/worktree-sweep/sweep.ts
 import { existsSync as existsSync68 } from "fs";
-import { stat as stat10 } from "fs/promises";
+import { stat as stat12 } from "fs/promises";
 import os7 from "os";
 import { normalize as normalize2 } from "path";
 
@@ -114615,7 +115929,7 @@ async function isOlderThan(worktreePath, days, now) {
   if (days <= 0)
     return false;
   try {
-    const stats = await stat10(worktreePath);
+    const stats = await stat12(worktreePath);
     return now - stats.mtimeMs > days * DAY_MS;
   } catch {
     return false;
@@ -114780,7 +116094,7 @@ prunes.
 
 // packages/omo-opencode/src/cli/config-migrate.ts
 init_startup_migration();
-import { posix as posix13 } from "path";
+import { posix as posix15 } from "path";
 function reports(result) {
   return result.results.map((entry) => ({
     diagnostics: entry.diagnostics,
@@ -114814,7 +116128,7 @@ function runConfigMigrate(options = {}) {
     dryRun: options.dryRun ?? false,
     environment,
     ...homeDir === undefined ? {} : { env: { HOME: homeDir }, homeDir },
-    pathOperations: posix13
+    pathOperations: posix15
   });
   const report = reports(result);
   const response = {

@@ -2133,7 +2133,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.64",
+    version: "5.1.65",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2320,7 +2320,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.11.5-1",
+      "@code-yeongyu/senpi": "2026.11.6-3",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -2375,7 +2375,7 @@ var init_package = __esm(() => {
       "jsonc-parser": "^3.3.1",
       knip: "6.43.0",
       "node-pty": "^1.1.0",
-      omowright: "github:code-yeongyu/omowright#73c4898ca492e6e12e3f13948be7151806457a43",
+      omowright: "^0.3.0",
       "oxc-parser": "0.148.0",
       oxlint: "1.89.0",
       picocolors: "^1.1.1",
@@ -2385,18 +2385,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.64",
-      "oh-my-opencode-darwin-x64": "5.1.64",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.64",
-      "oh-my-opencode-linux-arm64": "5.1.64",
-      "oh-my-opencode-linux-arm64-musl": "5.1.64",
-      "oh-my-opencode-linux-x64": "5.1.64",
-      "oh-my-opencode-linux-x64-baseline": "5.1.64",
-      "oh-my-opencode-linux-x64-musl": "5.1.64",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.64",
-      "oh-my-opencode-windows-arm64": "5.1.64",
-      "oh-my-opencode-windows-x64": "5.1.64",
-      "oh-my-opencode-windows-x64-baseline": "5.1.64"
+      "oh-my-opencode-darwin-arm64": "5.1.65",
+      "oh-my-opencode-darwin-x64": "5.1.65",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.65",
+      "oh-my-opencode-linux-arm64": "5.1.65",
+      "oh-my-opencode-linux-arm64-musl": "5.1.65",
+      "oh-my-opencode-linux-x64": "5.1.65",
+      "oh-my-opencode-linux-x64-baseline": "5.1.65",
+      "oh-my-opencode-linux-x64-musl": "5.1.65",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.65",
+      "oh-my-opencode-windows-arm64": "5.1.65",
+      "oh-my-opencode-windows-x64": "5.1.65",
+      "oh-my-opencode-windows-x64-baseline": "5.1.65"
     },
     overrides: {
       hono: "^4.13.8",
@@ -77199,7 +77199,7 @@ var init_memory_agreements = __esm(() => {
 });
 
 // packages/omo-config-core/src/schema/memory.ts
-var OmoMemoryReflectionTriggerSchema, OmoMemoryReflectionSchema, OmoMemorySyncSchema, OmoMemorySearchSchema, OmoMemoryRecallEventCapsSchema, OmoMemoryRecallSchema, OmoMemoryProjectScopeSchema, OmoMemoryProjectScopeLayerSchema, OmoMemoryNudgeSchema, OmoMemoryFactsSchema, OmoMemoryDreamSchema, OmoMemoryPeopleSchema, OmoMemorySoulSchema, OmoMemoryWriteNoticeSchema, OmoMemoryReflectionTriggerLayerSchema, OmoMemoryReflectionLayerSchema, OmoMemorySyncLayerSchema, OmoMemorySearchLayerSchema, OmoMemoryRecallEventCapsLayerSchema, OmoMemoryRecallLayerSchema, OmoMemoryNudgeLayerSchema, OmoMemoryFactsLayerSchema, OmoMemoryDreamLayerSchema, OmoMemoryPeopleLayerSchema, OmoMemorySoulLayerSchema, OmoMemoryWriteNoticeLayerSchema, OmoMemoryProjectionSchema, OmoMemoryProjectionLayerSchema, OmoMemoryAgentOverridesSchema, OmoMemoryAutoIdentitySchema, OmoMemorySettingsSchema, OmoMemorySettingsLayerSchema;
+var OmoMemoryReflectionTriggerSchema, OmoMemoryReflectionSchema, OmoMemorySyncSchema, OmoMemorySearchSchema, OmoMemoryRecallEventCapsSchema, OmoMemoryRecallSchema, OmoMemoryProjectScopeSchema, OmoMemoryProjectScopeLayerSchema, OmoMemoryNudgeSchema, OmoMemoryFactsSchema, OmoMemoryDreamSchema, OmoMemoryPeopleSchema, OmoMemorySoulSchema, OmoMemoryWriteNoticeSchema, OmoMemoryReflectionTriggerLayerSchema, OmoMemoryReflectionLayerSchema, OmoMemorySyncLayerSchema, OmoMemorySearchLayerSchema, OmoMemoryRecallEventCapsLayerSchema, OmoMemoryRecallLayerSchema, OmoMemoryNudgeLayerSchema, OmoMemoryFactsLayerSchema, OmoMemoryDreamLayerSchema, OmoMemoryPeopleLayerSchema, OmoMemorySoulLayerSchema, OmoMemoryWriteNoticeLayerSchema, OmoMemoryProjectionSchema, OmoMemoryProjectionLayerSchema, OmoMemoryRuntimeSchema, OmoMemoryRuntimeLayerSchema, OmoMemoryAgentOverridesSchema, OmoMemoryAutoIdentitySchema, OmoMemorySettingsSchema, OmoMemorySettingsLayerSchema;
 var init_memory = __esm(() => {
   init_zod();
   init_memory_agreements();
@@ -77348,6 +77348,22 @@ var init_memory = __esm(() => {
     max_entries_per_directory: number2().int().min(0).optional(),
     max_bytes: number2().int().min(0).optional()
   }).strict();
+  OmoMemoryRuntimeSchema = object({
+    retention_days: number2().int().min(1).default(7),
+    abandoned_journal_days: number2().int().min(1).default(14),
+    completions_days: number2().int().min(1).default(30),
+    pass_budget_ms: number2().int().min(1).default(60000),
+    discard_unreflected_journals: boolean2().default(false),
+    max_bytes: number2().int().min(0).default(2 * 1024 * 1024 * 1024)
+  }).strict();
+  OmoMemoryRuntimeLayerSchema = object({
+    retention_days: number2().int().min(1).optional(),
+    abandoned_journal_days: number2().int().min(1).optional(),
+    completions_days: number2().int().min(1).optional(),
+    pass_budget_ms: number2().int().min(1).optional(),
+    discard_unreflected_journals: boolean2().optional(),
+    max_bytes: number2().int().min(0).optional()
+  }).strict();
   OmoMemoryAgentOverridesSchema = object({
     enabled: boolean2().optional(),
     agent: string2().min(1).optional(),
@@ -77363,6 +77379,7 @@ var init_memory = __esm(() => {
     search: OmoMemorySearchLayerSchema.optional(),
     recall: OmoMemoryRecallLayerSchema.optional(),
     projection: OmoMemoryProjectionLayerSchema.optional(),
+    runtime: OmoMemoryRuntimeLayerSchema.optional(),
     compile_warn_tokens: number2().int().positive().optional()
   }).strict();
   OmoMemoryAutoIdentitySchema = _enum(["path", "git"]);
@@ -77407,6 +77424,7 @@ var init_memory = __esm(() => {
     }),
     project_scope: OmoMemoryProjectScopeSchema.default({ nudge: true, recall: true }),
     projection: OmoMemoryProjectionSchema.default({ max_entries_per_directory: 0, max_bytes: 40960 }),
+    runtime: OmoMemoryRuntimeSchema.default({ retention_days: 7, abandoned_journal_days: 14, completions_days: 30, pass_budget_ms: 60000, discard_unreflected_journals: false, max_bytes: 2 * 1024 * 1024 * 1024 }),
     compile_warn_tokens: number2().int().positive().default(30000),
     agents: record(string2(), OmoMemoryAgentOverridesSchema).default({})
   }).strict();
@@ -77427,6 +77445,7 @@ var init_memory = __esm(() => {
     recall: OmoMemoryRecallLayerSchema.optional(),
     project_scope: OmoMemoryProjectScopeLayerSchema.optional(),
     projection: OmoMemoryProjectionLayerSchema.optional(),
+    runtime: OmoMemoryRuntimeLayerSchema.optional(),
     compile_warn_tokens: number2().int().positive().optional(),
     agents: record(string2(), OmoMemoryAgentOverridesSchema).optional()
   }).strict();
@@ -92818,7 +92837,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.64",
+    version: "5.1.65",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -109581,8 +109600,8 @@ var package_default3 = {
   },
   dependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.11.5-1",
-    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.5-1",
+    "@code-yeongyu/senpi": "2026.11.6-3",
+    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.6-3",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/boulder-state": "workspace:*",
@@ -112435,6 +112454,15 @@ function signInHint(when, route = signInRoute()) {
   return SIGN_IN_HINTS[route][when];
 }
 
+// packages/omo-opencode/src/cli/service-auth/closed-device-login.ts
+init_commander();
+function withClosedDeviceLoginOptions(command) {
+  return command.helpOption(false).allowUnknownOption().allowExcessArguments().option("--device").option("--no-browser").option("--api <url>");
+}
+function isClosedDeviceLogin(options, leftover) {
+  return (options.device === true || options.browser === false) && leftover.length === 0;
+}
+
 // packages/omo-opencode/src/cli/service-auth/browser.ts
 import { execFile as execFile6 } from "node:child_process";
 var execute = (file, args, env) => new Promise((resolve) => {
@@ -115164,6 +115192,7 @@ var discardedOf = (credentials, cause) => ({
 });
 function createSession(options) {
   const api = serviceOrigin(options.api);
+  const deviceService = options.deviceService;
   const now = options.now ?? Date.now;
   const { store, signal, beforeKeysDiscarded } = options;
   const markerPath = signedOutMarkerPath(options.home ?? homedir35(), credentialId(api));
@@ -115200,6 +115229,7 @@ function createSession(options) {
       if (error instanceof ApiRefusal && error.status < 500 && ["unauthorized", "account_deleted", "reauth_required", "invalid_grant", "device_revoked"].includes(error.code)) {
         await beforeKeysDiscarded(discardedOf(current, "refused"));
         await store.clear();
+        await deviceService?.forget();
         throw new SessionEnded(error.code === "reauth_required" ? `This session was ended because its refresh token was reused. ${signInHint("again")}` : refusalMessage(refusalGuidance(error.code, error.status)), DEVICE_REVOKING_REFUSALS.has(error.code), error.code);
       }
       if (error instanceof RequestFailure && error.notSent || error instanceof ApiRefusal && error.status === 429 && error.code === "rate_limited") {
@@ -115241,6 +115271,7 @@ function createSession(options) {
         await store.write(value, "fresh-sign-in", () => beforeKeysDiscarded({ kind: "unreadable" }));
         await clearSignedOutMarker(markerPath);
       });
+      await deviceService?.adopt(value);
     },
     signedOutMarker: () => readSignedOutMarker(markerPath),
     clearSignedOutMarker: () => clearSignedOutMarker(markerPath),
@@ -115259,41 +115290,46 @@ function createSession(options) {
     },
     async forget() {
       await locked(() => store.clear());
+      await deviceService?.forget();
     },
     accessSnapshot: snapshot,
     async logout() {
-      return locked(async () => {
-        let current = null;
-        let account;
-        try {
-          current = await store.readAuthoritative();
-          if (current !== null) {
-            if (current.refreshState === "uncertain")
-              return false;
-            const access = Date.parse(current.accessTokenExpiresAt) <= now() ? (await refreshed(current)).accessToken : current.accessToken;
-            if (current.accountId === undefined && current.owner === undefined && await beforeKeysDiscarded.wantsAccount?.() === true) {
-              account = await accountOf(access);
+      try {
+        return await locked(async () => {
+          let current = null;
+          let account;
+          try {
+            current = await store.readAuthoritative();
+            if (current !== null) {
+              if (current.refreshState === "uncertain")
+                return false;
+              const access = Date.parse(current.accessTokenExpiresAt) <= now() ? (await refreshed(current)).accessToken : current.accessToken;
+              if (current.accountId === undefined && current.owner === undefined && await beforeKeysDiscarded.wantsAccount?.() === true) {
+                account = await accountOf(access);
+              }
+              await request(`/v1/devices/${encodeURIComponent(current.device.id)}`, {
+                method: "DELETE",
+                headers: { authorization: `Bearer ${access}` }
+              });
             }
-            await request(`/v1/devices/${encodeURIComponent(current.device.id)}`, {
-              method: "DELETE",
-              headers: { authorization: `Bearer ${access}` }
-            });
+            return true;
+          } catch (error) {
+            if (error instanceof SessionEnded)
+              return error.deviceRevoked;
+            if (error instanceof SignInError)
+              return false;
+            throw error;
+          } finally {
+            await writeSignedOutMarker(markerPath, current?.device.id ?? null);
+            const stored = current === null ? null : await store.read().catch(() => current);
+            if (stored !== null)
+              await beforeKeysDiscarded(discardedOf(stored.accountId === undefined && account !== undefined ? { ...stored, accountId: account } : stored, "logout"));
+            await store.clear();
           }
-          return true;
-        } catch (error) {
-          if (error instanceof SessionEnded)
-            return error.deviceRevoked;
-          if (error instanceof SignInError)
-            return false;
-          throw error;
-        } finally {
-          await writeSignedOutMarker(markerPath, current?.device.id ?? null);
-          const stored = current === null ? null : await store.read().catch(() => current);
-          if (stored !== null)
-            await beforeKeysDiscarded(discardedOf(stored.accountId === undefined && account !== undefined ? { ...stored, accountId: account } : stored, "logout"));
-          await store.clear();
-        }
-      });
+        });
+      } finally {
+        await deviceService?.forget();
+      }
     },
     async accessToken(expect) {
       signal?.throwIfAborted();
@@ -115382,7 +115418,7 @@ var DEFAULT_ACCOUNTS_ORIGIN = "https://signin.omo.dev";
 function accountsOrigin(options, env) {
   return serviceOrigin(options.accounts ?? env.OMO_SERVICE_ACCOUNTS_URL ?? DEFAULT_ACCOUNTS_ORIGIN);
 }
-async function run2(action, options) {
+async function run2(action, options, hooks = {}) {
   const controller = new AbortController;
   const cancel = () => controller.abort();
   process.once("SIGINT", cancel);
@@ -115390,10 +115426,12 @@ async function run2(action, options) {
   try {
     const api = serviceOrigin(options.api ?? process.env.OMO_SERVICE_API_URL ?? "https://api.omo.dev");
     const store = createCredentialStore(api, { wait: INTERACTIVE_READ_WAIT });
+    const deviceService = hooks.deviceService?.(api);
     const session = createSession({
       api,
       store,
       signal: controller.signal,
+      ...deviceService === undefined ? {} : { deviceService },
       beforeKeysDiscarded: retireSyncPinOnDiscard({ pinDir: () => syncPinDir(resolveMemoryRoot(process.env, process.cwd())), log: (line) => console.error(line) })
     });
     if (action === "logout") {
@@ -115453,10 +115491,10 @@ function refuseClosedServiceAuth() {
   console.error(SERVICE_ACCOUNTS_CLOSED_MESSAGE);
   process.exit(1);
 }
-function configureClosedServiceAuthCommands(program) {
+function configureClosedServiceAuthCommands(program, hooks) {
   for (const name of SERVICE_AUTH_COMMANDS) {
     if (name === "login") {
-      configureClosedDeviceLogin(program);
+      configureClosedDeviceLogin(program, hooks);
       continue;
     }
     const command = program.command(name, { hidden: true }).helpOption(false).allowUnknownOption().allowExcessArguments().action(() => {
@@ -115466,25 +115504,25 @@ function configureClosedServiceAuthCommands(program) {
     command.help = refuseClosedServiceAuth;
   }
 }
-function configureClosedDeviceLogin(program) {
-  const command = program.command("login", { hidden: true }).helpOption(false).allowUnknownOption().allowExcessArguments().option("--device").option("--no-browser").option("--api <url>").action((options) => {
-    if (options.device !== true && options.browser !== false || command.args.length > 0) {
+function configureClosedDeviceLogin(program, hooks) {
+  const command = withClosedDeviceLoginOptions(program.command("login", { hidden: true })).action((options) => {
+    if (!isClosedDeviceLogin(options, command.args)) {
       console.error(SERVICE_ACCOUNTS_CLOSED_MESSAGE);
       process.exitCode = 1;
       return;
     }
-    return run2("login", { ...options, device: true });
+    return run2("login", { ...options, device: true }, hooks);
   });
   command.help = refuseClosedServiceAuth;
 }
-function configureServiceAuthCommands(program, open = serviceAccountsOpen()) {
+function configureServiceAuthCommands(program, open = serviceAccountsOpen(), hooks = {}) {
   if (!open) {
-    configureClosedServiceAuthCommands(program);
+    configureClosedServiceAuthCommands(program, hooks);
     return;
   }
-  program.command("login").description("Sign in to OmO using the OS credential store").option("--device", "Use a device code instead of a browser callback").option("--no-browser", "Sign in by device code without opening a browser").option("--api <url>", "OmO API origin (or OMO_SERVICE_API_URL)").option("--accounts <url>", "OmO sign-in page origin (or OMO_SERVICE_ACCOUNTS_URL)").action((options) => run2("login", options));
+  program.command("login").description("Sign in to OmO using the OS credential store").option("--device", "Use a device code instead of a browser callback").option("--no-browser", "Sign in by device code without opening a browser").option("--api <url>", "OmO API origin (or OMO_SERVICE_API_URL)").option("--accounts <url>", "OmO sign-in page origin (or OMO_SERVICE_ACCOUNTS_URL)").action((options) => run2("login", options, hooks));
   for (const action of ["logout", "whoami"]) {
-    program.command(action).description(action === "logout" ? "Remove stored OmO credentials and device keys" : "Show the current OmO device sign-in").option("--api <url>", "OmO API origin (or OMO_SERVICE_API_URL)").action((options) => run2(action, options));
+    program.command(action).description(action === "logout" ? "Remove stored OmO credentials and device keys" : "Show the current OmO device sign-in").option("--api <url>", "OmO API origin (or OMO_SERVICE_API_URL)").action((options) => run2(action, options, hooks));
   }
 }
 

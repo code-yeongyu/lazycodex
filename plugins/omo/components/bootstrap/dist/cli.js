@@ -10054,7 +10054,7 @@ var LATEST_MODEL_BY_FAMILY = {
   claudeOpus: "claude-opus-5-5",
   claudeSonnet: "claude-sonnet-5-5",
   claudeHaiku: "claude-haiku-5-5",
-  claudeFable: "claude-fable-5-1",
+  claudeFable: "claude-fable-5-2",
   gptAstra: "gpt-6-astra",
   gptSol: "gpt-6.1-sol",
   gptSolFast: "gpt-6.1-sol-fast",

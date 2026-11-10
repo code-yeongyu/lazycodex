@@ -2132,7 +2132,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.66",
+    version: "5.1.68",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2319,7 +2319,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.11.9-2",
+      "@code-yeongyu/senpi": "2026.11.10",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -2384,18 +2384,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.66",
-      "oh-my-opencode-darwin-x64": "5.1.66",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.66",
-      "oh-my-opencode-linux-arm64": "5.1.66",
-      "oh-my-opencode-linux-arm64-musl": "5.1.66",
-      "oh-my-opencode-linux-x64": "5.1.66",
-      "oh-my-opencode-linux-x64-baseline": "5.1.66",
-      "oh-my-opencode-linux-x64-musl": "5.1.66",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.66",
-      "oh-my-opencode-windows-arm64": "5.1.66",
-      "oh-my-opencode-windows-x64": "5.1.66",
-      "oh-my-opencode-windows-x64-baseline": "5.1.66"
+      "oh-my-opencode-darwin-arm64": "5.1.68",
+      "oh-my-opencode-darwin-x64": "5.1.68",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.68",
+      "oh-my-opencode-linux-arm64": "5.1.68",
+      "oh-my-opencode-linux-arm64-musl": "5.1.68",
+      "oh-my-opencode-linux-x64": "5.1.68",
+      "oh-my-opencode-linux-x64-baseline": "5.1.68",
+      "oh-my-opencode-linux-x64-musl": "5.1.68",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.68",
+      "oh-my-opencode-windows-arm64": "5.1.68",
+      "oh-my-opencode-windows-x64": "5.1.68",
+      "oh-my-opencode-windows-x64-baseline": "5.1.68"
     },
     overrides: {
       hono: "^4.13.8",
@@ -8080,7 +8080,7 @@ var init_latest_models = __esm(() => {
     claudeOpus: "claude-opus-5-5",
     claudeSonnet: "claude-sonnet-5-5",
     claudeHaiku: "claude-haiku-5-5",
-    claudeFable: "claude-fable-5-1",
+    claudeFable: "claude-fable-5-2",
     gptAstra: "gpt-6-astra",
     gptSol: "gpt-6.1-sol",
     gptSolFast: "gpt-6.1-sol-fast",
@@ -9346,61 +9346,9 @@ var init_file_reference_resolver = __esm(() => {
   init_logger2();
 });
 
-// packages/model-core/src/fable-55-launch.ts
-function isFable55Model(model) {
-  const modelId = model.split("/").pop() ?? model;
-  return modelId.replaceAll(".", "-") === FABLE_55_LAUNCH.id;
-}
-function selectLaunchRungs(rungs, gate, onRejected) {
-  return rungs.filter((rung) => {
-    if (!isFable55Model(rung.model))
-      return true;
-    if (!gate.released)
-      return false;
-    if (rung.variant !== undefined && gate.accepted.includes(rung.variant))
-      return true;
-    onRejected({ model: rung.model, variant: rung.variant });
-    return false;
-  });
-}
-function recordLaunchRungRejection(rejection) {
-  launchRungRejectionLog.push(rejection);
-  console.warn(`[fable-55-launch] dropped a Fable 5.5 rung with effort "${rejection.variant ?? "(none)"}": not in FABLE_55_EFFORTS.accepted`);
-}
-function launchRungs(rungs) {
-  return selectLaunchRungs(rungs, { released: FABLE_55_RELEASED, accepted: FABLE_55_EFFORTS.accepted }, recordLaunchRungRejection);
-}
-function launchDefaultModelId() {
-  return FABLE_55_RELEASED ? FABLE_55_LAUNCH.id : FABLE_55_PREDECESSOR;
-}
-var FABLE_55_LAUNCH, FABLE_55_RELEASED = false, FABLE_55_EFFORTS, launchRungRejectionLog, FABLE_55_PREDECESSOR;
-var init_fable_55_launch = __esm(() => {
-  init_latest_models();
-  FABLE_55_LAUNCH = {
-    id: "claude-fable-5-5",
-    family: "claude-fable",
-    reasoning: undefined,
-    temperature: undefined,
-    toolCall: undefined,
-    modalities: undefined,
-    limit: {
-      context: undefined,
-      input: undefined,
-      output: undefined
-    }
-  };
-  FABLE_55_EFFORTS = {
-    measured: false,
-    accepted: ["xhigh", "max"]
-  };
-  launchRungRejectionLog = [];
-  FABLE_55_PREDECESSOR = LATEST_MODEL_BY_FAMILY.claudeFable;
-});
-
 // packages/model-core/src/agent-model-requirements.ts
 var AGENT_MODEL_REQUIREMENTS;
 var init_agent_model_requirements = __esm(() => {
-  init_fable_55_launch();
   init_latest_models();
   AGENT_MODEL_REQUIREMENTS = {
     sisyphus: {
@@ -9495,15 +9443,15 @@ var init_agent_model_requirements = __esm(() => {
       ]
     },
     prometheus: {
-      fallbackChain: launchRungs([
+      fallbackChain: [
         {
           providers: ["anthropic", "github-copilot", "opencode"],
-          model: FABLE_55_LAUNCH.id,
+          model: LATEST_MODEL_BY_FAMILY.claudeFable,
           variant: "xhigh"
         },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
-          model: LATEST_MODEL_BY_FAMILY.claudeFable,
+          model: "claude-fable-5-1",
           variant: "xhigh"
         },
         {
@@ -9517,18 +9465,18 @@ var init_agent_model_requirements = __esm(() => {
           variant: "max"
         },
         { providers: ["opencode"], model: LATEST_MODEL_BY_FAMILY.kimiK3, variant: "max" }
-      ])
+      ]
     },
     metis: {
-      fallbackChain: launchRungs([
+      fallbackChain: [
         {
           providers: ["anthropic", "github-copilot", "opencode"],
-          model: FABLE_55_LAUNCH.id,
+          model: LATEST_MODEL_BY_FAMILY.claudeFable,
           variant: "max"
         },
         {
           providers: ["anthropic", "github-copilot", "opencode"],
-          model: LATEST_MODEL_BY_FAMILY.claudeFable,
+          model: "claude-fable-5-1",
           variant: "max"
         },
         {
@@ -9542,7 +9490,7 @@ var init_agent_model_requirements = __esm(() => {
           variant: "max"
         },
         { providers: ["opencode"], model: LATEST_MODEL_BY_FAMILY.kimiK3, variant: "max" }
-      ])
+      ]
     },
     momus: {
       fallbackChain: [
@@ -9602,20 +9550,19 @@ var init_agent_model_requirements = __esm(() => {
 // packages/model-core/src/category-model-requirements.ts
 var CATEGORY_MODEL_REQUIREMENTS;
 var init_category_model_requirements = __esm(() => {
-  init_fable_55_launch();
   init_latest_models();
   CATEGORY_MODEL_REQUIREMENTS = {
     "visual-engineering": {
-      fallbackChain: launchRungs([
+      fallbackChain: [
         { providers: ["google", "google-vertex", "opencode"], model: LATEST_MODEL_BY_FAMILY.geminiPro, variant: "low" },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
-          model: FABLE_55_LAUNCH.id,
+          model: LATEST_MODEL_BY_FAMILY.claudeFable,
           variant: "max"
         },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
-          model: LATEST_MODEL_BY_FAMILY.claudeFable,
+          model: "claude-fable-5-1",
           variant: "max"
         },
         {
@@ -9629,7 +9576,7 @@ var init_category_model_requirements = __esm(() => {
           variant: "max"
         },
         { providers: ["opencode"], model: LATEST_MODEL_BY_FAMILY.kimiK3, variant: "max" }
-      ])
+      ]
     },
     ultrabrain: {
       fallbackChain: [
@@ -9663,15 +9610,15 @@ var init_category_model_requirements = __esm(() => {
       ]
     },
     artistry: {
-      fallbackChain: launchRungs([
+      fallbackChain: [
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
-          model: FABLE_55_LAUNCH.id,
+          model: LATEST_MODEL_BY_FAMILY.claudeFable,
           variant: "max"
         },
         {
           providers: ["anthropic", "anthropic-api", "github-copilot", "opencode"],
-          model: LATEST_MODEL_BY_FAMILY.claudeFable,
+          model: "claude-fable-5-1",
           variant: "max"
         },
         {
@@ -9685,7 +9632,7 @@ var init_category_model_requirements = __esm(() => {
           variant: "max"
         },
         { providers: ["opencode"], model: LATEST_MODEL_BY_FAMILY.kimiK3, variant: "max" }
-      ])
+      ]
     },
     quick: {
       fallbackChain: [
@@ -10371,9 +10318,7 @@ var init_runtime_fallback_model = () => {};
 // packages/model-core/src/model-capabilities/supplemental-entries.ts
 var SUPPLEMENTAL_MODEL_CAPABILITIES;
 var init_supplemental_entries = __esm(() => {
-  init_fable_55_launch();
   SUPPLEMENTAL_MODEL_CAPABILITIES = {
-    [FABLE_55_LAUNCH.id]: FABLE_55_LAUNCH,
     "kimi-k3": {
       id: "kimi-k3",
       family: "kimi",
@@ -10436,6 +10381,21 @@ var init_supplemental_entries = __esm(() => {
     },
     "claude-fable-5-1": {
       id: "claude-fable-5-1",
+      family: "claude-fable",
+      reasoning: true,
+      temperature: false,
+      toolCall: true,
+      modalities: {
+        input: ["text", "image", "pdf"],
+        output: ["text"]
+      },
+      limit: {
+        context: 1e6,
+        output: 128000
+      }
+    },
+    "claude-fable-5-2": {
+      id: "claude-fable-5-2",
       family: "claude-fable",
       reasoning: true,
       temperature: false,
@@ -10853,25 +10813,16 @@ var init_supplemental_entries = __esm(() => {
 });
 
 // packages/model-core/src/model-capabilities/bundled-snapshot.ts
-function fillGaps(generated, placeholder) {
-  const merged = { ...placeholder };
-  for (const [key, value] of Object.entries(generated)) {
-    if (value === undefined)
-      continue;
-    const base = merged[key];
-    merged[key] = value !== null && typeof value === "object" && !Array.isArray(value) && base !== null && typeof base === "object" ? { ...base, ...Object.fromEntries(Object.entries(value).filter(([, v]) => v !== undefined)) } : value;
-  }
-  return merged;
-}
 function getBundledModelCapabilitiesSnapshot(snapshotJson) {
-  const models = { ...snapshotJson.models, ...SUPPLEMENTAL_MODEL_CAPABILITIES };
-  const generatedLaunchRow = snapshotJson.models[FABLE_55_LAUNCH.id];
-  if (generatedLaunchRow)
-    models[FABLE_55_LAUNCH.id] = fillGaps(generatedLaunchRow, FABLE_55_LAUNCH);
-  return { ...snapshotJson, models };
+  return {
+    ...snapshotJson,
+    models: {
+      ...snapshotJson.models,
+      ...SUPPLEMENTAL_MODEL_CAPABILITIES
+    }
+  };
 }
 var init_bundled_snapshot = __esm(() => {
-  init_fable_55_launch();
   init_supplemental_entries();
 });
 
@@ -11299,7 +11250,6 @@ var init_src2 = __esm(() => {
   init_model_requirements();
   init_latest_models();
   init_model_family_detectors();
-  init_fable_55_launch();
   init_model_capability_aliases();
   init_model_capability_heuristics();
   init_model_capability_guardrails();
@@ -11621,7 +11571,6 @@ Approach:
 </Category_Context>`, GOOGLE_CATEGORIES;
 var init_google_categories = __esm(() => {
   init_latest_models();
-  init_src2();
   GOOGLE_CATEGORIES = [
     {
       name: "visual-engineering",
@@ -11631,7 +11580,7 @@ var init_google_categories = __esm(() => {
     },
     {
       name: "artistry",
-      config: { model: `anthropic/${launchDefaultModelId()}`, variant: "max" },
+      config: { model: `anthropic/${LATEST_MODEL_BY_FAMILY.claudeFable}`, variant: "max" },
       description: "Complex problem-solving with unconventional, creative approaches - beyond standard patterns",
       promptAppend: ARTISTRY_CATEGORY_PROMPT_APPEND
     }
@@ -92758,7 +92707,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.66",
+    version: "5.1.68",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -109522,8 +109471,8 @@ var package_default3 = {
   },
   dependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.11.9-2",
-    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.9-2",
+    "@code-yeongyu/senpi": "2026.11.10",
+    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.10",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/boulder-state": "workspace:*",
@@ -112783,8 +112732,110 @@ import { createHash as createHash12, randomUUID as randomUUID8 } from "crypto";
 import { basename as basename17 } from "path";
 
 // packages/omo-opencode/src/cli/service-auth/keychain-helper/darwin-backend.ts
+import { homedir as homedir32 } from "os";
+import { join as join110 } from "path";
+
+// packages/omo-opencode/src/cli/service-auth/account-home.ts
+import { execFileSync as execFileSync4 } from "child_process";
+import { accessSync as accessSync5, constants as constants13, mkdirSync as mkdirSync19, readFileSync as readFileSync44, statSync as statSync7 } from "fs";
 import { homedir as homedir31 } from "os";
-import { join as join109 } from "path";
+import { join as join106, posix as posix13, win32 as win3210 } from "path";
+var lockDirectoryIn = (home) => join106(home, ".omo", "session-locks");
+function userRecordHome(facts) {
+  try {
+    if (facts.platform === "linux")
+      return passwdHome(facts);
+    if (facts.platform === "darwin")
+      return darwinHome(facts);
+    if (facts.platform === "win32")
+      return windowsProfile(facts);
+    return;
+  } catch {
+    return;
+  }
+}
+function passwdHome(facts) {
+  if (facts.uid === undefined)
+    return;
+  const uid = String(facts.uid);
+  const home = facts.readFile("/etc/passwd").split(`
+`).map((line) => line.split(":")).find((fields) => fields[2] === uid)?.[5];
+  return home !== undefined && posix13.isAbsolute(home) ? home : undefined;
+}
+function darwinHome(facts) {
+  const fields = facts.run("/usr/bin/id", ["-P"]).trim().split(":");
+  const home = fields[8];
+  if (facts.uid !== undefined && fields[2] !== String(facts.uid))
+    return;
+  return home !== undefined && posix13.isAbsolute(home) ? home : undefined;
+}
+function windowsProfile(facts) {
+  const whoami = system32Tool(facts, "whoami.exe");
+  const reg = system32Tool(facts, "reg.exe");
+  if (whoami === undefined || reg === undefined)
+    return;
+  const sid = /S-1-[0-9-]+/.exec(facts.run(whoami, ["/user", "/fo", "csv", "/nh"]))?.[0];
+  if (sid === undefined)
+    return;
+  const key = `HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\ProfileList\\${sid}`;
+  const value = /ProfileImagePath\s+REG_(?:EXPAND_)?SZ\s+(.+)/.exec(facts.run(reg, ["query", key, "/v", "ProfileImagePath"]))?.[1]?.trim();
+  const home = value?.replace(/%([^%]+)%/g, (whole, name) => facts.env[name] ?? whole);
+  return home !== undefined && !home.includes("%") && win3210.isAbsolute(home) ? home : undefined;
+}
+function system32Tool(facts, name) {
+  const root = facts.env.SystemRoot;
+  if (root === undefined || !/^[A-Za-z]:[\\/]/.test(root) || root.split(/[\\/]/).includes(".."))
+    return;
+  const tool = win3210.join(root, "System32", name);
+  return facts.isFile(tool) ? tool : undefined;
+}
+function chooseLockHome(facts) {
+  const home = facts.homedir();
+  const record = facts.recordHome();
+  if (record === undefined || record === home)
+    return home;
+  try {
+    facts.prepareLockDirectory(lockDirectoryIn(record));
+    return record;
+  } catch (error) {
+    const reason = error instanceof Error && "code" in error ? String(error.code) : String(error);
+    facts.warn(`omo: the account home ${record} cannot hold the credential lock (${reason}); using ${home}. A process started with another HOME may refresh the same sign-in at the same time (#12978).`);
+    return home;
+  }
+}
+var systemPlatformFacts = {
+  platform: process.platform,
+  uid: process.getuid?.(),
+  env: process.env,
+  readFile: (path) => readFileSync44(path, "utf8"),
+  isFile: (path) => statSync7(path, { throwIfNoEntry: false })?.isFile() ?? false,
+  run: (command, args) => execFileSync4(command, args, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"], timeout: 5000, windowsHide: true })
+};
+var systemAccountFacts = {
+  recordHome: () => userRecordHome(systemPlatformFacts),
+  homedir: homedir31,
+  prepareLockDirectory: (directory) => {
+    mkdirSync19(directory, { recursive: true, mode: 448 });
+    accessSync5(directory, constants13.W_OK);
+  },
+  warn: (message) => process.stderr.write(`${message}
+`)
+};
+var TEST_LOCK_HOME_ENV = "OMO_TEST_CREDENTIAL_LOCK_HOME";
+var INJECTED_SECRETS = Symbol.for("omo.test.injectedSecrets");
+function testLockHome(env, secrets) {
+  const home = env[TEST_LOCK_HOME_ENV];
+  if (home === undefined || !(posix13.isAbsolute(home) || win3210.isAbsolute(home)))
+    return;
+  const marked = typeof secrets === "object" && secrets !== null && secrets[INJECTED_SECRETS] === true;
+  return marked ? home : undefined;
+}
+var facts = systemAccountFacts;
+var chosen;
+function accountHome() {
+  chosen ??= testLockHome(process.env, typeof Bun === "undefined" ? undefined : Bun.secrets) ?? chooseLockHome(facts);
+  return chosen;
+}
 
 // packages/omo-opencode/src/cli/service-auth/keychain-helper/client.ts
 init_zod();
@@ -112899,18 +112950,18 @@ async function callHelper(path, call, options = {}) {
 }
 
 // packages/omo-opencode/src/cli/service-auth/keychain-helper/location.ts
-import { dirname as dirname42, join as join106, posix as posix13 } from "path";
+import { dirname as dirname42, join as join107, posix as posix14 } from "path";
 import { fileURLToPath as fileURLToPath8 } from "url";
 function bundleCandidates(moduleUrl) {
   const root = dirname42(dirname42(dirname42(fileURLToPath8(moduleUrl))));
-  return [join106(root, "bin", "darwin", "omo-keychain"), join106(root, "omo-keychain")];
+  return [join107(root, "bin", "darwin", "omo-keychain"), join107(root, "omo-keychain")];
 }
 function machineCandidates(home, arch = process.arch) {
   const runtimeArch = arch === "arm64" ? "arm64" : "x64";
   return [
     `/Applications/OmO.app/Contents/Resources/omo-runtime/darwin-${runtimeArch}/omo-keychain`,
-    posix13.join(home, "Applications", "OmO.app", "Contents", "Resources", "omo-runtime", `darwin-${runtimeArch}`, "omo-keychain"),
-    posix13.join(home, ".bun", "install", "global", "node_modules", "omo-ai", "bin", "darwin", "omo-keychain")
+    posix14.join(home, "Applications", "OmO.app", "Contents", "Resources", "omo-runtime", `darwin-${runtimeArch}`, "omo-keychain"),
+    posix14.join(home, ".bun", "install", "global", "node_modules", "omo-ai", "bin", "darwin", "omo-keychain")
   ];
 }
 async function locateHelper(candidates, verify) {
@@ -112927,9 +112978,9 @@ async function locateHelper(candidates, verify) {
 
 // packages/omo-opencode/src/cli/service-auth/keychain-helper/pin.ts
 import { readdirSync as readdirSync14, rmSync as rmSync9 } from "fs";
-import { chmod as chmod2, copyFile as copyFile4, constants as constants13, mkdtemp as mkdtemp2, rm as rm16, stat as stat8 } from "fs/promises";
+import { chmod as chmod2, copyFile as copyFile4, constants as constants14, mkdtemp as mkdtemp2, rm as rm16, stat as stat8 } from "fs/promises";
 import { tmpdir as tmpdir6 } from "os";
-import { basename as basename15, join as join107 } from "path";
+import { basename as basename15, join as join108 } from "path";
 var DIR_PREFIX = "omo-keychain-";
 var OWNED_DIR = new RegExp(`^${DIR_PREFIX}(\\d+)-`);
 var isAlive = (pid) => {
@@ -112953,7 +113004,7 @@ function sweepDeadPinDirs(root = tmpdir6()) {
     if (owner === undefined || Number(owner) === process.pid || isAlive(Number(owner)))
       continue;
     try {
-      rmSync9(join107(root, entry), { recursive: true, force: true });
+      rmSync9(join108(root, entry), { recursive: true, force: true });
     } catch {
       continue;
     }
@@ -112966,7 +113017,7 @@ async function processPinDir() {
   if (processDir !== undefined)
     return processDir;
   sweepDeadPinDirs();
-  const dir = await mkdtemp2(join107(tmpdir6(), `${DIR_PREFIX}${process.pid}-`));
+  const dir = await mkdtemp2(join108(tmpdir6(), `${DIR_PREFIX}${process.pid}-`));
   process.once("exit", () => rmSync9(dir, { recursive: true, force: true }));
   processDir = dir;
   return dir;
@@ -112977,9 +113028,9 @@ async function sourceIdentity(source) {
   return `${source}\x00${info.dev}\x00${info.ino}\x00${info.size}\x00${info.mtimeMs}\x00${info.ctimeMs}`;
 }
 async function copyAndVerify(source, verify, dir) {
-  const target = join107(dir, `${crypto.randomUUID()}-${basename15(source)}`);
+  const target = join108(dir, `${crypto.randomUUID()}-${basename15(source)}`);
   try {
-    await copyFile4(source, target, constants13.COPYFILE_EXCL);
+    await copyFile4(source, target, constants14.COPYFILE_EXCL);
     await chmod2(target, 320);
   } catch (error) {
     await rm16(target, { force: true });
@@ -113594,16 +113645,16 @@ var {
   unlink: unlink3
 } = promises;
 var {
-  accessSync: accessSync5,
+  accessSync: accessSync6,
   chmodSync: chmodSync7,
   fsyncSync: fsyncSync3,
   linkSync,
   lstatSync: lstatSync5,
-  mkdirSync: mkdirSync19,
-  readFileSync: readFileSync44,
+  mkdirSync: mkdirSync20,
+  readFileSync: readFileSync45,
   readdirSync: readdirSync15,
   realpathSync: realpathSync13,
-  statSync: statSync8,
+  statSync: statSync9,
   unlinkSync: unlinkSync10,
   writeFileSync: writeFileSync17,
   writeSync
@@ -114073,7 +114124,7 @@ async function publishLockRecord(lockPath, record) {
 // packages/team-core/src/team-state-store/lock-lease.ts
 import { randomUUID as randomUUID7 } from "crypto";
 import { open as open4, readdir as readdir18, readFile as readFile36, rename as rename9, rm as rm18 } from "fs/promises";
-import { basename as basename16, dirname as dirname44, join as join108 } from "path";
+import { basename as basename16, dirname as dirname44, join as join109 } from "path";
 
 // packages/team-core/src/team-state-store/lock-reclaim.ts
 import { createHash as createHash10 } from "crypto";
@@ -114152,7 +114203,7 @@ var UUID2 = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
 var escapeRegExp2 = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 var leaseTempPattern = (lockPath) => new RegExp(`^\\.${escapeRegExp2(basename16(lockPath))}\\.${UUID2}\\.lease$`);
 async function replaceRecord(lockPath, content) {
-  const temporary = join108(dirname44(lockPath), `${leaseTempPrefix(lockPath)}${randomUUID7()}${LEASE_TEMP_SUFFIX}`);
+  const temporary = join109(dirname44(lockPath), `${leaseTempPrefix(lockPath)}${randomUUID7()}${LEASE_TEMP_SUFFIX}`);
   try {
     const handle = await open4(temporary, "wx", 384);
     try {
@@ -114178,7 +114229,7 @@ async function removeLeftoverTemps(lockPath) {
   }
   for (const entry of entries) {
     if (pattern.test(entry))
-      await rm18(join108(dirname44(lockPath), entry), { force: true });
+      await rm18(join109(dirname44(lockPath), entry), { force: true });
   }
 }
 async function currentRecord(lockPath) {
@@ -114315,7 +114366,7 @@ function promptLockAt(path, hooks = {}) {
 var ROW_9B_DEFAULT = "reinstall-notice";
 var helperAccess = () => sharedHelperAccess(() => {
   const { entryCandidates } = keychainProcessState();
-  return resolveHelperAccess([...entryCandidates, ...bundleCandidates(import.meta.url), ...machineCandidates(homedir31())]);
+  return resolveHelperAccess([...entryCandidates, ...bundleCandidates(import.meta.url), ...machineCandidates(homedir32())]);
 });
 function sharedHelperAccess(resolve) {
   const state = keychainProcessState();
@@ -114352,7 +114403,7 @@ function createDarwinBackend(options) {
     access: options.access,
     cache: options.cache ?? processApprovalCache(),
     background: options.background,
-    takePromptLock: promptLockAt(join109(options.home ?? homedir31(), ".omo", "session-locks", `${options.account}.keychain-prompt`)),
+    takePromptLock: promptLockAt(join110(lockDirectoryIn(options.home ?? accountHome()), `${options.account}.keychain-prompt`)),
     ownSilentGet: () => silently(() => options.secrets.get(key)),
     ownOverwrite: (value) => silently(() => options.secrets.set({ ...key, value })),
     ownDelete: (name) => name === options.account ? gatedSecrets(() => options.secrets.delete({ ...key, name })) : silently(() => options.secrets.delete({ ...key, name })),
@@ -114380,22 +114431,22 @@ async function guardHelperlessRead(service, account, choice = ROW_9B_DEFAULT, pr
 }
 
 // packages/omo-opencode/src/cli/service-auth/keychain-helper/store-binding.ts
-import { homedir as homedir32 } from "os";
+import { homedir as homedir33 } from "os";
 
 // packages/omo-opencode/src/cli/service-auth/keychain-helper/creator-handoff.ts
 init_bun_file_shim();
 init_bun_spawn_shim();
-import { dirname as dirname47, posix as posix14 } from "path";
+import { dirname as dirname47, posix as posix15 } from "path";
 
 // packages/omo-opencode/src/cli/service-auth/keychain-helper/runtime-capabilities.ts
 init_zod();
 import { readFile as readFile37 } from "fs/promises";
-import { dirname as dirname46, join as join110 } from "path";
+import { dirname as dirname46, join as join111 } from "path";
 var RUNTIME_CAPABILITIES_FILE = "omo-runtime-capabilities.json";
 var RUNTIME_CAPABILITIES = { keychainHandoff: 1 };
 var capabilitiesSchema = object({ keychainHandoff: number2().int() }).passthrough();
 async function runtimeDeclaresKeychainHandoff(runtime) {
-  const text = await readFile37(join110(dirname46(runtime), RUNTIME_CAPABILITIES_FILE), "utf8").catch(() => null);
+  const text = await readFile37(join111(dirname46(runtime), RUNTIME_CAPABILITIES_FILE), "utf8").catch(() => null);
   if (text === null)
     return false;
   try {
@@ -114414,9 +114465,9 @@ var HANDOFF_ENV = "OMO_KEYCHAIN_HANDOFF";
 var HANDOFF_DEADLINE_MS = 45000;
 function desktopRuntimeCandidates(home, arch = process.arch) {
   const runtimeArch = arch === "arm64" ? "arm64" : "x64";
-  return ["/Applications/OmO.app", posix14.join(home, "Applications", "OmO.app")].map((app) => ({
+  return ["/Applications/OmO.app", posix15.join(home, "Applications", "OmO.app")].map((app) => ({
     app,
-    runtime: posix14.join(app, "Contents", "Resources", "omo-runtime", `darwin-${runtimeArch}`, "omo")
+    runtime: posix15.join(app, "Contents", "Resources", "omo-runtime", `darwin-${runtimeArch}`, "omo")
   }));
 }
 var verifyBundle = async (app, requirement) => {
@@ -114474,13 +114525,13 @@ function createCreatorHandOff(options) {
 
 // packages/omo-opencode/src/cli/service-auth/keychain-helper/store-binding.ts
 var readers = new Map;
-var INJECTED_SECRETS = Symbol.for("omo.test.injectedSecrets");
-var isInjectedSecrets = (api) => api[INJECTED_SECRETS] === true;
+var INJECTED_SECRETS2 = Symbol.for("omo.test.injectedSecrets");
+var isInjectedSecrets = (api) => api[INJECTED_SECRETS2] === true;
 var backends = new Map;
 function processHandOff(origin) {
   return () => {
     const state = keychainProcessState();
-    state.handOff ??= createCreatorHandOff({ candidates: desktopRuntimeCandidates(homedir32()), origin })();
+    state.handOff ??= createCreatorHandOff({ candidates: desktopRuntimeCandidates(homedir33()), origin })();
     return state.handOff;
   };
 }
@@ -114633,18 +114684,18 @@ var probeSecretServiceLock = () => new Promise((resolve) => {
 import { AsyncLocalStorage as AsyncLocalStorage3 } from "async_hooks";
 import { createHash as createHash11 } from "crypto";
 import { mkdir as mkdir12 } from "fs/promises";
-import { homedir as homedir33 } from "os";
-import { join as join112 } from "path";
+import { join as join113 } from "path";
 var held = new AsyncLocalStorage3;
-function credentialLockPaths(api, home = homedir33()) {
+var CREDENTIAL_LOCK_STALE_AFTER_MS = 60000;
+function credentialLockPaths(api, home = accountHome()) {
   const id = createHash11("sha256").update(serviceOrigin(api)).digest("hex");
-  const directory = join112(home, ".omo", "session-locks");
-  return { directory, lock: join112(directory, `${id}.lock`), desktopRecord: join112(directory, `${id}.desktop-generation.json`) };
+  const directory = lockDirectoryIn(home);
+  return { directory, lock: join113(directory, `${id}.lock`), desktopRecord: join113(directory, `${id}.desktop-generation.json`) };
 }
-function heldCredentialLease(api, home = homedir33()) {
+function heldCredentialLease(api, home = accountHome()) {
   return held.getStore()?.get(credentialLockPaths(api, home).lock);
 }
-async function withCredentialLock(api, action, home = homedir33(), ownerTag = "cli-session") {
+async function withCredentialLock(api, action, home = accountHome(), ownerTag = "cli-session") {
   const { directory, lock } = credentialLockPaths(api, home);
   const owned = held.getStore();
   const outer = owned?.get(lock);
@@ -114653,7 +114704,7 @@ async function withCredentialLock(api, action, home = homedir33(), ownerTag = "c
   await mkdir12(directory, { recursive: true, mode: 448 });
   return withLock(lock, (lease) => held.run(new Map([...owned ?? [], [lock, lease]]), () => action(lease)), {
     ownerTag,
-    staleAfterMs: Number.POSITIVE_INFINITY
+    staleAfterMs: CREDENTIAL_LOCK_STALE_AFTER_MS
   });
 }
 
@@ -115021,14 +115072,14 @@ async function loginLoopback(session, options) {
 
 // packages/memory-core/src/sync/device-retire.ts
 import { createHash as createHash14, randomBytes as randomBytes6 } from "crypto";
-import { join as join115 } from "path";
+import { join as join116 } from "path";
 
 // packages/memory-core/src/identity/layout.ts
 import { homedir as homedir34 } from "os";
-import { join as join113, resolve as resolve31 } from "path";
+import { join as join114, resolve as resolve31 } from "path";
 var MEMORY_ROOT_ENV_VAR = "OMO_MEMORY_HOME";
 function defaultMemoryRoot() {
-  return join113(homedir34(), ".omo", "memory");
+  return join114(homedir34(), ".omo", "memory");
 }
 function resolveMemoryRoot(env, cwd) {
   const override = env[MEMORY_ROOT_ENV_VAR];
@@ -115038,13 +115089,13 @@ function resolveMemoryRoot(env, cwd) {
   return resolve31(cwd, override);
 }
 // packages/memory-core/src/sync/pin-dir.ts
-import { join as join114 } from "path";
-var syncPinDir = (memoryRoot) => join114(memoryRoot, "sync-device");
+import { join as join115 } from "path";
+var syncPinDir = (memoryRoot) => join115(memoryRoot, "sync-device");
 
 // packages/memory-core/src/sync/device-retire.ts
-var trustAnchorRoot = (pinDir) => join115(pinDir, "trust-anchor");
+var trustAnchorRoot = (pinDir) => join116(pinDir, "trust-anchor");
 var trustAnchorKey = (account) => createHash14("sha256").update(account, "utf8").digest("base64url");
-var trustAnchorDir = (pinDir, account) => join115(trustAnchorRoot(pinDir), trustAnchorKey(account));
+var trustAnchorDir = (pinDir, account) => join116(trustAnchorRoot(pinDir), trustAnchorKey(account));
 var hasLiveTrustAnchor = async (pinDir) => {
   try {
     return (await readdir17(trustAnchorRoot(pinDir))).some((name) => !name.includes(".retired-"));
@@ -115070,9 +115121,9 @@ import { homedir as homedir35 } from "os";
 // packages/omo-opencode/src/cli/service-auth/signed-out-marker.ts
 init_zod();
 import { mkdir as mkdir13, readFile as readFile38, rename as rename10, rm as rm19, writeFile as writeFile18 } from "fs/promises";
-import { dirname as dirname48, join as join116 } from "path";
+import { dirname as dirname48, join as join117 } from "path";
 var markerSchema = object({ device: string2().nullable(), at: string2() });
-var signedOutMarkerPath = (home, credential) => join116(home, ".omo", "account-state", `${credential}.signed-out.json`);
+var signedOutMarkerPath = (home, credential) => join117(home, ".omo", "account-state", `${credential}.signed-out.json`);
 async function readSignedOutMarker(path) {
   const text = await readFile38(path, "utf8").catch(() => null);
   if (text === null)
@@ -115637,7 +115688,7 @@ async function boulder(options) {
 }
 // packages/omo-opencode/src/cli/codex-ulw-loop.ts
 import { spawn as spawn6 } from "child_process";
-import { existsSync as existsSync67, readFileSync as readFileSync45, realpathSync as realpathSync14 } from "fs";
+import { existsSync as existsSync67, readFileSync as readFileSync46, realpathSync as realpathSync14 } from "fs";
 import { homedir as homedir36 } from "os";
 var ULW_LOOP_DELEGATION_SENTINEL = "OMO_ULW_LOOP_DELEGATED";
 function resolveCodexUlwLoopCommand(input = {}) {
@@ -115687,7 +115738,7 @@ function resolveLegacyLocalOmoBin(env, homeDir, currentExecutablePaths) {
 }
 function isGeneratedRuntimeWrapper(candidate) {
   try {
-    return readFileSync45(candidate, "utf8").includes(RUNTIME_WRAPPER_MARKER);
+    return readFileSync46(candidate, "utf8").includes(RUNTIME_WRAPPER_MARKER);
   } catch (error) {
     if (error instanceof Error)
       return false;
@@ -116133,7 +116184,7 @@ prunes.
 
 // packages/omo-opencode/src/cli/config-migrate.ts
 init_startup_migration();
-import { posix as posix15 } from "path";
+import { posix as posix16 } from "path";
 function reports(result) {
   return result.results.map((entry) => ({
     diagnostics: entry.diagnostics,
@@ -116167,7 +116218,7 @@ function runConfigMigrate(options = {}) {
     dryRun: options.dryRun ?? false,
     environment,
     ...homeDir === undefined ? {} : { env: { HOME: homeDir }, homeDir },
-    pathOperations: posix15
+    pathOperations: posix16
   });
   const report = reports(result);
   const response = {

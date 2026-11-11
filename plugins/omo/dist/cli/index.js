@@ -2132,7 +2132,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.68",
+    version: "5.1.69",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2170,6 +2170,7 @@ var init_package = __esm(() => {
       "packages/senpi-desktop-engine",
       "packages/senpi-desktop-prelude",
       "packages/senpi-desktop-service",
+      "packages/senpi-desktop-sdk",
       "packages/senpi-desktop-tool",
       "packages/omo-opencode",
       "packages/omo-native"
@@ -2277,7 +2278,7 @@ var init_package = __esm(() => {
       "check:copy": "bun script/check-copy.ts",
       typecheck: "bun run check:copy && bun check --no-script --all -p tsconfig.json && bun run typecheck:script && bun run typecheck:packages && bun run typecheck:skill-scripts",
       "typecheck:skill-scripts": "bun check --no-script --all -p packages/shared-skills/skills/frontend/scripts/detect/tsconfig.json",
-      "typecheck:packages": "bun check --no-script --all -p packages/rules-engine/tsconfig.json && bun check --no-script --all -p packages/delegate-core/tsconfig.json && bun check --no-script --all -p packages/mcp-stdio-core/tsconfig.json && bun check --no-script --all -p packages/mcp-client-core/tsconfig.json && bun check --no-script --all -p packages/git-bash-mcp/tsconfig.json && bun check --no-script --all -p packages/ast-grep-mcp/tsconfig.json && bun check --no-script --all -p packages/lsp-core/tsconfig.json && bun check --no-script --all -p packages/utils/tsconfig.json && bun check --no-script --all -p packages/device-service-core/tsconfig.json && bun check --no-script --all -p packages/model-core/tsconfig.json && bun check --no-script --all -p packages/omo-config-core/tsconfig.json && bun check --no-script --all -p packages/prompts-core/tsconfig.json && bun check --no-script --all -p packages/comment-checker-core/tsconfig.json && bun check --no-script --all -p packages/hashline-core/tsconfig.json && bun check --no-script --all -p packages/tmux-core/tsconfig.json && bun check --no-script --all -p packages/team-core/tsconfig.json && bun check --no-script --all -p packages/openclaw-core/tsconfig.json && bun check --no-script --all -p packages/boulder-state/tsconfig.json && bun check --no-script --all -p packages/isolation-core/tsconfig.json && bun check --no-script --all -p packages/memory-core/tsconfig.json && bun check --no-script --all -p packages/telemetry-core/tsconfig.json && bun check --no-script --all -p packages/claude-code-compat-core/tsconfig.json && bun check --no-script --all -p packages/skills-loader-core/tsconfig.json && bun check --no-script --all -p packages/agents-md-core/tsconfig.json && bun check --no-script --all -p packages/omo-codex/plugin/shared/tsconfig.json && bun check --no-script --all -p packages/omo-codex/tsconfig.json && bun check --no-script --all -p packages/omo-senpi/tsconfig.json && bun check --no-script --all -p packages/senpi-task/tsconfig.json && bun check --no-script --all -p packages/omo-opencode/tsconfig.json && bun check --no-script --all -p packages/omo-native/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-protocol/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-engine/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-prelude/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-service/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-tool/tsconfig.json",
+      "typecheck:packages": "bun check --no-script --all -p packages/rules-engine/tsconfig.json && bun check --no-script --all -p packages/delegate-core/tsconfig.json && bun check --no-script --all -p packages/mcp-stdio-core/tsconfig.json && bun check --no-script --all -p packages/mcp-client-core/tsconfig.json && bun check --no-script --all -p packages/git-bash-mcp/tsconfig.json && bun check --no-script --all -p packages/ast-grep-mcp/tsconfig.json && bun check --no-script --all -p packages/lsp-core/tsconfig.json && bun check --no-script --all -p packages/utils/tsconfig.json && bun check --no-script --all -p packages/device-service-core/tsconfig.json && bun check --no-script --all -p packages/model-core/tsconfig.json && bun check --no-script --all -p packages/omo-config-core/tsconfig.json && bun check --no-script --all -p packages/prompts-core/tsconfig.json && bun check --no-script --all -p packages/comment-checker-core/tsconfig.json && bun check --no-script --all -p packages/hashline-core/tsconfig.json && bun check --no-script --all -p packages/tmux-core/tsconfig.json && bun check --no-script --all -p packages/team-core/tsconfig.json && bun check --no-script --all -p packages/openclaw-core/tsconfig.json && bun check --no-script --all -p packages/boulder-state/tsconfig.json && bun check --no-script --all -p packages/isolation-core/tsconfig.json && bun check --no-script --all -p packages/memory-core/tsconfig.json && bun check --no-script --all -p packages/telemetry-core/tsconfig.json && bun check --no-script --all -p packages/claude-code-compat-core/tsconfig.json && bun check --no-script --all -p packages/skills-loader-core/tsconfig.json && bun check --no-script --all -p packages/agents-md-core/tsconfig.json && bun check --no-script --all -p packages/omo-codex/plugin/shared/tsconfig.json && bun check --no-script --all -p packages/omo-codex/tsconfig.json && bun check --no-script --all -p packages/omo-senpi/tsconfig.json && bun check --no-script --all -p packages/senpi-task/tsconfig.json && bun check --no-script --all -p packages/omo-opencode/tsconfig.json && bun check --no-script --all -p packages/omo-native/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-protocol/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-engine/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-prelude/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-sdk/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-service/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-tool/tsconfig.json",
       "typecheck:script": "bun check --no-script --all -p script/tsconfig.json",
       test: "bun test --timeout 20000",
       "changelog:section": "bun script/changelog-section.ts",
@@ -2287,7 +2288,7 @@ var init_package = __esm(() => {
       "test:windows-codex": "bun run test:codex",
       "build:git-bash-mcp": "bun run --cwd packages/git-bash-mcp build",
       "build:ast-grep-mcp": "bun run --cwd packages/ast-grep-mcp build",
-      "test:desktop": "bun script/check-cargo-pinned-deps.mjs && bun run --cwd packages/senpi-desktop-protocol test && bun run --cwd packages/senpi-desktop-engine test && bun run --cwd packages/senpi-desktop-prelude test && bun run --cwd packages/senpi-desktop-service test && bun run --cwd packages/senpi-desktop-tool test",
+      "test:desktop": "bun script/check-cargo-pinned-deps.mjs && node --test scripts/desktop-package-boundaries.test.mjs && bun run --cwd packages/senpi-desktop-protocol test && bun run --cwd packages/senpi-desktop-engine test && bun run --cwd packages/senpi-desktop-prelude test && bun run --cwd packages/senpi-desktop-sdk test && bun run --cwd packages/senpi-desktop-service test && bun run --cwd packages/senpi-desktop-tool test",
       "lint:ratchet": "bun script/lint-ratchet.ts",
       "knip:check": "knip --no-progress --no-config-hints",
       "lint:ratchet:update": "bun script/lint-ratchet.ts --update",
@@ -2319,7 +2320,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.11.10",
+      "@code-yeongyu/senpi": "2026.11.10-2",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -2346,6 +2347,7 @@ var init_package = __esm(() => {
       "@oh-my-opencode/senpi-desktop-engine": "workspace:*",
       "@oh-my-opencode/senpi-desktop-prelude": "workspace:*",
       "@oh-my-opencode/senpi-desktop-protocol": "workspace:*",
+      "@oh-my-opencode/senpi-desktop-sdk": "workspace:*",
       "@oh-my-opencode/senpi-desktop-service": "workspace:*",
       "@oh-my-opencode/senpi-desktop-tool": "workspace:*",
       "@oh-my-opencode/senpi-task": "workspace:*",
@@ -2384,18 +2386,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.68",
-      "oh-my-opencode-darwin-x64": "5.1.68",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.68",
-      "oh-my-opencode-linux-arm64": "5.1.68",
-      "oh-my-opencode-linux-arm64-musl": "5.1.68",
-      "oh-my-opencode-linux-x64": "5.1.68",
-      "oh-my-opencode-linux-x64-baseline": "5.1.68",
-      "oh-my-opencode-linux-x64-musl": "5.1.68",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.68",
-      "oh-my-opencode-windows-arm64": "5.1.68",
-      "oh-my-opencode-windows-x64": "5.1.68",
-      "oh-my-opencode-windows-x64-baseline": "5.1.68"
+      "oh-my-opencode-darwin-arm64": "5.1.69",
+      "oh-my-opencode-darwin-x64": "5.1.69",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.69",
+      "oh-my-opencode-linux-arm64": "5.1.69",
+      "oh-my-opencode-linux-arm64-musl": "5.1.69",
+      "oh-my-opencode-linux-x64": "5.1.69",
+      "oh-my-opencode-linux-x64-baseline": "5.1.69",
+      "oh-my-opencode-linux-x64-musl": "5.1.69",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.69",
+      "oh-my-opencode-windows-arm64": "5.1.69",
+      "oh-my-opencode-windows-x64": "5.1.69",
+      "oh-my-opencode-windows-x64-baseline": "5.1.69"
     },
     overrides: {
       hono: "^4.13.8",
@@ -77014,7 +77016,11 @@ var init_computer = __esm(() => {
     audit_log: object({ enabled: boolean2() }).partial().strict(),
     screenshot_gc: object({ enabled: boolean2(), stale_ms: nonNegativeInteger, scan_interval_ms: nonNegativeInteger }).partial().strict(),
     engine_path: string2().min(1),
-    cua_adapter: boolean2()
+    cua_adapter: boolean2(),
+    run_sandbox: _enum(["vm", "quickjs"]).describe("Where `run` code executes (default: vm; reserved: every run uses vm until the QuickJS cell lands)"),
+    intervention: _enum(["continue", "pause"]).describe("What a background action does while the user uses the target app (default: continue)"),
+    macos_key_priming: _enum(["on", "off"]).describe("macOS background keys first make the target window key (default: off)"),
+    trace: boolean2().describe("Per-request timing traces (default: false)")
   }).partial().strict().describe("Experimental computer use in OmO Native: screenshots, windows, accessibility trees and native mouse and keyboard input. Every key is optional; defaults depend on the host.");
   OmoComputerSettingsSchema = OmoComputerSettingsLayerSchema;
 });
@@ -92707,7 +92713,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.68",
+    version: "5.1.69",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -100098,6 +100104,8 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
   join66("extensions", "omo-member.js"),
   join66("extensions", "memory-run-supervisor.mjs"),
   join66("extensions", "gateway-store-worker.mjs"),
+  join66("extensions", "omo-computer-run-worker.mjs"),
+  join66("extensions", "quickjs.wasm"),
   ...PERSONA_ASSET_FILES.map((filename) => join66("extensions", filename)),
   join66("skills", "ast-grep", "SKILL.md"),
   join66("skills", "browser", "SKILL.md"),
@@ -109471,8 +109479,8 @@ var package_default3 = {
   },
   dependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.11.10",
-    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.10",
+    "@code-yeongyu/senpi": "2026.11.10-2",
+    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.10-2",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/boulder-state": "workspace:*",

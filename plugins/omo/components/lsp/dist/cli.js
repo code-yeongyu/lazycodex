@@ -5374,11 +5374,17 @@ async function runBunLint(bunPath, absDir, signal) {
     if (diagnostics !== undefined)
       return { status: "Lint: bun lint", diagnostics };
     const reason = run.stderr.trim().split(/\r?\n/)[0] ?? "";
-    return { status: `Lint: bun lint could not lint (exit ${run.exitCode ?? "signal"})${reason ? `: ${reason}` : ""}`, diagnostics: [] };
+    return {
+      status: `Lint: bun lint could not lint (exit ${run.exitCode ?? "signal"})${reason ? `: ${reason}` : ""}`,
+      diagnostics: []
+    };
   } catch (error) {
     if (signal?.aborted)
       throw error;
-    return { status: `Lint: bun lint could not run: ${error instanceof Error ? error.message : String(error)}`, diagnostics: [] };
+    return {
+      status: `Lint: bun lint could not run: ${error instanceof Error ? error.message : String(error)}`,
+      diagnostics: []
+    };
   }
 }
 function requireString(params, key) {

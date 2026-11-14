@@ -90,12 +90,7 @@ import {
 } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { dirname } from "node:path";
-var TOLERATED_FSYNC_CODES = new Set([
-  "EPERM",
-  "EACCES",
-  "ENOTSUP",
-  "EINVAL"
-]);
+var TOLERATED_FSYNC_CODES = new Set(["EPERM", "EACCES", "ENOTSUP", "EINVAL"]);
 function isToleratedFsyncError(error) {
   if (!(error instanceof Error))
     return false;
@@ -9729,9 +9724,12 @@ class PostHogTelemetryTransport {
     await this.#client.flush();
   }
   async shutdown() {
-    await Promise.all([this.#client.shutdown(), this.#immediate?.then((sender) => sender.shutdown(), () => {
-      return;
-    })]);
+    await Promise.all([
+      this.#client.shutdown(),
+      this.#immediate?.then((sender) => sender.shutdown(), () => {
+        return;
+      })
+    ]);
   }
 }
 function createDefaultPostHogTransport(apiKey, options) {
@@ -9787,7 +9785,10 @@ function readInstallId(path) {
 
 // ../../../../telemetry-core/src/posthog-client.ts
 function createTelemetryClient2(input) {
-  return createTelemetryClient({ ...input, transportFactory: input.transportFactory ?? createDefaultPostHogTransport });
+  return createTelemetryClient({
+    ...input,
+    transportFactory: input.transportFactory ?? createDefaultPostHogTransport
+  });
 }
 
 // src/product-identity.ts

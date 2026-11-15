@@ -2133,7 +2133,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.71",
+    version: "5.1.72",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2331,7 +2331,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.11.15",
+      "@code-yeongyu/senpi": "2026.11.15-2",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -2404,18 +2404,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.71",
-      "oh-my-opencode-darwin-x64": "5.1.71",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.71",
-      "oh-my-opencode-linux-arm64": "5.1.71",
-      "oh-my-opencode-linux-arm64-musl": "5.1.71",
-      "oh-my-opencode-linux-x64": "5.1.71",
-      "oh-my-opencode-linux-x64-baseline": "5.1.71",
-      "oh-my-opencode-linux-x64-musl": "5.1.71",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.71",
-      "oh-my-opencode-windows-arm64": "5.1.71",
-      "oh-my-opencode-windows-x64": "5.1.71",
-      "oh-my-opencode-windows-x64-baseline": "5.1.71"
+      "oh-my-opencode-darwin-arm64": "5.1.72",
+      "oh-my-opencode-darwin-x64": "5.1.72",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.72",
+      "oh-my-opencode-linux-arm64": "5.1.72",
+      "oh-my-opencode-linux-arm64-musl": "5.1.72",
+      "oh-my-opencode-linux-x64": "5.1.72",
+      "oh-my-opencode-linux-x64-baseline": "5.1.72",
+      "oh-my-opencode-linux-x64-musl": "5.1.72",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.72",
+      "oh-my-opencode-windows-arm64": "5.1.72",
+      "oh-my-opencode-windows-x64": "5.1.72",
+      "oh-my-opencode-windows-x64-baseline": "5.1.72"
     },
     overrides: {
       hono: "^4.13.8",
@@ -92956,7 +92956,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.71",
+    version: "5.1.72",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -100347,6 +100347,7 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
   join66("extensions", "loro_wasm_bg.wasm"),
   join66("extensions", "CaseFolding.txt"),
   join66("extensions", "omo-thread-client.js"),
+  join66("extensions", "omo-wake.js"),
   join66("extensions", "omo-telemetry-recovery.js"),
   join66("extensions", "omo-feedback.js"),
   join66("extensions", "omo-desktop-toolkit.js"),
@@ -109743,8 +109744,8 @@ var package_default3 = {
   },
   dependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.11.15",
-    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.15",
+    "@code-yeongyu/senpi": "2026.11.15-2",
+    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.15-2",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/boulder-state": "workspace:*",
@@ -116129,8 +116130,7 @@ function configureServiceAuthCommands(program, open = serviceAccountsOpen(), hoo
 import { existsSync as existsSync68 } from "node:fs";
 
 // packages/device-service-core/src/device-service.ts
-import { homedir as homedir36 } from "node:os";
-import { join as join120 } from "node:path";
+import { join as join121 } from "node:path";
 
 // packages/device-service-core/src/local-api/access.ts
 import { createHmac as createHmac2, randomBytes as randomBytes7, timingSafeEqual as timingSafeEqual2 } from "node:crypto";
@@ -116639,7 +116639,8 @@ var ERROR_CODES = [
   "method_unclassified",
   "method_local_only",
   "host_not_answering",
-  "unsupported"
+  "unsupported",
+  "unknown_delivery"
 ];
 var PATH_REFUSAL_PROBLEMS = [
   "not_absolute",
@@ -116903,6 +116904,7 @@ var ATTACH_ID_MAX = 4294967295;
 var MILLIS_MAX = Number.MAX_SAFE_INTEGER;
 var deviceId = (v, what = "device") => text(v, SESSION_DEVICE_MAX_CHARS, what);
 var sessionId = (v) => text(v, SESSION_ID_MAX_CHARS, "session_id");
+var durableId = (v, what = "durable_id") => text(v, SESSION_ID_MAX_CHARS, what);
 var attachId = (v) => uint(v, 1, ATTACH_ID_MAX, "attach_id");
 var millis = (v, what) => uint(v, 0, MILLIS_MAX, what);
 var deviceRef = (v, what = "device", fields = exactly) => {
@@ -117335,6 +117337,94 @@ var DELEGATED_EVENT_VALIDATORS = {
   }
 };
 
+// packages/device-service-core/src/local-api/validate-deliveries.ts
+var PROTOCOL_MAX = 1e6;
+var PAIRS_MAX = 4096;
+var pairOf = (m) => ({
+  sender_device: deviceId(m["sender_device"], "sender_device"),
+  session_id: durableId(m["session_id"], "session_id"),
+  last_command_id: commandId(m["last_command_id"])
+});
+var PAIR_FIELDS = ["sender_device", "session_id", "last_command_id"];
+var DELIVERIES_REQUEST_VALIDATORS = {
+  "delivery.pending": (v, id) => {
+    const pairs = requestFields(v, ["pairs"])["pairs"];
+    if (!Array.isArray(pairs) || pairs.length > PAIRS_MAX)
+      return fail("pairs");
+    return { id, type: "delivery.pending", pairs: pairs.map((p) => pairOf(exactly(p, PAIR_FIELDS, [], "pair"))) };
+  },
+  "delivery.drained": (v, id) => ({ id, type: "delivery.drained", ...pairOf(requestFields(v, PAIR_FIELDS)) }),
+  "deliveries.serve": (v, id) => {
+    const m = requestFields(v, ["agent_dir", "v"]);
+    return {
+      id,
+      type: "deliveries.serve",
+      agent_dir: absolutePath(m["agent_dir"], "agent_dir"),
+      v: uint(m["v"], 0, PROTOCOL_MAX, "v")
+    };
+  },
+  "delivery.answer": (v, id) => {
+    const m = requestFields(v, ["sender_device", "command_id", "reply"]);
+    return {
+      id,
+      type: "delivery.answer",
+      sender_device: deviceId(m["sender_device"], "sender_device"),
+      command_id: commandId(m["command_id"]),
+      reply: jsonObject(m["reply"], "reply")
+    };
+  },
+  "delivery.held": (v, id) => {
+    const m = requestFields(v, ["ask_id", "holds"]);
+    return { id, type: "delivery.held", ask_id: localId(m["ask_id"], "ask_id"), holds: bool(m["holds"], "holds") };
+  },
+  "peer.admitted": (v, id) => ({ id, type: "peer.admitted", device: deviceId(requestFields(v, ["device"])["device"]) })
+};
+var empty = (v) => {
+  known(v, [], [], "data");
+  return {};
+};
+var DELIVERIES_DATA = {
+  "deliveries.serve": (v) => ({ wake: bool(known(v, ["wake"], [], "data")["wake"], "wake") }),
+  "delivery.answer": empty,
+  "delivery.held": empty,
+  "delivery.pending": empty,
+  "delivery.drained": (v) => {
+    const m = known(v, ["kept"], ["expecting"], "data");
+    const kept = bool(m["kept"], "kept");
+    if (!kept)
+      return m["expecting"] === undefined ? { kept } : fail("expecting");
+    return { kept, expecting: commandId(m["expecting"]) };
+  },
+  "peer.admitted": (v) => ({ admitted: bool(known(v, ["admitted"], [], "data")["admitted"], "admitted") })
+};
+var DELIVERIES_EVENT_VALIDATORS = {
+  "delivery.wake": (v) => ({
+    type: "event",
+    kind: "delivery.wake",
+    enabled: bool(eventFields(v, ["enabled"])["enabled"], "enabled")
+  }),
+  "delivery.inbound": (v) => {
+    const m = eventFields(v, ["command_id", "sender_device", "durable_id", "record"]);
+    return {
+      type: "event",
+      kind: "delivery.inbound",
+      command_id: commandId(m["command_id"]),
+      sender_device: deviceId(m["sender_device"], "sender_device"),
+      durable_id: durableId(m["durable_id"]),
+      record: jsonObject(m["record"], "record")
+    };
+  },
+  "delivery.holds": (v) => {
+    const m = eventFields(v, ["ask_id", "durable_id"]);
+    return {
+      type: "event",
+      kind: "delivery.holds",
+      ask_id: localId(m["ask_id"], "ask_id"),
+      durable_id: durableId(m["durable_id"])
+    };
+  }
+};
+
 // packages/device-service-core/src/local-api/validate-events.ts
 var revisionOf = (m) => uint(m["revision"], 1, Number.MAX_SAFE_INTEGER, "revision");
 var devicesOf = (v) => {
@@ -117386,6 +117476,7 @@ var commandStateOf = (v) => {
 var VALIDATORS = {
   ...STREAM_EVENT_VALIDATORS,
   ...DELEGATED_EVENT_VALIDATORS,
+  ...DELIVERIES_EVENT_VALIDATORS,
   "status.changed": (v) => ({
     type: "event",
     kind: "status.changed",
@@ -117516,6 +117607,7 @@ var agentDir = (v) => absolutePath(requestFields(v, ["agent_dir"])["agent_dir"],
 var VALIDATORS2 = {
   ...COMMAND_REQUEST_VALIDATORS,
   ...DELEGATED_REQUEST_VALIDATORS,
+  ...DELIVERIES_REQUEST_VALIDATORS,
   authenticate: (v, id) => {
     const m = requestFields(v, ["client_proof"]);
     return { id, type: "authenticate", client_proof: text(m["client_proof"], 64, "client_proof") };
@@ -117527,6 +117619,15 @@ var VALIDATORS2 = {
   "status.subscribe": (v, id) => {
     bare(v);
     return { id, type: "status.subscribe" };
+  },
+  "control.session_wake.get": (v, id) => {
+    bare(v);
+    return { id, type: "control.session_wake.get" };
+  },
+  "control.session_wake.set": (v, id) => {
+    const value = requestFields(v, ["enabled"])["enabled"];
+    const enabled = value === null || typeof value === "boolean" ? value : fail("enabled");
+    return { id, type: "control.session_wake.set", enabled };
   },
   "control.attach.get": (v, id) => {
     bare(v);
@@ -117664,7 +117765,7 @@ var validateWelcome = (v) => asViolation(() => {
     state: statusOf(m["state"])
   };
 });
-var empty = (v) => {
+var empty2 = (v) => {
   known(v, [], [], "data");
   return {};
 };
@@ -117677,35 +117778,49 @@ var attachState = (v) => {
     changedAt: typeof changedAt === "string" ? changedAt : fail("changedAt")
   };
 };
+var sessionWakeState = (v) => {
+  const m = known(v, ["enabled", "stored", "changedAt", "overridden"], [], "data");
+  const s = m["stored"];
+  const changedAt = m["changedAt"];
+  return {
+    enabled: bool(m["enabled"], "enabled"),
+    stored: s === null || typeof s === "boolean" ? s : s === "unreadable" ? "unreadable" : fail("stored"),
+    changedAt: typeof changedAt === "string" ? changedAt : fail("changedAt"),
+    overridden: bool(m["overridden"], "overridden")
+  };
+};
 var DATA = {
-  authenticate: empty,
+  authenticate: empty2,
   "status.get": statusOf,
-  "status.subscribe": empty,
+  "status.subscribe": empty2,
   "service.set_enabled": (v) => ({ enabled: bool(one(v, "enabled"), "enabled") }),
-  "refresher.register": empty,
+  "refresher.register": empty2,
   "device.adopt": (v) => ({ device: deviceRef(one(v, "device"), "device", known) }),
-  "device.forget": empty,
+  "device.forget": empty2,
   "device.info": (v) => ({
     device: nullable2(one(v, "device"), (d) => deviceRef(d, "device", known))
   }),
-  "endpoints.register": empty,
-  "endpoints.unregister": empty,
+  "endpoints.register": empty2,
+  "endpoints.unregister": empty2,
   "devices.list": (v) => {
     const devices = one(v, "devices");
     return Array.isArray(devices) ? { devices: devices.map(deviceRowOf) } : fail("devices");
   },
   "sessions.list": (v) => ({ query_id: localId(one(v, "query_id"), "query_id") }),
   "session.attach": (v) => ({ attach: localId(one(v, "attach"), "attach") }),
-  "session.detach": empty,
+  "session.detach": empty2,
   "session.command": (v) => ({ command_id: commandId(one(v, "command_id")) }),
   "session.command_part": (v) => ({
     received: uint(one(v, "received"), 0, LOCAL_UPLOAD_PARTS_MAX - 1, "received")
   }),
   "session.read": (v) => ({ query_id: localId(one(v, "query_id"), "query_id") }),
-  "enforcement.report": empty,
-  "owner.shutdown_for_upgrade": empty,
+  "enforcement.report": empty2,
+  "owner.shutdown_for_upgrade": empty2,
   "session.endpoints": endpointsData,
   "session.locate": locateData,
+  ...DELIVERIES_DATA,
+  "control.session_wake.get": sessionWakeState,
+  "control.session_wake.set": sessionWakeState,
   "control.attach.get": attachState,
   "control.attach.set": attachState
 };
@@ -117794,6 +117909,9 @@ class EventAssembler {
       case "session.command_blob_chunk":
       case "session.command_blob_done":
       case "session.channel_closed":
+      case "delivery.inbound":
+      case "delivery.holds":
+      case "delivery.wake":
         return;
       default:
         return assertNever(event);
@@ -118219,7 +118337,8 @@ var handshake = (connection, options) => new Promise((resolve, reject) => {
   }, HANDSHAKE_TIMEOUT_MS);
   proveAndAuthenticate(connection, options).then(resolve, reject).finally(cancel);
 });
-var sendCommand = async (connection, attach, rpc, command_id, route) => {
+var sendCommand = async (connection, attach, rpc, command_id, route, accepts) => {
+  const marked = accepts === undefined ? {} : { accepts };
   const sent = command_id ?? mintId();
   const id = { command_id: sent };
   const timedOut = (error) => {
@@ -118246,9 +118365,26 @@ var sendCommand = async (connection, attach, rpc, command_id, route) => {
     const upload_id = mintId();
     const parts = uploadParts(json).map((part) => connection.request("session.command_part", { attach, upload_id, ...part }));
     await Promise.all(parts);
-    return (await connection.request("session.command", { attach, ...id, ...route, upload_id }).catch(timedOut)).command_id;
+    return (await connection.request("session.command", { attach, ...id, ...marked, ...route, upload_id }).catch(timedOut)).command_id;
   }
-  return (await connection.request("session.command", { attach, ...id, ...route, rpc }).catch(timedOut)).command_id;
+  return (await connection.request("session.command", { attach, ...id, ...marked, ...route, rpc }).catch(timedOut)).command_id;
+};
+var sendWakeCommand = async (connection, device, durableId, rpc, command_id) => {
+  const sent = command_id ?? mintId();
+  const params = { wake: { device, durable_id: durableId }, command_id: sent, rpc };
+  if (lineBytes({ id: "x".repeat(REQUEST_ID_MAX_CHARS), type: "session.command", ...params }) > LOCAL_INLINE_MAX)
+    throw new LocalApiError("message_too_long", "a wake command travels inline only", {
+      limit_chars: MESSAGE_LIMIT_CHARS
+    });
+  try {
+    return (await connection.request("session.command", params)).command_id;
+  } catch (error) {
+    if (error instanceof LocalApiError && error.code === "request_timeout")
+      throw new LocalApiError("request_timeout", `command ${sent} may have been dispatched; follow its command state`, {
+        command_id: sent
+      });
+    throw error;
+  }
 };
 var sendEndpointCommand = async (connection, device, endpoint, rpc, command_id, locate) => {
   const sent = command_id ?? mintId();
@@ -118291,7 +118427,8 @@ var connectLocalApi = async (options) => {
         listeners.delete(listener);
       };
     },
-    command: (attach, rpc, command_id, route = {}) => sendCommand(connection, attach, rpc, command_id, route),
+    command: (attach, rpc, command_id, route = {}, options) => sendCommand(connection, attach, rpc, command_id, route, options?.accepts),
+    wakeCommand: (device, durableId, rpc, command_id) => sendWakeCommand(connection, device, durableId, rpc, command_id),
     endpointCommand: (device, endpoint, rpc, command_id, options) => sendEndpointCommand(connection, device, endpoint, rpc, command_id, options?.locate === true),
     list: (filter, onRevision, rows) => new Promise((resolve, reject) => {
       const params = {
@@ -118560,7 +118697,7 @@ function openAttach(client, device, sessionId) {
       failure: () => failure,
       onFrame: (listener) => delegated.onFrame(listener),
       onChannelLoss: (listener) => delegated.onLoss(listener),
-      command: (rpc) => new Promise((resolve, reject) => {
+      command: (rpc, options) => new Promise((resolve, reject) => {
         if (ended)
           return reject(new Error("the attach has ended"));
         const commandId = randomBytes8(16).toString("base64url");
@@ -118584,7 +118721,7 @@ function openAttach(client, device, sessionId) {
           resolve(response === undefined ? { outcome: event } : { outcome: event, response });
         });
         commands.add(end);
-        client.command(attach, rpc, commandId, { delegated: true }).catch((error) => {
+        client.command(attach, rpc, commandId, { delegated: true }, options).catch((error) => {
           settle();
           reject(error);
         });
@@ -118628,6 +118765,9 @@ function newestRowsListing(client) {
 // packages/device-service-core/src/device-service.ts
 import { randomBytes as randomBytes9 } from "node:crypto";
 
+// packages/device-service-core/src/minimum-in-effect.ts
+var minimumInEffect = (option, key, shipped) => option === undefined ? shipped : option[key];
+
 // packages/device-service-core/src/release/version.ts
 var SEMVER2 = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?(?:\+[0-9A-Za-z.-]+)?$/;
 var compareIdentifier = (a, b) => {
@@ -118664,9 +118804,49 @@ var compareVersions4 = (a, b) => {
   }
   return 0;
 };
+
+// packages/device-service-core/src/state-dir.ts
+import { readFileSync as readFileSync48, statSync as statSync10 } from "node:fs";
+import { homedir as homedir36 } from "node:os";
+import { dirname as dirname49, join as join120, posix as posix17, win32 as win3212 } from "node:path";
+var DEVICE_SERVICE_STATE_DIR_ENV = "OMO_DEVICE_SERVICE_STATE_DIR";
+var LOCATION_FILE = "device-service.location.json";
+var isAbsoluteOn = (platform, path) => (platform === "win32" ? win3212 : posix17).isAbsolute(path);
+function defaultStateDir(platform, env, home) {
+  if (platform !== "win32")
+    return join120(home, ".omo", "device-service");
+  const localAppData = env.LOCALAPPDATA ?? join120(home, "AppData", "Local");
+  return join120(localAppData, "OmO", "device-service");
+}
+function discoveredStateDir(platform, defaultDir) {
+  try {
+    const parsed = JSON.parse(readFileSync48(join120(dirname49(defaultDir), LOCATION_FILE), "utf8"));
+    if (typeof parsed !== "object" || parsed === null || !("v" in parsed) || !("state_dir" in parsed))
+      return;
+    const { v, state_dir: stateDir } = parsed;
+    if (v !== 1 || typeof stateDir !== "string" || !isAbsoluteOn(platform, stateDir))
+      return;
+    return statSync10(stateDir).isDirectory() ? stateDir : undefined;
+  } catch {
+    return;
+  }
+}
+function deviceServiceStateDir(platform = process.platform, env = process.env, home = homedir36()) {
+  const explicit = env[DEVICE_SERVICE_STATE_DIR_ENV];
+  if (explicit !== undefined && explicit !== "" && isAbsoluteOn(platform, explicit))
+    return explicit;
+  const defaultDir = defaultStateDir(platform, env, home);
+  return discoveredStateDir(platform, defaultDir) ?? defaultDir;
+}
 // packages/device-service-core/src/device-service.ts
 var ENDPOINT_COMMAND_WAIT_MS = 120000;
 function sendToEndpoint(client, device, endpoint, rpc, locate) {
+  return followDelegatedCommand(client, device, (commandId) => {
+    const send = (asked) => client.endpointCommand(device, endpoint, rpc, commandId, { locate: asked });
+    return send(locate).catch((error) => locate && error instanceof LocalApiError && error.code === "invalid_request" ? send(false) : Promise.reject(error));
+  });
+}
+function followDelegatedCommand(client, device, send) {
   return new Promise((resolve, reject) => {
     const commandId = randomBytes9(16).toString("base64url");
     const channel = followDelegatedChannel(device);
@@ -118701,8 +118881,7 @@ function sendToEndpoint(client, device, endpoint, rpc, locate) {
     const timer = setTimeout(() => fail(new Error(`no final state for endpoint command ${commandId} within ${ENDPOINT_COMMAND_WAIT_MS} ms`)), ENDPOINT_COMMAND_WAIT_MS);
     timer.unref?.();
     client.closed.then(() => fail(new Error("the connection closed before the endpoint command settled")));
-    const send = (asked) => client.endpointCommand(device, endpoint, rpc, commandId, { locate: asked });
-    send(locate).catch((error) => locate && error instanceof LocalApiError && error.code === "invalid_request" ? send(false).catch(fail) : fail(error));
+    send(commandId).catch(fail);
   });
 }
 var markNotSent = (error) => error instanceof LocalApiError ? new LocalApiError(error.code, error.reason, {
@@ -118711,17 +118890,14 @@ var markNotSent = (error) => error instanceof LocalApiError ? new LocalApiError(
   ...error.path_refusal === undefined ? {} : { path_refusal: error.path_refusal },
   not_sent: true
 }) : error;
-function deviceServiceStateDir(platform = process.platform, env = process.env, home = homedir36()) {
-  if (platform !== "win32")
-    return join120(home, ".omo", "device-service");
-  const localAppData = env.LOCALAPPDATA ?? join120(home, "AppData", "Local");
-  return join120(localAppData, "OmO", "device-service");
-}
 function deviceServiceEndpointPath(stateDir, platform = process.platform) {
-  return join120(stateDir, platform === "win32" ? ENDPOINT_FILE : SOCKET_FILE);
+  return join121(stateDir, platform === "win32" ? ENDPOINT_FILE : SOCKET_FILE);
 }
 var ADOPT_ACCOUNT_MIN_SERVICE_VERSION = "0.1.3";
 var acceptsAdoptAccount = (serviceVersion) => compareVersions4(serviceVersion, ADOPT_ACCOUNT_MIN_SERVICE_VERSION) >= 0;
+var WAKE_MARK_MIN_SERVICE_VERSION = "0.1.31";
+var LOCATE_SINGLE_MIN_SERVICE_VERSION = "0.1.13";
+var serviceAtLeast = (serviceVersion, minimum) => minimum !== null && compareVersions4(serviceVersion, minimum) >= 0;
 async function connectDeviceService(options) {
   const stateDir = options.stateDir ?? deviceServiceStateDir();
   const client = await (options.connect ?? connectLocalApi)({
@@ -118729,8 +118905,14 @@ async function connectDeviceService(options) {
     client: { name: "omo", version: options.version },
     ...options.background === true ? { transport: () => connectLocal(stateDir, { background: true }) } : {}
   });
+  const wakeMarkMinimum = minimumInEffect(options.minimums, "wakeMark", WAKE_MARK_MIN_SERVICE_VERSION);
+  const carriesWakeMark = serviceAtLeast(client.welcome.service_version, wakeMarkMinimum);
+  const takesSingleLocate = serviceAtLeast(client.welcome.service_version, minimumInEffect(options.minimums, "singleLocate", LOCATE_SINGLE_MIN_SERVICE_VERSION));
   return {
     serviceVersion: client.welcome.service_version,
+    carriesWakeMark,
+    wakeMarkMinimum,
+    takesSingleLocate,
     capabilities: client.welcome.capabilities,
     initialStatus: client.welcome.state,
     status: () => client.request("status.get", {}),
@@ -118748,6 +118930,8 @@ async function connectDeviceService(options) {
       return stop;
     },
     setEnabled: async (enabled) => (await client.request("service.set_enabled", { enabled })).enabled,
+    sessionWake: () => client.request("control.session_wake.get", {}),
+    setSessionWake: (enabled) => client.request("control.session_wake.set", { enabled }),
     attachControl: () => client.request("control.attach.get", {}),
     setAttachControl: (attached) => client.request("control.attach.set", { attached }),
     registerRefresher: async (binaryPath, version) => {
@@ -118768,7 +118952,10 @@ async function connectDeviceService(options) {
     thisDevice: async () => (await client.request("device.info", {})).device,
     devices: async () => (await client.request("devices.list", {})).devices,
     sessions: newestRowsListing(client),
-    attach: (device, sessionId) => openAttach(client, device, sessionId),
+    attach: async (device, sessionId) => {
+      const attached = await openAttach(client, device, sessionId);
+      return carriesWakeMark ? attached : { ...attached, command: (rpc) => attached.command(rpc) };
+    },
     endpointCommand: async (device, rpc, options) => {
       let endpoint;
       try {
@@ -118782,7 +118969,18 @@ async function connectDeviceService(options) {
     },
     close: () => client.close(),
     closed: client.closed,
-    locate: (device, engineId) => client.request("session.locate", { device, engine_id: engineId })
+    locate: (device, engineId, options) => client.request("session.locate", {
+      device,
+      engine_id: engineId,
+      ...options?.single === true && takesSingleLocate ? { single: true } : {}
+    }),
+    wakeCommand: async (device, durableId, rpc) => {
+      if (!carriesWakeMark)
+        throw new LocalApiError("unsupported", "this device service does not carry the wake target", { not_sent: true });
+      return await followDelegatedCommand(client, device, (commandId) => client.wakeCommand(device, durableId, rpc, commandId).catch((error) => {
+        throw error instanceof LocalApiError && error.command_id === undefined ? markNotSent(error) : error;
+      }));
+    }
   };
 }
 // packages/device-service-core/src/bootstrap.ts
@@ -118845,6 +119043,11 @@ var forgetDeviceService = async (options) => {
   }
   return "forgotten";
 };
+// packages/device-service-core/src/cold-wake/service-table.ts
+var SERVICE_TABLE_ENV = "OMO_RELAYD_SERVICES";
+
+// packages/device-service-core/src/cold-wake/darwin.ts
+var TABLE_KEY = `EnvironmentVariables.${SERVICE_TABLE_ENV}`;
 // packages/device-service-core/src/release/release-assets.ts
 var MANIFEST = "latest.json";
 var CHECKSUMS_MAX_BYTES = 64 * 1024;
@@ -118916,7 +119119,7 @@ var NONE2 = Symbol("none registered");
 // packages/omo-native/package.json
 var package_default4 = {
   name: "omo-ai",
-  version: "5.1.71",
+  version: "5.1.72",
   type: "module",
   description: "OmO Native - the standalone omo command with the OMO extension built in: bun add -g omo-ai",
   bin: {
@@ -118933,7 +119136,7 @@ var package_default4 = {
     postinstall: "node bin/senpi-patch.mjs"
   },
   dependencies: {
-    "@code-yeongyu/senpi": "2026.11.15"
+    "@code-yeongyu/senpi": "2026.11.15-2"
   },
   repository: {
     type: "git",
@@ -119228,7 +119431,7 @@ async function boulder(options) {
 }
 // packages/omo-opencode/src/cli/codex-ulw-loop.ts
 import { spawn as spawn7 } from "node:child_process";
-import { existsSync as existsSync70, readFileSync as readFileSync48, realpathSync as realpathSync14 } from "node:fs";
+import { existsSync as existsSync70, readFileSync as readFileSync49, realpathSync as realpathSync14 } from "node:fs";
 import { homedir as homedir37 } from "node:os";
 var ULW_LOOP_DELEGATION_SENTINEL = "OMO_ULW_LOOP_DELEGATED";
 function resolveCodexUlwLoopCommand(input = {}) {
@@ -119278,7 +119481,7 @@ function resolveLegacyLocalOmoBin(env, homeDir, currentExecutablePaths) {
 }
 function isGeneratedRuntimeWrapper(candidate) {
   try {
-    return readFileSync48(candidate, "utf8").includes(RUNTIME_WRAPPER_MARKER);
+    return readFileSync49(candidate, "utf8").includes(RUNTIME_WRAPPER_MARKER);
   } catch (error) {
     if (error instanceof Error)
       return false;
@@ -119713,7 +119916,7 @@ prunes.
 
 // packages/omo-opencode/src/cli/config-migrate.ts
 init_startup_migration();
-import { posix as posix17 } from "node:path";
+import { posix as posix18 } from "node:path";
 function reports(result) {
   return result.results.map((entry) => ({
     diagnostics: entry.diagnostics,
@@ -119747,7 +119950,7 @@ function runConfigMigrate(options = {}) {
     dryRun: options.dryRun ?? false,
     environment,
     ...homeDir === undefined ? {} : { env: { HOME: homeDir }, homeDir },
-    pathOperations: posix17
+    pathOperations: posix18
   });
   const report = reports(result);
   const response = {

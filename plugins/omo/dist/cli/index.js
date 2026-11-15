@@ -2132,7 +2132,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.70",
+    version: "5.1.71",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2330,7 +2330,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.11.13",
+      "@code-yeongyu/senpi": "2026.11.15",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -2403,18 +2403,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.70",
-      "oh-my-opencode-darwin-x64": "5.1.70",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.70",
-      "oh-my-opencode-linux-arm64": "5.1.70",
-      "oh-my-opencode-linux-arm64-musl": "5.1.70",
-      "oh-my-opencode-linux-x64": "5.1.70",
-      "oh-my-opencode-linux-x64-baseline": "5.1.70",
-      "oh-my-opencode-linux-x64-musl": "5.1.70",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.70",
-      "oh-my-opencode-windows-arm64": "5.1.70",
-      "oh-my-opencode-windows-x64": "5.1.70",
-      "oh-my-opencode-windows-x64-baseline": "5.1.70"
+      "oh-my-opencode-darwin-arm64": "5.1.71",
+      "oh-my-opencode-darwin-x64": "5.1.71",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.71",
+      "oh-my-opencode-linux-arm64": "5.1.71",
+      "oh-my-opencode-linux-arm64-musl": "5.1.71",
+      "oh-my-opencode-linux-x64": "5.1.71",
+      "oh-my-opencode-linux-x64-baseline": "5.1.71",
+      "oh-my-opencode-linux-x64-musl": "5.1.71",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.71",
+      "oh-my-opencode-windows-arm64": "5.1.71",
+      "oh-my-opencode-windows-x64": "5.1.71",
+      "oh-my-opencode-windows-x64-baseline": "5.1.71"
     },
     overrides: {
       hono: "^4.13.8",
@@ -77756,6 +77756,16 @@ var init_provenance = __esm(() => {
   }).strict();
 });
 
+// packages/omo-config-core/src/schema/session-wake.ts
+var OmoSessionWakeSettingsSchema;
+var init_session_wake = __esm(() => {
+  init_zod();
+  OmoSessionWakeSettingsSchema = object({
+    same_device: boolean2().optional(),
+    wake_limit: number2().int().min(0).optional()
+  }).strict();
+});
+
 // packages/omo-config-core/src/schema/config.ts
 var OmoOpenCodeHarnessConfigSchema, OmoDisabledSkillsSchema, OmoExcludedModelsSchema, OmoTypedHarnessConfigSchema, OmoConfigProfileSchema, OmoConfigSchema, OmoConfigLayerSchema;
 var init_config = __esm(() => {
@@ -77775,11 +77785,13 @@ var init_config = __esm(() => {
   init_device_service();
   init_format_on_mutation();
   init_provenance();
+  init_session_wake();
   OmoOpenCodeHarnessConfigSchema = record(string2(), unknown());
   OmoDisabledSkillsSchema = array(string2());
   OmoExcludedModelsSchema = array(string2());
   OmoTypedHarnessConfigSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
+    session_wake: OmoSessionWakeSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -77800,6 +77812,7 @@ var init_config = __esm(() => {
   }).strict();
   OmoConfigProfileSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
+    session_wake: OmoSessionWakeSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -77824,6 +77837,7 @@ var init_config = __esm(() => {
   }).strict();
   OmoConfigSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
+    session_wake: OmoSessionWakeSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
@@ -77852,6 +77866,7 @@ var init_config = __esm(() => {
   }).strict();
   OmoConfigLayerSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
+    session_wake: OmoSessionWakeSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
@@ -78013,6 +78028,7 @@ var init_schema = __esm(() => {
   init_model_profile();
   init_model_ref();
   init_provenance();
+  init_session_wake();
   init_side_panel();
   init_task();
   init_team();
@@ -92861,7 +92877,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.70",
+    version: "5.1.71",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -109648,14 +109664,15 @@ var package_default3 = {
   },
   dependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.11.13",
-    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.13",
+    "@code-yeongyu/senpi": "2026.11.15",
+    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.15",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/boulder-state": "workspace:*",
     "@oh-my-opencode/claude-code-compat-core": "workspace:*",
     "@oh-my-opencode/comment-checker-core": "workspace:*",
     "@oh-my-opencode/delegate-core": "workspace:*",
+    "@oh-my-opencode/device-service-core": "workspace:*",
     "@oh-my-opencode/hashline-core": "workspace:*",
     "@oh-my-opencode/mcp-client-core": "workspace:*",
     "@oh-my-opencode/model-core": "workspace:*",
@@ -112674,14 +112691,6 @@ class RequestFailure extends SignInError {
     this.responseStatus = responseStatus;
   }
 }
-
-class InvalidApiResponse extends SignInError {
-  status;
-  constructor(status) {
-    super("The service returned an invalid error response.");
-    this.status = status;
-  }
-}
 var platformSchema = _enum(["macos", "linux", "windows"]);
 var nonempty = string2().min(1);
 var timestamp = string2().datetime({ offset: true });
@@ -112712,15 +112721,6 @@ var deviceCodeSchema = object({
   verificationUri: string2().transform(terminalText).pipe(string2().url()),
   expiresAt: timestamp,
   intervalSeconds: number2().int().min(1).max(60)
-});
-var envelopeSchema = object({
-  error: object({
-    code: nonempty,
-    message: string2(),
-    retryable: boolean2(),
-    requestId: string2(),
-    detail: unknown().optional()
-  })
 });
 var limitSchema = object({
   reason: literal("device_limit"),
@@ -112857,59 +112857,6 @@ function serviceOrigin(value) {
     throw new SignInError("Service URLs must be HTTPS origins, or http://127.0.0.1:<port> for local testing.");
   }
   return url.origin;
-}
-async function requestApi(api, path, init, signal) {
-  let response;
-  let body;
-  try {
-    response = await fetch(`${api}${path}`, {
-      ...init,
-      redirect: "error",
-      signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(30000)]) : AbortSignal.timeout(30000)
-    });
-  } catch (error) {
-    const cause = error instanceof Error && error.cause instanceof Error ? error.cause : error;
-    const code = cause instanceof Error ? Reflect.get(cause, "code") : undefined;
-    throw new RequestFailure(typeof code === "string" && [
-      "ENOTFOUND",
-      "ECONNREFUSED",
-      "ENETUNREACH",
-      "EHOSTUNREACH",
-      "EAI_AGAIN",
-      "ConnectionRefused",
-      "EADDRNOTAVAIL",
-      "ENETDOWN",
-      "EHOSTDOWN",
-      "UND_ERR_CONNECT_TIMEOUT",
-      "ERR_TLS_HANDSHAKE_TIMEOUT",
-      "DEPTH_ZERO_SELF_SIGNED_CERT",
-      "CERT_HAS_EXPIRED",
-      "ERR_TLS_CERT_ALTNAME_INVALID",
-      "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
-      "SELF_SIGNED_CERT_IN_CHAIN",
-      "CERT_NOT_YET_VALID",
-      "UNABLE_TO_GET_ISSUER_CERT",
-      "UNABLE_TO_GET_ISSUER_CERT_LOCALLY",
-      "CERT_SIGNATURE_FAILURE",
-      "CERT_UNTRUSTED",
-      "CERT_REJECTED"
-    ].includes(code));
-  }
-  if (response.status === 204)
-    return null;
-  try {
-    body = await response.json();
-  } catch {
-    throw new RequestFailure(false, response.status);
-  }
-  if (response.ok)
-    return body;
-  const envelope = envelopeSchema.safeParse(body);
-  if (!envelope.success)
-    throw new InvalidApiResponse(response.status);
-  const error = envelope.data.error;
-  const detail = limitSchema.safeParse(error.detail);
-  throw new ApiRefusal(error.code, response.status, error.code === "entitlement_required" && detail.success ? detail.data : undefined, response.headers.get("retry-after"));
 }
 var jsonRequest = (body) => ({
   method: "POST",
@@ -115363,6 +115310,100 @@ ${key.name}`;
 // packages/omo-opencode/src/cli/service-auth/session.ts
 import { homedir as homedir34 } from "os";
 
+// packages/device-service-core/src/local-only.ts
+var KEY2 = Symbol.for("omo.local-only-process.v1");
+function state3() {
+  const holder = globalThis;
+  holder[KEY2] ??= { marked: false };
+  return holder[KEY2];
+}
+
+class LocalOnlyNetworkRefused extends Error {
+  code = "local_only_network_refused";
+  site;
+  constructor(site) {
+    super(`a local-only omo remote command reached the network at ${site}`);
+    this.site = site;
+  }
+}
+function refuseIfLocalOnly(site) {
+  if (state3().marked)
+    throw new LocalOnlyNetworkRefused(site);
+}
+
+// packages/omo-opencode/src/cli/service-auth/protocol-request.ts
+init_zod();
+class InvalidApiResponse extends SignInError {
+  status;
+  constructor(status) {
+    super("The service returned an invalid error response.");
+    this.status = status;
+  }
+}
+var envelopeSchema = object({
+  error: object({
+    code: nonempty,
+    message: string2(),
+    retryable: boolean2(),
+    requestId: string2(),
+    detail: unknown().optional()
+  })
+});
+async function requestApi(api, path, init, signal) {
+  refuseIfLocalOnly("service-auth/protocol-request.ts requestApi");
+  let response;
+  let body;
+  try {
+    response = await fetch(`${api}${path}`, {
+      ...init,
+      redirect: "error",
+      signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(30000)]) : AbortSignal.timeout(30000)
+    });
+  } catch (error) {
+    const cause = error instanceof Error && error.cause instanceof Error ? error.cause : error;
+    const code = cause instanceof Error ? Reflect.get(cause, "code") : undefined;
+    throw new RequestFailure(typeof code === "string" && [
+      "ENOTFOUND",
+      "ECONNREFUSED",
+      "ENETUNREACH",
+      "EHOSTUNREACH",
+      "EAI_AGAIN",
+      "ConnectionRefused",
+      "EADDRNOTAVAIL",
+      "ENETDOWN",
+      "EHOSTDOWN",
+      "UND_ERR_CONNECT_TIMEOUT",
+      "ERR_TLS_HANDSHAKE_TIMEOUT",
+      "DEPTH_ZERO_SELF_SIGNED_CERT",
+      "CERT_HAS_EXPIRED",
+      "ERR_TLS_CERT_ALTNAME_INVALID",
+      "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+      "SELF_SIGNED_CERT_IN_CHAIN",
+      "CERT_NOT_YET_VALID",
+      "UNABLE_TO_GET_ISSUER_CERT",
+      "UNABLE_TO_GET_ISSUER_CERT_LOCALLY",
+      "CERT_SIGNATURE_FAILURE",
+      "CERT_UNTRUSTED",
+      "CERT_REJECTED"
+    ].includes(code));
+  }
+  if (response.status === 204)
+    return null;
+  try {
+    body = await response.json();
+  } catch {
+    throw new RequestFailure(false, response.status);
+  }
+  if (response.ok)
+    return body;
+  const envelope = envelopeSchema.safeParse(body);
+  if (!envelope.success)
+    throw new InvalidApiResponse(response.status);
+  const error = envelope.data.error;
+  const detail = limitSchema.safeParse(error.detail);
+  throw new ApiRefusal(error.code, response.status, error.code === "entitlement_required" && detail.success ? detail.data : undefined, response.headers.get("retry-after"));
+}
+
 // packages/omo-opencode/src/cli/service-auth/signed-out-marker.ts
 init_zod();
 import { mkdir as mkdir13, readFile as readFile38, rename as rename10, rm as rm19, writeFile as writeFile18 } from "fs/promises";
@@ -115437,6 +115478,7 @@ function createSession(options) {
     }
     if (Date.parse(current.accessTokenExpiresAt) > now() + 30000)
       return current;
+    refuseIfLocalOnly("service-auth/session.ts refresh");
     await store.write({ ...current, refreshState: "uncertain" });
     try {
       const tokens = parseReply(tokenSchema, await request("/v1/session/refresh", jsonRequest({ refreshToken: current.refreshToken })));
@@ -118795,7 +118837,7 @@ var NONE2 = Symbol("none registered");
 // packages/omo-native/package.json
 var package_default4 = {
   name: "omo-ai",
-  version: "5.1.70",
+  version: "5.1.71",
   type: "module",
   description: "OmO Native - the standalone omo command with the OMO extension built in: bun add -g omo-ai",
   bin: {
@@ -118812,7 +118854,7 @@ var package_default4 = {
     postinstall: "node bin/senpi-patch.mjs"
   },
   dependencies: {
-    "@code-yeongyu/senpi": "2026.11.13"
+    "@code-yeongyu/senpi": "2026.11.15"
   },
   repository: {
     type: "git",
@@ -118825,6 +118867,7 @@ var isRecord20 = (value) => typeof value === "object" && value !== null;
 async function accountOf(api, credentials, doFetch) {
   if (credentials.accountId !== undefined)
     return credentials.accountId;
+  refuseIfLocalOnly("omo-native/device-service-handoff.ts accountOf");
   const response = await doFetch(`${api}/v1/me`, { headers: { authorization: `Bearer ${credentials.accessToken}` } });
   if (!response.ok)
     throw new Error(`the account read failed (${response.status})`);

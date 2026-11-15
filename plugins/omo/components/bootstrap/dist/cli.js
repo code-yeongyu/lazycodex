@@ -7756,12 +7756,19 @@ var OmoProvenanceSettingsSchema = object({
   }).strict()).optional()
 }).strict();
 
+// ../../omo-config-core/src/schema/session-wake.ts
+var OmoSessionWakeSettingsSchema = object({
+  same_device: boolean2().optional(),
+  wake_limit: number2().int().min(0).optional()
+}).strict();
+
 // ../../omo-config-core/src/schema/config.ts
 var OmoOpenCodeHarnessConfigSchema = record(string2(), unknown());
 var OmoDisabledSkillsSchema = array(string2());
 var OmoExcludedModelsSchema = array(string2());
 var OmoTypedHarnessConfigSchema = object({
   provenance: OmoProvenanceSettingsSchema.optional(),
+  session_wake: OmoSessionWakeSettingsSchema.optional(),
   formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
   categories: OmoCategoriesConfigSchema.optional(),
   agents: OmoAgentsConfigSchema.optional(),
@@ -7782,6 +7789,7 @@ var OmoTypedHarnessConfigSchema = object({
 }).strict();
 var OmoConfigProfileSchema = object({
   provenance: OmoProvenanceSettingsSchema.optional(),
+  session_wake: OmoSessionWakeSettingsSchema.optional(),
   formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
   categories: OmoCategoriesConfigSchema.optional(),
   agents: OmoAgentsConfigSchema.optional(),
@@ -7806,6 +7814,7 @@ var OmoConfigProfileSchema = object({
 }).strict();
 var OmoConfigSchema = object({
   provenance: OmoProvenanceSettingsSchema.optional(),
+  session_wake: OmoSessionWakeSettingsSchema.optional(),
   formatOnMutation: OmoFormatOnMutationSchema.optional(),
   $schema: string2().optional(),
   categories: OmoCategoriesConfigSchema.optional(),
@@ -7834,6 +7843,7 @@ var OmoConfigSchema = object({
 }).strict();
 var OmoConfigLayerSchema = object({
   provenance: OmoProvenanceSettingsSchema.optional(),
+  session_wake: OmoSessionWakeSettingsSchema.optional(),
   formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
   $schema: string2().optional(),
   categories: OmoCategoriesConfigSchema.optional(),

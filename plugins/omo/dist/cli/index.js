@@ -2132,7 +2132,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.72",
+    version: "5.1.73",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2403,18 +2403,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.72",
-      "oh-my-opencode-darwin-x64": "5.1.72",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.72",
-      "oh-my-opencode-linux-arm64": "5.1.72",
-      "oh-my-opencode-linux-arm64-musl": "5.1.72",
-      "oh-my-opencode-linux-x64": "5.1.72",
-      "oh-my-opencode-linux-x64-baseline": "5.1.72",
-      "oh-my-opencode-linux-x64-musl": "5.1.72",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.72",
-      "oh-my-opencode-windows-arm64": "5.1.72",
-      "oh-my-opencode-windows-x64": "5.1.72",
-      "oh-my-opencode-windows-x64-baseline": "5.1.72"
+      "oh-my-opencode-darwin-arm64": "5.1.73",
+      "oh-my-opencode-darwin-x64": "5.1.73",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.73",
+      "oh-my-opencode-linux-arm64": "5.1.73",
+      "oh-my-opencode-linux-arm64-musl": "5.1.73",
+      "oh-my-opencode-linux-x64": "5.1.73",
+      "oh-my-opencode-linux-x64-baseline": "5.1.73",
+      "oh-my-opencode-linux-x64-musl": "5.1.73",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.73",
+      "oh-my-opencode-windows-arm64": "5.1.73",
+      "oh-my-opencode-windows-x64": "5.1.73",
+      "oh-my-opencode-windows-x64-baseline": "5.1.73"
     },
     overrides: {
       hono: "^4.13.8",
@@ -92877,7 +92877,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.72",
+    version: "5.1.73",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -116003,20 +116003,25 @@ var CLOSED_WHOAMI_HELP = `Show the current OmO device sign-in.
   omo whoami [--api <url>]
 
 This runs while OmO accounts are closed.`;
+var CLOSED_AUTH_HELP = { login: CLOSED_LOGIN_HELP, logout: CLOSED_LOGOUT_HELP, whoami: CLOSED_WHOAMI_HELP };
 function refuseClosedServiceAuth() {
   console.error(CLOSED_LOGIN_MESSAGE);
   process.exit(1);
 }
 function describeClosedAuthCommand(name) {
   return () => {
-    console.log(name === "login" ? CLOSED_LOGIN_HELP : name === "logout" ? CLOSED_LOGOUT_HELP : CLOSED_WHOAMI_HELP);
+    console.log(CLOSED_AUTH_HELP[name]);
     process.exit(0);
   };
 }
 function configureClosedServiceAuthCommands(program, hooks) {
   configureClosedDeviceLogin(program, hooks);
   for (const name of ["logout", "whoami"]) {
-    const command = program.command(name, { hidden: true }).helpOption(false).allowUnknownOption().allowExcessArguments().option("--api <url>").action((options) => {
+    const command = program.command(name, { hidden: true }).helpOption(false).allowUnknownOption().allowExcessArguments().option("--api <url>").option("--help").action((options) => {
+      if (options.help === true) {
+        console.log(CLOSED_AUTH_HELP[name]);
+        return;
+      }
       if (command.args.length !== 0)
         refuseClosedServiceAuth();
       return run3(name, options, hooks);
@@ -116051,11 +116056,19 @@ function configureServiceAuthCommands(program, open = serviceAccountsOpen(), hoo
 import { existsSync as existsSync68 } from "fs";
 
 // packages/device-service-core/src/device-service.ts
-import { join as join121 } from "path";
+import { join as join122 } from "path";
 
 // packages/device-service-core/src/local-api/access.ts
-import { createHmac as createHmac2, randomBytes as randomBytes7, timingSafeEqual as timingSafeEqual2 } from "crypto";
-import { chmodSync as chmodSync8, closeSync as closeSync5, lstatSync as lstatSync6, openSync as openSync5, readFileSync as readFileSync46, renameSync as renameSync10, rmSync as rmSync10, writeFileSync as writeFileSync18 } from "fs";
+import {
+  chmodSync as chmodSync8,
+  closeSync as closeSync5,
+  lstatSync as lstatSync6,
+  openSync as openSync5,
+  readFileSync as readFileSync46,
+  renameSync as renameSync10,
+  rmSync as rmSync10,
+  writeFileSync as writeFileSync18
+} from "fs";
 import { join as join118 } from "path";
 
 // packages/device-service-core/src/local-api/errors.ts
@@ -116066,7 +116079,9 @@ class LocalApiError extends Error {
   limit_chars;
   path_refusal;
   command_id;
-  not_sent;
+  candidates;
+  incomplete;
+  sign_in_reason;
   constructor(code, reason, extra = {}) {
     super(`${code}: ${reason}`);
     this.name = "LocalApiError";
@@ -116079,12 +116094,94 @@ class LocalApiError extends Error {
       this.path_refusal = extra.path_refusal;
     if (extra.command_id !== undefined)
       this.command_id = extra.command_id;
-    if (extra.not_sent === true)
-      this.not_sent = true;
+    if (extra.candidates !== undefined)
+      this.candidates = extra.candidates;
+    if (extra.incomplete !== undefined)
+      this.incomplete = extra.incomplete;
+    if (extra.sign_in_reason !== undefined)
+      this.sign_in_reason = extra.sign_in_reason;
   }
 }
 var protocolViolation = (detail) => {
   throw new LocalApiError("protocol_violation", detail);
+};
+
+// packages/device-service-core/src/local-api/proof.ts
+import { createHmac as createHmac2, randomBytes as randomBytes7, timingSafeEqual as timingSafeEqual2 } from "crypto";
+
+// packages/device-service-core/src/local-api/bytes-encoding.ts
+var ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+var portable = {
+  hex: (bytes) => Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join(""),
+  base64: (bytes) => {
+    let out = "";
+    for (let i = 0;i < bytes.length; i += 3) {
+      const [a = 0, b = 0, c = 0] = [bytes[i], bytes[i + 1], bytes[i + 2]];
+      const n = a << 16 | b << 8 | c;
+      out += ALPHABET.charAt(n >> 18 & 63) + ALPHABET.charAt(n >> 12 & 63);
+      out += i + 1 < bytes.length ? ALPHABET.charAt(n >> 6 & 63) : "=";
+      out += i + 2 < bytes.length ? ALPHABET.charAt(n & 63) : "=";
+    }
+    return out;
+  },
+  fromBase64url: (text) => {
+    if (!/^[A-Za-z0-9_-]*={0,2}$/.test(text))
+      throw new SyntaxError("invalid base64url");
+    const clean = text.replaceAll("-", "+").replaceAll("_", "/").replace(/=+$/, "");
+    if (clean.length % 4 === 1)
+      throw new SyntaxError("invalid base64url");
+    const out = new Uint8Array(Math.floor(clean.length * 3 / 4));
+    let bits = 0;
+    let value = 0;
+    let at = 0;
+    for (const ch of clean) {
+      value = value << 6 | ALPHABET.indexOf(ch);
+      bits += 6;
+      if (bits >= 8) {
+        bits -= 8;
+        out[at++] = value >> bits & 255;
+      }
+    }
+    return out;
+  }
+};
+var native = (bytes) => bytes;
+var from = Uint8Array;
+var toHex = (bytes) => native(bytes).toHex?.() ?? portable.hex(bytes);
+var toBase64 = (bytes) => native(bytes).toBase64?.() ?? portable.base64(bytes);
+var toBase64url = (bytes) => native(bytes).toBase64?.({ alphabet: "base64url", omitPadding: true }) ?? portable.base64(bytes).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
+var fromBase64url = (text) => from.fromBase64?.(text, { alphabet: "base64url" }) ?? portable.fromBase64url(text);
+var fromBase64 = (text) => {
+  if (!/^[A-Za-z0-9+/]*={0,2}$/.test(text))
+    throw new SyntaxError("invalid base64");
+  return from.fromBase64?.(text) ?? portable.fromBase64url(text.replaceAll("+", "-").replaceAll("/", "_"));
+};
+
+// packages/device-service-core/src/local-api/proof.ts
+var NONCE_BYTES = 32;
+var mintNonce = () => toBase64url(randomBytes7(NONCE_BYTES));
+var mintId = () => toBase64url(randomBytes7(16));
+var decodedBytes = (value, bytes, what) => {
+  const violation = () => new LocalApiError("protocol_violation", `${what} is not ${bytes} base64url bytes`);
+  let out;
+  try {
+    out = fromBase64url(value);
+  } catch (error) {
+    if (error instanceof Error)
+      throw violation();
+    throw error;
+  }
+  if (out.length !== bytes || toBase64url(out) !== value)
+    throw violation();
+  return out;
+};
+var proof = (token, label, nonce, endpoint) => toBase64url(createHmac2("sha256", token).update(label).update(decodedBytes(nonce, NONCE_BYTES, "a nonce")).update(endpoint).digest());
+var serverProof = (token, clientNonce, endpoint) => proof(token, "server", clientNonce, endpoint);
+var clientProof = (token, serverNonce, endpoint) => proof(token, "client", serverNonce, endpoint);
+var proofMatches = (expected, actual) => {
+  const a = new TextEncoder().encode(expected);
+  const b = new TextEncoder().encode(actual);
+  return a.length === b.length && timingSafeEqual2(a, b);
 };
 
 // packages/device-service-core/src/local-api/dacl.ts
@@ -116093,26 +116190,16 @@ var runPowerShell = async (script, env) => {
   const encoded = Buffer.from(script, "utf16le").toString("base64");
   const proc = spawn6("powershell.exe", ["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-EncodedCommand", encoded], { env: { ...process.env, ...env }, stdio: ["ignore", "pipe", "pipe"], windowsHide: true });
   const chunks = [];
-  const errChunks = [];
   proc.stdout.on("data", (chunk) => chunks.push(chunk));
-  proc.stderr.on("data", (chunk) => errChunks.push(chunk));
+  proc.stderr.resume();
   const code = await new Promise((resolve, reject) => {
     proc.once("error", reject);
     proc.once("close", (exitCode) => resolve(exitCode ?? -1));
   });
-  return {
-    code,
-    out: Buffer.concat(chunks).toString("utf8"),
-    err: Buffer.concat(errChunks).toString("utf8")
-  };
+  return { code, out: new TextDecoder().decode(Buffer.concat(chunks)) };
 };
-var firstErrorLine = (err) => {
-  const line = (err ?? "").split(/\r?\n/).find((text) => text.trim() !== "" && !text.startsWith("#< CLIXML"))?.trim() ?? "";
-  return line === "" ? "" : `: ${line.slice(0, 300)}`;
-};
-var APPLY = String.raw`
+var APPLY_DACL_SCRIPT = String.raw`
 $ErrorActionPreference = 'Stop'
-trap { [Console]::Error.WriteLine($_.Exception.Message); exit 1 }
 $sid = New-Object System.Security.Principal.SecurityIdentifier($env:LA_SID)
 if ($env:LA_KIND -eq 'dir') {
   $acl = New-Object System.Security.AccessControl.DirectorySecurity
@@ -116127,11 +116214,7 @@ $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($sid,
 $acl.SetAccessRuleProtection($true, $false)
 $acl.SetOwner($sid)
 $acl.AddAccessRule($rule)
-if ($env:LA_KIND -eq 'dir') {
-  [System.IO.Directory]::SetAccessControl($env:LA_PATH, $acl)
-} else {
-  [System.IO.File]::SetAccessControl($env:LA_PATH, $acl)
-}
+Set-Acl -LiteralPath $env:LA_PATH -AclObject $acl
 Write-Output 'applied'
 `;
 var DESCRIBE_DACL_SCRIPT = String.raw`
@@ -116163,10 +116246,6 @@ public static class LaSddl {
 }
 '@
 [LaSddl]::Read($env:LA_PATH)
-`;
-var SID_TOKEN_SCRIPT = String.raw`
-$ErrorActionPreference = 'Stop'
-(New-Object System.Security.AccessControl.RawSecurityDescriptor("O:$env:LA_SID")).GetSddlForm('Owner')
 `;
 var CURRENT_USER_SID_SCRIPT = "[System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value";
 var ACE_TYPES = new Set([
@@ -116253,10 +116332,9 @@ var parseSddl = (sddl) => {
   }
   return { sddl, owner, protected: tokens.includes("P"), flags: tokens.join(""), aces };
 };
-var exactDaclVerdict = (dacl, userSid, kind, userAlias) => {
-  const isUser = (token) => token === userSid || userAlias !== undefined && token === userAlias;
+var exactDaclVerdict = (dacl, userSid, kind) => {
   const [ace, ...others] = dacl.aces;
-  return isUser(dacl.owner) && dacl.flags === "PAI" && ace !== undefined && others.length === 0 && ace.type === "A" && ace.flags === (kind === "dir" ? "OICI" : "") && ace.rights === "FA" && ace.objectGuid === "" && ace.inheritObjectGuid === "" && isUser(ace.sid) && ace.extra === undefined;
+  return dacl.owner === userSid && dacl.flags === "PAI" && ace !== undefined && others.length === 0 && ace.type === "A" && ace.flags === (kind === "dir" ? "OICI" : "") && ace.rights === "FA" && ace.objectGuid === "" && ace.inheritObjectGuid === "" && ace.sid === userSid && ace.extra === undefined;
 };
 var currentUserSid = async (run = runPowerShell) => {
   const { code, out } = await run(CURRENT_USER_SID_SCRIPT, {});
@@ -116265,16 +116343,6 @@ var currentUserSid = async (run = runPowerShell) => {
     throw new LocalApiError("insecure_state_dir", "the user SID is unreadable");
   return sid;
 };
-var userSidToken = async (userSid, run = runPowerShell) => {
-  const { code, out } = await run(SID_TOKEN_SCRIPT, { LA_SID: userSid });
-  const match = code === 0 ? /^O:(S-1-\d+(?:-\d+)+|[A-Z]{2})$/.exec(out.trim()) : null;
-  return match?.[1];
-};
-var applyExactDacl = async (path, userSid, kind, run = runPowerShell) => {
-  const { code, err } = await run(APPLY, { LA_PATH: path, LA_SID: userSid, LA_KIND: kind });
-  if (code !== 0)
-    throw new LocalApiError("insecure_state_dir", `the exact DACL could not be applied${firstErrorLine(err)}`);
-};
 var describeDacl = async (path, run = runPowerShell) => {
   const { code, out } = await run(DESCRIBE_DACL_SCRIPT, { LA_PATH: path });
   const dacl = code === 0 ? parseSddl(out.trim()) : undefined;
@@ -116282,51 +116350,16 @@ var describeDacl = async (path, run = runPowerShell) => {
     throw new LocalApiError("insecure_state_dir", "the DACL could not be read back");
   return dacl;
 };
-var verifyExactDacl = async (path, userSid, kind, run = runPowerShell) => {
-  let dacl;
-  try {
-    dacl = await describeDacl(path, run);
-  } catch (error) {
-    if (error instanceof LocalApiError)
-      return false;
-    throw error;
-  }
-  return exactDaclVerdict(dacl, userSid, kind, await userSidToken(userSid, run));
-};
-var windowsSecureFile = (userSid, run = runPowerShell) => async (path, kind) => {
-  const target = kind === "dir" ? "dir" : "file";
-  await applyExactDacl(path, userSid, target, run);
-  if (!await verifyExactDacl(path, userSid, target, run))
-    throw new LocalApiError("insecure_state_dir", "the DACL is not exactly one ACE for the user");
-};
 
 // packages/device-service-core/src/local-api/access.ts
 var TOKEN_FILE = "token";
 var TOKEN_BYTES = 32;
-var NONCE_BYTES = 32;
 var SOCKET_FILE = "service.sock";
-var base64url2 = (bytes) => Buffer.from(bytes).toString("base64url");
-var mintNonce = () => base64url2(randomBytes7(NONCE_BYTES));
-var mintId = () => base64url2(randomBytes7(16));
 var insecure = (detail) => {
   throw new LocalApiError("insecure_state_dir", detail);
 };
-var decoded = (value, bytes, what) => {
-  const out = Buffer.from(value, "base64url");
-  if (out.length !== bytes || base64url2(out) !== value)
-    throw new LocalApiError("protocol_violation", `${what} is not ${bytes} base64url bytes`);
-  return out;
-};
 var UNIX_ENDPOINT = "unix";
 var tcpEndpoint = (port) => `tcp:${port}`;
-var proof = (token, label, nonce, endpoint) => base64url2(createHmac2("sha256", token).update(label).update(decoded(nonce, NONCE_BYTES, "a nonce")).update(endpoint, "utf8").digest());
-var serverProof = (token, clientNonce, endpoint) => proof(token, "server", clientNonce, endpoint);
-var clientProof = (token, serverNonce, endpoint) => proof(token, "client", serverNonce, endpoint);
-var proofMatches = (expected, actual) => {
-  const a = Buffer.from(expected);
-  const b = Buffer.from(actual);
-  return a.length === b.length && timingSafeEqual2(a, b);
-};
 var isMissing = (error) => typeof error === "object" && error !== null && ("code" in error) && (error.code === "ENOENT" || error.code === "ENOTDIR");
 var currentUid = () => process.getuid?.() ?? insecure("this platform has no uid");
 var privateEntry = (path, kind, uid, checkMode = true) => {
@@ -116368,7 +116401,7 @@ var readToken = (stateDir) => {
     throw error;
   }
   try {
-    return decoded(value, TOKEN_BYTES, "the token");
+    return decodedBytes(value, TOKEN_BYTES, "the token");
   } catch (error) {
     if (error instanceof LocalApiError)
       return insecure("the token is malformed");
@@ -116380,31 +116413,45 @@ var readToken = (stateDir) => {
 import { createHash as createHash16 } from "crypto";
 
 // packages/device-service-core/src/local-api/spec-proto.ts
+class ProtoError extends Error {
+  code;
+  constructor(code, detail) {
+    super(`${code}: ${detail}`);
+    this.code = code;
+    this.name = "ProtoError";
+  }
+}
 var SESSION_BLOB_MAX = 16777216;
-var SESSION_COMMAND_TEXT_MAX_CHARS = 1e6;
-var SESSION_COMMAND_TEXT_MAX_BYTES = 3000000;
+var SESSION_KIND_MAX_CHARS = 32;
+var SESSION_ID_MAX_CHARS = 128;
 var SESSION_DEVICE_MAX_CHARS = 64;
 var SESSION_PROJECT_MAX_CHARS = 256;
-var SESSION_ID_MAX_CHARS = 128;
-var SESSION_KIND_MAX_CHARS = 32;
 var SESSION_READ_TAIL_MAX = 200;
 var SESSION_SUMMARY_TITLE_MAX_CHARS = 256;
 var SESSION_SUMMARY_PROJECT_MAX_CHARS = 128;
 var SESSION_SUMMARY_PATH_MAX_CHARS = 1024;
-
-class ProtoError extends Error {
-  code;
-  constructor(code, message) {
-    super(message);
-    this.code = code;
-  }
-}
-var validateCommandText = (text) => {
-  if (typeof text !== "string" || !text.isWellFormed())
-    throw new ProtoError("malformed", "command text");
-  if (text.length > SESSION_COMMAND_TEXT_MAX_CHARS || new TextEncoder().encode(text).length > SESSION_COMMAND_TEXT_MAX_BYTES)
-    throw new ProtoError("payload_too_large", "session command text over the limit");
-  return text;
+var SESSION_MODEL_PROVIDER_MAX_CHARS = 64;
+var SESSION_MODEL_ID_MAX_CHARS = 128;
+var SESSION_SETTLED_DAYS_MAX = 36500;
+var SESSION_SETTLED_THREAD_TITLE_MAX_CHARS = 256;
+var SESSION_KEY_CHARS = 22;
+var UNSAFE_KEYS2 = ["__proto__", "constructor", "prototype"];
+var sessionFail = (detail) => {
+  throw new ProtoError("bad_request", `session payload ${detail}`);
+};
+var B64URL = /^[A-Za-z0-9_-]+$/;
+var base64UrlId = (v, n, detail) => typeof v === "string" && v.length === n && B64URL.test(v) ? v : sessionFail(detail);
+var sessionKeyOf = (v) => base64UrlId(v, SESSION_KEY_CHARS, "session key");
+var safeKey = (key, detail) => UNSAFE_KEYS2.includes(key) ? sessionFail(detail) : key;
+var STREAM_INLINE_MAX = 12000;
+var validateStreamSessionKey = (v) => sessionKeyOf(v);
+var validRosterDeviceId = (value) => typeof value === "string" && value.length > 0 && value.length <= 64 && value.isWellFormed();
+var METHOD = /^(?=.{1,64}$)[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/;
+var methodOf = (v, what) => {
+  const type = typeof v === "string" && METHOD.test(v) ? v : sessionFail(what);
+  for (const segment of type.split("."))
+    safeKey(segment, what);
+  return type;
 };
 
 // packages/device-service-core/src/local-api/limits.ts
@@ -116412,6 +116459,10 @@ var LOCAL_INLINE_MAX = 524288;
 var LOCAL_CHUNK_MAX = 262144;
 var LOCAL_JSON_EXPANSION_MAX = 6;
 var LOCAL_BLOB_MAX = LOCAL_JSON_EXPANSION_MAX * SESSION_BLOB_MAX;
+var MACHINE_UPLOAD_MAX_BYTES = 3840000;
+var MACHINE_UPLOAD_PARTS_MAX = Math.ceil(MACHINE_UPLOAD_MAX_BYTES / LOCAL_CHUNK_MAX);
+var grouped = (n) => n.toLocaleString("en-US");
+var MACHINE_UPLOAD_LIMIT = `an uploaded batch is at most ${grouped(MACHINE_UPLOAD_MAX_BYTES)} bytes (${MACHINE_UPLOAD_PARTS_MAX} parts of ${grouped(LOCAL_CHUNK_MAX)} bytes)`;
 var encoder2 = new TextEncoder;
 var lineBytes = (value) => encoder2.encode(JSON.stringify(value)).length + 1;
 var sha256Hex = (data) => createHash16("sha256").update(data).digest("hex");
@@ -116420,7 +116471,7 @@ var chunkPayload = (data) => {
   for (let off = 0;off < data.length; off += LOCAL_CHUNK_MAX)
     chunks.push({
       off,
-      b: Buffer.from(data.subarray(off, off + LOCAL_CHUNK_MAX)).toString("base64")
+      b: toBase64(data.subarray(off, off + LOCAL_CHUNK_MAX))
     });
   return chunks;
 };
@@ -116443,8 +116494,10 @@ var STATUS_STATES = [
   "authorization_stale",
   "service_degraded",
   "update_required",
-  "signed_out"
+  "signed_out",
+  "fail_closed"
 ];
+var STATUS_UPDATE_PHASES = ["trial", "committed"];
 var POLICY_STATES = ["off", "pending", "active"];
 var THIS_DEVICE_STATES = [
   "unclassified",
@@ -116470,9 +116523,26 @@ var ROUND_DEVICE_STATES = [
 var LISTING_SOURCES = ["live", "cache"];
 var SESSION_ROW_STATES = ["running", "idle", "ended"];
 var FILTER_KEYS = ["device", "project", "state"];
+var LISTING_SETTLED_BY_KINDS = [
+  "user",
+  "agent",
+  "pr-merged",
+  "pr-closed",
+  "inactivity"
+];
 var BLOB_OF = ["state", "record", "entry"];
-var BLOB_ABORT_REASONS = ["digest_mismatch", "source_gone", "too_large", "detached"];
-var UPLOAD_ABORT_REASONS = ["message_too_long", "parts_conflict", "malformed", "detached"];
+var BLOB_ABORT_REASONS = [
+  "digest_mismatch",
+  "source_gone",
+  "too_large",
+  "detached"
+];
+var UPLOAD_ABORT_REASONS = [
+  "message_too_long",
+  "parts_conflict",
+  "malformed",
+  "detached"
+];
 var DETACH_REASONS = [
   "authorization_expired",
   "activation_pending",
@@ -116485,6 +116555,14 @@ var DETACH_REASONS = [
   "session_closed",
   "session_replaced"
 ];
+var UPDATE_NOTICE_PHASES = [
+  "draining",
+  "final",
+  "updated",
+  "rolled_back",
+  "failed"
+];
+var UPDATE_POLICIES = ["defer", "force", "ask"];
 var ATTACH_PENDING_REASONS = ["stream_key_pending"];
 var COMMAND_ID_CHARS = 22;
 var COMMAND_STATES = [
@@ -116509,7 +116587,8 @@ var COMMAND_UNCERTAIN_REASONS = [
   "cancelled",
   "hand_restarted",
   "result_expired",
-  "record_too_large"
+  "record_too_large",
+  "result_undecodable"
 ];
 var COMMAND_REFUSAL_REASONS = [
   "parts_conflict",
@@ -116527,9 +116606,15 @@ var COMMAND_REFUSAL_REASONS = [
   "scope_unknown",
   "scope_closed",
   "epoch_fenced",
-  "epoch_step_exceeded"
+  "epoch_step_exceeded",
+  "route_unlisted",
+  "rate_limited",
+  "unknown_reason"
 ];
-var RETRYABLE_STATES = ["not confirmed", "not delivered: never_sent"];
+var RETRYABLE_STATES = [
+  "not confirmed",
+  "not delivered: never_sent"
+];
 var ERROR_CODES = [
   "unauthenticated",
   "client_proof_invalid",
@@ -116551,6 +116636,7 @@ var ERROR_CODES = [
   "peer_not_found",
   "peer_not_session_client",
   "session_not_found",
+  "session_ambiguous",
   "engine_too_old",
   "not_attached",
   "command_id_conflict",
@@ -116563,6 +116649,13 @@ var ERROR_CODES = [
   "unsupported",
   "unknown_delivery"
 ];
+var ALIAS_INCOMPLETE_REASONS = [
+  "cache",
+  "timed_out",
+  "undelivered",
+  "skipped",
+  "stopped"
+];
 var PATH_REFUSAL_PROBLEMS = [
   "not_absolute",
   "not_found",
@@ -116573,6 +116666,16 @@ var PATH_REFUSAL_PROBLEMS = [
   "world_writable",
   "windows_acl"
 ];
+var MACHINE_OP_STATES = [
+  "queued",
+  "transport_confirmed",
+  "host_dispatched",
+  "host_applied",
+  "link_down"
+];
+var MACHINE_STATES = ["online", "offline", "unsupported"];
+var MACHINE_LOOKUP_STATES = ["in_flight", "terminal", "unknown"];
+var MACHINE_BLOB_ABORT_REASONS = ["digest_mismatch", "source_gone", "too_large"];
 var CHANNEL_CLOSED_REASONS = [
   "event_overflow",
   "event_too_large",
@@ -116652,11 +116755,18 @@ var sha256Field = (v, what) => typeof v === "string" && SHA256_HEX.test(v) ? v :
 var base64Bytes = (v, max, what) => {
   if (typeof v !== "string" || v.length === 0 || v.length > 4 * Math.ceil(max / 3))
     return fail(what);
-  const bytes = Buffer.from(v, "base64");
-  return bytes.length <= max && bytes.toString("base64") === v ? new Uint8Array(bytes) : fail(what);
+  let bytes;
+  try {
+    bytes = fromBase64(v);
+  } catch (error) {
+    if (error instanceof Error)
+      return fail(what);
+    throw error;
+  }
+  return bytes.length <= max && toBase64(bytes) === v ? bytes : fail(what);
 };
-var UNSAFE_KEYS2 = ["__proto__", "constructor", "prototype"];
-var safeKey = (key, what) => UNSAFE_KEYS2.includes(key) ? fail(what) : key;
+var UNSAFE_KEYS3 = ["__proto__", "constructor", "prototype"];
+var safeKey2 = (key, what) => UNSAFE_KEYS3.includes(key) ? fail(what) : key;
 var jsonValue = (v, what) => {
   if (v === null || typeof v === "boolean" || typeof v === "string")
     return v;
@@ -116676,9 +116786,20 @@ var jsonObject = (v, what) => {
     out[key] = jsonValue(item, what);
   return out;
 };
+// packages/device-service-core/src/local-api/command-text.ts
+var COMMAND_TEXT_MAX_CHARS = 1e6;
+var COMMAND_TEXT_MAX_BYTES = 3000000;
+var validateCommandText = (text) => {
+  if (typeof text !== "string" || !text.isWellFormed())
+    throw new ProtoError("bad_request", "session payload command text");
+  if (text.length > COMMAND_TEXT_MAX_CHARS || new TextEncoder().encode(text).length > COMMAND_TEXT_MAX_BYTES)
+    throw new ProtoError("payload_too_large", "session command text over the limit");
+  return text;
+};
+
 // packages/device-service-core/src/local-api/upload.ts
-var MESSAGE_LIMIT_CHARS = SESSION_COMMAND_TEXT_MAX_CHARS;
-var LOCAL_UPLOAD_PARTS_MAX = Math.ceil(SESSION_COMMAND_TEXT_MAX_BYTES / LOCAL_CHUNK_MAX);
+var MESSAGE_LIMIT_CHARS = COMMAND_TEXT_MAX_CHARS;
+var LOCAL_UPLOAD_PARTS_MAX = Math.ceil(COMMAND_TEXT_MAX_BYTES / LOCAL_CHUNK_MAX);
 var checkCommandText = (value) => {
   try {
     validateCommandText(value);
@@ -116712,7 +116833,7 @@ class LocalBlobAssembler {
         return;
       case "session.blob_chunk": {
         const open = this.#current(event.id);
-        const data = Buffer.from(event.b, "base64");
+        const data = fromBase64(event.b);
         const end = this.#received + data.length;
         if (event.off !== this.#received || end > open.bytes)
           return protocolViolation("blob chunk out of order");
@@ -116819,6 +116940,107 @@ class ListingTracker {
   }
 }
 
+// packages/device-service-core/src/local-api/session-ref.ts
+var KEY_CHARS = 22;
+var MIN_CHARS = KEY_CHARS + 2;
+var MAX_CHARS = KEY_CHARS + 65;
+var isStreamSessionKey = (v) => {
+  try {
+    validateStreamSessionKey(v);
+    return true;
+  } catch (error) {
+    if (error instanceof ProtoError)
+      return false;
+    throw error;
+  }
+};
+var parseSessionRef = (v) => {
+  if (typeof v !== "string" || !v.isWellFormed())
+    return;
+  if (v.length < MIN_CHARS || v.length > MAX_CHARS || v[v.length - KEY_CHARS - 1] !== ".")
+    return;
+  const device = v.slice(0, -KEY_CHARS - 1);
+  const key = v.slice(-KEY_CHARS);
+  return isStreamSessionKey(key) && validRosterDeviceId(device) ? { device, key } : undefined;
+};
+var formatSessionRef = (ref) => {
+  if (!isStreamSessionKey(ref.key) || !validRosterDeviceId(ref.device))
+    throw new RangeError("not a session id: the device or the key is malformed");
+  return `${ref.device}.${ref.key}`;
+};
+var CONTROL = /[\u0000-\u001f\u007f-\u009f]/;
+var ALIAS_MAX_CHARS = 256;
+var unsafeAlias = (s) => s !== s.trim() || CONTROL.test(s) || parseSessionRef(s) !== undefined || isStreamSessionKey(s);
+
+// packages/device-service-core/src/local-api/validate-snapshot-from.ts
+var SNAPSHOT_OPTIONAL_FIELDS = ["from"];
+var snapshotFromOf = (v) => {
+  const m = known(v, ["last_entry_id", "delta"], [], "from");
+  return {
+    last_entry_id: entryId(m["last_entry_id"], "from.last_entry_id"),
+    delta: bool(m["delta"], "from.delta")
+  };
+};
+
+// packages/device-service-core/src/local-api/protocol-status.ts
+var SIGN_IN_REASONS = ["not_adopted", "device_revoked", "reauth_required"];
+
+// packages/device-service-core/src/local-api/validate-session-answer.ts
+var refOf = (v, what) => {
+  const m = known(v, ["device", "key", "session"], [], what);
+  const ref = parseSessionRef(m["session"]);
+  if (ref === undefined || ref.device !== m["device"] || ref.key !== m["key"])
+    return fail(what);
+  return { device: ref.device, key: ref.key, session: formatSessionRef(ref) };
+};
+var commandAnswerOf = (v) => {
+  const m = known(v, ["command_id"], ["device", "key", "session"], "session.command data");
+  const command_id = commandId(m["command_id"]);
+  if (m["device"] === undefined && m["key"] === undefined && m["session"] === undefined)
+    return { command_id };
+  const { device, key, session } = m;
+  return { command_id, ...refOf({ device, key, session }, "session.command data") };
+};
+var listOf = (v, item, what) => Array.isArray(v) ? v.map(item) : fail(what);
+var incompleteOf = (v) => {
+  const m = known(v, ["device", "reason"], [], "error.incomplete");
+  const device = m["device"];
+  if (typeof device !== "string" || device.length === 0)
+    return fail("error.incomplete");
+  return { device, reason: oneOf(ALIAS_INCOMPLETE_REASONS, m["reason"], "error.incomplete") };
+};
+var aliasErrorFields = (code, m) => {
+  const { candidates, incomplete } = m;
+  if (candidates !== undefined !== (code === "session_ambiguous"))
+    return fail("error.candidates");
+  if (incomplete !== undefined && code !== "session_not_found")
+    return fail("error.incomplete");
+  return {
+    ...candidates === undefined ? {} : {
+      candidates: listOf(candidates, (c) => refOf(c, "error.candidates"), "error.candidates")
+    },
+    ...incomplete === undefined ? {} : { incomplete: listOf(incomplete, incompleteOf, "error.incomplete") }
+  };
+};
+
+// packages/device-service-core/src/local-api/validate-update.ts
+var READY_REASON_MAX_CHARS = 64;
+var statusUpdateOf = (v) => {
+  const m = known(v, ["update_id", "phase", "target_version", "ready", "ready_reason"], [], "status.update");
+  return {
+    update_id: localId(m["update_id"], "status.update.update_id"),
+    phase: oneOf(STATUS_UPDATE_PHASES, m["phase"], "status.update.phase"),
+    target_version: semver(m["target_version"], "status.update.target_version"),
+    ready: bool(m["ready"], "status.update.ready"),
+    ready_reason: nullable2(m["ready_reason"], (r) => text(r, READY_REASON_MAX_CHARS, "status.update.ready_reason"))
+  };
+};
+var updateCommittedOf = (m, id) => ({
+  id,
+  type: "owner.update_committed",
+  update_id: localId(m["update_id"], "update_id")
+});
+
 // packages/device-service-core/src/local-api/validate-shapes.ts
 var CODE = /^[a-z_]{1,64}$/;
 var ATTACH_ID_MAX = 4294967295;
@@ -116855,9 +117077,8 @@ var policyOf = (v) => {
   };
 };
 var statusOf = (v) => {
-  const m = known(v, ["state", "since_ms", "device", "origin_configured", "enabled"], ["detail", "policy"], "status");
-  const detail = m["detail"];
-  const policy = m["policy"];
+  const m = known(v, ["state", "since_ms", "device", "origin_configured", "enabled"], ["detail", "policy", "update", "exe"], "status");
+  const { detail, policy, update, exe } = m;
   return {
     state: oneOf(STATUS_STATES, m["state"], "status.state"),
     since_ms: millis(m["since_ms"], "status.since_ms"),
@@ -116865,60 +117086,41 @@ var statusOf = (v) => {
     device: nullable2(m["device"], (d) => deviceRef(d, "status.device", known)),
     origin_configured: bool(m["origin_configured"], "status.origin_configured"),
     enabled: bool(m["enabled"], "status.enabled"),
-    ...policy === undefined ? {} : { policy: policyOf(policy) }
+    ...policy === undefined ? {} : { policy: policyOf(policy) },
+    ...update === undefined ? {} : { update: statusUpdateOf(update) },
+    ...exe === undefined ? {} : { exe: absolutePath(exe, "status.exe") }
   };
 };
 var detailOf = (v) => {
-  const m = known(v, ["code", "action"], [], "status.detail");
-  const code = m["code"];
+  const m = known(v, ["code", "action"], ["sign_in_reason"], "status.detail");
+  const { code, sign_in_reason: reason } = m;
   return {
     code: typeof code === "string" && CODE.test(code) ? code : fail("status.detail.code"),
-    action: nullable2(m["action"], (a) => text(a, LABEL_MAX_CHARS, "status.detail.action"))
+    action: nullable2(m["action"], (a) => text(a, LABEL_MAX_CHARS, "status.detail.action")),
+    ...reason === undefined ? {} : { sign_in_reason: oneOf(SIGN_IN_REASONS, reason, "status.detail.sign_in_reason") }
   };
 };
 var deviceRowOf = (v) => {
-  const m = known(v, ["device", "label", "kind", "platform", "last_seen_ms", "online"], [], "device row");
+  const m = known(v, ["device", "label", "kind", "platform", "last_seen_ms", "online"], ["managed"], "device row");
+  const managed = m["managed"];
   return {
     device: deviceId(m["device"]),
     label: text(m["label"], LABEL_MAX_CHARS, "label", 0),
     kind: text(m["kind"], 64, "kind", 0),
     platform: text(m["platform"], 64, "platform", 0),
     last_seen_ms: nullable2(m["last_seen_ms"], (t) => millis(t, "last_seen_ms")),
-    online: bool(m["online"], "online")
+    online: bool(m["online"], "online"),
+    ...managed === undefined ? {} : { managed: bool(managed, "managed") }
   };
 };
-var ROW_FIELDS = ["device", "session_id", "title", "project", "path", "state", "updated_ms", "source", "as_of"];
-var ROW_KIND = new RegExp(`^[a-z][a-z0-9_-]{0,${SESSION_KIND_MAX_CHARS - 1}}$`);
-var rowLinks = (m) => {
-  const kind = m["kind"];
-  if (Object.hasOwn(m, "parent") !== Object.hasOwn(m, "parent_listed"))
-    fail("parent_listed");
-  return {
-    ...kind === undefined ? {} : { kind: typeof kind === "string" && ROW_KIND.test(kind) ? kind : fail("row kind") },
-    ...m["parent"] === undefined ? {} : {
-      parent: sessionId(m["parent"]),
-      parent_listed: bool(m["parent_listed"], "parent_listed")
-    }
-  };
-};
-var listingRowOf = (v) => {
-  const m = known(v, ROW_FIELDS, ["kind", "parent", "parent_listed", "durable_id"], "listing row");
-  const durable = m["durable_id"];
-  return {
-    ...rowLinks(m),
-    ...durable === undefined ? {} : { durable_id: text(durable, SESSION_ID_MAX_CHARS, "durable_id") },
-    device: deviceId(m["device"]),
-    session_id: sessionId(m["session_id"]),
-    title: text(m["title"], SESSION_SUMMARY_TITLE_MAX_CHARS, "title", 0),
-    project: text(m["project"], SESSION_SUMMARY_PROJECT_MAX_CHARS, "project"),
-    path: text(m["path"], SESSION_SUMMARY_PATH_MAX_CHARS, "path"),
-    state: oneOf(SESSION_ROW_STATES, m["state"], "row state"),
-    updated_ms: millis(m["updated_ms"], "updated_ms"),
-    source: oneOf(LISTING_SOURCES, m["source"], "row source"),
-    as_of: millis(m["as_of"], "as_of")
-  };
-};
-var BODY_FIELDS = ["attach_id", "cursor", "state", "entries", "history_truncated", "oldest_entry_id"];
+var BODY_FIELDS = [
+  "attach_id",
+  "cursor",
+  "state",
+  "entries",
+  "history_truncated",
+  "oldest_entry_id"
+];
 var snapshotBodyOf = (m) => {
   const cursor = known(m["cursor"], ["marker_id", "last_entry_id"], [], "cursor");
   const entries = m["entries"];
@@ -116933,10 +117135,11 @@ var snapshotBodyOf = (m) => {
     state: jsonObject(m["state"], "state"),
     entries: entries.map((e) => jsonValue(e, "entries")),
     history_truncated: bool(m["history_truncated"], "history_truncated"),
-    oldest_entry_id: nullable2(m["oldest_entry_id"], (e) => entryId(e, "oldest_entry_id"))
+    oldest_entry_id: nullable2(m["oldest_entry_id"], (e) => entryId(e, "oldest_entry_id")),
+    ...m["from"] === undefined ? {} : { from: snapshotFromOf(m["from"]) }
   };
 };
-var snapshotBlobOf = (v) => snapshotBodyOf(known(v, BODY_FIELDS, [], "snapshot"));
+var snapshotBlobOf = (v) => snapshotBodyOf(known(v, BODY_FIELDS, SNAPSHOT_OPTIONAL_FIELDS, "snapshot"));
 var SNAPSHOT_FIELDS = BODY_FIELDS;
 var readEntryOf = (v) => {
   const m = known(v, ["kind", "entry_id"], ["entry", "bytes", "sha256"], "read entry");
@@ -116963,8 +117166,11 @@ var pathRefusalOf = (v) => {
   };
 };
 var errorBodyOf = (v) => {
-  const m = known(v, ["code", "reason", "action"], ["limit_chars", "path_refusal"], "error");
+  const m = known(v, ["code", "reason", "action"], ["limit_chars", "path_refusal", "candidates", "incomplete", "sign_in_reason"], "error");
   const code = oneOf(ERROR_CODES, m["code"], "error.code");
+  const reason = m["sign_in_reason"];
+  if (reason !== undefined && code !== "sign_in_required")
+    return fail("error.sign_in_reason");
   const limit = m["limit_chars"];
   if (code === "message_too_long" !== (limit !== undefined))
     return fail("error.limit_chars");
@@ -116976,76 +117182,10 @@ var errorBodyOf = (v) => {
     reason: text(m["reason"], REASON_MAX_CHARS, "error.reason", 0),
     action: nullable2(m["action"], (a) => text(a, LABEL_MAX_CHARS, "error.action")),
     ...limit === undefined ? {} : { limit_chars: uint(limit, 1, MILLIS_MAX, "error.limit_chars") },
-    ...refusal === undefined ? {} : { path_refusal: pathRefusalOf(refusal) }
+    ...refusal === undefined ? {} : { path_refusal: pathRefusalOf(refusal) },
+    ...reason === undefined ? {} : { sign_in_reason: oneOf(SIGN_IN_REASONS, reason, "error.sign_in_reason") },
+    ...aliasErrorFields(code, m)
   };
-};
-
-// packages/device-service-core/src/local-api/validate-command.ts
-var commandRpcOf = (v) => jsonObject(v, "rpc");
-var requestFields = (v, names, optional = []) => exactly(v, ["id", "type", ...names], optional, "request");
-var commandIdField = (v) => v === undefined ? {} : { command_id: commandId(v) };
-var ROUTE_FIELDS = ["command_id", "delegated", "endpoint"];
-var routeFields = (m) => {
-  const delegated = m["delegated"];
-  if (delegated !== undefined && delegated !== true)
-    return fail("delegated");
-  return {
-    ...delegated === true ? { delegated: true } : {},
-    ...m["endpoint"] === undefined ? {} : { endpoint: endpointKey(m["endpoint"]) }
-  };
-};
-var COMMAND_REQUEST_VALIDATORS = {
-  "session.command": (v, id) => {
-    if (Object.hasOwn(v, "device")) {
-      const m = requestFields(v, ["device", "endpoint", "rpc"], ["command_id", "locate"]);
-      const locate = m["locate"];
-      if (locate !== undefined && locate !== true)
-        return fail("locate");
-      return {
-        id,
-        type: "session.command",
-        device: deviceId(m["device"]),
-        endpoint: endpointKey(m["endpoint"]),
-        ...commandIdField(m["command_id"]),
-        ...locate === true ? { locate: true } : {},
-        rpc: commandRpcOf(m["rpc"])
-      };
-    }
-    if (Object.hasOwn(v, "upload_id")) {
-      const m = requestFields(v, ["attach", "upload_id"], ROUTE_FIELDS);
-      return {
-        id,
-        type: "session.command",
-        attach: localId(m["attach"], "attach"),
-        ...commandIdField(m["command_id"]),
-        upload_id: localId(m["upload_id"], "upload_id"),
-        ...routeFields(m)
-      };
-    }
-    const m = requestFields(v, ["attach", "rpc"], ROUTE_FIELDS);
-    return {
-      id,
-      type: "session.command",
-      attach: localId(m["attach"], "attach"),
-      ...commandIdField(m["command_id"]),
-      rpc: commandRpcOf(m["rpc"]),
-      ...routeFields(m)
-    };
-  },
-  "session.command_part": (v, id) => {
-    const m = requestFields(v, ["attach", "upload_id", "index", "count", "b"]);
-    const count = uint(m["count"], 1, LOCAL_UPLOAD_PARTS_MAX, "count");
-    base64Bytes(m["b"], LOCAL_CHUNK_MAX, "b");
-    return {
-      id,
-      type: "session.command_part",
-      attach: localId(m["attach"], "attach"),
-      upload_id: localId(m["upload_id"], "upload_id"),
-      index: uint(m["index"], 0, count - 1, "index"),
-      count,
-      b: typeof m["b"] === "string" ? m["b"] : fail("b")
-    };
-  }
 };
 
 // packages/device-service-core/src/local-api/validate-stream-events.ts
@@ -117074,9 +117214,15 @@ var targetOf = (m) => {
     }
   }
 };
+var seqsOf = (v, count) => {
+  if (!Array.isArray(v) || v.length !== count)
+    return fail("seqs");
+  const seqs = v.map((s) => uint(s, 1, Number.MAX_SAFE_INTEGER, "seq"));
+  return seqs.every((s, i) => i === 0 || s > (seqs[i - 1] ?? s)) ? seqs : fail("seqs order");
+};
 var STREAM_EVENT_VALIDATORS = {
   "session.snapshot": (v) => {
-    const m = eventFields(v, ["attach", ...SNAPSHOT_FIELDS]);
+    const m = eventFields(v, ["attach", ...SNAPSHOT_FIELDS], SNAPSHOT_OPTIONAL_FIELDS);
     return { type: "event", kind: "session.snapshot", attach: attachOf(m), ...snapshotBodyOf(m) };
   },
   "session.snapshot_loading": (v) => {
@@ -117089,7 +117235,7 @@ var STREAM_EVENT_VALIDATORS = {
     };
   },
   "session.records": (v) => {
-    const m = eventFields(v, ["attach", "attach_id", "records"]);
+    const m = eventFields(v, ["attach", "attach_id", "records"], ["seqs"]);
     const records = m["records"];
     if (!Array.isArray(records) || records.length === 0)
       return fail("records");
@@ -117099,7 +117245,8 @@ var STREAM_EVENT_VALIDATORS = {
       kind: "session.records",
       attach: attachOf(m),
       attach_id,
-      records: records.map((r) => jsonObject(r, "record"))
+      records: records.map((r) => jsonObject(r, "record")),
+      ...m["seqs"] === undefined ? {} : { seqs: seqsOf(m["seqs"], records.length) }
     };
   },
   "session.blob_open": (v) => {
@@ -117163,32 +117310,97 @@ var STREAM_EVENT_VALIDATORS = {
 // packages/device-service-core/src/local-api/validate-delegated.ts
 var ENDPOINT_KEY = /^[A-Za-z0-9_-]{22}$/;
 var ENDPOINTS_MAX = 16;
+var ENVIRONMENTS_MAX = 4;
 var endpointKey = (v, what = "endpoint") => typeof v === "string" && ENDPOINT_KEY.test(v) ? v : fail(what);
-var ENGINE_ID_MAX_CHARS = 128;
-var engineId = (v) => typeof v === "string" && v.length >= 1 && v.length <= ENGINE_ID_MAX_CHARS && v.isWellFormed() ? v : fail("engine_id");
+var engineId = (v) => typeof v === "string" && v.length >= 1 && v.length <= SESSION_ID_MAX_CHARS && v.isWellFormed() ? v : fail("engine_id");
 var DELEGATED_REQUEST_VALIDATORS = {
-  "session.endpoints": (v, id) => ({
-    id,
-    type: "session.endpoints",
-    device: deviceId(requestFields(v, ["device"])["device"])
-  }),
+  "session.endpoints": (v, id) => {
+    const m = requestFields(v, ["device"], ["primary", "environments"]);
+    if (m["primary"] !== undefined && m["primary"] !== true)
+      return fail("primary");
+    if (m["environments"] !== undefined && m["environments"] !== true)
+      return fail("environments");
+    return {
+      id,
+      type: "session.endpoints",
+      device: deviceId(m["device"]),
+      ...m["primary"] === true ? { primary: true } : {},
+      ...m["environments"] === true ? { environments: true } : {}
+    };
+  },
   "session.locate": (v, id) => {
-    const m = requestFields(v, ["device", "engine_id"]);
-    return { id, type: "session.locate", device: deviceId(m["device"]), engine_id: engineId(m["engine_id"]) };
+    const m = requestFields(v, ["device", "engine_id"], ["single"]);
+    if (m["single"] !== undefined && m["single"] !== true)
+      return fail("single");
+    return {
+      id,
+      type: "session.locate",
+      device: deviceId(m["device"]),
+      engine_id: engineId(m["engine_id"]),
+      ...m["single"] === true ? { single: true } : {}
+    };
   }
 };
-var locateData = (v) => {
-  const m = known(v, ["device", "key", "session"], [], "data");
-  const device = deviceId(m["device"]);
-  const key = endpointKey(m["key"], "key");
-  return m["session"] === `${device}.${key}` ? { device, key, session: `${device}.${key}` } : fail("session");
+var keysOf2 = (v, max, what) => {
+  if (!Array.isArray(v) || v.length > max)
+    return fail(what);
+  const keys = v.map((e) => endpointKey(e, what));
+  return new Set(keys).size === keys.length ? keys : fail(what);
 };
 var endpointsData = (v) => {
-  const endpoints = known(v, ["endpoints"], [], "data")["endpoints"];
-  if (!Array.isArray(endpoints) || endpoints.length > ENDPOINTS_MAX)
-    return fail("endpoints");
-  const keys = endpoints.map((e) => endpointKey(e, "endpoints"));
-  return new Set(keys).size === keys.length ? { endpoints: keys } : fail("endpoints");
+  const m = known(v, ["endpoints"], ["environments", "primary"], "data");
+  const endpoints = keysOf2(m["endpoints"], ENDPOINTS_MAX, "endpoints");
+  const primary = m["primary"] === undefined ? undefined : endpointKey(m["primary"], "primary");
+  if (primary !== undefined && !endpoints.includes(primary))
+    return fail("primary");
+  return {
+    endpoints,
+    ...m["environments"] === undefined ? {} : { environments: keysOf2(m["environments"], ENVIRONMENTS_MAX, "environments") },
+    ...primary === undefined ? {} : { primary }
+  };
+};
+var agentDirOf = (v) => absolutePath(requestFields(v, ["agent_dir"])["agent_dir"], "agent_dir");
+var environmentOf = (v, required) => {
+  const m = requestFields(v, required);
+  return m["kind"] === "environment" ? m : fail("kind");
+};
+var endpointsRegister = (v, id) => {
+  if (v["kind"] === undefined)
+    return { id, type: "endpoints.register", agent_dir: agentDirOf(v) };
+  const m = environmentOf(v, ["kind", "socket", "key_root"]);
+  return {
+    id,
+    type: "endpoints.register",
+    kind: "environment",
+    socket: absolutePath(m["socket"], "socket"),
+    key_root: absolutePath(m["key_root"], "key_root")
+  };
+};
+var endpointsUnregister = (v, id) => {
+  if (v["kind"] === undefined)
+    return { id, type: "endpoints.unregister", agent_dir: agentDirOf(v) };
+  const m = environmentOf(v, ["kind", "socket"]);
+  return {
+    id,
+    type: "endpoints.unregister",
+    kind: "environment",
+    socket: absolutePath(m["socket"], "socket")
+  };
+};
+var endpointsList = (v, id) => {
+  requestFields(v, []);
+  return { id, type: "endpoints.list" };
+};
+var endpointsListData = (m) => {
+  const dirs = m["agent_dirs"];
+  if (!Array.isArray(dirs))
+    return fail("agent_dirs");
+  return { agent_dirs: dirs.map((d) => absolutePath(d, "agent_dirs")) };
+};
+var endpointRequests = {
+  "endpoints.register": endpointsRegister,
+  "endpoints.unregister": endpointsUnregister,
+  "endpoints.list": endpointsList
 };
 var blobId = (m) => localId(m["id"], "blob id");
 var blobRefOf = (v) => {
@@ -117201,7 +117413,9 @@ var blobRefOf = (v) => {
 };
 var locatedOf = (device, v) => {
   const m = known(v, ["key", "session"], [], "located");
-  const key = endpointKey(m["key"], "located key");
+  const key = m["key"];
+  if (typeof key !== "string" || !isStreamSessionKey(key))
+    return fail("located key");
   return m["session"] === `${device}.${key}` ? { key, session: `${device}.${key}` } : fail("located session");
 };
 var COMMAND_EVENT_FIELDS = ["blob", "frame", "command_id", "response", "located"];
@@ -117258,6 +117472,451 @@ var DELEGATED_EVENT_VALIDATORS = {
   }
 };
 
+// packages/device-service-core/src/local-api/validate-command.ts
+var commandRpcOf = (v) => jsonObject(v, "rpc");
+var requestFields = (v, names, optional = []) => exactly(v, ["id", "type", ...names], optional, "request");
+var acceptsField = (v) => {
+  if (v === undefined)
+    return {};
+  if (!Array.isArray(v) || v.length !== 1 || v[0] !== "session-wake:v1")
+    return fail("accepts");
+  return { accepts: ["session-wake:v1"] };
+};
+var commandIdField = (v) => v === undefined ? {} : { command_id: commandId(v) };
+var ROUTE_FIELDS = ["command_id", "delegated", "endpoint", "locate"];
+var routeFields = (m) => {
+  const delegated = m["delegated"];
+  if (delegated !== undefined && delegated !== true)
+    return fail("delegated");
+  const locate = m["locate"];
+  if (locate !== undefined && locate !== true)
+    return fail("locate");
+  return {
+    ...delegated === true ? { delegated: true } : {},
+    ...locate === true ? { locate: true } : {},
+    ...m["endpoint"] === undefined ? {} : { endpoint: endpointKey(m["endpoint"]) }
+  };
+};
+var TARGETS = ["attach", "device", "session", "alias", "wake"];
+var targetField = (v) => {
+  const named = TARGETS.filter((f) => Object.hasOwn(v, f));
+  const [only] = named;
+  return named.length === 1 && only !== undefined ? only : fail("request names one target");
+};
+var TARGET_FIELDS = {
+  attach: ["attach"],
+  device: ["device", "endpoint"],
+  session: ["session"],
+  alias: ["alias"],
+  wake: ["wake"]
+};
+var sessionField = (v) => typeof v === "string" && parseSessionRef(v) !== undefined ? v : fail("session");
+var aliasField = (v) => typeof v === "string" && v.length >= 1 && v.length <= ALIAS_MAX_CHARS && v.isWellFormed() && !unsafeAlias(v) ? v : fail("alias");
+var wakeField = (v) => {
+  const m = exactly(v, ["device", "durable_id"], [], "wake");
+  return { device: deviceId(m["device"], "wake.device"), durable_id: durableId(m["durable_id"]) };
+};
+var oneField = (m, field) => {
+  switch (field) {
+    case "attach":
+      return { attach: localId(m["attach"], "attach") };
+    case "session":
+      return { session: sessionField(m["session"]) };
+    case "alias":
+      return { alias: aliasField(m["alias"]) };
+    case "wake":
+      return { wake: wakeField(m["wake"]) };
+  }
+};
+var targetOf2 = (m, field) => field === "device" ? { device: deviceId(m["device"]), endpoint: endpointKey(m["endpoint"]) } : oneField(m, field);
+var partTargetOf = (m, field) => field === "device" ? { device: deviceId(m["device"]) } : oneField(m, field);
+var COMMAND_REQUEST_VALIDATORS = {
+  "session.command": (v, id) => {
+    const field = targetField(v);
+    if (field !== "device" && Object.hasOwn(v, "locate"))
+      return fail("locate acts only on a device and endpoint command");
+    const target = TARGET_FIELDS[field];
+    const body = Object.hasOwn(v, "upload_id") ? "upload_id" : "rpc";
+    const delegated = field === "session" || field === "alias" || field === "wake";
+    const optional = [
+      ...delegated ? ["command_id"] : ROUTE_FIELDS.filter((f) => !target.includes(f)),
+      "accepts"
+    ];
+    const m = requestFields(v, [...target, body], optional);
+    return {
+      id,
+      type: "session.command",
+      ...commandIdField(m["command_id"]),
+      ...acceptsField(m["accepts"]),
+      ...body === "upload_id" ? { upload_id: localId(m["upload_id"], "upload_id") } : { rpc: commandRpcOf(m["rpc"]) },
+      ...routeFields(m),
+      ...targetOf2(m, field)
+    };
+  },
+  "session.command_part": (v, id) => {
+    const target = targetField(v);
+    const m = requestFields(v, [target, "upload_id", "index", "count", "b"]);
+    const count = uint(m["count"], 1, LOCAL_UPLOAD_PARTS_MAX, "count");
+    base64Bytes(m["b"], LOCAL_CHUNK_MAX, "b");
+    return {
+      id,
+      type: "session.command_part",
+      ...partTargetOf(m, target),
+      upload_id: localId(m["upload_id"], "upload_id"),
+      index: uint(m["index"], 0, count - 1, "index"),
+      count,
+      b: typeof m["b"] === "string" ? m["b"] : fail("b")
+    };
+  }
+};
+
+// packages/device-service-core/src/local-api/validate-machine.ts
+var MACHINE_OPS_MAX = 4096;
+var MACHINE_REF_MAX_CHARS = 128;
+var MACHINE_CREDIT_MAX_BYTES = SESSION_BLOB_MAX;
+var BASE64URL2 = /^[A-Za-z0-9_-]+$/;
+var machineId = (v, what) => typeof v === "string" && v.length === COMMAND_ID_CHARS && BASE64URL2.test(v) ? v : fail(what);
+var machineRef = (v, what) => text(v, MACHINE_REF_MAX_CHARS, what);
+var opName = (v) => {
+  try {
+    return methodOf(v, "op");
+  } catch (error) {
+    if (error instanceof ProtoError)
+      return fail("op");
+    throw error;
+  }
+};
+var opOf = (v) => {
+  const m = exactly(v, ["op_id", "op", "args"], ["deadline_ms", "constraints"], "op");
+  const deadline = m["deadline_ms"];
+  const constraints = m["constraints"];
+  return {
+    op_id: machineId(m["op_id"], "op_id"),
+    op: opName(m["op"]),
+    args: jsonObject(m["args"], "args"),
+    ...deadline === undefined ? {} : { deadline_ms: uint(deadline, 1, Number.MAX_SAFE_INTEGER, "deadline_ms") },
+    ...constraints === undefined ? {} : { constraints: jsonObject(constraints, "constraints") }
+  };
+};
+var uniqueIds = (ids, what) => new Set(ids).size === ids.length ? ids : fail(`duplicate ${what}`);
+var machineOpsOf = (v) => {
+  if (!Array.isArray(v) || v.length === 0 || v.length > MACHINE_OPS_MAX)
+    return fail("ops");
+  const ops = v.map(opOf);
+  uniqueIds(ops.map((o) => o.op_id), "op_id");
+  return ops;
+};
+var refOf2 = (m) => m["session_ref"] === undefined ? {} : { session_ref: machineRef(m["session_ref"], "session_ref") };
+var bare = (v) => {
+  requestFields(v, []);
+};
+var MACHINE_REQUEST_VALIDATORS = {
+  "machine.list": (v, id) => {
+    bare(v);
+    return { id, type: "machine.list" };
+  },
+  "machine.events.subscribe": (v, id) => {
+    bare(v);
+    return { id, type: "machine.events.subscribe" };
+  },
+  "machine.describe": (v, id) => ({
+    id,
+    type: "machine.describe",
+    device: deviceId(requestFields(v, ["device"])["device"])
+  }),
+  "machine.batch": (v, id) => {
+    if (Object.hasOwn(v, "upload_id")) {
+      const m = requestFields(v, ["device", "upload_id"], ["session_ref"]);
+      const upload_id = localId(m["upload_id"], "upload_id");
+      return { id, type: "machine.batch", device: deviceId(m["device"]), upload_id, ...refOf2(m) };
+    }
+    const m = requestFields(v, ["device", "ops"], ["session_ref"]);
+    if (lineBytes(v) > LOCAL_INLINE_MAX)
+      return fail("an inline batch over LOCAL_INLINE_MAX is an upload");
+    return {
+      id,
+      type: "machine.batch",
+      device: deviceId(m["device"]),
+      ops: machineOpsOf(m["ops"]),
+      ...refOf2(m)
+    };
+  },
+  "machine.batch_part": (v, id) => {
+    const m = requestFields(v, ["upload_id", "index", "count", "b"]);
+    const count = uint(m["count"], 1, MACHINE_UPLOAD_PARTS_MAX, `count: ${MACHINE_UPLOAD_LIMIT}`);
+    base64Bytes(m["b"], LOCAL_CHUNK_MAX, "b");
+    return {
+      id,
+      type: "machine.batch_part",
+      upload_id: localId(m["upload_id"], "upload_id"),
+      index: uint(m["index"], 0, count - 1, "index"),
+      count,
+      b: typeof m["b"] === "string" ? m["b"] : fail("b")
+    };
+  },
+  "machine.cancel": (v, id) => {
+    const ids = requestFields(v, ["op_ids"])["op_ids"];
+    if (!Array.isArray(ids) || ids.length === 0 || ids.length > MACHINE_OPS_MAX)
+      return fail("op_ids");
+    const op_ids = uniqueIds(ids.map((o) => machineId(o, "op_id")), "op_id");
+    return { id, type: "machine.cancel", op_ids };
+  },
+  "machine.credit": (v, id) => {
+    const m = requestFields(v, ["handle", "bytes"]);
+    return {
+      id,
+      type: "machine.credit",
+      handle: machineRef(m["handle"], "handle"),
+      bytes: uint(m["bytes"], 1, MACHINE_CREDIT_MAX_BYTES, "bytes")
+    };
+  },
+  "machine.result_of": (v, id) => ({
+    id,
+    type: "machine.result_of",
+    op_id: machineId(requestFields(v, ["op_id"])["op_id"], "op_id")
+  })
+};
+var empty = (v) => {
+  known(v, [], [], "data");
+  return {};
+};
+var fields = (v, names) => known(v, names, [], "data");
+var LEGACY_MACHINE_ROUTE_KINDS = ["internet", "lan"];
+var legacyRouteOf = (v) => {
+  const r = known(v, ["kind", "online"], [], "machine route");
+  const kind = oneOf(LEGACY_MACHINE_ROUTE_KINDS, r["kind"], "machine route kind");
+  bool(r["online"], "online");
+  return kind;
+};
+var machineRowOf = (v) => {
+  const m = known(v, ["device", "label", "state"], ["routes"], "machine row");
+  const routes = m["routes"];
+  if (routes !== undefined && (!Array.isArray(routes) || routes.length > LEGACY_MACHINE_ROUTE_KINDS.length))
+    return fail("routes");
+  const listed = routes?.map(legacyRouteOf);
+  if (listed !== undefined && new Set(listed).size !== listed.length)
+    return fail("routes");
+  return {
+    device: deviceId(m["device"]),
+    label: text(m["label"], LABEL_MAX_CHARS, "label", 0),
+    state: oneOf(MACHINE_STATES, m["state"], "machine state")
+  };
+};
+var MACHINE_DATA = {
+  "machine.list": (v) => {
+    const machines = fields(v, ["machines"])["machines"];
+    return Array.isArray(machines) ? { machines: machines.map(machineRowOf) } : fail("machines");
+  },
+  "machine.describe": (v) => {
+    const m = fields(v, ["device", "description"]);
+    if (!isRecord19(m["description"]))
+      return fail("description");
+    return {
+      device: deviceId(m["device"]),
+      description: jsonObject(m["description"], "description")
+    };
+  },
+  "machine.batch": (v) => ({
+    batch_id: machineId(fields(v, ["batch_id"])["batch_id"], "batch_id")
+  }),
+  "machine.batch_part": (v) => ({
+    received: uint(fields(v, ["received"])["received"], 0, MACHINE_UPLOAD_PARTS_MAX - 1, "received")
+  }),
+  "machine.cancel": empty,
+  "machine.credit": empty,
+  "machine.result_of": (v) => ({
+    state: oneOf(MACHINE_LOOKUP_STATES, fields(v, ["state"])["state"], "lookup state")
+  }),
+  "machine.events.subscribe": empty
+};
+
+// packages/device-service-core/src/local-api/validate-machine-events.ts
+var MACHINE_OUTPUT_MAX_BYTES = STREAM_INLINE_MAX;
+var blobId2 = (m) => localId(m["id"], "blob id");
+var blobRefOf2 = (v) => {
+  const m = known(v, ["id", "bytes", "sha256"], [], "blob");
+  return {
+    id: blobId2(m),
+    bytes: uint(m["bytes"], 1, LOCAL_BLOB_MAX, "blob bytes"),
+    sha256: sha256Field(m["sha256"], "blob sha256")
+  };
+};
+var base64Of = (v, max, what) => {
+  base64Bytes(v, max, what);
+  return typeof v === "string" ? v : fail(what);
+};
+var TIMING_FIELDS = [
+  "enqueued_ms",
+  "flushed_ms",
+  "confirmed_ms",
+  "dispatched_ms",
+  "settled_ms",
+  "applied_ms"
+];
+var timingOf = (v) => {
+  const m = known(v, [], TIMING_FIELDS, "timing");
+  return Object.fromEntries(TIMING_FIELDS.flatMap((k) => m[k] === undefined ? [] : [[k, uint(m[k], 0, Number.MAX_SAFE_INTEGER, k)]]));
+};
+var opResultOf = (v) => {
+  const head = { type: "event", kind: "machine.op_result" };
+  const all = eventFields(v, ["op_id"], ["blob", "response"]);
+  const shape = (name) => exactly(all, ["type", "kind", "op_id", name], [], "event");
+  if (Object.hasOwn(all, "blob")) {
+    const m = shape("blob");
+    return { ...head, op_id: machineId(m["op_id"], "op_id"), blob: blobRefOf2(m["blob"]) };
+  }
+  const m = shape("response");
+  if (lineBytes(v) > LOCAL_INLINE_MAX)
+    return fail("an inline result over LOCAL_INLINE_MAX is a blob");
+  return {
+    ...head,
+    op_id: machineId(m["op_id"], "op_id"),
+    response: jsonObject(m["response"], "response")
+  };
+};
+var MACHINE_EVENT_VALIDATORS = {
+  "machine.op_state": (v) => {
+    const m = eventFields(v, ["op_id", "state"], ["timing"]);
+    return {
+      type: "event",
+      kind: "machine.op_state",
+      op_id: machineId(m["op_id"], "op_id"),
+      state: oneOf(MACHINE_OP_STATES, m["state"], "op state"),
+      ...m["timing"] === undefined ? {} : { timing: timingOf(m["timing"]) }
+    };
+  },
+  "machine.op_result": opResultOf,
+  "machine.output": (v) => {
+    const m = eventFields(v, ["handle", "seq", "bytes"]);
+    return {
+      type: "event",
+      kind: "machine.output",
+      handle: machineRef(m["handle"], "handle"),
+      seq: uint(m["seq"], 0, Number.MAX_SAFE_INTEGER, "seq"),
+      bytes: base64Of(m["bytes"], MACHINE_OUTPUT_MAX_BYTES, "bytes")
+    };
+  },
+  "machine.changed": (v) => {
+    const m = eventFields(v, ["device", "state"]);
+    return {
+      type: "event",
+      kind: "machine.changed",
+      device: deviceId(m["device"]),
+      state: oneOf(MACHINE_STATES, m["state"], "machine state")
+    };
+  },
+  "machine.blob_chunk": (v) => {
+    const m = eventFields(v, ["id", "off", "b"]);
+    return {
+      type: "event",
+      kind: "machine.blob_chunk",
+      id: blobId2(m),
+      off: uint(m["off"], 0, LOCAL_BLOB_MAX, "blob off"),
+      b: base64Of(m["b"], LOCAL_CHUNK_MAX, "blob chunk")
+    };
+  },
+  "machine.blob_done": (v) => ({
+    type: "event",
+    kind: "machine.blob_done",
+    id: blobId2(eventFields(v, ["id"]))
+  }),
+  "machine.blob_abort": (v) => {
+    const m = eventFields(v, ["id", "reason"]);
+    return {
+      type: "event",
+      kind: "machine.blob_abort",
+      id: blobId2(m),
+      reason: oneOf(MACHINE_BLOB_ABORT_REASONS, m["reason"], "blob abort reason")
+    };
+  }
+};
+
+// packages/device-service-core/src/local-api/protocol-presenter.ts
+var PRESENTER_LOCAL_LANES = ["control", "delegated"];
+var PRESENTER_LOCAL_LINE_MAX = {
+  control: 16 * 1024,
+  delegated: 1024 * 1024
+};
+var PRESENTER_ENDED_REASONS = [
+  "viewer_closed",
+  "engine_closed",
+  "no_control_endpoint",
+  "no_delegated_connection",
+  "not_granted",
+  "conn_collision",
+  "busy",
+  "idle",
+  "event_lost",
+  "too_large",
+  "malformed",
+  "rate"
+];
+
+// packages/device-service-core/src/local-api/validate-presenter.ts
+var BASE64URL3 = /^[A-Za-z0-9_-]+$/;
+var presenterLineText = (v, lane) => {
+  const max = PRESENTER_LOCAL_LINE_MAX[lane];
+  if (typeof v !== "string" || v.length === 0 || v.length > Math.ceil(max * 4 / 3))
+    return fail("line too long");
+  if (!BASE64URL3.test(v))
+    return fail("line");
+  let bytes;
+  try {
+    bytes = fromBase64url(v);
+  } catch (error) {
+    if (error instanceof Error)
+      return fail("line");
+    throw error;
+  }
+  return bytes.length <= max && toBase64url(bytes) === v ? v : fail("line");
+};
+var laneOf = (v) => oneOf(PRESENTER_LOCAL_LANES, v["lane"], "lane");
+var PRESENTER_REQUEST_VALIDATORS = {
+  "session.presenter_open": (v, id) => {
+    const m = requestFields(v, ["device", "session"]);
+    return {
+      id,
+      type: "session.presenter_open",
+      device: deviceId(m["device"]),
+      session: sessionId(m["session"])
+    };
+  },
+  "session.presenter_send": (v, id) => {
+    const m = requestFields(v, ["device", "lane", "b"]);
+    const lane = laneOf(m);
+    return {
+      id,
+      type: "session.presenter_send",
+      device: deviceId(m["device"]),
+      lane,
+      b: presenterLineText(m["b"], lane)
+    };
+  }
+};
+var frameOf = (v) => {
+  const m = eventFields(v, ["device", "lane", "b"]);
+  const lane = laneOf(m);
+  return {
+    type: "event",
+    kind: "session.presenter_frame",
+    device: deviceId(m["device"]),
+    lane,
+    b: presenterLineText(m["b"], lane)
+  };
+};
+var PRESENTER_EVENT_VALIDATORS = {
+  "session.presenter_frame": frameOf,
+  "session.presenter_ended": (v) => {
+    const m = eventFields(v, ["device", "reason"]);
+    return {
+      type: "event",
+      kind: "session.presenter_ended",
+      device: deviceId(m["device"]),
+      reason: oneOf(PRESENTER_ENDED_REASONS, m["reason"], "presenter end reason")
+    };
+  }
+};
+
 // packages/device-service-core/src/local-api/validate-deliveries.ts
 var PROTOCOL_MAX = 1e6;
 var PAIRS_MAX = 4096;
@@ -117272,9 +117931,17 @@ var DELIVERIES_REQUEST_VALIDATORS = {
     const pairs = requestFields(v, ["pairs"])["pairs"];
     if (!Array.isArray(pairs) || pairs.length > PAIRS_MAX)
       return fail("pairs");
-    return { id, type: "delivery.pending", pairs: pairs.map((p) => pairOf(exactly(p, PAIR_FIELDS, [], "pair"))) };
+    return {
+      id,
+      type: "delivery.pending",
+      pairs: pairs.map((p) => pairOf(exactly(p, PAIR_FIELDS, [], "pair")))
+    };
   },
-  "delivery.drained": (v, id) => ({ id, type: "delivery.drained", ...pairOf(requestFields(v, PAIR_FIELDS)) }),
+  "delivery.drained": (v, id) => ({
+    id,
+    type: "delivery.drained",
+    ...pairOf(requestFields(v, PAIR_FIELDS))
+  }),
   "deliveries.serve": (v, id) => {
     const m = requestFields(v, ["agent_dir", "v"]);
     return {
@@ -117296,19 +117963,31 @@ var DELIVERIES_REQUEST_VALIDATORS = {
   },
   "delivery.held": (v, id) => {
     const m = requestFields(v, ["ask_id", "holds"]);
-    return { id, type: "delivery.held", ask_id: localId(m["ask_id"], "ask_id"), holds: bool(m["holds"], "holds") };
+    return {
+      id,
+      type: "delivery.held",
+      ask_id: localId(m["ask_id"], "ask_id"),
+      holds: bool(m["holds"], "holds")
+    };
   },
-  "peer.admitted": (v, id) => ({ id, type: "peer.admitted", device: deviceId(requestFields(v, ["device"])["device"]) })
+  "peer.admitted": (v, id) => ({
+    id,
+    type: "peer.admitted",
+    device: deviceId(requestFields(v, ["device"])["device"])
+  })
 };
-var empty = (v) => {
+var empty2 = (v) => {
   known(v, [], [], "data");
   return {};
 };
 var DELIVERIES_DATA = {
-  "deliveries.serve": (v) => ({ wake: bool(known(v, ["wake"], [], "data")["wake"], "wake") }),
-  "delivery.answer": empty,
-  "delivery.held": empty,
-  "delivery.pending": empty,
+  "deliveries.serve": (v) => {
+    const m = known(v, ["wake"], [], "data");
+    return { wake: bool(m["wake"], "wake") };
+  },
+  "delivery.answer": empty2,
+  "delivery.held": empty2,
+  "delivery.pending": empty2,
   "delivery.drained": (v) => {
     const m = known(v, ["kept"], ["expecting"], "data");
     const kept = bool(m["kept"], "kept");
@@ -117316,14 +117995,15 @@ var DELIVERIES_DATA = {
       return m["expecting"] === undefined ? { kept } : fail("expecting");
     return { kept, expecting: commandId(m["expecting"]) };
   },
-  "peer.admitted": (v) => ({ admitted: bool(known(v, ["admitted"], [], "data")["admitted"], "admitted") })
+  "peer.admitted": (v) => ({
+    admitted: bool(known(v, ["admitted"], [], "data")["admitted"], "admitted")
+  })
 };
 var DELIVERIES_EVENT_VALIDATORS = {
-  "delivery.wake": (v) => ({
-    type: "event",
-    kind: "delivery.wake",
-    enabled: bool(eventFields(v, ["enabled"])["enabled"], "enabled")
-  }),
+  "delivery.wake": (v) => {
+    const m = eventFields(v, ["enabled"]);
+    return { type: "event", kind: "delivery.wake", enabled: bool(m["enabled"], "enabled") };
+  },
   "delivery.inbound": (v) => {
     const m = eventFields(v, ["command_id", "sender_device", "durable_id", "record"]);
     return {
@@ -117346,6 +118026,116 @@ var DELIVERIES_EVENT_VALIDATORS = {
   }
 };
 
+// packages/device-service-core/src/local-api/validate-listing-row.ts
+var ROW_FIELDS = [
+  "device",
+  "session_id",
+  "title",
+  "project",
+  "path",
+  "state",
+  "updated_ms",
+  "source",
+  "as_of"
+];
+var ROW_KIND = new RegExp(`^[a-z][a-z0-9_-]{0,${SESSION_KIND_MAX_CHARS - 1}}$`);
+var rowLinks = (m) => {
+  const kind = m["kind"];
+  if (Object.hasOwn(m, "parent") !== Object.hasOwn(m, "parent_listed"))
+    fail("parent_listed");
+  return {
+    ...kind === undefined ? {} : { kind: typeof kind === "string" && ROW_KIND.test(kind) ? kind : fail("row kind") },
+    ...m["parent"] === undefined ? {} : {
+      parent: sessionId(m["parent"]),
+      parent_listed: bool(m["parent_listed"], "parent_listed")
+    }
+  };
+};
+var rowModel = (v) => {
+  if (v === undefined)
+    return {};
+  const m = known(v, ["provider", "id"], [], "model");
+  return {
+    model: {
+      provider: text(m["provider"], SESSION_MODEL_PROVIDER_MAX_CHARS, "model provider"),
+      id: text(m["id"], SESSION_MODEL_ID_MAX_CHARS, "model id")
+    }
+  };
+};
+var settledByOf = (v) => {
+  const named = known(v, ["kind"], [], "settled_by")["kind"];
+  if (typeof named !== "string")
+    return fail("settled_by kind");
+  const kind = LISTING_SETTLED_BY_KINDS.find((k) => k === named);
+  switch (kind) {
+    case undefined:
+      return;
+    case "user":
+      return { kind };
+    case "agent": {
+      const m = known(v, ["kind"], ["threadId", "threadTitle"], "settled_by");
+      const id = m["threadId"];
+      const title = m["threadTitle"];
+      return {
+        kind,
+        ...id === undefined ? {} : { threadId: text(id, SESSION_ID_MAX_CHARS, "settled_by threadId") },
+        ...title === undefined ? {} : {
+          threadTitle: text(title, SESSION_SETTLED_THREAD_TITLE_MAX_CHARS, "settled_by threadTitle", 0)
+        }
+      };
+    }
+    case "pr-merged":
+    case "pr-closed": {
+      const n = known(v, ["kind"], ["pullRequestNumber"], "settled_by")["pullRequestNumber"];
+      return {
+        kind,
+        ...n === undefined ? {} : {
+          pullRequestNumber: uint(n, 0, Number.MAX_SAFE_INTEGER, "settled_by pullRequestNumber")
+        }
+      };
+    }
+    case "inactivity": {
+      const days = known(v, ["kind", "days"], [], "settled_by")["days"];
+      return { kind, days: uint(days, 0, SESSION_SETTLED_DAYS_MAX, "settled_by days") };
+    }
+    default:
+      return assertNever(kind);
+  }
+};
+var rowSettled = (m) => {
+  const reason = m["settled_by"];
+  if (m["settled"] === undefined)
+    return reason === undefined ? {} : fail("settled_by");
+  const settled = bool(m["settled"], "settled");
+  if (reason === undefined)
+    return { settled };
+  if (!settled)
+    return fail("settled_by");
+  const by = settledByOf(reason);
+  return by === undefined ? { settled } : { settled, settled_by: by };
+};
+var listingRowOf = (v) => {
+  const m = known(v, ROW_FIELDS, ["kind", "parent", "parent_listed", "durable_id", "model", "archived", "settled", "settled_by"], "listing row");
+  const durable = m["durable_id"];
+  const archived = m["archived"];
+  return {
+    ...rowLinks(m),
+    ...rowModel(m["model"]),
+    ...rowSettled(m),
+    ...archived === undefined ? {} : { archived: archived === true ? true : fail("archived") },
+    ...durable === undefined ? {} : { durable_id: text(durable, SESSION_ID_MAX_CHARS, "durable_id") },
+    device: deviceId(m["device"]),
+    session_id: sessionId(m["session_id"]),
+    title: text(m["title"], SESSION_SUMMARY_TITLE_MAX_CHARS, "title", 0),
+    project: text(m["project"], SESSION_SUMMARY_PROJECT_MAX_CHARS, "project"),
+    path: text(m["path"], SESSION_SUMMARY_PATH_MAX_CHARS, "path"),
+    state: oneOf(SESSION_ROW_STATES, m["state"], "row state"),
+    updated_ms: millis(m["updated_ms"], "updated_ms"),
+    source: oneOf(LISTING_SOURCES, m["source"], "row source"),
+    as_of: millis(m["as_of"], "as_of")
+  };
+};
+
 // packages/device-service-core/src/local-api/validate-events.ts
 var revisionOf = (m) => uint(m["revision"], 1, Number.MAX_SAFE_INTEGER, "revision");
 var devicesOf = (v) => {
@@ -117353,7 +118143,7 @@ var devicesOf = (v) => {
     return fail("round devices");
   const out = {};
   for (const [device, state] of Object.entries(v))
-    out[safeKey(deviceId(device), "round device")] = oneOf(ROUND_DEVICE_STATES, state, "round device state");
+    out[safeKey2(deviceId(device), "round device")] = oneOf(ROUND_DEVICE_STATES, state, "round device state");
   return out;
 };
 var commandStateOf = (v) => {
@@ -117396,7 +118186,9 @@ var commandStateOf = (v) => {
 };
 var VALIDATORS = {
   ...STREAM_EVENT_VALIDATORS,
+  ...MACHINE_EVENT_VALIDATORS,
   ...DELEGATED_EVENT_VALIDATORS,
+  ...PRESENTER_EVENT_VALIDATORS,
   ...DELIVERIES_EVENT_VALIDATORS,
   "status.changed": (v) => ({
     type: "event",
@@ -117436,6 +118228,15 @@ var VALIDATORS = {
       rows: rows.map(listingRowOf)
     };
   },
+  "sessions.listing_changed": (v) => {
+    const m = eventFields(v, ["device", "generation"]);
+    return {
+      type: "event",
+      kind: "sessions.listing_changed",
+      device: deviceId(m["device"]),
+      generation: nullable2(m["generation"], (g) => uint(g, 0, Number.MAX_SAFE_INTEGER, "generation"))
+    };
+  },
   "sessions.listing_end": (v) => {
     const m = eventFields(v, ["query_id", "revision", "incomplete"]);
     const incomplete = m["incomplete"];
@@ -117469,6 +118270,20 @@ var VALIDATORS = {
       next_before
     };
   },
+  "host.update_notice": (v) => {
+    const m = eventFields(v, ["target_version", "phase", "policy"], ["update_id", "deadline_ms"]);
+    const id = m["update_id"];
+    const deadline = m["deadline_ms"];
+    return {
+      type: "event",
+      kind: "host.update_notice",
+      ...id === undefined ? {} : { update_id: localId(id, "update_id") },
+      target_version: semver(m["target_version"], "target_version"),
+      phase: oneOf(UPDATE_NOTICE_PHASES, m["phase"], "update notice phase"),
+      ...deadline === undefined ? {} : { deadline_ms: millis(deadline, "deadline_ms") },
+      policy: oneOf(UPDATE_POLICIES, m["policy"], "update policy")
+    };
+  },
   "session.upload_abort": (v) => {
     const m = eventFields(v, ["upload_id", "reason"]);
     const reason = oneOf(UPLOAD_ABORT_REASONS, m["reason"], "upload abort reason");
@@ -117487,8 +118302,36 @@ var validateEventFields = (v) => {
   return VALIDATORS[oneOf(EVENT_KINDS, v["kind"], "event kind")](v);
 };
 
+// packages/device-service-core/src/local-api/validate-session-wake.ts
+var SESSION_WAKE_VALIDATORS = {
+  "control.session_wake.get": (v, id) => {
+    requestFields(v, []);
+    return { id, type: "control.session_wake.get" };
+  },
+  "control.session_wake.set": (v, id) => {
+    const raw = requestFields(v, ["enabled"])["enabled"];
+    return {
+      id,
+      type: "control.session_wake.set",
+      enabled: raw === null ? null : bool(raw, "enabled")
+    };
+  }
+};
+var storedOf = (v) => v === null || v === "unreadable" || typeof v === "boolean" ? v : fail("stored");
+var sessionWakeState = (v) => {
+  const m = known(v, ["enabled", "stored", "changedAt", "overridden"], [], "data");
+  const stored = m["stored"];
+  const changedAt = m["changedAt"];
+  return {
+    enabled: bool(m["enabled"], "enabled"),
+    stored: storedOf(stored),
+    changedAt: typeof changedAt === "string" ? changedAt : fail("changedAt"),
+    overridden: bool(m["overridden"], "overridden")
+  };
+};
+
 // packages/device-service-core/src/local-api/validate-requests.ts
-var ENVIRONMENTS_MAX = 1024;
+var ENVIRONMENTS_MAX2 = 1024;
 var PKCS8_KEY_BYTES = 48;
 var PKCS8_PREFIX = {
   ed25519: "302e020100300506032b657004220420",
@@ -117496,7 +118339,7 @@ var PKCS8_PREFIX = {
 };
 var pkcs8 = (v, algorithm, what) => {
   const bytes = base64Bytes(v, PKCS8_KEY_BYTES, what);
-  const prefix = Buffer.from(bytes.subarray(0, 16)).toString("hex");
+  const prefix = toHex(bytes.subarray(0, 16));
   const exact = bytes.length === PKCS8_KEY_BYTES && prefix === PKCS8_PREFIX[algorithm];
   return exact && typeof v === "string" ? v : fail(what);
 };
@@ -117509,7 +118352,7 @@ var filterOf = (v) => {
   };
 };
 var environmentsOf = (v) => {
-  if (!Array.isArray(v) || v.length > ENVIRONMENTS_MAX)
+  if (!Array.isArray(v) || v.length > ENVIRONMENTS_MAX2)
     return fail("environments");
   const rows = v.map((e) => {
     const m = exactly(e, ["environment_id", "revoked", "closed"], [], "environment");
@@ -117521,43 +118364,62 @@ var environmentsOf = (v) => {
   });
   return new Set(rows.map((r) => r.environment_id)).size === rows.length ? rows : fail("duplicate environment_id");
 };
-var bare = (v) => {
+var resumeOf = (v) => {
+  const m = exactly(v, ["attach_id", "seq"], [], "resume");
+  const seq = uint(m["seq"], 0, Number.MAX_SAFE_INTEGER, "resume.seq");
+  return { attach_id: attachId(m["attach_id"]), seq };
+};
+var fromOf = (v) => {
+  const m = exactly(v, ["last_entry_id"], [], "from");
+  return { last_entry_id: entryId(m["last_entry_id"], "from.last_entry_id") };
+};
+var bare2 = (v) => {
   requestFields(v, []);
 };
-var agentDir = (v) => absolutePath(requestFields(v, ["agent_dir"])["agent_dir"], "agent_dir");
 var VALIDATORS2 = {
   ...COMMAND_REQUEST_VALIDATORS,
+  ...MACHINE_REQUEST_VALIDATORS,
   ...DELEGATED_REQUEST_VALIDATORS,
+  ...PRESENTER_REQUEST_VALIDATORS,
   ...DELIVERIES_REQUEST_VALIDATORS,
   authenticate: (v, id) => {
     const m = requestFields(v, ["client_proof"]);
     return { id, type: "authenticate", client_proof: text(m["client_proof"], 64, "client_proof") };
   },
   "status.get": (v, id) => {
-    bare(v);
-    return { id, type: "status.get" };
+    const { exe, sign_in_reason: reason } = requestFields(v, [], ["exe", "sign_in_reason"]);
+    if (exe !== undefined && exe !== true)
+      return fail("exe");
+    if (reason !== undefined && reason !== true)
+      return fail("sign_in_reason");
+    return {
+      id,
+      type: "status.get",
+      ...exe === true ? { exe } : {},
+      ...reason === true ? { sign_in_reason: reason } : {}
+    };
   },
   "status.subscribe": (v, id) => {
-    bare(v);
+    bare2(v);
     return { id, type: "status.subscribe" };
   },
-  "control.session_wake.get": (v, id) => {
-    bare(v);
-    return { id, type: "control.session_wake.get" };
-  },
-  "control.session_wake.set": (v, id) => {
-    const value = requestFields(v, ["enabled"])["enabled"];
-    const enabled = value === null || typeof value === "boolean" ? value : fail("enabled");
-    return { id, type: "control.session_wake.set", enabled };
-  },
   "control.attach.get": (v, id) => {
-    bare(v);
+    bare2(v);
     return { id, type: "control.attach.get" };
   },
   "control.attach.set": (v, id) => {
     const attached = bool(requestFields(v, ["attached"])["attached"], "attached");
     return { id, type: "control.attach.set", attached };
   },
+  "control.remote_commands.get": (v, id) => {
+    bare2(v);
+    return { id, type: "control.remote_commands.get" };
+  },
+  "control.remote_commands.set": (v, id) => {
+    const enabled = bool(requestFields(v, ["enabled"])["enabled"], "enabled");
+    return { id, type: "control.remote_commands.set", enabled };
+  },
+  ...SESSION_WAKE_VALIDATORS,
   "service.set_enabled": (v, id) => {
     const enabled = bool(requestFields(v, ["enabled"])["enabled"], "enabled");
     return { id, type: "service.set_enabled", enabled };
@@ -117573,32 +118435,42 @@ var VALIDATORS2 = {
     };
   },
   "device.adopt": (v, id) => {
-    const m = requestFields(v, ["device", "signing_private_key", "sealing_private_key"]);
+    const m = requestFields(v, ["device", "signing_private_key", "sealing_private_key"], ["account", "sign_in_reason"]);
+    const reason = m["sign_in_reason"];
+    if (reason !== undefined && reason !== true)
+      return fail("sign_in_reason");
     return {
       id,
       type: "device.adopt",
       device: deviceRef(m["device"]),
+      ...m["account"] === undefined ? {} : { account: text(m["account"], 256, "account") },
+      ...reason === true ? { sign_in_reason: reason } : {},
       signing_private_key: pkcs8(m["signing_private_key"], "ed25519", "signing_private_key"),
       sealing_private_key: pkcs8(m["sealing_private_key"], "x25519", "sealing_private_key")
     };
   },
   "device.forget": (v, id) => {
-    bare(v);
+    bare2(v);
     return { id, type: "device.forget" };
   },
   "device.info": (v, id) => {
-    bare(v);
+    bare2(v);
     return { id, type: "device.info" };
   },
-  "endpoints.register": (v, id) => ({ id, type: "endpoints.register", agent_dir: agentDir(v) }),
-  "endpoints.unregister": (v, id) => ({ id, type: "endpoints.unregister", agent_dir: agentDir(v) }),
+  ...endpointRequests,
   "devices.list": (v, id) => {
-    bare(v);
-    return { id, type: "devices.list" };
+    const { managed } = requestFields(v, [], ["managed"]);
+    if (managed !== undefined && managed !== true)
+      return fail("managed");
+    return { id, type: "devices.list", ...managed === undefined ? {} : { managed } };
+  },
+  "sessions.events.subscribe": (v, id) => {
+    bare2(v);
+    return { id, type: "sessions.events.subscribe" };
   },
   "sessions.list": (v, id) => {
     const { filter, rows } = requestFields(v, [], ["filter", "rows"]);
-    if (rows !== undefined && rows !== 2 && rows !== 3)
+    if (rows !== undefined && rows !== 2 && rows !== 3 && rows !== 4 && rows !== 5)
       return fail("rows");
     return {
       id,
@@ -117608,12 +118480,20 @@ var VALIDATORS2 = {
     };
   },
   "session.attach": (v, id) => {
-    const m = requestFields(v, ["device", "session_id"]);
+    const m = requestFields(v, ["device", "session_id"], ["seqs", "resume", "from"]);
+    const { seqs, resume, from, session_id } = m;
+    if (seqs !== undefined && seqs !== true)
+      return fail("seqs");
+    if (!isStreamSessionKey(session_id))
+      return fail("session_id");
     return {
       id,
       type: "session.attach",
       device: deviceId(m["device"]),
-      session_id: sessionId(m["session_id"])
+      session_id,
+      ...seqs === undefined ? {} : { seqs },
+      ...resume === undefined ? {} : { resume: resumeOf(resume) },
+      ...from === undefined ? {} : { from: fromOf(from) }
     };
   },
   "session.detach": (v, id) => ({
@@ -117647,7 +118527,8 @@ var VALIDATORS2 = {
   "owner.shutdown_for_upgrade": (v, id) => {
     const target_version = semver(requestFields(v, ["target_version"])["target_version"], "target_version");
     return { id, type: "owner.shutdown_for_upgrade", target_version };
-  }
+  },
+  "owner.update_committed": (v, id) => updateCommittedOf(requestFields(v, ["update_id"]), id)
 };
 var REQUEST_TYPES = keysOf(VALIDATORS2);
 
@@ -117668,7 +118549,16 @@ var validateWelcome = (v) => asViolation(() => {
   }
   if (isRecord19(v) && v["type"] === "welcome" && v["v"] !== LOCAL_API_VERSION)
     return { type: "refused", reason: "version" };
-  const fields = ["type", "v", "service_version", "owner", "server_proof", "server_nonce", "capabilities", "state"];
+  const fields = [
+    "type",
+    "v",
+    "service_version",
+    "owner",
+    "server_proof",
+    "server_nonce",
+    "capabilities",
+    "state"
+  ];
   const m = known(v, fields, [], "welcome");
   const capabilities = m["capabilities"];
   if (m["type"] !== "welcome" || m["owner"] !== "service")
@@ -117686,7 +118576,7 @@ var validateWelcome = (v) => asViolation(() => {
     state: statusOf(m["state"])
   };
 });
-var empty2 = (v) => {
+var empty3 = (v) => {
   known(v, [], [], "data");
   return {};
 };
@@ -117699,51 +118589,57 @@ var attachState = (v) => {
     changedAt: typeof changedAt === "string" ? changedAt : fail("changedAt")
   };
 };
-var sessionWakeState = (v) => {
-  const m = known(v, ["enabled", "stored", "changedAt", "overridden"], [], "data");
-  const s = m["stored"];
+var remoteCommandsState = (v) => {
+  const m = known(v, ["enabled", "changedAt", "overridden"], [], "data");
   const changedAt = m["changedAt"];
   return {
     enabled: bool(m["enabled"], "enabled"),
-    stored: s === null || typeof s === "boolean" ? s : s === "unreadable" ? "unreadable" : fail("stored"),
     changedAt: typeof changedAt === "string" ? changedAt : fail("changedAt"),
     overridden: bool(m["overridden"], "overridden")
   };
 };
 var DATA = {
-  authenticate: empty2,
+  authenticate: empty3,
   "status.get": statusOf,
-  "status.subscribe": empty2,
+  "status.subscribe": empty3,
   "service.set_enabled": (v) => ({ enabled: bool(one(v, "enabled"), "enabled") }),
-  "refresher.register": empty2,
+  "refresher.register": empty3,
   "device.adopt": (v) => ({ device: deviceRef(one(v, "device"), "device", known) }),
-  "device.forget": empty2,
+  "device.forget": empty3,
   "device.info": (v) => ({
     device: nullable2(one(v, "device"), (d) => deviceRef(d, "device", known))
   }),
-  "endpoints.register": empty2,
-  "endpoints.unregister": empty2,
+  "endpoints.register": empty3,
+  "endpoints.unregister": empty3,
+  "endpoints.list": (v) => endpointsListData(known(v, ["agent_dirs"], [], "data")),
+  "session.presenter_open": empty3,
+  "session.presenter_send": empty3,
   "devices.list": (v) => {
     const devices = one(v, "devices");
     return Array.isArray(devices) ? { devices: devices.map(deviceRowOf) } : fail("devices");
   },
   "sessions.list": (v) => ({ query_id: localId(one(v, "query_id"), "query_id") }),
+  "sessions.events.subscribe": empty3,
   "session.attach": (v) => ({ attach: localId(one(v, "attach"), "attach") }),
-  "session.detach": empty2,
-  "session.command": (v) => ({ command_id: commandId(one(v, "command_id")) }),
+  "session.detach": empty3,
+  "session.command": commandAnswerOf,
   "session.command_part": (v) => ({
     received: uint(one(v, "received"), 0, LOCAL_UPLOAD_PARTS_MAX - 1, "received")
   }),
   "session.read": (v) => ({ query_id: localId(one(v, "query_id"), "query_id") }),
-  "enforcement.report": empty2,
-  "owner.shutdown_for_upgrade": empty2,
-  "session.endpoints": endpointsData,
-  "session.locate": locateData,
-  ...DELIVERIES_DATA,
+  "enforcement.report": empty3,
+  "owner.shutdown_for_upgrade": empty3,
+  "owner.update_committed": empty3,
+  "control.attach.get": attachState,
+  "control.attach.set": attachState,
+  "control.remote_commands.get": remoteCommandsState,
+  "control.remote_commands.set": remoteCommandsState,
   "control.session_wake.get": sessionWakeState,
   "control.session_wake.set": sessionWakeState,
-  "control.attach.get": attachState,
-  "control.attach.set": attachState
+  "session.endpoints": endpointsData,
+  "session.locate": (v) => refOf(v, "session.locate data"),
+  ...MACHINE_DATA,
+  ...DELIVERIES_DATA
 };
 var validateResponse = (v, type) => asViolation(() => {
   const m = known(v, ["id", "type", "ok"], ["data", "error"], "response");
@@ -117820,16 +118716,27 @@ class EventAssembler {
       case "session.detached":
         return this.#detached(event.attach);
       case "status.changed":
+      case "sessions.listing_changed":
       case "session.snapshot":
       case "session.snapshot_loading":
       case "session.records":
       case "session.attach_pending":
       case "session.command_state":
       case "session.upload_abort":
+      case "machine.op_state":
+      case "machine.op_result":
+      case "machine.output":
+      case "machine.changed":
+      case "machine.blob_chunk":
+      case "machine.blob_done":
+      case "machine.blob_abort":
       case "session.command_event":
       case "session.command_blob_chunk":
       case "session.command_blob_done":
       case "session.channel_closed":
+      case "session.presenter_frame":
+      case "session.presenter_ended":
+      case "host.update_notice":
       case "delivery.inbound":
       case "delivery.holds":
       case "delivery.wake":
@@ -117877,7 +118784,8 @@ class EventAssembler {
           kind: "session.records",
           attach,
           attach_id: open.position.attach_id,
-          records
+          records,
+          seqs: [open.position.seq]
         });
       }
       case "entry": {
@@ -118100,12 +119008,8 @@ class ClientConnection {
             throw error;
           }
           if (!response.ok) {
-            const { code, reason, action, limit_chars, path_refusal } = response.error;
-            reject(new LocalApiError(code, reason, {
-              action,
-              ...limit_chars === undefined ? {} : { limit_chars },
-              ...path_refusal === undefined ? {} : { path_refusal }
-            }));
+            const { code, reason, ...extra } = response.error;
+            reject(new LocalApiError(code, reason, extra));
             return;
           }
           onAnswer?.(response.data);
@@ -118163,6 +119067,124 @@ class ClientConnection {
   }
 }
 
+// packages/device-service-core/src/local-api/client-open.ts
+var HANDSHAKE_TIMEOUT_MS = 1e4;
+var REQUEST_TIMEOUT_MS = 30000;
+var realTimer = (expire, ms) => {
+  const timer = setTimeout(expire, ms);
+  return () => clearTimeout(timer);
+};
+var proveAndAuthenticate = async (connection, options) => {
+  const nonce = mintNonce();
+  connection.send({
+    type: "hello",
+    v: LOCAL_API_VERSION,
+    client: options.client,
+    client_nonce: nonce
+  });
+  try {
+    const welcome = validateWelcome(await connection.firstMessage());
+    if (welcome.type === "refused")
+      throw new LocalApiError("refused", welcome.reason);
+    const token = options.readToken();
+    if (!proofMatches(serverProof(token, nonce, connection.endpoint), welcome.server_proof))
+      throw new LocalApiError("server_proof_invalid", "the owner did not prove the per-boot token");
+    await connection.request("authenticate", {
+      client_proof: clientProof(token, welcome.server_nonce, connection.endpoint)
+    });
+    return welcome;
+  } catch (error) {
+    connection.destroy();
+    throw error;
+  }
+};
+var handshake = (connection, options) => new Promise((resolve, reject) => {
+  const cancel = (options.handshakeTimer ?? realTimer)(() => {
+    connection.destroy();
+    reject(new LocalApiError("handshake_timeout", "the owner did not complete the handshake"));
+  }, HANDSHAKE_TIMEOUT_MS);
+  proveAndAuthenticate(connection, options).then(resolve, reject).finally(cancel);
+});
+var sendCommand = async (connection, target, rpc, command_id, given = {}, mark = {}) => {
+  const marked = mark.accepts === undefined ? {} : { accepts: mark.accepts };
+  const route = {
+    ...given.delegated === true && (("attach" in target) || ("endpoint" in target)) ? { delegated: true } : {},
+    ...given.endpoint !== undefined && "attach" in target ? { endpoint: given.endpoint } : {},
+    ...given.locate === true && "endpoint" in target ? { locate: true } : {}
+  };
+  const sent = command_id ?? mintId();
+  const id = { command_id: sent };
+  const timedOut = (error) => {
+    if (error instanceof LocalApiError && error.code === "request_timeout")
+      throw new LocalApiError("request_timeout", `command ${sent} may have been dispatched; follow its command state`, {
+        command_id: sent
+      });
+    throw error;
+  };
+  const draft = {
+    id: "x".repeat(REQUEST_ID_MAX_CHARS),
+    type: "session.command",
+    ...target,
+    ...id,
+    ...marked,
+    ...route,
+    rpc
+  };
+  if (lineBytes(draft) > LOCAL_INLINE_MAX) {
+    const json = JSON.stringify(rpc);
+    if (checkCommandText(json) === "message_too_long")
+      throw new LocalApiError("message_too_long", "the command is over the engine limit", {
+        limit_chars: MESSAGE_LIMIT_CHARS
+      });
+    const upload_id = mintId();
+    const on = "device" in target ? { device: target.device } : target;
+    const parts = uploadParts(json).map((part) => connection.request("session.command_part", { ...on, upload_id, ...part }));
+    await Promise.all(parts);
+    return (await connection.request("session.command", { ...target, ...id, ...marked, ...route, upload_id }).catch(timedOut)).command_id;
+  }
+  return (await connection.request("session.command", { ...target, ...id, ...marked, ...route, rpc }).catch(timedOut)).command_id;
+};
+var openLocalApiClient = async (transport, options) => {
+  const listeners = new Set;
+  const assembler = new EventAssembler((event) => {
+    for (const listener of [...listeners])
+      listener(event);
+  });
+  const connection = new ClientConnection(transport, (event) => assembler.accept(event), {
+    timer: options.requestTimer ?? realTimer,
+    ms: REQUEST_TIMEOUT_MS
+  });
+  connection.closed.then(() => assembler.failAll(new LocalApiError("closed", "the connection closed")));
+  const welcome = await handshake(connection, options);
+  return {
+    welcome,
+    request: (type, params) => connection.request(type, params),
+    onEvent: (listener) => {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
+    },
+    command: (attach, rpc, command_id) => sendCommand(connection, { attach }, rpc, command_id),
+    commandTo: (target, rpc, command_id, route, mark) => sendCommand(connection, target, rpc, command_id, route, mark),
+    list: (filter, onRevision, rows) => new Promise((resolve, reject) => {
+      const params = {
+        ...filter === undefined ? {} : { filter },
+        ...rows === undefined ? {} : { rows }
+      };
+      const watch = (data) => assembler.watchListing(data.query_id, { resolve, reject }, onRevision);
+      connection.request("sessions.list", params, watch).catch(reject);
+    }),
+    read: (attach, options = {}) => new Promise((resolve, reject) => {
+      const watch = (data) => assembler.watchRead(data.query_id, attach, { resolve, reject });
+      connection.request("session.read", { attach, ...options }, watch).catch(reject);
+    }),
+    oversizedLines: () => connection.oversizedLines(),
+    close: () => connection.close(),
+    closed: connection.closed
+  };
+};
+
 // packages/device-service-core/src/local-api/transport.ts
 import { lstatSync as lstatSync7, readFileSync as readFileSync47, unlinkSync as unlinkSync11 } from "fs";
 import { createConnection, createServer as createServer4 } from "net";
@@ -118207,12 +119229,10 @@ var readEndpointPort = (stateDir) => {
     throw new LocalApiError("insecure_state_dir", "endpoint.json holds no port");
   return port;
 };
-var connectLocal = (stateDir, options = {}) => new Promise((resolve, reject) => {
+var connectLocal = (stateDir) => new Promise((resolve, reject) => {
   const port = process.platform === "win32" ? readEndpointPort(stateDir) : undefined;
   const endpoint = port === undefined ? UNIX_ENDPOINT : tcpEndpoint(port);
   const socket = port === undefined ? createConnection({ path: join119(stateDir, SOCKET_FILE) }) : createConnection({ host: "127.0.0.1", port });
-  if (options.background === true)
-    socket.unref();
   socket.once("error", reject);
   socket.once("connect", () => {
     socket.off("error", reject);
@@ -118221,153 +119241,77 @@ var connectLocal = (stateDir, options = {}) => new Promise((resolve, reject) => 
 });
 
 // packages/device-service-core/src/local-api/client.ts
-var HANDSHAKE_TIMEOUT_MS = 1e4;
-var REQUEST_TIMEOUT_MS = 30000;
-var realTimer = (expire, ms) => {
-  const timer = setTimeout(expire, ms);
-  return () => clearTimeout(timer);
-};
-var proveAndAuthenticate = async (connection, options) => {
-  const nonce = mintNonce();
-  connection.send({
-    type: "hello",
-    v: LOCAL_API_VERSION,
-    client: options.client,
-    client_nonce: nonce
-  });
-  try {
-    const welcome = validateWelcome(await connection.firstMessage());
-    if (welcome.type === "refused")
-      throw new LocalApiError("refused", welcome.reason);
-    const token = (options.readToken ?? (() => readToken(options.stateDir)))();
-    if (!proofMatches(serverProof(token, nonce, connection.endpoint), welcome.server_proof))
-      throw new LocalApiError("server_proof_invalid", "the owner did not prove the per-boot token");
-    await connection.request("authenticate", {
-      client_proof: clientProof(token, welcome.server_nonce, connection.endpoint)
-    });
-    return welcome;
-  } catch (error) {
-    connection.destroy();
-    throw error;
-  }
-};
-var handshake = (connection, options) => new Promise((resolve, reject) => {
-  const cancel = (options.handshakeTimer ?? realTimer)(() => {
-    connection.destroy();
-    reject(new LocalApiError("handshake_timeout", "the owner did not complete the handshake"));
-  }, HANDSHAKE_TIMEOUT_MS);
-  proveAndAuthenticate(connection, options).then(resolve, reject).finally(cancel);
-});
-var sendCommand = async (connection, attach, rpc, command_id, route, accepts) => {
-  const marked = accepts === undefined ? {} : { accepts };
-  const sent = command_id ?? mintId();
-  const id = { command_id: sent };
-  const timedOut = (error) => {
-    if (error instanceof LocalApiError && error.code === "request_timeout")
-      throw new LocalApiError("request_timeout", `command ${sent} may have been dispatched; follow its command state`, {
-        command_id: sent
-      });
-    throw error;
-  };
-  const draft = {
-    id: "x".repeat(REQUEST_ID_MAX_CHARS),
-    type: "session.command",
-    attach,
-    ...id,
-    ...route,
-    rpc
-  };
-  if (lineBytes(draft) > LOCAL_INLINE_MAX) {
-    const json = JSON.stringify(rpc);
-    if (checkCommandText(json) === "message_too_long")
-      throw new LocalApiError("message_too_long", "the command is over the engine limit", {
-        limit_chars: MESSAGE_LIMIT_CHARS
-      });
-    const upload_id = mintId();
-    const parts = uploadParts(json).map((part) => connection.request("session.command_part", { attach, upload_id, ...part }));
-    await Promise.all(parts);
-    return (await connection.request("session.command", { attach, ...id, ...marked, ...route, upload_id }).catch(timedOut)).command_id;
-  }
-  return (await connection.request("session.command", { attach, ...id, ...marked, ...route, rpc }).catch(timedOut)).command_id;
-};
-var sendWakeCommand = async (connection, device, durableId, rpc, command_id) => {
-  const sent = command_id ?? mintId();
-  const params = { wake: { device, durable_id: durableId }, command_id: sent, rpc };
-  if (lineBytes({ id: "x".repeat(REQUEST_ID_MAX_CHARS), type: "session.command", ...params }) > LOCAL_INLINE_MAX)
-    throw new LocalApiError("message_too_long", "a wake command travels inline only", {
-      limit_chars: MESSAGE_LIMIT_CHARS
-    });
-  try {
-    return (await connection.request("session.command", params)).command_id;
-  } catch (error) {
-    if (error instanceof LocalApiError && error.code === "request_timeout")
-      throw new LocalApiError("request_timeout", `command ${sent} may have been dispatched; follow its command state`, {
-        command_id: sent
-      });
-    throw error;
-  }
-};
-var sendEndpointCommand = async (connection, device, endpoint, rpc, command_id, locate) => {
-  const sent = command_id ?? mintId();
-  const params = { device, endpoint, command_id: sent, ...locate ? { locate: true } : {}, rpc };
-  if (lineBytes({ id: "x".repeat(REQUEST_ID_MAX_CHARS), type: "session.command", ...params }) > LOCAL_INLINE_MAX)
-    throw new LocalApiError("message_too_long", "an endpoint command travels inline only", {
-      limit_chars: MESSAGE_LIMIT_CHARS
-    });
-  try {
-    return (await connection.request("session.command", params)).command_id;
-  } catch (error) {
-    if (error instanceof LocalApiError && error.code === "request_timeout")
-      throw new LocalApiError("request_timeout", `command ${sent} may have been dispatched; follow its command state`, {
-        command_id: sent
-      });
-    throw error;
-  }
-};
 var connectLocalApi = async (options) => {
   if (process.platform !== "win32")
     checkPosixAccess(options.stateDir);
   const transport = await (options.transport ?? (() => connectLocal(options.stateDir)))();
-  const listeners = new Set;
-  const assembler = new EventAssembler((event) => {
-    for (const listener of [...listeners])
-      listener(event);
+  return openLocalApiClient(transport, {
+    client: options.client,
+    readToken: options.readToken ?? (() => readToken(options.stateDir)),
+    ...options.handshakeTimer === undefined ? {} : { handshakeTimer: options.handshakeTimer },
+    ...options.requestTimer === undefined ? {} : { requestTimer: options.requestTimer }
   });
-  const connection = new ClientConnection(transport, (event) => assembler.accept(event), {
-    timer: options.requestTimer ?? realTimer,
-    ms: REQUEST_TIMEOUT_MS
+};
+
+// packages/device-service-core/src/background-transport.ts
+import { createConnection as createConnection2 } from "net";
+import { join as join120 } from "path";
+var wrap2 = (socket, endpoint) => {
+  const closeListeners = [];
+  let closed = false;
+  socket.on("close", () => {
+    closed = true;
+    for (const listener of closeListeners.splice(0))
+      listener();
   });
-  connection.closed.then(() => assembler.failAll(new LocalApiError("closed", "the connection closed")));
-  const welcome = await handshake(connection, options);
+  socket.on("error", () => {});
   return {
-    welcome,
-    request: (type, params) => connection.request(type, params),
-    onEvent: (listener) => {
-      listeners.add(listener);
-      return () => {
-        listeners.delete(listener);
-      };
+    endpoint,
+    write: (bytes) => {
+      if (!closed)
+        socket.write(bytes);
     },
-    command: (attach, rpc, command_id, route = {}, options) => sendCommand(connection, attach, rpc, command_id, route, options?.accepts),
-    wakeCommand: (device, durableId, rpc, command_id) => sendWakeCommand(connection, device, durableId, rpc, command_id),
-    endpointCommand: (device, endpoint, rpc, command_id, options) => sendEndpointCommand(connection, device, endpoint, rpc, command_id, options?.locate === true),
-    list: (filter, onRevision, rows) => new Promise((resolve, reject) => {
-      const params = {
-        ...filter === undefined ? {} : { filter },
-        ...rows === undefined ? {} : { rows }
-      };
-      const watch = (data) => assembler.watchListing(data.query_id, { resolve, reject }, onRevision);
-      connection.request("sessions.list", params, watch).catch(reject);
-    }),
-    read: (attach, options = {}) => new Promise((resolve, reject) => {
-      const watch = (data) => assembler.watchRead(data.query_id, attach, { resolve, reject });
-      connection.request("session.read", { attach, ...options }, watch).catch(reject);
-    }),
-    oversizedLines: () => connection.oversizedLines(),
-    close: () => connection.close(),
-    closed: connection.closed
+    close: () => {
+      socket.end();
+    },
+    destroy: () => {
+      socket.destroy();
+    },
+    onData: (listener) => {
+      socket.on("data", (chunk) => listener(new Uint8Array(chunk.buffer, chunk.byteOffset, chunk.byteLength)));
+    },
+    onClose: (listener) => {
+      if (closed)
+        listener();
+      else
+        closeListeners.push(listener);
+    }
   };
 };
+var connectLocalBackground = (stateDir) => new Promise((resolve, reject) => {
+  const port = process.platform === "win32" ? readEndpointPort(stateDir) : undefined;
+  const endpoint = port === undefined ? UNIX_ENDPOINT : tcpEndpoint(port);
+  const socket = port === undefined ? createConnection2({ path: join120(stateDir, SOCKET_FILE) }) : createConnection2({ host: "127.0.0.1", port });
+  socket.unref();
+  socket.once("error", reject);
+  socket.once("connect", () => {
+    socket.off("error", reject);
+    resolve(wrap2(socket, endpoint));
+  });
+});
+
+// packages/device-service-core/src/not-sent-error.ts
+class NotSentError extends LocalApiError {
+  not_sent = true;
+}
+var markNotSent = (error) => error instanceof LocalApiError ? new NotSentError(error.code, error.reason, {
+  action: error.action,
+  ...error.limit_chars === undefined ? {} : { limit_chars: error.limit_chars },
+  ...error.path_refusal === undefined ? {} : { path_refusal: error.path_refusal },
+  ...error.candidates === undefined ? {} : { candidates: error.candidates },
+  ...error.incomplete === undefined ? {} : { incomplete: error.incomplete },
+  ...error.sign_in_reason === undefined ? {} : { sign_in_reason: error.sign_in_reason }
+}) : error;
 
 // packages/device-service-core/src/remote-attach.ts
 import { randomBytes as randomBytes8 } from "crypto";
@@ -118506,7 +119450,12 @@ var toRemote = (event) => {
       return { kind: "snapshot", snapshot };
     }
     case "session.records":
-      return { kind: "records", attach_id: event.attach_id, records: event.records };
+      return {
+        kind: "records",
+        attach_id: event.attach_id,
+        records: event.records,
+        ...event.seqs === undefined ? {} : { seqs: event.seqs }
+      };
     case "session.attach_pending":
       return { kind: "pending", reason: event.reason };
     case "session.detached":
@@ -118642,7 +119591,7 @@ function openAttach(client, device, sessionId) {
           resolve(response === undefined ? { outcome: event } : { outcome: event, response });
         });
         commands.add(end);
-        client.command(attach, rpc, commandId, { delegated: true }, options).catch((error) => {
+        client.commandTo({ attach }, rpc, commandId, { delegated: true }, options).catch((error) => {
           settle();
           reject(error);
         });
@@ -118729,19 +119678,19 @@ var compareVersions4 = (a, b) => {
 // packages/device-service-core/src/state-dir.ts
 import { readFileSync as readFileSync48, statSync as statSync10 } from "fs";
 import { homedir as homedir36 } from "os";
-import { dirname as dirname49, join as join120, posix as posix17, win32 as win3212 } from "path";
+import { dirname as dirname49, join as join121, posix as posix17, win32 as win3212 } from "path";
 var DEVICE_SERVICE_STATE_DIR_ENV = "OMO_DEVICE_SERVICE_STATE_DIR";
 var LOCATION_FILE = "device-service.location.json";
 var isAbsoluteOn = (platform, path) => (platform === "win32" ? win3212 : posix17).isAbsolute(path);
 function defaultStateDir(platform, env, home) {
   if (platform !== "win32")
-    return join120(home, ".omo", "device-service");
-  const localAppData = env.LOCALAPPDATA ?? join120(home, "AppData", "Local");
-  return join120(localAppData, "OmO", "device-service");
+    return join121(home, ".omo", "device-service");
+  const localAppData = env.LOCALAPPDATA ?? join121(home, "AppData", "Local");
+  return join121(localAppData, "OmO", "device-service");
 }
 function discoveredStateDir(platform, defaultDir) {
   try {
-    const parsed = JSON.parse(readFileSync48(join120(dirname49(defaultDir), LOCATION_FILE), "utf8"));
+    const parsed = JSON.parse(readFileSync48(join121(dirname49(defaultDir), LOCATION_FILE), "utf8"));
     if (typeof parsed !== "object" || parsed === null || !("v" in parsed) || !("state_dir" in parsed))
       return;
     const { v, state_dir: stateDir } = parsed;
@@ -118763,7 +119712,7 @@ function deviceServiceStateDir(platform = process.platform, env = process.env, h
 var ENDPOINT_COMMAND_WAIT_MS = 120000;
 function sendToEndpoint(client, device, endpoint, rpc, locate) {
   return followDelegatedCommand(client, device, (commandId) => {
-    const send = (asked) => client.endpointCommand(device, endpoint, rpc, commandId, { locate: asked });
+    const send = (asked) => client.commandTo({ device, endpoint }, rpc, commandId, asked ? { locate: true } : {});
     return send(locate).catch((error) => locate && error instanceof LocalApiError && error.code === "invalid_request" ? send(false) : Promise.reject(error));
   });
 }
@@ -118805,14 +119754,8 @@ function followDelegatedCommand(client, device, send) {
     send(commandId).catch(fail);
   });
 }
-var markNotSent = (error) => error instanceof LocalApiError ? new LocalApiError(error.code, error.reason, {
-  action: error.action,
-  ...error.limit_chars === undefined ? {} : { limit_chars: error.limit_chars },
-  ...error.path_refusal === undefined ? {} : { path_refusal: error.path_refusal },
-  not_sent: true
-}) : error;
 function deviceServiceEndpointPath(stateDir, platform = process.platform) {
-  return join121(stateDir, platform === "win32" ? ENDPOINT_FILE : SOCKET_FILE);
+  return join122(stateDir, platform === "win32" ? ENDPOINT_FILE : SOCKET_FILE);
 }
 var ADOPT_ACCOUNT_MIN_SERVICE_VERSION = "0.1.3";
 var acceptsAdoptAccount = (serviceVersion) => compareVersions4(serviceVersion, ADOPT_ACCOUNT_MIN_SERVICE_VERSION) >= 0;
@@ -118824,7 +119767,7 @@ async function connectDeviceService(options) {
   const client = await (options.connect ?? connectLocalApi)({
     stateDir,
     client: { name: "omo", version: options.version },
-    ...options.background === true ? { transport: () => connectLocal(stateDir, { background: true }) } : {}
+    ...options.background === true ? { transport: () => connectLocalBackground(stateDir) } : {}
   });
   const wakeMarkMinimum = minimumInEffect(options.minimums, "wakeMark", WAKE_MARK_MIN_SERVICE_VERSION);
   const carriesWakeMark = serviceAtLeast(client.welcome.service_version, wakeMarkMinimum);
@@ -118885,7 +119828,7 @@ async function connectDeviceService(options) {
         throw markNotSent(error);
       }
       if (endpoint === undefined)
-        throw new LocalApiError("unsupported", "the device lists no engine endpoint", { not_sent: true });
+        throw new NotSentError("unsupported", "the device lists no engine endpoint");
       return await sendToEndpoint(client, device, endpoint, rpc, options?.locate === true);
     },
     close: () => client.close(),
@@ -118897,8 +119840,8 @@ async function connectDeviceService(options) {
     }),
     wakeCommand: async (device, durableId, rpc) => {
       if (!carriesWakeMark)
-        throw new LocalApiError("unsupported", "this device service does not carry the wake target", { not_sent: true });
-      return await followDelegatedCommand(client, device, (commandId) => client.wakeCommand(device, durableId, rpc, commandId).catch((error) => {
+        throw new NotSentError("unsupported", "this device service does not carry the wake target");
+      return await followDelegatedCommand(client, device, (commandId) => client.commandTo({ wake: { device, durable_id: durableId } }, rpc, commandId).catch((error) => {
         throw error instanceof LocalApiError && error.command_id === undefined ? markNotSent(error) : error;
       }));
     }
@@ -118969,6 +119912,61 @@ var SERVICE_TABLE_ENV = "OMO_RELAYD_SERVICES";
 
 // packages/device-service-core/src/cold-wake/darwin.ts
 var TABLE_KEY = `EnvironmentVariables.${SERVICE_TABLE_ENV}`;
+// packages/device-service-core/src/release/windows-dacl.ts
+import { spawn as spawn7 } from "child_process";
+var SID_TOKEN_SCRIPT = String.raw`
+$ErrorActionPreference = 'Stop'
+(New-Object System.Security.AccessControl.RawSecurityDescriptor("O:$env:LA_SID")).GetSddlForm('Owner')
+`;
+var runPowerShell2 = async (script, env) => {
+  const encoded = Buffer.from(script, "utf16le").toString("base64");
+  const proc = spawn7("powershell.exe", ["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-EncodedCommand", encoded], { env: { ...process.env, ...env }, stdio: ["ignore", "pipe", "pipe"], windowsHide: true });
+  const chunks = [];
+  const errChunks = [];
+  proc.stdout.on("data", (chunk) => chunks.push(chunk));
+  proc.stderr.on("data", (chunk) => errChunks.push(chunk));
+  const code = await new Promise((resolve, reject) => {
+    proc.once("error", reject);
+    proc.once("close", (exitCode) => resolve(exitCode ?? -1));
+  });
+  return { code, out: Buffer.concat(chunks).toString("utf8"), err: Buffer.concat(errChunks).toString("utf8") };
+};
+var firstErrorLine = (err) => {
+  const line = (err ?? "").split(/\r?\n/).find((text) => text.trim() !== "" && !text.startsWith("#< CLIXML"))?.trim() ?? "";
+  return line === "" ? "" : `: ${line.slice(0, 300)}`;
+};
+var userSidToken = async (userSid, run = runPowerShell2) => {
+  const { code, out } = await run(SID_TOKEN_SCRIPT, { LA_SID: userSid });
+  const match = code === 0 ? /^O:(S-1-\d+(?:-\d+)+|[A-Z]{2})$/.exec(out.trim()) : null;
+  return match?.[1];
+};
+var aliasedDaclVerdict = (dacl, userSid, kind, userAlias) => {
+  const asSid = (token) => userAlias !== undefined && token === userAlias ? userSid : token;
+  return exactDaclVerdict({ ...dacl, owner: asSid(dacl.owner), aces: dacl.aces.map((ace) => ({ ...ace, sid: asSid(ace.sid) })) }, userSid, kind);
+};
+var applyExactDacl2 = async (path, userSid, kind, run = runPowerShell2) => {
+  const { code, err } = await run(APPLY_DACL_SCRIPT, { LA_PATH: path, LA_SID: userSid, LA_KIND: kind });
+  if (code !== 0)
+    throw new LocalApiError("insecure_state_dir", `the exact DACL could not be applied${firstErrorLine(err)}`);
+};
+var verifyExactDacl2 = async (path, userSid, kind, run = runPowerShell2) => {
+  let dacl;
+  try {
+    dacl = await describeDacl(path, run);
+  } catch (error) {
+    if (error instanceof LocalApiError)
+      return false;
+    throw error;
+  }
+  return aliasedDaclVerdict(dacl, userSid, kind, await userSidToken(userSid, run));
+};
+var windowsSecureFile2 = (userSid, run = runPowerShell2) => async (path, kind) => {
+  const target = kind === "dir" ? "dir" : "file";
+  await applyExactDacl2(path, userSid, target, run);
+  if (!await verifyExactDacl2(path, userSid, target, run))
+    throw new LocalApiError("insecure_state_dir", "the DACL is not exactly one ACE for the user");
+};
+
 // packages/device-service-core/src/release/release-assets.ts
 var MANIFEST = "latest.json";
 var CHECKSUMS_MAX_BYTES = 64 * 1024;
@@ -119034,13 +120032,13 @@ var parseReleaseKeySet = (value) => {
 };
 var DEVICE_SERVICE_RELEASE_KEYS = parseReleaseKeySet(release_key_default);
 // packages/device-service-core/src/release/acquire.ts
-var platformSecure = process.platform === "win32" ? async (path, kind) => windowsSecureFile(await currentUserSid())(path, kind) : posixSecureFile;
+var platformSecure = process.platform === "win32" ? async (path, kind) => windowsSecureFile2(await currentUserSid())(path, kind) : posixSecureFile;
 // packages/device-service-core/src/registrant.ts
 var NONE2 = Symbol("none registered");
 // packages/omo-native/package.json
 var package_default4 = {
   name: "omo-ai",
-  version: "5.1.72",
+  version: "5.1.73",
   type: "module",
   description: "OmO Native - the standalone omo command with the OMO extension built in: bun add -g omo-ai",
   bin: {
@@ -119141,6 +120139,825 @@ function cliDeviceServiceHandoff(options) {
     }
   };
 }
+
+// packages/memory-core/src/journal/fsync.ts
+var SKIPPABLE_SYNC_CODES = new Set(["ENOENT", "EISDIR", "EPERM", "EACCES", "EINVAL"]);
+
+// packages/memory-core/src/sync/crypto/vendor/sync-format/keys.ts
+var hexBytes = (hex) => {
+  const pairs = hex.match(/../g);
+  return Uint8Array.from((pairs ?? []).map((pair) => Number.parseInt(pair, 16)));
+};
+var ED25519_PKCS8_PREFIX = hexBytes("302e020100300506032b657004220420");
+var ED25519_SPKI_PREFIX = hexBytes("302a300506032b6570032100");
+// packages/memory-core/src/sync/crypto/anchor.ts
+var anchors = new WeakSet;
+var candidates = new WeakSet;
+var bootstraps = new WeakSet;
+
+// packages/memory-core/src/sync/crypto/strict-ed25519/strict-ed25519.ts
+var P2 = (1n << 255n) - 19n;
+var L2 = (1n << 252n) + 27742317777372353535851937790883648493n;
+var mod2 = (n) => {
+  const r = n % P2;
+  return r < 0n ? r + P2 : r;
+};
+var power2 = (base, exponent) => {
+  let result = 1n;
+  let b = mod2(base);
+  for (let n = exponent;n > 0n; n >>= 1n) {
+    if (n & 1n)
+      result = mod2(result * b);
+    b = mod2(b * b);
+  }
+  return result;
+};
+var D2 = mod2(-121665n * power2(121666n, P2 - 2n));
+var SQRT_MINUS_ONE2 = power2(2n, (P2 - 1n) / 4n);
+var keyCache2 = new Map;
+
+// packages/memory-core/src/sync/crypto/trust-pin.ts
+var SOURCES = new Set(["pairing", "recovery", "creator"]);
+
+// packages/omo-senpi/src/components/thread/errors.ts
+var THREAD_ERROR_CODES = [
+  "invalid_arguments",
+  "caller_context_missing",
+  "not_found",
+  "reply_target_mismatch",
+  "ambiguous_target",
+  "scope_denied",
+  "name_conflict",
+  "not_resumable",
+  "orphaned",
+  "foreign_live_owner",
+  "no_active_turn",
+  "turn_conflict",
+  "not_steerable",
+  "message_too_large",
+  "queue_full",
+  "cursor_invalid",
+  "cursor_stale",
+  "idempotency_conflict",
+  "idempotency_in_progress",
+  "idempotency_uncertain",
+  "approval_unavailable",
+  "approval_route_locked",
+  "partial_commit",
+  "unsupported",
+  "overloaded",
+  "transport_closed",
+  "host_unavailable",
+  "internal_error",
+  "model_not_found",
+  "model_ambiguous",
+  "thinking_level_unsupported",
+  "loop_detected",
+  "binding_conflict",
+  "binding_mismatch",
+  "binding_inactive",
+  "stale_revision",
+  "stale_token",
+  "already_answered",
+  "answer_in_progress",
+  "device_offline",
+  "relay_requires_paid_plan",
+  "alias_taken"
+];
+var CODE_SET = new Set(THREAD_ERROR_CODES);
+
+// packages/omo-senpi/src/components/thread/remote/outcome.ts
+var READ_UNCERTAIN = {
+  request_gone: "retry",
+  no_receipt: "retry",
+  engine_restarted: "retry",
+  recipient_revoked: "retry",
+  transport_expired: "retry",
+  unconfirmed: "retry",
+  lease_expired: "retry",
+  cancelled: "retry",
+  hand_restarted: "retry",
+  result_expired: "retry",
+  record_too_large: "too_large",
+  result_undecodable: "retry"
+};
+var UNANSWERED = new Set([
+  "closed",
+  "protocol_violation",
+  "internal",
+  "read_failed",
+  "request_timeout",
+  "handshake_timeout",
+  "attach_failed",
+  "reply_lost",
+  "host_not_answering",
+  "peer_not_found",
+  "engine_stale",
+  ...Object.entries(READ_UNCERTAIN).filter(([, answer]) => answer === "retry").map(([reason]) => reason)
+]);
+
+// packages/omo-native/remote-attach.ts
+var MAX_LINE_CHARS = 64 * 1024 * 1024;
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/memory/metrics.mjs
+var Metrics = {
+  assign: 0,
+  create: 0,
+  clone: 0,
+  discard: 0,
+  update: 0
+};
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/guard/guard.mjs
+function IsArray(value) {
+  return Array.isArray(value);
+}
+function IsBigInt(value) {
+  return IsEqual(typeof value, "bigint");
+}
+function IsBoolean(value) {
+  return IsEqual(typeof value, "boolean");
+}
+function IsNull(value) {
+  return IsEqual(value, null);
+}
+function IsNumber(value) {
+  return Number.isFinite(value);
+}
+function IsObject(value) {
+  return IsEqual(typeof value, "object") && !IsNull(value);
+}
+function IsString(value) {
+  return IsEqual(typeof value, "string");
+}
+function IsEqual(left, right) {
+  return left === right;
+}
+function IsClassInstance(value) {
+  if (!IsObject(value))
+    return false;
+  const proto = globalThis.Object.getPrototypeOf(value);
+  if (IsNull(proto))
+    return false;
+  return IsEqual(typeof proto.constructor, "function") && !(IsEqual(proto.constructor, globalThis.Object) || IsEqual(proto.constructor.name, "Object"));
+}
+function IsUnsafePropertyKey(key) {
+  return IsEqual(key, "__proto__") || IsEqual(key, "constructor") || IsEqual(key, "prototype");
+}
+function HasPropertyKey(value, key) {
+  return IsUnsafePropertyKey(key) ? Object.prototype.hasOwnProperty.call(value, key) : (key in value);
+}
+function Keys(value) {
+  return Object.getOwnPropertyNames(value);
+}
+function Symbols(value) {
+  return Object.getOwnPropertySymbols(value);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/guard/globals.mjs
+function IsTypeArray(value) {
+  return globalThis.ArrayBuffer.isView(value);
+}
+function IsRegExp(value) {
+  return value instanceof globalThis.RegExp;
+}
+function IsSet(value) {
+  return value instanceof globalThis.Set;
+}
+function IsMap(value) {
+  return value instanceof globalThis.Map;
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/settings/settings.mjs
+var settings2 = {
+  immutableTypes: false,
+  maxErrors: 8,
+  maxParseErrors: 1,
+  maxInstantiationCount: 128,
+  useAcceleration: true,
+  exactOptionalPropertyTypes: false,
+  enumerableKind: false,
+  correctiveParse: false,
+  unionPrioritySort: true
+};
+function Get() {
+  return settings2;
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/memory/freeze.mjs
+function Freeze(value) {
+  return Get().immutableTypes ? Object.freeze(value) : value;
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/memory/clone.mjs
+function FromClassInstance(value) {
+  return value;
+}
+function IsSchemaObject(value) {
+  return HasPropertyKey(value, "~kind") || HasPropertyKey(value, "~unsafe");
+}
+function FromSchemaObject(value) {
+  const result = {};
+  for (const key of Keys(value)) {
+    if (IsUnsafePropertyKey(key))
+      continue;
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    descriptor.value = FromValue(descriptor.value);
+    if (IsEqual(descriptor.enumerable, true)) {
+      result[key] = descriptor.value;
+    } else {
+      Object.defineProperty(result, key, descriptor);
+    }
+  }
+  return result;
+}
+function FromPlainObject(value) {
+  const result = {};
+  for (const key of Keys(value)) {
+    if (IsUnsafePropertyKey(key))
+      continue;
+    result[key] = FromValue(value[key]);
+  }
+  for (const key of Symbols(value)) {
+    result[key] = FromValue(value[key]);
+  }
+  return result;
+}
+function FromObject(value) {
+  return IsClassInstance(value) ? FromClassInstance(value) : IsSchemaObject(value) ? FromSchemaObject(value) : FromPlainObject(value);
+}
+function FromArray(value) {
+  return value.map((element) => FromValue(element));
+}
+function FromTypedArray(value) {
+  return value.slice();
+}
+function FromRegExp(value) {
+  return new RegExp(value.source, value.flags);
+}
+function FromMap(value) {
+  return new Map(FromValue([...value.entries()]));
+}
+function FromSet(value) {
+  return new Set(FromValue([...value.values()]));
+}
+function FromValue(value) {
+  return IsTypeArray(value) ? FromTypedArray(value) : IsRegExp(value) ? FromRegExp(value) : IsMap(value) ? FromMap(value) : IsSet(value) ? FromSet(value) : IsArray(value) ? FromArray(value) : IsObject(value) ? FromObject(value) : value;
+}
+function Clone(value) {
+  Metrics.clone += 1;
+  return FromValue(value);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/memory/create.mjs
+function MergeHidden(left, right) {
+  for (const key of Object.keys(right)) {
+    Object.defineProperty(left, key, {
+      configurable: true,
+      writable: true,
+      enumerable: false,
+      value: right[key]
+    });
+  }
+  return left;
+}
+function Merge(left, right) {
+  return { ...left, ...right };
+}
+function Create(hidden, enumerable, options = {}) {
+  Metrics.create += 1;
+  const withOptions = Merge(enumerable, options);
+  const withHidden = Get().enumerableKind ? Merge(withOptions, hidden) : MergeHidden(withOptions, hidden);
+  return Freeze(withHidden);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/memory/update.mjs
+function Update(current, hidden, enumerable) {
+  Metrics.update += 1;
+  const settings = Get();
+  const result = Clone(current);
+  for (const key of Object.keys(hidden)) {
+    Object.defineProperty(result, key, {
+      configurable: true,
+      writable: true,
+      enumerable: settings.enumerableKind,
+      value: hidden[key]
+    });
+  }
+  for (const key of Object.keys(enumerable)) {
+    Object.defineProperty(result, key, {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: enumerable[key]
+    });
+  }
+  return Freeze(result);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/optional/instantiate_add.mjs
+function AddOptionalOperation(type) {
+  return Update(type, { "~optional": true }, {});
+}
+function AddOptionalAction(type, options) {
+  const result = Update(AddOptionalOperation(type), {}, options);
+  return result;
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/action/_add_optional.mjs
+function AddOptional(type, options = {}) {
+  return AddOptionalAction(type, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/_optional.mjs
+function Optional(type) {
+  return AddOptional(type);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/hashing/hash.mjs
+var ByteMarker;
+(function(ByteMarker) {
+  ByteMarker[ByteMarker["Array"] = 0] = "Array";
+  ByteMarker[ByteMarker["BigInt"] = 1] = "BigInt";
+  ByteMarker[ByteMarker["Boolean"] = 2] = "Boolean";
+  ByteMarker[ByteMarker["Date"] = 3] = "Date";
+  ByteMarker[ByteMarker["Constructor"] = 4] = "Constructor";
+  ByteMarker[ByteMarker["Function"] = 5] = "Function";
+  ByteMarker[ByteMarker["Null"] = 6] = "Null";
+  ByteMarker[ByteMarker["Number"] = 7] = "Number";
+  ByteMarker[ByteMarker["Object"] = 8] = "Object";
+  ByteMarker[ByteMarker["RegExp"] = 9] = "RegExp";
+  ByteMarker[ByteMarker["String"] = 10] = "String";
+  ByteMarker[ByteMarker["Symbol"] = 11] = "Symbol";
+  ByteMarker[ByteMarker["TypeArray"] = 12] = "TypeArray";
+  ByteMarker[ByteMarker["Undefined"] = 13] = "Undefined";
+})(ByteMarker || (ByteMarker = {}));
+var Accumulator = BigInt("14695981039346656037");
+var [Prime, Size] = [BigInt("1099511628211"), BigInt("18446744073709551616")];
+var Bytes = Array.from({ length: 256 }).map((_, i) => BigInt(i));
+var F64 = new Float64Array(1);
+var F64In = new DataView(F64.buffer);
+var F64Out = new Uint8Array(F64.buffer);
+var encoder4 = new TextEncoder;
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/boolean.mjs
+function Boolean2(options) {
+  return Create({ "~kind": "Boolean" }, { type: "boolean" }, options);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/integer.mjs
+var IntegerPattern = "-?(?:0|[1-9][0-9]*)";
+function Integer(options) {
+  return Create({ "~kind": "Integer" }, { type: "integer" }, options);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/literal.mjs
+class InvalidLiteralValue extends Error {
+  constructor(value) {
+    super(`Invalid Literal value`);
+    Object.defineProperty(this, "cause", {
+      value: { value },
+      writable: false,
+      configurable: false,
+      enumerable: false
+    });
+  }
+}
+function LiteralTypeName(value) {
+  return IsBigInt(value) ? "bigint" : IsBoolean(value) ? "boolean" : IsNumber(value) ? "number" : IsString(value) ? "string" : (() => {
+    throw new InvalidLiteralValue(value);
+  })();
+}
+function Literal(value, options) {
+  return Create({ "~kind": "Literal" }, { type: LiteralTypeName(value), const: value }, options);
+}
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/number.mjs
+var NumberPattern = "-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?";
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/string.mjs
+var StringPattern = ".*";
+function String2(options) {
+  return Create({ "~kind": "String" }, { type: "string" }, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/union.mjs
+function Union(anyOf, options = {}) {
+  return Create({ "~kind": "Union" }, { anyOf }, options);
+}
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/types/record.mjs
+var IntegerKey = `^${IntegerPattern}$`;
+var NumberKey = `^${NumberPattern}$`;
+var StringKey = `^${StringPattern}$`;
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/internal/char.mjs
+function Range(start, end) {
+  return Array.from({ length: end - start + 1 }, (_, i) => String.fromCharCode(start + i));
+}
+var Alpha = [
+  ...Range(97, 122),
+  ...Range(65, 90)
+];
+var Zero = "0";
+var NonZero = Range(49, 57);
+var Digit = [Zero, ...NonZero];
+var UnderScore = "_";
+var DollarSign = "$";
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/unsigned_integer.mjs
+var AllowedDigits = [...Digit, UnderScore];
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/ident.mjs
+var Initial = [...Alpha, UnderScore, DollarSign];
+var Remaining = [...Initial, ...Digit];
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/script/token/unsigned_number.mjs
+var AllowedDigits2 = [...Digit, UnderScore];
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/helpers/keys.mjs
+var integerKeyPattern = new RegExp("^(?:0|[1-9][0-9]*)$");
+
+// node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/indexed/from_object.mjs
+var NumericKeyPattern = new RegExp(IntegerKey);
+// packages/omo-senpi/src/components/thread/gateway/bindings.ts
+var BINDING_MAX_TTL_SECONDS = 366 * 24 * 60 * 60;
+var OUTBOX_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
+var RELAY_TEXT_MAX_BYTES = 32768;
+
+// packages/omo-senpi/src/components/thread/contracts/fields.ts
+var THREAD_MESSAGE_MAX_BYTES = 32768;
+var THREAD_SUMMARY_MAX_LENGTH = 200;
+var ThreadAddress = String2({
+  description: "Recipient thread id or unique name as returned by thread_list; a name shared by several threads returns ambiguous_target with candidates."
+});
+var AllScope = Optional(Boolean2({
+  description: "Address threads in every workspace on this machine instead of only the caller's workspace; left unset, an exact id from another workspace returns scope_denied."
+}));
+var IdempotencyKey = Optional(String2({
+  description: "Caller-chosen key that makes a retried call return the earlier result instead of repeating the side effect; reusing the key with different arguments returns idempotency_conflict."
+}));
+var ExpectedTurnId = Optional(String2({
+  description: "Turn id the steer applies to; required with delivery steer, and a changed active turn returns turn_conflict with the message held undelivered."
+}));
+var Summary = Optional(String2({
+  maxLength: THREAD_SUMMARY_MAX_LENGTH,
+  description: "One-line preview shown to the caller when the completion notice arrives."
+}));
+var Message2 = String2({
+  maxLength: THREAD_MESSAGE_MAX_BYTES,
+  description: `Instruction to deliver to the target thread; longer than ${THREAD_MESSAGE_MAX_BYTES} UTF-8 bytes returns message_too_large.`
+});
+var BindingId = String2({
+  minLength: 1,
+  description: "Binding id as returned by thread_bind or thread_bindings."
+});
+var ExpectedRevision = Integer({
+  minimum: 1,
+  description: "Revision the caller last saw for this binding; a binding that moved since returns stale_revision."
+});
+var RelayText = String2({
+  description: `Text relayed to or from the external thread; longer than ${RELAY_TEXT_MAX_BYTES} UTF-8 bytes returns message_too_large.`
+});
+var ThreadDeliveryMode = Union([Literal("auto"), Literal("steer"), Literal("follow_up")], {
+  description: "auto steers the running turn when one is active and starts a new turn otherwise; steer requires expected_turn_id and becomes turn_conflict when the active turn changed; follow_up queues the message behind the running turn."
+});
+
+// packages/omo-native/remote-session-args.ts
+var SESSION_VERBS = ["open", "send", "model", "interrupt", "close"];
+
+// packages/omo-senpi/src/components/thread/control/port.ts
+var REFUSAL = Symbol.for("omo.thread.control.refusal");
+
+// packages/omo-senpi/src/components/thread/control/close-ladder.ts
+var SESSION_GONE = new Set([
+  "unknown_session",
+  "session_identity_mismatch",
+  "session_not_attached",
+  "not_attached"
+]);
+
+// packages/omo-senpi/src/components/thread/thread-link.ts
+var THREAD_LINK_SCHEME = "omo-thread";
+var PREFIX = `${THREAD_LINK_SCHEME}://v1/`;
+
+// packages/omo-senpi/src/components/thread/remote/address-book.ts
+var REMOTE_NOT_SET_UP = new Set(["not_configured", "disabled", "signed_out", "sign_in_required"]);
+
+// packages/omo-senpi/src/components/thread/session-facts.ts
+var SESSION_FACTS_WINDOW_BYTES = 64 * 1024;
+var SESSION_FACTS_LAST_LINE_MAX_BYTES = SESSION_FACTS_WINDOW_BYTES * 4;
+
+// packages/omo-senpi/src/components/thread/metadata.ts
+var THREAD_TOOL_EXPOSURE = "eval";
+var ROUTE_TO_TASK = "; to spawn a child task instead, use task.";
+var THREAD_TOOL_METADATA = [
+  {
+    name: "thread_create",
+    label: "Create session",
+    description: "Starts a fresh agent session that runs alongside this one, for when the user wants a second session working in parallel" + ROUTE_TO_TASK,
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_list",
+    label: "List sessions",
+    description: "Shows every addressable session on this device and the account's other devices with its id, name, status and device, plus the account's devices, for when the user needs a valid target address before acting on a session" + ROUTE_TO_TASK,
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_read",
+    label: "Read session",
+    description: "Returns the transcript and latest output of another session, for when the user asks what another session said or produced" + ROUTE_TO_TASK,
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_send",
+    label: "Send message to session",
+    description: "Delivers a message into another session that is already running, for when the user wants to talk to that session mid-task; its reply comes back through thread_read, and a bound chat thread's replies through thread_report and thread_answer" + ROUTE_TO_TASK,
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_interrupt",
+    label: "Interrupt session turn",
+    description: "Stops the turn running in another session, for when the user wants to halt a session that is going down the wrong path" + ROUTE_TO_TASK,
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_close",
+    label: "Close session",
+    description: "Closes another session on this device or on another of the account's devices, for when the user is done with that session and wants it shut down" + ROUTE_TO_TASK,
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_handoff",
+    label: "Hand off session",
+    description: "Moves the current request to an old session that has the context, for when the user says to hand this off or reopen that earlier conversation" + ROUTE_TO_TASK,
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_rename",
+    label: "Rename session",
+    description: "Changes the label a session is listed under, for when the user asks to call a session something clearer",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_set_model",
+    label: "Switch session model",
+    description: "Moves a session onto a different model, for when the user asks to switch that session to another model or a cheaper one",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_set_reasoning",
+    label: "Set session reasoning level",
+    description: "Sets how much reasoning a session applies, for when the user asks to raise or lower the thinking effort of a session",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_bind",
+    label: "Bind session to chat thread",
+    description: "Attaches a session to an external chat thread on Discord, Telegram, Slack, Notion, Feishu, herdr or a custom connector, for when the user wants a chat conversation connected to a session",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_unbind",
+    label: "Unbind chat thread",
+    description: "Detaches a session from its bound chat thread, for when the user wants that chat connection closed",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_rebind",
+    label: "Rebind chat thread",
+    description: "Moves a bound chat thread over to another session, for when the user wants that chat served by a different session",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_bindings",
+    label: "List chat bindings",
+    description: "Shows which chat threads are bound to which sessions with their revisions, for when the user needs a binding id or its revision",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_report",
+    label: "Report to chat thread",
+    description: "Posts a milestone, result, question or completion from this session to its bound chat thread, for when the user wants progress relayed to that chat; replies flow back through thread_read, thread_report and thread_answer",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_outbox",
+    label: "Read chat outbox",
+    description: "Returns the reports waiting for a bound chat thread with a cursor, for when a connector collects what sessions posted",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_outbox_ack",
+    label: "Acknowledge chat outbox",
+    description: "Marks outbox rows up to a cursor as posted to the chat, for when a connector confirms delivery",
+    exposure: THREAD_TOOL_EXPOSURE
+  },
+  {
+    name: "thread_answer",
+    label: "Answer relayed question",
+    description: "Resolves a question a session relayed to a chat thread with the answer that arrived there, for when a connector hands back a chat user's reply",
+    exposure: THREAD_TOOL_EXPOSURE
+  }
+];
+
+// packages/omo-senpi/src/components/thread/control/relay-control.ts
+var IN_PROGRESS = new Set(["running", "compacting", "opening"]);
+var RUN_RECORDS = new Set([
+  "agent_start",
+  "turn_start",
+  "message_start",
+  "message_update",
+  "message_end",
+  "tool_execution_start",
+  "tool_execution_update",
+  "tool_execution_end",
+  "turn_end",
+  "agent_end"
+]);
+
+// packages/omo-senpi/src/components/thread/remote/session-state.ts
+var ACCESS_ENDED = new Set([
+  "authorization_expired",
+  "peer_revoked",
+  "owner_transfer",
+  "service_disabled"
+]);
+var ACCESS_REFUSED = new Set([
+  "unauthenticated",
+  "forbidden",
+  "owner_transfer",
+  "signed_out",
+  "service_disabled",
+  "sign_in_required",
+  "plan_required",
+  "peer_not_found",
+  "peer_not_session_client",
+  "account_changed",
+  "device_changed",
+  "capability_missing",
+  "engine_too_old"
+]);
+var SESSION_LEFT = new Set(["session_closed", "session_replaced"]);
+var SESSION_GONE2 = new Set([
+  "session_not_found",
+  "unknown_session",
+  "session_identity_mismatch"
+]);
+
+// packages/omo-senpi/src/components/thread/remote/device-service.ts
+var REFUSED_BEFORE_SENDING = new Set([
+  "unauthenticated",
+  "client_proof_invalid",
+  "invalid_request",
+  "unknown_type",
+  "forbidden",
+  "owner_transfer",
+  "signed_out",
+  "device_mismatch",
+  "device_changed",
+  "account_changed",
+  "device_key_invalid",
+  "service_disabled",
+  "sign_in_required",
+  "plan_required",
+  "activation_pending",
+  "authorization_stale",
+  "peer_not_found",
+  "peer_not_session_client",
+  "session_not_found",
+  "engine_too_old",
+  "not_attached",
+  "command_id_conflict",
+  "message_too_long",
+  "upload_incomplete",
+  "malformed",
+  "method_unclassified",
+  "method_local_only",
+  "host_not_answering",
+  "unsupported"
+]);
+var READ_ONLY_RECORDS = new Set(["get_state", "get_messages"]);
+var MARKED_RECORDS = new Set(["admit_external_message"]);
+var LOOKUP_NONE = new Set(["session_not_found", "peer_not_found", "peer_not_session_client"]);
+
+// packages/omo-senpi/src/components/thread/gateway/constants.ts
+var QUEUED_TTL_MS = 24 * 60 * 60 * 1000;
+var ROOT_LIFETIME_MS = 7 * 24 * 60 * 60 * 1000;
+var TARGET_MAX_BYTES = 1024 * 1024;
+var GATEWAY_RECEIPT_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
+var DELIVERY_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
+var RETENTION_SWEEP_INTERVAL_MS = 60 * 60 * 1000;
+
+// packages/omo-senpi/src/components/thread/gateway/session-args-schema.ts
+var TYPES = new Set(["object", "string", "number", "integer", "boolean", "array", "null"]);
+var ANNOTATIONS = new Set(["title", "description", "default", "examples"]);
+var COUNTS = ["minLength", "maxLength", "minItems", "maxItems"];
+var BOUNDS = ["minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum"];
+var KEYWORDS = new Set([
+  "type",
+  "properties",
+  "required",
+  "additionalProperties",
+  "enum",
+  "const",
+  "pattern",
+  "items",
+  "anyOf",
+  ...COUNTS,
+  ...BOUNDS,
+  ...ANNOTATIONS
+]);
+
+// packages/omo-senpi/src/components/thread/remote/relay-transport.ts
+var ADMIT_UNSUPPORTED = new Set([
+  "method_unclassified",
+  "delegation_unclassified",
+  "unknown_command",
+  "engine_capability_missing",
+  "unsupported_command",
+  "method_unknown"
+]);
+var WAITS = new Set(["wake", "hold", "approval"]);
+
+// packages/omo-senpi/src/components/thread/remote/this-device.ts
+var known2 = new WeakMap;
+
+// packages/omo-native/bin/lib/package-paths.js
+import { fileURLToPath as fileURLToPath9 } from "url";
+var packageRoot = fileURLToPath9(new URL("../..", import.meta.url));
+
+// packages/omo-native/remote-session-verbs.ts
+var NO_SUCH_SESSION = new Set(["session_not_found", "unknown_session"]);
+
+// packages/omo-native/remote-usage.ts
+var USAGE_HEAD = "usage: omo remote <command> [--json]";
+var USAGE_ENTRIES = [
+  {
+    verbs: ["status"],
+    text: "  status                                   the device service's connection state"
+  },
+  {
+    verbs: ["devices"],
+    text: "  devices                                  the devices on this account"
+  },
+  {
+    verbs: ["sessions"],
+    text: `  sessions [--device D] [--project P] [--state running|idle|ended]
+                                           sessions across the account's devices`
+  },
+  {
+    verbs: ["enable", "disable"],
+    text: "  enable | disable                         turn remote sessions on or off for this device"
+  },
+  {
+    verbs: ["control"],
+    text: `  control [on|off]                         whether your other signed-in devices can view and command this
+                                           device's sessions (on unless you turn it off)`
+  },
+  {
+    verbs: ["wake"],
+    text: `  wake [on|off|default]                    whether sessions on this device that are not running may be started
+                                           by a message from your other signed-in devices; on unless turned off`
+  },
+  {
+    verbs: ["bootstrap"],
+    text: "  bootstrap                                set up this device's service for your sign-in (every omo start runs it)"
+  },
+  {
+    verbs: ["attach"],
+    text: "  attach <session>                         open a session in the terminal UI; also takes <device>/<session>"
+  },
+  {
+    verbs: ["open"],
+    text: `  open <device> [--project P] [--model provider/id] [--thinking LEVEL] [--permission-preset MODE]
+       [--worktree [--branch B] [--base REF]] [--prompt TEXT [--steer|--follow-up]]
+                                           start a session on another device; prints <device>/<session>; it runs
+                                           in MODE (default: this device's own setting, else full-access), on the
+                                           model and thinking level given (a model it cannot run opens nothing),
+                                           in a new git worktree of P with --worktree, and is handed TEXT first`
+  },
+  {
+    verbs: ["send"],
+    text: `  send <session> <text> [--steer|--follow-up] [--no-wait]
+                                           send a message and print the answer as it arrives (--steer: into the
+                                           running turn; --no-wait: return once the session took it).
+                                           Use the durable thread_id from open --json, or <device>/<session>.`
+  },
+  {
+    verbs: ["model"],
+    text: "  model <session> <provider/id>            switch the model; also takes <device>/<session>"
+  },
+  {
+    verbs: ["interrupt"],
+    text: "  interrupt <session>                      stop the running turn; also takes <device>/<session>"
+  },
+  {
+    verbs: ["close"],
+    text: "  close <session>                          end the session; also takes <device>/<session>"
+  }
+];
+var REMOTE_USAGE = [USAGE_HEAD, ...USAGE_ENTRIES.map((entry) => entry.text)].join(`
+`);
+
+// packages/omo-native/remote-verbs.ts
+var VERBS = [
+  "status",
+  "devices",
+  "sessions",
+  "enable",
+  "disable",
+  "control",
+  "wake",
+  "bootstrap",
+  ...SESSION_VERBS
+];
+// packages/omo-native/remote-entry.ts
+var testSkipKey = Symbol.for("omo.test.skipRemoteLoginSetup");
 
 // packages/omo-native/service-auth-command.ts
 var cliServiceAuthHooks = {
@@ -119351,7 +121168,7 @@ async function boulder(options) {
   return 0;
 }
 // packages/omo-opencode/src/cli/codex-ulw-loop.ts
-import { spawn as spawn7 } from "child_process";
+import { spawn as spawn8 } from "child_process";
 import { existsSync as existsSync70, readFileSync as readFileSync49, realpathSync as realpathSync14 } from "fs";
 import { homedir as homedir37 } from "os";
 var ULW_LOOP_DELEGATION_SENTINEL = "OMO_ULW_LOOP_DELEGATED";
@@ -119381,7 +121198,7 @@ async function codexUlwLoop(args) {
     return 1;
   }
   const { promise, resolve } = Promise.withResolvers();
-  const child = spawn7(command.executable, [...command.argsPrefix, ...args], {
+  const child = spawn8(command.executable, [...command.argsPrefix, ...args], {
     stdio: "inherit",
     env: { ...process.env, [ULW_LOOP_DELEGATION_SENTINEL]: "1" }
   });

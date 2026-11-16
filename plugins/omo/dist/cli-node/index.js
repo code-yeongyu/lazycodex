@@ -2133,7 +2133,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.73",
+    version: "5.1.74",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2297,7 +2297,7 @@ var init_package = __esm(() => {
       "build:git-bash-mcp": "bun run --cwd packages/git-bash-mcp build",
       "build:ast-grep-mcp": "bun run --cwd packages/ast-grep-mcp build",
       "test:desktop": "bun script/check-cargo-pinned-deps.mjs && node --test scripts/desktop-package-boundaries.test.mjs && bun run --cwd packages/senpi-desktop-protocol test && bun run --cwd packages/senpi-desktop-engine test && bun run --cwd packages/senpi-desktop-prelude test && bun run --cwd packages/senpi-desktop-sdk test && bun run --cwd packages/senpi-desktop-service test && bun run --cwd packages/senpi-desktop-tool test",
-      "test:computer": "bun script/check-cargo-pinned-deps.mjs && bun run --cwd packages/omo-computer-protocol test && bun run --cwd packages/omo-computer-sdk test && bun run --cwd packages/omo-computer-engine test && bun run --cwd packages/omo-computer-hand test && bun run --cwd packages/omo-computer-carriers test && bun run --cwd packages/omo-computer-tool test && bun run --cwd packages/omo-computer-prelude test",
+      "test:computer": "bun script/check-cargo-pinned-deps.mjs && bun crates/omo-computer-backend-wayland/probes/probe-sp-w.ts --self-test && bun run --cwd packages/omo-computer-protocol test && bun run --cwd packages/omo-computer-sdk test && bun run --cwd packages/omo-computer-engine test && bun run --cwd packages/omo-computer-hand test && bun run --cwd packages/omo-computer-carriers test && bun run --cwd packages/omo-computer-tool test && bun run --cwd packages/omo-computer-prelude test",
       fmt: "bun fmt --no-script",
       "fmt:check": "bun fmt --no-script --check",
       "lint:ratchet": "bun script/lint-ratchet.ts",
@@ -2404,18 +2404,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.73",
-      "oh-my-opencode-darwin-x64": "5.1.73",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.73",
-      "oh-my-opencode-linux-arm64": "5.1.73",
-      "oh-my-opencode-linux-arm64-musl": "5.1.73",
-      "oh-my-opencode-linux-x64": "5.1.73",
-      "oh-my-opencode-linux-x64-baseline": "5.1.73",
-      "oh-my-opencode-linux-x64-musl": "5.1.73",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.73",
-      "oh-my-opencode-windows-arm64": "5.1.73",
-      "oh-my-opencode-windows-x64": "5.1.73",
-      "oh-my-opencode-windows-x64-baseline": "5.1.73"
+      "oh-my-opencode-darwin-arm64": "5.1.74",
+      "oh-my-opencode-darwin-x64": "5.1.74",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.74",
+      "oh-my-opencode-linux-arm64": "5.1.74",
+      "oh-my-opencode-linux-arm64-musl": "5.1.74",
+      "oh-my-opencode-linux-x64": "5.1.74",
+      "oh-my-opencode-linux-x64-baseline": "5.1.74",
+      "oh-my-opencode-linux-x64-musl": "5.1.74",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.74",
+      "oh-my-opencode-windows-arm64": "5.1.74",
+      "oh-my-opencode-windows-x64": "5.1.74",
+      "oh-my-opencode-windows-x64-baseline": "5.1.74"
     },
     overrides: {
       hono: "^4.13.8",
@@ -92956,7 +92956,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.73",
+    version: "5.1.74",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -119391,6 +119391,9 @@ var markNotSent = (error) => error instanceof LocalApiError ? new NotSentError(e
   ...error.incomplete === undefined ? {} : { incomplete: error.incomplete },
   ...error.sign_in_reason === undefined ? {} : { sign_in_reason: error.sign_in_reason }
 }) : error;
+var olderThanWakeMinimum = (serviceVersion, minimum) => minimum === null ? new NotSentError("unsupported", "this omo build does not send the wake target") : new NotSentError("unsupported", `device service ${serviceVersion} is older than ${minimum}; update it`, {
+  action: `Run omo remote bootstrap to install device service ${minimum} or later.`
+});
 
 // packages/device-service-core/src/remote-attach.ts
 import { randomBytes as randomBytes8 } from "node:crypto";
@@ -119504,6 +119507,17 @@ function followDelegatedChannel(device) {
   };
 }
 
+// packages/device-service-core/src/timers.ts
+var realTimers = {
+  after: (ms, fn) => {
+    const timer = setTimeout(fn, ms);
+    timer.unref?.();
+    return () => clearTimeout(timer);
+  },
+  now: () => Date.now()
+};
+var deadlineTimerOf = (timers) => (expire, ms) => timers.after(ms, expire);
+
 // packages/device-service-core/src/remote-attach.ts
 var attachEvent = (event) => {
   switch (event.kind) {
@@ -119541,7 +119555,7 @@ var toRemote = (event) => {
       return { kind: "detached", reason: event.reason };
   }
 };
-function openAttach(client, device, sessionId) {
+function openAttach(client, device, sessionId, timers = realTimers) {
   const early = [];
   const history = [];
   const listeners = new Set;
@@ -119561,13 +119575,13 @@ function openAttach(client, device, sessionId) {
   let failure;
   const commands = new Set;
   let channel;
-  let drain;
+  let cancelDrain;
   let released = false;
   const release = () => {
     if (released)
       return;
     released = true;
-    clearTimeout(drain);
+    cancelDrain?.();
     stop();
     channel?.stop();
   };
@@ -119585,8 +119599,7 @@ function openAttach(client, device, sessionId) {
     resolveDetached(reason);
     if (reason === "closed" || commands.size === 0)
       return endCommands(reason);
-    drain = setTimeout(() => endCommands(reason), ENDED_COMMAND_WAIT_MS);
-    drain.unref?.();
+    cancelDrain = timers.after(ENDED_COMMAND_WAIT_MS, () => endCommands(reason));
   };
   const deliver = (event) => {
     const remote = toRemote(event);
@@ -119789,13 +119802,13 @@ function deviceServiceStateDir(platform = process.platform, env = process.env, h
 }
 // packages/device-service-core/src/device-service.ts
 var ENDPOINT_COMMAND_WAIT_MS = 120000;
-function sendToEndpoint(client, device, endpoint, rpc, locate) {
-  return followDelegatedCommand(client, device, (commandId) => {
+function sendToEndpoint(client, device, endpoint, rpc, locate, timers) {
+  return followDelegatedCommand(client, device, timers, (commandId) => {
     const send = (asked) => client.commandTo({ device, endpoint }, rpc, commandId, asked ? { locate: true } : {});
     return send(locate).catch((error) => locate && error instanceof LocalApiError && error.code === "invalid_request" ? send(false) : Promise.reject(error));
   });
 }
-function followDelegatedCommand(client, device, send) {
+function followDelegatedCommand(client, device, timers, send) {
   return new Promise((resolve, reject) => {
     const commandId = randomBytes9(16).toString("base64url");
     const channel = followDelegatedChannel(device);
@@ -119804,7 +119817,7 @@ function followDelegatedCommand(client, device, send) {
       done = true;
       stop();
       channel.stop();
-      clearTimeout(timer);
+      cancelTimer();
     };
     const fail = (error) => {
       if (done)
@@ -119827,8 +119840,7 @@ function followDelegatedCommand(client, device, send) {
         ...located === undefined ? {} : { located }
       });
     });
-    const timer = setTimeout(() => fail(new Error(`no final state for endpoint command ${commandId} within ${ENDPOINT_COMMAND_WAIT_MS} ms`)), ENDPOINT_COMMAND_WAIT_MS);
-    timer.unref?.();
+    const cancelTimer = timers.after(ENDPOINT_COMMAND_WAIT_MS, () => fail(new Error(`no final state for endpoint command ${commandId} within ${ENDPOINT_COMMAND_WAIT_MS} ms`)));
     client.closed.then(() => fail(new Error("the connection closed before the endpoint command settled")));
     send(commandId).catch(fail);
   });
@@ -119843,9 +119855,12 @@ var LOCATE_SINGLE_MIN_SERVICE_VERSION = "0.1.13";
 var serviceAtLeast = (serviceVersion, minimum) => minimum !== null && compareVersions4(serviceVersion, minimum) >= 0;
 async function connectDeviceService(options) {
   const stateDir = options.stateDir ?? deviceServiceStateDir();
+  const timers = options.timers ?? realTimers;
+  const deadline = options.timers === undefined ? undefined : deadlineTimerOf(options.timers);
   const client = await (options.connect ?? connectLocalApi)({
     stateDir,
     client: { name: "omo", version: options.version },
+    ...deadline === undefined ? {} : { handshakeTimer: deadline, requestTimer: deadline },
     ...options.background === true ? { transport: () => connectLocalBackground(stateDir) } : {}
   });
   const wakeMarkMinimum = minimumInEffect(options.minimums, "wakeMark", WAKE_MARK_MIN_SERVICE_VERSION);
@@ -119896,7 +119911,7 @@ async function connectDeviceService(options) {
     devices: async () => (await client.request("devices.list", {})).devices,
     sessions: newestRowsListing(client),
     attach: async (device, sessionId) => {
-      const attached = await openAttach(client, device, sessionId);
+      const attached = await openAttach(client, device, sessionId, timers);
       return carriesWakeMark ? attached : { ...attached, command: (rpc) => attached.command(rpc) };
     },
     endpointCommand: async (device, rpc, options) => {
@@ -119908,7 +119923,7 @@ async function connectDeviceService(options) {
       }
       if (endpoint === undefined)
         throw new NotSentError("unsupported", "the device lists no engine endpoint");
-      return await sendToEndpoint(client, device, endpoint, rpc, options?.locate === true);
+      return await sendToEndpoint(client, device, endpoint, rpc, options?.locate === true, timers);
     },
     close: () => client.close(),
     closed: client.closed,
@@ -119919,8 +119934,8 @@ async function connectDeviceService(options) {
     }),
     wakeCommand: async (device, durableId, rpc) => {
       if (!carriesWakeMark)
-        throw new NotSentError("unsupported", "this device service does not carry the wake target");
-      return await followDelegatedCommand(client, device, (commandId) => client.commandTo({ wake: { device, durable_id: durableId } }, rpc, commandId).catch((error) => {
+        throw olderThanWakeMinimum(client.welcome.service_version, wakeMarkMinimum);
+      return await followDelegatedCommand(client, device, timers, (commandId) => client.commandTo({ wake: { device, durable_id: durableId } }, rpc, commandId).catch((error) => {
         throw error instanceof LocalApiError && error.command_id === undefined ? markNotSent(error) : error;
       }));
     }
@@ -120117,7 +120132,7 @@ var NONE2 = Symbol("none registered");
 // packages/omo-native/package.json
 var package_default4 = {
   name: "omo-ai",
-  version: "5.1.73",
+  version: "5.1.74",
   type: "module",
   description: "OmO Native - the standalone omo command with the OMO extension built in: bun add -g omo-ai",
   bin: {
@@ -120741,7 +120756,7 @@ var THREAD_TOOL_METADATA = [
   {
     name: "thread_interrupt",
     label: "Interrupt session turn",
-    description: "Stops the turn running in another session, for when the user wants to halt a session that is going down the wrong path" + ROUTE_TO_TASK,
+    description: "Stops the turn running in another session, and the background jobs that turn started, for when the user wants to halt a session that is going down the wrong path; the result's background lists what was stopped" + ROUTE_TO_TASK,
     exposure: THREAD_TOOL_EXPOSURE
   },
   {
@@ -120868,7 +120883,7 @@ var SESSION_GONE2 = new Set([
   "session_identity_mismatch"
 ]);
 
-// packages/omo-senpi/src/components/thread/remote/device-service.ts
+// packages/omo-senpi/src/components/remote/port/device-service.ts
 var REFUSED_BEFORE_SENDING = new Set([
   "unauthenticated",
   "client_proof_invalid",

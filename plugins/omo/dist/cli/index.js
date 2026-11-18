@@ -2132,7 +2132,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.77",
+    version: "5.1.78",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2330,7 +2330,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.11.18",
+      "@code-yeongyu/senpi": "2026.11.18-2",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -2403,18 +2403,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.77",
-      "oh-my-opencode-darwin-x64": "5.1.77",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.77",
-      "oh-my-opencode-linux-arm64": "5.1.77",
-      "oh-my-opencode-linux-arm64-musl": "5.1.77",
-      "oh-my-opencode-linux-x64": "5.1.77",
-      "oh-my-opencode-linux-x64-baseline": "5.1.77",
-      "oh-my-opencode-linux-x64-musl": "5.1.77",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.77",
-      "oh-my-opencode-windows-arm64": "5.1.77",
-      "oh-my-opencode-windows-x64": "5.1.77",
-      "oh-my-opencode-windows-x64-baseline": "5.1.77"
+      "oh-my-opencode-darwin-arm64": "5.1.78",
+      "oh-my-opencode-darwin-x64": "5.1.78",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.78",
+      "oh-my-opencode-linux-arm64": "5.1.78",
+      "oh-my-opencode-linux-arm64-musl": "5.1.78",
+      "oh-my-opencode-linux-x64": "5.1.78",
+      "oh-my-opencode-linux-x64-baseline": "5.1.78",
+      "oh-my-opencode-linux-x64-musl": "5.1.78",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.78",
+      "oh-my-opencode-windows-arm64": "5.1.78",
+      "oh-my-opencode-windows-x64": "5.1.78",
+      "oh-my-opencode-windows-x64-baseline": "5.1.78"
     },
     overrides: {
       hono: "^4.13.8",
@@ -2536,6 +2536,9 @@ var DANGEROUS_KEYS, MAX_DEPTH = 50;
 var init_deep_merge = __esm(() => {
   DANGEROUS_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 });
+
+// packages/utils/src/escape-for-display.ts
+var init_escape_for_display = () => {};
 
 // packages/utils/src/config-merge.ts
 function mergeUniqueStrings(base, override) {
@@ -9301,6 +9304,7 @@ var init_zip_entry_listing = () => {};
 // packages/utils/src/index.ts
 var init_src = __esm(() => {
   init_deep_merge();
+  init_escape_for_display();
   init_config_section_parser();
   init_env_expansion();
   init_snake_case();
@@ -92925,7 +92929,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.77",
+    version: "5.1.78",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -94155,142 +94159,6 @@ var init_auto_update_checker = __esm(() => {
   init_hook();
   init_checker();
   init_cache();
-});
-
-// packages/memory-core/src/fs/retry.ts
-function fsErrorCode(error) {
-  if (!(error instanceof Error) || !("code" in error))
-    return;
-  return typeof error.code === "string" ? error.code : undefined;
-}
-async function retryOnEintr(operation) {
-  for (let attempt = 0;; attempt += 1) {
-    try {
-      return await operation();
-    } catch (error) {
-      if (fsErrorCode(error) !== "EINTR" || attempt >= EINTR_RETRY_CAP)
-        throw error;
-    }
-  }
-}
-function retryOnEintrSync(operation) {
-  for (let attempt = 0;; attempt += 1) {
-    try {
-      return operation();
-    } catch (error) {
-      if (fsErrorCode(error) !== "EINTR" || attempt >= EINTR_RETRY_CAP)
-        throw error;
-    }
-  }
-}
-var EINTR_RETRY_CAP = 128;
-
-// packages/memory-core/src/fs/rename-contention.ts
-async function renameWithContentionRetry(from, to, deps) {
-  const delays = deps.platform === "win32" ? deps.delaysMs ?? CONTENTION_DELAYS_MS : [];
-  const sleep = deps.sleep ?? sleepFor;
-  for (let attempt = 0;; attempt += 1) {
-    try {
-      await retryOnEintr(() => deps.admit === undefined ? deps.rename(from, to) : deps.admit(() => deps.rename(from, to)));
-      return;
-    } catch (error) {
-      const delay = delays[attempt];
-      const code = fsErrorCode(error);
-      if (delay === undefined || code === undefined || !CONTENTION_CODES.has(code))
-        throw error;
-      await sleep(delay);
-    }
-  }
-}
-var CONTENTION_CODES, CONTENTION_DELAYS_MS, sleepFor = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-var init_rename_contention = __esm(() => {
-  CONTENTION_CODES = new Set(["EPERM", "EBUSY", "EACCES"]);
-  CONTENTION_DELAYS_MS = [10, 25, 50, 100, 200, 400];
-});
-
-// packages/memory-core/src/fs/write-all.ts
-var init_write_all = () => {};
-
-// packages/memory-core/src/fs/resilient.ts
-import * as fsSync from "fs";
-import * as fsp from "fs/promises";
-function isFunction2(value) {
-  return typeof value === "function";
-}
-function withAsyncRetry(operation) {
-  return (...args) => retryOnEintr(async () => operation(...args));
-}
-function withSyncRetry(operation) {
-  return (...args) => retryOnEintrSync(() => operation(...args));
-}
-function resilientNamespace(namespace, kind) {
-  const wrapFunction = kind === "async" ? withAsyncRetry : withSyncRetry;
-  const cache = new Map;
-  return new Proxy(namespace, {
-    get(target, property) {
-      if (cache.has(property))
-        return cache.get(property);
-      const value = Reflect.get(target, property);
-      if (!isFunction2(value))
-        return value;
-      const wrapped = wrapFunction(value);
-      const native = Reflect.get(value, "native");
-      if (isFunction2(native))
-        Object.assign(wrapped, { native: wrapFunction(native) });
-      cache.set(property, wrapped);
-      return wrapped;
-    }
-  });
-}
-function rename8(from, to, admit) {
-  return renameWithContentionRetry(from, to, {
-    rename: (source, target) => fsp.rename(source, target),
-    platform: process.platform,
-    ...admit === undefined ? {} : { admit }
-  });
-}
-var IDEMPOTENT_HANDLE_METHODS, promises, sync, access4, chmod2, copyFile4, cp5, link, lstat18, mkdir10, mkdtemp2, readFile34, readdir17, readlink7, realpath2, rm16, rmdir2, stat8, statfs, unlink3, accessSync5, chmodSync7, fsyncSync3, linkSync, lstatSync5, mkdirSync19, readFileSync44, readdirSync14, realpathSync13, statSync8, unlinkSync10, writeFileSync17, writeSync;
-var init_resilient = __esm(() => {
-  init_rename_contention();
-  init_write_all();
-  init_write_all();
-  IDEMPOTENT_HANDLE_METHODS = new Set(["stat", "sync", "datasync", "chmod", "chown", "utimes", "truncate"]);
-  promises = resilientNamespace(fsp, "async");
-  sync = resilientNamespace(fsSync, "sync");
-  ({
-    access: access4,
-    chmod: chmod2,
-    copyFile: copyFile4,
-    cp: cp5,
-    link,
-    lstat: lstat18,
-    mkdir: mkdir10,
-    mkdtemp: mkdtemp2,
-    readFile: readFile34,
-    readdir: readdir17,
-    readlink: readlink7,
-    realpath: realpath2,
-    rm: rm16,
-    rmdir: rmdir2,
-    stat: stat8,
-    statfs,
-    unlink: unlink3
-  } = promises);
-  ({
-    accessSync: accessSync5,
-    chmodSync: chmodSync7,
-    fsyncSync: fsyncSync3,
-    linkSync,
-    lstatSync: lstatSync5,
-    mkdirSync: mkdirSync19,
-    readFileSync: readFileSync44,
-    readdirSync: readdirSync14,
-    realpathSync: realpathSync13,
-    statSync: statSync8,
-    unlinkSync: unlinkSync10,
-    writeFileSync: writeFileSync17,
-    writeSync
-  } = sync);
 });
 
 // packages/device-service-core/src/local-api/errors.ts
@@ -97553,14 +97421,21 @@ var init_background_transport = __esm(() => {
 });
 
 // packages/device-service-core/src/not-sent-error.ts
-var NotSentError, markNotSent = (error) => error instanceof LocalApiError ? new NotSentError(error.code, error.reason, {
-  action: error.action,
-  ...error.limit_chars === undefined ? {} : { limit_chars: error.limit_chars },
-  ...error.path_refusal === undefined ? {} : { path_refusal: error.path_refusal },
-  ...error.candidates === undefined ? {} : { candidates: error.candidates },
-  ...error.incomplete === undefined ? {} : { incomplete: error.incomplete },
-  ...error.sign_in_reason === undefined ? {} : { sign_in_reason: error.sign_in_reason }
-}) : error, olderThanWakeMinimum = (serviceVersion, minimum) => minimum === null ? new NotSentError("unsupported", "this omo build does not send the wake target") : new NotSentError("unsupported", `device service ${serviceVersion} is older than ${minimum}; update it`, {
+function markNotSent(error) {
+  if (error instanceof NotSentError)
+    return error;
+  if (!(error instanceof LocalApiError))
+    return error;
+  return new NotSentError(error.code, error.reason, {
+    action: error.action,
+    ...error.limit_chars === undefined ? {} : { limit_chars: error.limit_chars },
+    ...error.path_refusal === undefined ? {} : { path_refusal: error.path_refusal },
+    ...error.candidates === undefined ? {} : { candidates: error.candidates },
+    ...error.incomplete === undefined ? {} : { incomplete: error.incomplete },
+    ...error.sign_in_reason === undefined ? {} : { sign_in_reason: error.sign_in_reason }
+  });
+}
+var NotSentError, olderThanWakeMinimum = (serviceVersion, minimum) => minimum === null ? new NotSentError("unsupported", "this omo build does not send the wake target") : new NotSentError("unsupported", `device service ${serviceVersion} is older than ${minimum}; update it`, {
   action: `Run omo remote bootstrap to install device service ${minimum} or later.`
 });
 var init_not_sent_error = __esm(() => {
@@ -97701,6 +97576,26 @@ var init_timers = __esm(() => {
   };
 });
 
+// packages/device-service-core/src/unsettled-command.ts
+var DELIVERED, UnsettledCommandError;
+var init_unsettled_command = __esm(() => {
+  init_errors4();
+  DELIVERED = new Set(["transport_confirmed", "engine_dispatched"]);
+  UnsettledCommandError = class UnsettledCommandError extends LocalApiError {
+    progress;
+    delivered;
+    constructor(commandId, waitMs, progress) {
+      const last = progress === undefined ? "" : ` (last state ${progress})`;
+      super("request_timeout", `no final state for command ${commandId} within ${waitMs} ms${last}`, {
+        command_id: commandId
+      });
+      this.name = "UnsettledCommandError";
+      this.progress = progress;
+      this.delivered = progress !== undefined && DELIVERED.has(progress);
+    }
+  };
+});
+
 // packages/device-service-core/src/remote-attach.ts
 import { randomBytes as randomBytes8 } from "crypto";
 function openAttach(client, device, sessionId, timers = realTimers) {
@@ -97812,6 +97707,7 @@ function openAttach(client, device, sessionId, timers = realTimers) {
           return reject(new Error("the attach has ended"));
         const { waitMs = ATTACH_COMMAND_WAIT_MS, accepts } = options;
         const commandId = randomBytes8(16).toString("base64url");
+        let progress;
         const settle = () => {
           stopState();
           cancelWait();
@@ -97826,8 +97722,10 @@ function openAttach(client, device, sessionId, timers = realTimers) {
         const stopState = client.onEvent((event) => {
           if (event.kind !== "session.command_state" || event.command_id !== commandId)
             return;
-          if (PROGRESS_STATES.has(event.state))
+          if (PROGRESS_STATES.has(event.state)) {
+            progress = event.state;
             return;
+          }
           const response = delegated.takeReply(commandId);
           settle();
           resolve(response === undefined ? { outcome: event } : { outcome: event, response });
@@ -97835,9 +97733,7 @@ function openAttach(client, device, sessionId, timers = realTimers) {
         const cancelWait = timers.after(waitMs, () => {
           settle();
           delegated.forget(commandId);
-          reject(new LocalApiError("request_timeout", `no final state for command ${commandId} within ${waitMs} ms`, {
-            command_id: commandId
-          }));
+          reject(new UnsettledCommandError(commandId, waitMs, progress));
         });
         commands.add(end);
         client.commandTo({ attach }, rpc, commandId, { delegated: true }, accepts === undefined ? undefined : { accepts }).catch((error) => {
@@ -97897,6 +97793,7 @@ var init_remote_attach = __esm(() => {
   init_delegated_channel();
   init_errors4();
   init_timers();
+  init_unsettled_command();
   PROGRESS_STATES = new Set([
     "queued",
     "transport_confirmed",
@@ -97904,9 +97801,45 @@ var init_remote_attach = __esm(() => {
   ]);
 });
 
+// packages/device-service-core/src/refused-before-sending.ts
+var REFUSED_BEFORE_SENDING;
+var init_refused_before_sending = __esm(() => {
+  REFUSED_BEFORE_SENDING = new Set([
+    "unauthenticated",
+    "client_proof_invalid",
+    "invalid_request",
+    "unknown_type",
+    "forbidden",
+    "owner_transfer",
+    "signed_out",
+    "device_mismatch",
+    "device_changed",
+    "account_changed",
+    "device_key_invalid",
+    "service_disabled",
+    "sign_in_required",
+    "plan_required",
+    "activation_pending",
+    "authorization_stale",
+    "peer_not_found",
+    "peer_not_session_client",
+    "session_not_found",
+    "engine_too_old",
+    "not_attached",
+    "command_id_conflict",
+    "message_too_long",
+    "upload_incomplete",
+    "malformed",
+    "method_unclassified",
+    "method_local_only",
+    "host_not_answering",
+    "unsupported"
+  ]);
+});
+
 // packages/device-service-core/src/listing-rows.ts
 function newestRowsListing(client) {
-  let rows = 3;
+  let rows = 4;
   return async function list(filter, onRevision) {
     for (;; ) {
       try {
@@ -97914,7 +97847,7 @@ function newestRowsListing(client) {
       } catch (error) {
         if (rows === undefined || !(error instanceof LocalApiError) || error.code !== "invalid_request")
           throw error;
-        rows = rows === 3 ? 2 : undefined;
+        rows = rows === 4 ? 3 : rows === 3 ? 2 : undefined;
       }
     }
   };
@@ -97996,6 +97929,32 @@ function deviceServiceStateDir(platform = process.platform, env = process.env, h
 }
 var DEVICE_SERVICE_STATE_DIR_ENV = "OMO_DEVICE_SERVICE_STATE_DIR", LOCATION_FILE = "device-service.location.json", isAbsoluteOn = (platform, path) => (platform === "win32" ? win3212 : posix17).isAbsolute(path);
 var init_state_dir = () => {};
+
+// packages/device-service-core/src/engine-endpoint.ts
+async function engineEndpointOf(client, device) {
+  const asksPrimary = compareVersions4(client.welcome.service_version, ENDPOINT_PRIMARY_MIN_SERVICE_VERSION) >= 0;
+  const listed = await client.request("session.endpoints", asksPrimary ? { device, primary: true } : { device });
+  if (listed.primary !== undefined)
+    return listed.primary;
+  const [only, ...rest] = listed.endpoints;
+  if (only === undefined)
+    throw new NotSentError("unsupported", "the device lists no engine endpoint");
+  if (!asksPrimary && rest.length === 0)
+    return only;
+  throw new NoPrimaryEndpointError(device, listed.endpoints.length);
+}
+var ENDPOINT_PRIMARY_MIN_SERVICE_VERSION = "0.1.11", NoPrimaryEndpointError;
+var init_engine_endpoint = __esm(() => {
+  init_not_sent_error();
+  init_version2();
+  NoPrimaryEndpointError = class NoPrimaryEndpointError extends NotSentError {
+    constructor(device, listed) {
+      super("unsupported", `${device} lists ${listed} engine endpoint(s) and names none as its own engine; nothing was opened`, {
+        action: `Start or restart omo on ${device}; if that does not help, update the device service on both devices.`
+      });
+    }
+  };
+});
 // packages/device-service-core/src/local-api/protocol.ts
 var init_protocol = __esm(() => {
   init_vocabulary();
@@ -98005,13 +97964,13 @@ var init_protocol = __esm(() => {
 // packages/device-service-core/src/device-service.ts
 import { join as join124 } from "path";
 import { randomBytes as randomBytes9 } from "crypto";
-function sendToEndpoint(client, device, endpoint, rpc, locate, timers) {
+function sendToEndpoint(client, device, endpoint, rpc, locate, timers, waitMs) {
   return followDelegatedCommand(client, device, timers, (commandId) => {
     const send = (asked) => client.commandTo({ device, endpoint }, rpc, commandId, asked ? { locate: true } : {});
     return send(locate).catch((error) => locate && error instanceof LocalApiError && error.code === "invalid_request" ? send(false) : Promise.reject(error));
-  });
+  }, waitMs);
 }
-function followDelegatedCommand(client, device, timers, send) {
+function followDelegatedCommand(client, device, timers, send, waitMs = ENDPOINT_COMMAND_WAIT_MS) {
   return new Promise((resolve, reject) => {
     const commandId = randomBytes9(16).toString("base64url");
     const channel = followDelegatedChannel(device);
@@ -98043,7 +98002,7 @@ function followDelegatedCommand(client, device, timers, send) {
         ...located === undefined ? {} : { located }
       });
     });
-    const cancelTimer = timers.after(ENDPOINT_COMMAND_WAIT_MS, () => fail(new Error(`no final state for endpoint command ${commandId} within ${ENDPOINT_COMMAND_WAIT_MS} ms`)));
+    const cancelTimer = timers.after(waitMs, () => fail(new Error(`no final state for endpoint command ${commandId} within ${waitMs} ms`)));
     client.closed.then(() => fail(new Error("the connection closed before the endpoint command settled")));
     send(commandId).catch(fail);
   });
@@ -98116,16 +98075,40 @@ async function connectDeviceService(options) {
       };
     },
     endpointCommand: async (device, rpc, options) => {
-      let endpoint;
-      try {
-        endpoint = (await client.request("session.endpoints", { device })).endpoints[0];
-      } catch (error) {
-        throw markNotSent(error);
+      const started = timers.now();
+      let endpoint = options?.endpoint;
+      if (endpoint === undefined) {
+        const lookup = engineEndpointOf(client, device);
+        const waitMs = options?.waitMs;
+        const bounded = waitMs === undefined ? lookup : new Promise((resolve, reject) => {
+          const cancel = timers.after(waitMs, () => reject(new NotSentError("request_timeout", "the wait ran out during the endpoint lookup; nothing was sent")));
+          lookup.then((answer) => {
+            cancel();
+            resolve(answer);
+          }, (error) => {
+            cancel();
+            reject(error);
+          });
+        });
+        try {
+          endpoint = await bounded;
+        } catch (error) {
+          throw markNotSent(error);
+        }
       }
       if (endpoint === undefined)
         throw new NotSentError("unsupported", "the device lists no engine endpoint");
-      return await sendToEndpoint(client, device, endpoint, rpc, options?.locate === true, timers);
+      const waitMs = options?.waitMs === undefined ? undefined : options.waitMs - (timers.now() - started);
+      if (waitMs !== undefined && waitMs <= 0)
+        throw new NotSentError("request_timeout", "the wait ran out during the endpoint lookup; nothing was sent");
+      return {
+        ...await sendToEndpoint(client, device, endpoint, rpc, options?.locate === true, timers, waitMs),
+        endpoint
+      };
     },
+    sessionCommand: (device, key, rpc, options) => followDelegatedCommand(client, device, timers, (commandId) => client.commandTo({ session: `${device}.${key}` }, rpc, commandId).catch((error) => {
+      throw error instanceof LocalApiError && error.command_id === undefined ? markNotSent(error) : error;
+    }), options?.waitMs),
     close: () => client.close(),
     closed: client.closed,
     locate: (device, engineId, options) => client.request("session.locate", {
@@ -98133,16 +98116,16 @@ async function connectDeviceService(options) {
       engine_id: engineId,
       ...options?.single === true && takesSingleLocate ? { single: true } : {}
     }),
-    wakeCommand: async (device, durableId, rpc) => {
+    wakeCommand: async (device, durableId, rpc, options) => {
       if (!carriesWakeMark)
         throw olderThanWakeMinimum(client.welcome.service_version, wakeMarkMinimum);
       return await followDelegatedCommand(client, device, timers, (commandId) => client.commandTo({ wake: { device, durable_id: durableId } }, rpc, commandId).catch((error) => {
-        throw error instanceof LocalApiError && error.command_id === undefined ? markNotSent(error) : error;
-      }));
+        throw error instanceof LocalApiError && error.command_id === undefined && REFUSED_BEFORE_SENDING.has(error.code) ? markNotSent(error) : error;
+      }), options?.waitMs);
     }
   };
 }
-var ENDPOINT_COMMAND_WAIT_MS = 120000, ADOPT_ACCOUNT_MIN_SERVICE_VERSION = "0.1.3", acceptsAdoptAccount = (serviceVersion) => compareVersions4(serviceVersion, ADOPT_ACCOUNT_MIN_SERVICE_VERSION) >= 0, WAKE_MARK_MIN_SERVICE_VERSION = "0.1.31", LOCATE_SINGLE_MIN_SERVICE_VERSION = "0.1.13", serviceAtLeast = (serviceVersion, minimum) => minimum !== null && compareVersions4(serviceVersion, minimum) >= 0;
+var ENDPOINT_COMMAND_WAIT_MS = 120000, UPDATE_IN_FLIGHT_MAX_MS, UPDATE_IN_FLIGHT, ADOPT_ACCOUNT_MIN_SERVICE_VERSION = "0.1.3", acceptsAdoptAccount = (serviceVersion) => compareVersions4(serviceVersion, ADOPT_ACCOUNT_MIN_SERVICE_VERSION) >= 0, WAKE_MARK_MIN_SERVICE_VERSION = "0.1.31", LOCATE_SINGLE_MIN_SERVICE_VERSION = "0.1.13", serviceAtLeast = (serviceVersion, minimum) => minimum !== null && compareVersions4(serviceVersion, minimum) >= 0;
 var init_device_service2 = __esm(() => {
   init_access();
   init_client4();
@@ -98152,15 +98135,22 @@ var init_device_service2 = __esm(() => {
   init_remote_attach();
   init_delegated_channel();
   init_errors4();
+  init_refused_before_sending();
   init_listing_rows();
   init_version2();
   init_state_dir();
+  init_engine_endpoint();
   init_timers();
   init_errors4();
+  init_refused_before_sending();
   init_not_sent_error();
+  init_engine_endpoint();
   init_protocol();
+  init_unsettled_command();
   init_state_dir();
   init_timers();
+  UPDATE_IN_FLIGHT_MAX_MS = 15 * 60000;
+  UPDATE_IN_FLIGHT = new Set(["pending", "trial"]);
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/memory/metrics.mjs
@@ -103696,6 +103686,15 @@ var init_permission_presets = __esm(() => {
   PERMISSION_PRESETS = ["full-access", "workspace", "accept-edits", "auto", "read-only", "ask"];
 });
 // packages/omo-senpi/src/components/thread/errors.ts
+function isThreadErrorCode(value) {
+  return typeof value === "string" && CODE_SET.has(value);
+}
+function threadToolFailure(code, message, nextAction, details) {
+  if (!isThreadErrorCode(code)) {
+    throw new Error(`unknown thread error code: ${String(code)}`);
+  }
+  return { code, message, next_action: nextAction, ...details === undefined ? {} : { details } };
+}
 var THREAD_ERROR_CODES, CODE_SET;
 var init_errors5 = __esm(() => {
   THREAD_ERROR_CODES = [
@@ -103711,6 +103710,7 @@ var init_errors5 = __esm(() => {
     "foreign_live_owner",
     "no_active_turn",
     "turn_conflict",
+    "turn_active",
     "not_steerable",
     "message_too_large",
     "queue_full",
@@ -103719,6 +103719,7 @@ var init_errors5 = __esm(() => {
     "idempotency_conflict",
     "idempotency_in_progress",
     "idempotency_uncertain",
+    "delivered_unconfirmed",
     "approval_unavailable",
     "approval_route_locked",
     "partial_commit",
@@ -103731,6 +103732,7 @@ var init_errors5 = __esm(() => {
     "model_ambiguous",
     "thinking_level_unsupported",
     "loop_detected",
+    "chain_count_limit",
     "binding_conflict",
     "binding_mismatch",
     "binding_inactive",
@@ -103740,7 +103742,8 @@ var init_errors5 = __esm(() => {
     "answer_in_progress",
     "device_offline",
     "relay_requires_paid_plan",
-    "alias_taken"
+    "alias_taken",
+    "gateway_schema_too_new"
   ];
   CODE_SET = new Set(THREAD_ERROR_CODES);
 });
@@ -103749,7 +103752,7 @@ var init_errors5 = __esm(() => {
 var init_initial_skills = () => {};
 
 // packages/omo-senpi/src/components/thread/remote/outcome.ts
-var READ_UNCERTAIN, UNANSWERED;
+var READ_UNCERTAIN, UNANSWERED, NOT_SIGNED_IN;
 var init_outcome = __esm(() => {
   init_errors5();
   READ_UNCERTAIN = {
@@ -103775,11 +103778,13 @@ var init_outcome = __esm(() => {
     "handshake_timeout",
     "attach_failed",
     "reply_lost",
+    "delivered_unconfirmed",
     "host_not_answering",
     "peer_not_found",
     "engine_stale",
     ...Object.entries(READ_UNCERTAIN).filter(([, answer]) => answer === "retry").map(([reason]) => reason)
   ]);
+  NOT_SIGNED_IN = new Set(["sign_in_required", "signed_out"]);
 });
 // packages/omo-senpi/src/components/thread/remote/remote-ops.ts
 var init_remote_ops = __esm(() => {
@@ -103832,162 +103837,6 @@ var init_remote_worktree = __esm(() => {
 var THREAD_LINK_SCHEME = "omo-thread", PREFIX;
 var init_thread_link = __esm(() => {
   PREFIX = `${THREAD_LINK_SCHEME}://v1/`;
-});
-
-// packages/omo-senpi/src/components/thread/remote/address-book.ts
-var REMOTE_NOT_SET_UP;
-var init_address_book = __esm(() => {
-  init_remote_ops();
-  REMOTE_NOT_SET_UP = new Set(["not_configured", "disabled", "signed_out", "sign_in_required"]);
-});
-
-// packages/omo-senpi/src/components/thread/addressing.ts
-var init_addressing = __esm(() => {
-  init_errors5();
-});
-
-// packages/omo-senpi/src/components/thread/session-facts.ts
-var SESSION_FACTS_WINDOW_BYTES, SESSION_FACTS_LAST_LINE_MAX_BYTES;
-var init_session_facts = __esm(() => {
-  SESSION_FACTS_WINDOW_BYTES = 64 * 1024;
-  SESSION_FACTS_LAST_LINE_MAX_BYTES = SESSION_FACTS_WINDOW_BYTES * 4;
-});
-
-// packages/omo-senpi/src/components/thread/address-book.ts
-var init_address_book2 = __esm(() => {
-  init_addressing();
-  init_session_facts();
-});
-
-// packages/omo-senpi/src/components/thread/metadata.ts
-var THREAD_TOOL_EXPOSURE = "eval", ROUTE_TO_TASK = "; to spawn a child task instead, use task.", THREAD_TOOL_METADATA;
-var init_metadata = __esm(() => {
-  THREAD_TOOL_METADATA = [
-    {
-      name: "thread_create",
-      label: "Create session",
-      description: "Starts a fresh agent session that runs alongside this one, for when the user wants a second session working in parallel" + ROUTE_TO_TASK,
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_list",
-      label: "List sessions",
-      description: "Shows every addressable session on this device and the account's other devices with its id, name, status and device, plus the account's devices, for when the user needs a valid target address before acting on a session" + ROUTE_TO_TASK,
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_read",
-      label: "Read session",
-      description: "Returns the transcript and latest output of another session, for when the user asks what another session said or produced" + ROUTE_TO_TASK,
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_send",
-      label: "Send message to session",
-      description: "Delivers a message into another session that is already running, for when the user wants to talk to that session mid-task; its reply comes back through thread_read, and a bound chat thread's replies through thread_report and thread_answer (in an eval cell: tool.thread_read(), tool.thread_report(), tool.thread_answer())" + ROUTE_TO_TASK,
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_interrupt",
-      label: "Interrupt session turn",
-      description: "Stops the turn running in another session, and the background jobs that turn started, for when the user wants to halt a session that is going down the wrong path; the result's background lists what was stopped" + ROUTE_TO_TASK,
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_close",
-      label: "Close session",
-      description: "Closes a session. Omit thread or pass self to close this session. thread accepts the thread value of a thread_list row (tool.thread_list() in an eval cell), an alias, or a unique name; the result is closed true or false plus a reason" + ROUTE_TO_TASK,
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_handoff",
-      label: "Hand off session",
-      description: "Moves the current request to an old session that has the context, for when the user says to hand this off or reopen that earlier conversation" + ROUTE_TO_TASK,
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_rename",
-      label: "Rename session",
-      description: "Renames a session's label, for when the user asks to call a session something clearer. Omit thread or pass self to rename this session. thread accepts the thread value of a thread_list row (tool.thread_list() in an eval cell), an alias, or a unique name; a miss names the thread value to pass",
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_set_model",
-      label: "Switch session model",
-      description: "Moves a session onto a different model, for when the user asks to switch that session to another model or a cheaper one",
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_set_reasoning",
-      label: "Set session reasoning level",
-      description: "Sets how much reasoning a session applies, for when the user asks to raise or lower the thinking effort of a session",
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_report",
-      label: "Report to chat thread",
-      description: "Posts a milestone, result, question or completion from this session to its bound chat thread, for when the user wants progress relayed to that chat; replies flow back through thread_read, thread_report and thread_answer (in an eval cell: tool.thread_read(), tool.thread_report(), tool.thread_answer())",
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_outbox",
-      label: "Read chat outbox",
-      description: "Returns the reports waiting for a bound chat thread with a cursor, for when a connector collects what sessions posted",
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_outbox_ack",
-      label: "Acknowledge chat outbox",
-      description: "Marks outbox rows up to a cursor as posted to the chat, for when a connector confirms delivery",
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_answer",
-      label: "Answer relayed question",
-      description: "Resolves a question a session relayed to a chat thread with the answer that arrived there, for when a connector hands back a chat user's reply",
-      exposure: THREAD_TOOL_EXPOSURE
-    }
-  ];
-});
-// packages/omo-senpi/src/components/thread/tools/internals.ts
-var init_internals = __esm(() => {
-  init_address_book();
-  init_remote_ops();
-  init_address_book2();
-  init_addressing();
-  init_errors5();
-  init_metadata();
-  init_session_facts();
-  init_thread_link();
-});
-
-// packages/omo-senpi/src/components/thread/control/session-host.ts
-var init_session_host = __esm(() => {
-  init_internals();
-});
-
-// packages/omo-senpi/src/components/thread/control/relay-session-host.ts
-var init_relay_session_host = __esm(() => {
-  init_errors5();
-  init_initial_skills();
-  init_outcome();
-  init_remote_ops();
-  init_remote_worktree();
-  init_open_reply();
-  init_thread_link();
-  init_session_host();
-});
-
-// packages/omo-senpi/src/components/thread/tools/model-match.ts
-var init_model_match = __esm(() => {
-  init_internals();
-});
-
-// packages/omo-senpi/src/components/thread/control/operations.ts
-var init_operations = __esm(() => {
-  init_internals();
-  init_model_match();
-  init_port();
 });
 
 // packages/omo-senpi/src/components/thread/contracts/create-params.ts
@@ -104058,7 +103907,7 @@ var init_create_params = __esm(() => {
 });
 
 // packages/omo-senpi/src/components/thread/contracts/params.ts
-var ThreadListParams, THREAD_READ_WAIT_MAX_MS = 600000, ThreadReadParams, ThreadSendParams, ThreadInterruptParams, SelfOrThread, ThreadCloseParams, ThreadHandoffParams, ThreadRenameParams, ThreadSetModelParams, ThreadSetReasoningParams, ThreadReportParams, ThreadOutboxParams, ThreadOutboxAckParams, ThreadAnswerParams;
+var ThreadListParams, THREAD_READ_WAIT_MAX_MS = 600000, ThreadReadParams, ThreadSendParams, ThreadInterruptParams, SelfOrThread, ThreadCloseParams, ThreadHandoffParams, ThreadRenameParams, ThreadSetModelParams, ThreadSetReasoningParams, ThreadArchiveParams, ThreadReportParams, ThreadOutboxParams, ThreadOutboxAckParams, ThreadAnswerParams;
 var init_params = __esm(() => {
   init_build();
   init_fields();
@@ -104066,12 +103915,16 @@ var init_params = __esm(() => {
   ThreadListParams = _Object_({
     all_scope: Optional(Boolean2({
       description: "List this machine's threads from every workspace; the default returns only the caller's workspace here. The account's other devices' threads are always listed."
+    })),
+    state: Optional(_Array_(Union([Literal("running"), Literal("idle"), Literal("inactive"), Literal("archived")]), {
+      minItems: 1,
+      description: "Thread states to list: running, idle, inactive (no engine holds it) or archived; the default lists every state but archived."
     }))
   });
   ThreadReadParams = _Object_({
     thread: ThreadAddress,
     cursor: Optional(String2({
-      description: "Opaque cursor from an earlier thread_read (tool.thread_read() in an eval cell) to continue a truncated transcript; a transcript revision that moved past it returns cursor_stale."
+      description: "Opaque cursor from an earlier thread_read (tool.thread_read() in an eval cell) to page the older messages of a truncated read (a read without one returns the newest messages that fit max_bytes); a transcript revision that moved past it returns cursor_stale."
     })),
     max_bytes: Optional(Integer({
       minimum: 1,
@@ -104156,6 +104009,14 @@ var init_params = __esm(() => {
     level: thinkingLevel("Thinking level to apply; a level the thread's active model cannot run returns thinking_level_unsupported with the supported list and leaves the thread unchanged."),
     scope: Optional(Union([Literal("session"), Literal("turn")], {
       description: "session (default) or turn; either changes only this thread's level and never the level the device remembers for the model."
+    })),
+    all_scope: AllScope,
+    idempotency_key: IdempotencyKey
+  });
+  ThreadArchiveParams = _Object_({
+    thread: ThreadAddress,
+    archived: Optional(Boolean2({
+      description: "true (the default) archives the thread, so thread_list (tool.thread_list() in an eval cell) hides it unless state includes archived; false unarchives it."
     })),
     all_scope: AllScope,
     idempotency_key: IdempotencyKey
@@ -108700,11 +108561,209 @@ var init_parse6 = __esm(() => {
   init_value2();
   init_errors5();
 });
+
+// packages/omo-senpi/src/components/thread/contracts/state.ts
+var THREAD_ACTIVITIES;
+var init_state2 = __esm(() => {
+  THREAD_ACTIVITIES = ["idle", "running", "awaiting_approval", "queued", "errored"];
+});
+
+// packages/omo-senpi/src/components/thread/contracts/results.ts
+var init_results = __esm(() => {
+  init_state2();
+});
+
 // packages/omo-senpi/src/components/thread/contracts/index.ts
 var init_contracts = __esm(() => {
   init_fields();
   init_params();
   init_parse6();
+  init_results();
+});
+
+// packages/omo-senpi/src/components/thread/tools/thread-state.ts
+var ACTIVITIES;
+var init_thread_state = __esm(() => {
+  init_contracts();
+  ACTIVITIES = new Set(THREAD_ACTIVITIES);
+});
+
+// packages/omo-senpi/src/components/thread/remote/address-book.ts
+var lastListed, REMOTE_NOT_SET_UP;
+var init_address_book = __esm(() => {
+  init_errors5();
+  init_remote_ops();
+  lastListed = new WeakMap;
+  REMOTE_NOT_SET_UP = new Set(["not_configured", "disabled", "signed_out", "sign_in_required"]);
+});
+
+// packages/omo-senpi/src/components/thread/addressing.ts
+var init_addressing = __esm(() => {
+  init_errors5();
+});
+
+// packages/omo-senpi/src/components/thread/session-facts.ts
+var SESSION_FACTS_WINDOW_BYTES, SESSION_FACTS_LAST_LINE_MAX_BYTES;
+var init_session_facts = __esm(() => {
+  SESSION_FACTS_WINDOW_BYTES = 64 * 1024;
+  SESSION_FACTS_LAST_LINE_MAX_BYTES = SESSION_FACTS_WINDOW_BYTES * 4;
+});
+
+// packages/omo-senpi/src/components/thread/address-book.ts
+var init_address_book2 = __esm(() => {
+  init_addressing();
+  init_session_facts();
+});
+
+// packages/omo-senpi/src/components/thread/metadata.ts
+var THREAD_TOOL_EXPOSURE = "eval", ROUTE_TO_TASK = "; to spawn a child task instead, use task.", THREAD_TOOL_METADATA;
+var init_metadata = __esm(() => {
+  THREAD_TOOL_METADATA = [
+    {
+      name: "thread_create",
+      label: "Create session",
+      description: "Starts a fresh agent session that runs alongside this one, for when the user wants a second session working in parallel" + ROUTE_TO_TASK,
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_list",
+      label: "List sessions",
+      description: "Shows every addressable session on this device and the account's other devices with its id, name, status and device, plus the account's devices, for when the user needs a valid target address before acting on a session" + ROUTE_TO_TASK,
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_read",
+      label: "Read session",
+      description: "Returns the transcript and latest output of another session, for when the user asks what another session said or produced" + ROUTE_TO_TASK,
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_send",
+      label: "Send message to session",
+      description: "Delivers a message into another session that is already running, for when the user wants to talk to that session mid-task; its reply comes back through thread_read, and a bound chat thread's replies through thread_report and thread_answer (in an eval cell: tool.thread_read(), tool.thread_report(), tool.thread_answer())" + ROUTE_TO_TASK,
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_interrupt",
+      label: "Interrupt session turn",
+      description: "Stops the turn running in another session, and the background jobs that turn started, for when the user wants to halt a session that is going down the wrong path; the result's background lists what was stopped" + ROUTE_TO_TASK,
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_close",
+      label: "Close session",
+      description: "Closes a session. Omit thread or pass self to close this session. thread accepts the thread value of a thread_list row (tool.thread_list() in an eval cell), an alias, or a unique name; the result is closed true or false plus a reason" + ROUTE_TO_TASK,
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_handoff",
+      label: "Hand off session",
+      description: "Moves the current request to an old session that has the context, for when the user says to hand this off or reopen that earlier conversation" + ROUTE_TO_TASK,
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_rename",
+      label: "Rename session",
+      description: "Renames a session's label, for when the user asks to call a session something clearer. Omit thread or pass self to rename this session. thread accepts the thread value of a thread_list row (tool.thread_list() in an eval cell), an alias, or a unique name; a miss names the thread value to pass",
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_set_model",
+      label: "Switch session model",
+      description: "Moves a session onto a different model, for when the user asks to switch that session to another model or a cheaper one",
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_set_reasoning",
+      label: "Set session reasoning level",
+      description: "Sets how much reasoning a session applies, for when the user asks to raise or lower the thinking effort of a session",
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_archive",
+      label: "Archive session",
+      description: "Archives or unarchives a session so the session list hides or shows it again, for when the user is finished with a session but wants to keep it",
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_report",
+      label: "Report to chat thread",
+      description: "Posts a milestone, result, question or completion from this session to its bound chat thread, for when the user wants progress relayed to that chat; replies flow back through thread_read, thread_report and thread_answer (in an eval cell: tool.thread_read(), tool.thread_report(), tool.thread_answer())",
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_outbox",
+      label: "Read chat outbox",
+      description: "Returns the reports waiting for a bound chat thread with a cursor, for when a connector collects what sessions posted",
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_outbox_ack",
+      label: "Acknowledge chat outbox",
+      description: "Marks outbox rows up to a cursor as posted to the chat, for when a connector confirms delivery",
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_answer",
+      label: "Answer relayed question",
+      description: "Resolves a question a session relayed to a chat thread with the answer that arrived there, for when a connector hands back a chat user's reply",
+      exposure: THREAD_TOOL_EXPOSURE
+    }
+  ];
+});
+// packages/omo-senpi/src/components/thread/tools/internals.ts
+function failure3(code, message, next, details) {
+  return { kind: "error", error: threadToolFailure(code, message, next, details) };
+}
+var init_internals = __esm(() => {
+  init_address_book();
+  init_remote_ops();
+  init_address_book2();
+  init_addressing();
+  init_errors5();
+  init_metadata();
+  init_session_facts();
+  init_thread_link();
+  init_thread_state();
+});
+
+// packages/omo-senpi/src/components/thread/control/session-host.ts
+var init_session_host = __esm(() => {
+  init_internals();
+});
+
+// packages/omo-senpi/src/components/thread/control/relay-session-host.ts
+var init_relay_session_host = __esm(() => {
+  init_errors5();
+  init_initial_skills();
+  init_outcome();
+  init_remote_ops();
+  init_remote_worktree();
+  init_open_reply();
+  init_thread_link();
+  init_thread_state();
+  init_session_host();
+});
+
+// packages/omo-senpi/src/components/thread/tools/model-match.ts
+var init_model_match = __esm(() => {
+  init_internals();
+});
+
+// packages/omo-senpi/src/components/thread/control/operations.ts
+var NOT_LIVE;
+var init_operations = __esm(() => {
+  init_internals();
+  init_model_match();
+  init_port();
+  NOT_LIVE = failure3("not_resumable", "The thread has no live owner.", "Retry when the target is live.");
+});
+
+// packages/omo-senpi/src/components/call-budget/call-deadline.ts
+import { AsyncLocalStorage as AsyncLocalStorage4 } from "async_hooks";
+var scope;
+var init_call_deadline = __esm(() => {
+  scope = new AsyncLocalStorage4;
 });
 // packages/omo-senpi/src/components/thread/reader.ts
 var init_reader = __esm(() => {
@@ -108759,12 +108818,20 @@ var init_wait_settled = __esm(() => {
     "tool_execution_update",
     "tool_execution_end",
     "turn_end",
-    "agent_end"
+    "agent_end",
+    "auto_retry_start",
+    "auto_retry_end"
   ]);
+});
+
+// packages/omo-senpi/src/components/thread/tools/thread-row.ts
+var init_thread_row = __esm(() => {
+  init_thread_link();
 });
 
 // packages/omo-senpi/src/components/thread/control/relay-control.ts
 var init_relay_control = __esm(() => {
+  init_call_deadline();
   init_address_book();
   init_outcome();
   init_transcript_tail();
@@ -108773,6 +108840,8 @@ var init_relay_control = __esm(() => {
   init_close_ladder();
   init_port();
   init_wait_settled();
+  init_relay_session_host();
+  init_thread_row();
 });
 
 // packages/omo-senpi/src/components/thread/remote/attach-pool.ts
@@ -108814,45 +108883,14 @@ var init_remote_watch = __esm(() => {
   init_device_service2();
   init_session_state();
 });
-
 // packages/omo-senpi/src/components/remote/port/device-service.ts
-var REFUSED_BEFORE_SENDING, READ_ONLY_RECORDS, MARKED_RECORDS, LOOKUP_NONE;
+var READ_ONLY_RECORDS, MARKED_RECORDS, LOOKUP_NONE;
 var init_device_service3 = __esm(() => {
   init_outcome();
   init_device_service2();
   init_attach_pool();
   init_remote_watch();
-  REFUSED_BEFORE_SENDING = new Set([
-    "unauthenticated",
-    "client_proof_invalid",
-    "invalid_request",
-    "unknown_type",
-    "forbidden",
-    "owner_transfer",
-    "signed_out",
-    "device_mismatch",
-    "device_changed",
-    "account_changed",
-    "device_key_invalid",
-    "service_disabled",
-    "sign_in_required",
-    "plan_required",
-    "activation_pending",
-    "authorization_stale",
-    "peer_not_found",
-    "peer_not_session_client",
-    "session_not_found",
-    "engine_too_old",
-    "not_attached",
-    "command_id_conflict",
-    "message_too_long",
-    "upload_incomplete",
-    "malformed",
-    "method_unclassified",
-    "method_local_only",
-    "host_not_answering",
-    "unsupported"
-  ]);
+  init_call_deadline();
   READ_ONLY_RECORDS = new Set(["get_state", "get_messages", "get_entries"]);
   MARKED_RECORDS = new Set(["admit_external_message"]);
   LOOKUP_NONE = new Set(["session_not_found", "peer_not_found", "peer_not_session_client"]);
@@ -108890,6 +108928,12 @@ var init_codes = __esm(() => {
     ["not_running", { code: "not_resumable" }],
     ["handle_lost", { code: "not_found", details: { kind: "handle" } }]
   ]);
+});
+
+// packages/omo-senpi/src/components/remote/connection-of.ts
+var lenders;
+var init_connection_of = __esm(() => {
+  lenders = new WeakMap;
 });
 
 // packages/omo-senpi/src/components/remote/deadlines.ts
@@ -108964,6 +109008,21 @@ var init_result2 = __esm(() => {
   init_errors5();
 });
 
+// packages/omo-senpi/src/components/thread/remote/find-session.ts
+var NO_FIND_SESSION;
+var init_find_session = __esm(() => {
+  init_errors5();
+  init_outcome();
+  init_remote_ops();
+  NO_FIND_SESSION = new Set([
+    "method_unclassified",
+    "unknown_command",
+    "unknown_type",
+    "unsupported",
+    "find_session_unsupported"
+  ]);
+});
+
 // packages/omo-senpi/src/components/thread/remote/relay-transport.ts
 var ADMIT_UNSUPPORTED, WAITS;
 var init_relay_transport = __esm(() => {
@@ -108973,6 +109032,8 @@ var init_relay_transport = __esm(() => {
   init_result2();
   init_remote_ops();
   init_outcome();
+  init_find_session();
+  init_call_deadline();
   ADMIT_UNSUPPORTED = new Set([
     "method_unclassified",
     "delegation_unclassified",
@@ -109022,6 +109083,7 @@ var init_unknown_device = __esm(() => {
 
 // packages/omo-senpi/src/components/remote/client.ts
 var init_client5 = __esm(() => {
+  init_connection_of();
   init_device_service2();
   init_aliases();
   init_attach();
@@ -109034,9 +109096,24 @@ var init_client5 = __esm(() => {
   init_unknown_device();
 });
 
-// packages/omo-senpi/src/components/thread/tools/thread-row.ts
-var init_thread_row = __esm(() => {
-  init_thread_link();
+// packages/omo-senpi/src/components/remote/factories.ts
+var init_factories = __esm(() => {
+  init_client5();
+});
+
+// packages/omo-senpi/src/components/thread/remote/plan-create.ts
+var ALIASES_UNAVAILABLE;
+var init_plan_create = __esm(() => {
+  init_addressing();
+  init_relay_session_host();
+  init_errors5();
+  init_thread_row();
+  init_find_session();
+  init_remote_ops();
+  ALIASES_UNAVAILABLE = {
+    kind: "error",
+    error: threadToolFailure("host_unavailable", "Thread aliases need the account's alias registry, which this device cannot reach.", "Create or address the thread by its id; retry the alias later.")
+  };
 });
 
 // packages/omo-opencode/src/cli/cli-program.ts
@@ -124602,8 +124679,8 @@ var package_default3 = {
   },
   dependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.11.18",
-    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.18",
+    "@code-yeongyu/senpi": "2026.11.18-2",
+    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.18-2",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/boulder-state": "workspace:*",
@@ -127859,7 +127936,135 @@ import { createHash as createHash10 } from "crypto";
 
 // packages/memory-core/src/sync/item/machine-id.ts
 import { execFile as execFile7 } from "child_process";
-init_resilient();
+
+// packages/memory-core/src/fs/resilient.ts
+import * as fsSync from "fs";
+import * as fsp from "fs/promises";
+
+// packages/memory-core/src/fs/retry.ts
+var EINTR_RETRY_CAP = 128;
+function fsErrorCode(error) {
+  if (!(error instanceof Error) || !("code" in error))
+    return;
+  return typeof error.code === "string" ? error.code : undefined;
+}
+async function retryOnEintr(operation) {
+  for (let attempt = 0;; attempt += 1) {
+    try {
+      return await operation();
+    } catch (error) {
+      if (fsErrorCode(error) !== "EINTR" || attempt >= EINTR_RETRY_CAP)
+        throw error;
+    }
+  }
+}
+function retryOnEintrSync(operation) {
+  for (let attempt = 0;; attempt += 1) {
+    try {
+      return operation();
+    } catch (error) {
+      if (fsErrorCode(error) !== "EINTR" || attempt >= EINTR_RETRY_CAP)
+        throw error;
+    }
+  }
+}
+
+// packages/memory-core/src/fs/rename-contention.ts
+var CONTENTION_CODES = new Set(["EPERM", "EBUSY", "EACCES"]);
+var CONTENTION_DELAYS_MS = [10, 25, 50, 100, 200, 400];
+var sleepFor = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+async function renameWithContentionRetry(from, to, deps) {
+  const delays = deps.platform === "win32" ? deps.delaysMs ?? CONTENTION_DELAYS_MS : [];
+  const sleep = deps.sleep ?? sleepFor;
+  for (let attempt = 0;; attempt += 1) {
+    try {
+      await retryOnEintr(() => deps.admit === undefined ? deps.rename(from, to) : deps.admit(() => deps.rename(from, to)));
+      return;
+    } catch (error) {
+      const delay = delays[attempt];
+      const code = fsErrorCode(error);
+      if (delay === undefined || code === undefined || !CONTENTION_CODES.has(code))
+        throw error;
+      await sleep(delay);
+    }
+  }
+}
+
+// packages/memory-core/src/fs/resilient.ts
+function isFunction2(value) {
+  return typeof value === "function";
+}
+function withAsyncRetry(operation) {
+  return (...args) => retryOnEintr(async () => operation(...args));
+}
+function withSyncRetry(operation) {
+  return (...args) => retryOnEintrSync(() => operation(...args));
+}
+function resilientNamespace(namespace, kind) {
+  const wrapFunction = kind === "async" ? withAsyncRetry : withSyncRetry;
+  const cache = new Map;
+  return new Proxy(namespace, {
+    get(target, property) {
+      if (cache.has(property))
+        return cache.get(property);
+      const value = Reflect.get(target, property);
+      if (!isFunction2(value))
+        return value;
+      const wrapped = wrapFunction(value);
+      const native = Reflect.get(value, "native");
+      if (isFunction2(native))
+        Object.assign(wrapped, { native: wrapFunction(native) });
+      cache.set(property, wrapped);
+      return wrapped;
+    }
+  });
+}
+var IDEMPOTENT_HANDLE_METHODS = new Set(["stat", "sync", "datasync", "chmod", "chown", "utimes", "truncate"]);
+var promises = resilientNamespace(fsp, "async");
+function rename8(from, to, admit) {
+  return renameWithContentionRetry(from, to, {
+    rename: (source, target) => fsp.rename(source, target),
+    platform: process.platform,
+    ...admit === undefined ? {} : { admit }
+  });
+}
+var sync = resilientNamespace(fsSync, "sync");
+var {
+  access: access4,
+  chmod: chmod2,
+  copyFile: copyFile4,
+  cp: cp5,
+  link,
+  lstat: lstat18,
+  mkdir: mkdir10,
+  mkdtemp: mkdtemp2,
+  readFile: readFile34,
+  readdir: readdir17,
+  readlink: readlink7,
+  realpath: realpath2,
+  rm: rm16,
+  rmdir: rmdir2,
+  stat: stat8,
+  statfs,
+  unlink: unlink3
+} = promises;
+var {
+  accessSync: accessSync5,
+  chmodSync: chmodSync7,
+  fsyncSync: fsyncSync3,
+  linkSync,
+  lstatSync: lstatSync5,
+  mkdirSync: mkdirSync19,
+  readFileSync: readFileSync44,
+  readdirSync: readdirSync14,
+  realpathSync: realpathSync13,
+  statSync: statSync8,
+  unlinkSync: unlinkSync10,
+  writeFileSync: writeFileSync17,
+  writeSync
+} = sync;
+
+// packages/memory-core/src/sync/item/machine-id.ts
 async function darwinPlatformUuid() {
   const out = await run2("/usr/sbin/ioreg", ["-rd1", "-c", "IOPlatformExpertDevice"]);
   return /"IOPlatformUUID" = "([^"]+)"/.exec(out ?? "")?.[1] ?? null;
@@ -128860,7 +129065,6 @@ import { randomUUID as randomUUID6 } from "crypto";
 import { readFile as readFile36, stat as stat11 } from "fs/promises";
 
 // packages/memory-core/src/locks/process-identity.ts
-init_resilient();
 import { execFile as execFile8 } from "child_process";
 
 // packages/memory-core/src/locks/process-start-time.ts
@@ -130358,6 +130562,15 @@ function refuseIfLocalOnly(site) {
     throw new LocalOnlyNetworkRefused(site);
 }
 
+// packages/memory-core/src/sync/contract-version.ts
+var SYNC_CONTRACT_VERSION = "1.44.0";
+var SYNC_CAPABILITIES = "phrase";
+var syncRequestHeaders = (token) => ({
+  "omo-contract-version": SYNC_CONTRACT_VERSION,
+  "omo-sync-capabilities": SYNC_CAPABILITIES,
+  authorization: `Bearer ${token}`
+});
+
 // packages/omo-opencode/src/cli/service-auth/protocol-request.ts
 init_zod();
 class InvalidApiResponse extends SignInError {
@@ -130436,10 +130649,10 @@ async function requestApi(api, path, init, signal) {
 }
 
 // packages/omo-opencode/src/cli/service-auth/machine-reconcile.ts
-init_zod();
 import { createHash as createHash15, createPrivateKey as createPrivateKey3, sign } from "crypto";
 import { mkdir as mkdir14, readFile as readFile39, rename as rename11, rm as rm19, writeFile as writeFile18 } from "fs/promises";
 import { dirname as dirname48, join as join115 } from "path";
+init_zod();
 var MACHINE_BIND_CONTEXT = "omo-machine-bind-v1";
 var DEVICE_FIXUP_BUDGET_MS = 5000;
 var MACHINE_EXISTS_RETRY_MS = 7 * 24 * 60 * 60 * 1000;
@@ -130494,7 +130707,7 @@ async function reconcileDevice(options) {
     if (!signal.aborted)
       options.log(line);
   };
-  const auth = { authorization: `Bearer ${credentials.accessToken}` };
+  const auth = syncRequestHeaders(credentials.accessToken);
   let own;
   try {
     const listed = deviceListSchema2.safeParse(await request("/v1/devices", { headers: auth }));
@@ -130643,7 +130856,7 @@ function createSession(options) {
   }
   const request = (path, init) => requestApi(api, path, init, signal);
   const accountOf = async (access, stop = signal) => {
-    const body = await requestApi(api, "/v1/me", { headers: { authorization: `Bearer ${access}` } }, stop).catch(() => null);
+    const body = await requestApi(api, "/v1/me", { headers: syncRequestHeaders(access) }, stop).catch(() => null);
     const id = typeof body === "object" && body !== null && "account" in body && typeof body.account === "object" && body.account !== null && "id" in body.account ? body.account.id : undefined;
     return typeof id === "string" && id !== "" ? id : undefined;
   };
@@ -130730,7 +130943,7 @@ function createSession(options) {
     });
   }
   async function emailOf(access) {
-    const body = await request("/v1/me", { headers: { authorization: `Bearer ${access}` } }).catch(() => null);
+    const body = await request("/v1/me", { headers: syncRequestHeaders(access) }).catch(() => null);
     const user = typeof body === "object" && body !== null && "user" in body ? body.user : undefined;
     const email = typeof user === "object" && user !== null && "email" in user ? user.email : undefined;
     return typeof email === "string" && email !== "" ? email : undefined;
@@ -130816,7 +131029,7 @@ function createSession(options) {
               }
               await request(`/v1/devices/${encodeURIComponent(current.device.id)}`, {
                 method: "DELETE",
-                headers: { authorization: `Bearer ${access}` }
+                headers: syncRequestHeaders(access)
               });
             }
             return true;
@@ -130842,7 +131055,7 @@ function createSession(options) {
     async removeForLimit(error, choose) {
       if (!(error instanceof ApiRefusal) || error.detail === undefined)
         throw error;
-      const headers = { authorization: `Bearer ${error.detail.managementToken}` };
+      const headers = syncRequestHeaders(error.detail.managementToken);
       const listed = parseReply(deviceListSchema, await request("/v1/devices", { headers }));
       const devices = listed.devices.filter((device) => device.revokedAt === null);
       const chosen = await choose(devices);
@@ -131166,7 +131379,6 @@ function decideReplace(options) {
 }
 
 // packages/memory-core/src/sync/device-retire.ts
-init_resilient();
 import { createHash as createHash17, randomBytes as randomBytes6 } from "crypto";
 import { join as join119 } from "path";
 
@@ -131680,7 +131892,7 @@ init_timers();
 // packages/omo-native/package.json
 var package_default4 = {
   name: "omo-ai",
-  version: "5.1.77",
+  version: "5.1.78",
   type: "module",
   description: "OmO Native - the standalone omo command with the OMO extension built in: bun add -g omo-ai",
   bin: {
@@ -131697,7 +131909,7 @@ var package_default4 = {
     postinstall: "node bin/senpi-patch.mjs"
   },
   dependencies: {
-    "@code-yeongyu/senpi": "2026.11.18"
+    "@code-yeongyu/senpi": "2026.11.18-2"
   },
   repository: {
     type: "git",
@@ -131711,7 +131923,7 @@ async function accountOf(api, credentials, doFetch) {
   if (credentials.accountId !== undefined)
     return credentials.accountId;
   refuseIfLocalOnly("omo-native/device-service-handoff.ts accountOf");
-  const response = await doFetch(`${api}/v1/me`, { headers: { authorization: `Bearer ${credentials.accessToken}` } });
+  const response = await doFetch(`${api}/v1/me`, { headers: syncRequestHeaders(credentials.accessToken) });
   if (!response.ok)
     throw new Error(`the account read failed (${response.status})`);
   const body = await response.json();
@@ -131785,11 +131997,7 @@ function cliDeviceServiceHandoff(options) {
 // packages/omo-native/remote-entry.ts
 init_device_service2();
 
-// packages/memory-core/src/sync/crypto/trust-pin.ts
-init_resilient();
-
 // packages/memory-core/src/journal/fsync.ts
-init_resilient();
 var SKIPPABLE_SYNC_CODES = new Set(["ENOENT", "EISDIR", "EPERM", "EACCES", "EINVAL"]);
 
 // packages/memory-core/src/sync/crypto/vendor/sync-format/keys.ts
@@ -131824,9 +132032,6 @@ var power2 = (base, exponent) => {
 var D2 = mod2(-121665n * power2(121666n, P2 - 2n));
 var SQRT_MINUS_ONE2 = power2(2n, (P2 - 1n) / 4n);
 var keyCache2 = new Map;
-
-// packages/memory-core/src/sync/publication.ts
-init_resilient();
 
 // packages/memory-core/src/sync/crypto/trust-pin.ts
 var SOURCES = new Set(["pairing", "recovery", "creator"]);
@@ -131880,13 +132085,12 @@ init_device_service3();
 
 // packages/omo-senpi/src/components/remote/index.ts
 init_codes();
-
-// packages/omo-senpi/src/components/remote/factories.ts
-init_client5();
-
-// packages/omo-senpi/src/components/remote/index.ts
+init_factories();
 init_seams();
 
+// packages/omo-senpi/src/components/remote/device-address.ts
+init_plan_create();
+init_remote_ops();
 // packages/omo-senpi/src/components/thread/gateway/store.ts
 init_constants6();
 init_provenance_resolver();

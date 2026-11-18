@@ -9581,16 +9581,16 @@ function recordAt(value, key) {
 }
 
 // ../src/install/link-cached-plugin-agents.ts
-import { copyFile, lstat as lstat6, mkdir as mkdir4, readdir as readdir2, readFile as readFile8, rm as rm8, writeFile as writeFile6 } from "node:fs/promises";
-import { basename as basename4, join as join14 } from "node:path";
+import { copyFile, lstat as lstat6, mkdir as mkdir4, readdir as readdir2, readFile as readFile9, rm as rm8, writeFile as writeFile6 } from "node:fs/promises";
+import { basename as basename4, join as join15 } from "node:path";
 
 // ../src/install/agent-model-overrides.ts
-import { readFile as readFile5, rm as rm5, writeFile as writeFile4 } from "node:fs/promises";
-import { join as join10 } from "node:path";
+import { readFile as readFile6, rm as rm5, writeFile as writeFile4 } from "node:fs/promises";
+import { join as join11 } from "node:path";
 
 // ../src/install/preserved-agent-settings.ts
-import { lstat as lstat2, readFile as readFile4, readdir, writeFile as writeFile3 } from "node:fs/promises";
-import { join as join9 } from "node:path";
+import { lstat as lstat2, readFile as readFile5, readdir, writeFile as writeFile3 } from "node:fs/promises";
+import { join as join10 } from "node:path";
 
 // ../src/install/toml-section-editor.ts
 function findTomlSection(config, header) {
@@ -10136,22 +10136,90 @@ function stripTomlLineComment(line) {
   return line;
 }
 
-// ../../model-core/src/latest-models.ts
-var LATEST_MODEL_BY_FAMILY = {
-  claudeOpus: "claude-opus-5-5",
-  claudeSonnet: "claude-sonnet-5-5",
-  claudeHaiku: "claude-haiku-5-5",
-  claudeFable: "claude-fable-5-2",
-  gptAstra: "gpt-6-astra",
-  gptSol: "gpt-6.1-sol",
-  gptSolFast: "gpt-6.1-sol-fast",
-  gptLunaFast: "gpt-6-luna-fast",
-  glm: "glm-5.3",
-  glmFlash: "glm-5.3-flash",
-  kimi: "kimi-k3.1-pro",
-  kimiK3: "kimi-k3",
-  geminiPro: "gemini-4-argon"
+// ../src/install/codex-model-catalog.ts
+import { readFile as readFile4 } from "node:fs/promises";
+import { join as join9 } from "node:path";
+var CODEX_ASTRA_MODEL = "gpt-6-astra";
+var FALLBACK_CODEX_MODEL_CATALOG = {
+  current: {
+    model: CODEX_ASTRA_MODEL,
+    modelContextWindow: 600000,
+    modelReasoningEffort: "high",
+    planModeReasoningEffort: "xhigh"
+  },
+  managedProfiles: [
+    {
+      model: "gpt-5.5",
+      modelContextWindow: 400000,
+      modelReasoningEffort: "high",
+      planModeReasoningEffort: "xhigh"
+    },
+    {
+      model: "gpt-5.5",
+      modelContextWindow: 1e6,
+      modelReasoningEffort: "high",
+      planModeReasoningEffort: "xhigh"
+    },
+    { model: "gpt-5.5", modelContextWindow: 272000 },
+    {
+      model: "gpt-5.6-sol",
+      modelContextWindow: 650000,
+      modelReasoningEffort: "high",
+      planModeReasoningEffort: "xhigh"
+    }
+  ]
 };
+async function readCodexModelCatalog(codexPackageRoot) {
+  const catalogPath = join9(codexPackageRoot, "plugin", "model-catalog.json");
+  try {
+    const parsed = JSON.parse(await readFile4(catalogPath, "utf8"));
+    return parseCodexModelCatalog(parsed) ?? FALLBACK_CODEX_MODEL_CATALOG;
+  } catch (error) {
+    if (error instanceof Error)
+      return FALLBACK_CODEX_MODEL_CATALOG;
+    throw error;
+  }
+}
+function parseCodexModelCatalog(value) {
+  if (!isPlainRecord(value))
+    return null;
+  const current = value["current"];
+  const managedProfiles = value["managedProfiles"];
+  if (!isPlainRecord(current) || !Array.isArray(managedProfiles))
+    return null;
+  const model = current["model"];
+  const modelContextWindow = current["model_context_window"];
+  const modelReasoningEffort = current["model_reasoning_effort"];
+  const planModeReasoningEffort = current["plan_mode_reasoning_effort"];
+  if (typeof model !== "string" || typeof modelContextWindow !== "number" || typeof modelReasoningEffort !== "string" || typeof planModeReasoningEffort !== "string") {
+    return null;
+  }
+  const parsedManagedProfiles = [];
+  for (const profile of managedProfiles) {
+    if (!isPlainRecord(profile))
+      return null;
+    const match = profile["match"];
+    if (!isPlainRecord(match))
+      return null;
+    parsedManagedProfiles.push(parseProfileMatch(match));
+  }
+  return {
+    current: { model, modelContextWindow, modelReasoningEffort, planModeReasoningEffort },
+    managedProfiles: parsedManagedProfiles
+  };
+}
+function parseProfileMatch(match) {
+  const profile = {};
+  if (typeof match["model"] === "string")
+    profile.model = match["model"];
+  if (typeof match["model_context_window"] === "number")
+    profile.modelContextWindow = match["model_context_window"];
+  if (typeof match["model_reasoning_effort"] === "string")
+    profile.modelReasoningEffort = match["model_reasoning_effort"];
+  if (typeof match["plan_mode_reasoning_effort"] === "string")
+    profile.planModeReasoningEffort = match["plan_mode_reasoning_effort"];
+  return profile;
+}
 
 // ../src/install/managed-agent-reasoning-defaults.ts
 var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
@@ -10168,7 +10236,7 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-luna", effort: "low" },
-        current: { model: LATEST_MODEL_BY_FAMILY.gptAstra, effort: "low" }
+        current: { model: CODEX_ASTRA_MODEL, effort: "low" }
       }
     ]
   ],
@@ -10185,7 +10253,7 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-luna", effort: "low" },
-        current: { model: LATEST_MODEL_BY_FAMILY.gptAstra, effort: "low" }
+        current: { model: CODEX_ASTRA_MODEL, effort: "low" }
       }
     ]
   ],
@@ -10194,7 +10262,7 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
     [
       {
         previous: { model: "gpt-5.6-sol", effort: "high" },
-        current: { model: LATEST_MODEL_BY_FAMILY.gptAstra, effort: "high" }
+        current: { model: CODEX_ASTRA_MODEL, effort: "high" }
       }
     ]
   ],
@@ -10203,7 +10271,7 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
     [
       {
         previous: { model: "gpt-5.6-luna", effort: "high" },
-        current: { model: LATEST_MODEL_BY_FAMILY.gptAstra, effort: "high" }
+        current: { model: CODEX_ASTRA_MODEL, effort: "high" }
       }
     ]
   ],
@@ -10220,7 +10288,7 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-terra", effort: "high" },
-        current: { model: LATEST_MODEL_BY_FAMILY.gptAstra, effort: "high" }
+        current: { model: CODEX_ASTRA_MODEL, effort: "high" }
       }
     ]
   ],
@@ -10237,7 +10305,7 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-sol", effort: "high" },
-        current: { model: LATEST_MODEL_BY_FAMILY.gptAstra, effort: "high" }
+        current: { model: CODEX_ASTRA_MODEL, effort: "high" }
       }
     ]
   ],
@@ -10254,7 +10322,7 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-terra", effort: "high" },
-        current: { model: LATEST_MODEL_BY_FAMILY.gptAstra, effort: "high" }
+        current: { model: CODEX_ASTRA_MODEL, effort: "high" }
       }
     ]
   ],
@@ -10267,7 +10335,7 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-sol", effort: "medium" },
-        current: { model: LATEST_MODEL_BY_FAMILY.gptAstra, effort: "medium" }
+        current: { model: CODEX_ASTRA_MODEL, effort: "medium" }
       }
     ]
   ],
@@ -10280,7 +10348,7 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-terra", effort: "medium" },
-        current: { model: LATEST_MODEL_BY_FAMILY.gptAstra, effort: "medium" }
+        current: { model: CODEX_ASTRA_MODEL, effort: "medium" }
       }
     ]
   ],
@@ -10293,7 +10361,7 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-terra", effort: "high" },
-        current: { model: LATEST_MODEL_BY_FAMILY.gptAstra, effort: "high" }
+        current: { model: CODEX_ASTRA_MODEL, effort: "high" }
       }
     ]
   ],
@@ -10306,7 +10374,7 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-luna", effort: "high" },
-        current: { model: LATEST_MODEL_BY_FAMILY.gptAstra, effort: "high" }
+        current: { model: CODEX_ASTRA_MODEL, effort: "high" }
       }
     ]
   ],
@@ -10323,7 +10391,7 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-sol", effort: "low" },
-        current: { model: LATEST_MODEL_BY_FAMILY.gptAstra, effort: "low" }
+        current: { model: CODEX_ASTRA_MODEL, effort: "low" }
       }
     ]
   ]
@@ -10344,7 +10412,7 @@ function resolveManagedAgentReasoning(input) {
 
 // ../src/install/preserved-agent-settings.ts
 async function capturePreservedAgentReasoning(input) {
-  const agentsDir = join9(input.codexHome, "agents");
+  const agentsDir = join10(input.codexHome, "agents");
   if (!await exists(agentsDir))
     return new Map;
   const preserved = new Map;
@@ -10352,7 +10420,7 @@ async function capturePreservedAgentReasoning(input) {
   for (const entry of agentEntries) {
     if (!entry.name.endsWith(".toml"))
       continue;
-    const content = await readTextIfExists(join9(agentsDir, entry.name));
+    const content = await readTextIfExists(join10(agentsDir, entry.name));
     if (content === null)
       continue;
     const effort = extractReasoningEffort(content);
@@ -10366,7 +10434,7 @@ async function capturePreservedAgentReasoning(input) {
   return preserved;
 }
 async function capturePreservedAgentServiceTier(input) {
-  const agentsDir = join9(input.codexHome, "agents");
+  const agentsDir = join10(input.codexHome, "agents");
   if (!await exists(agentsDir))
     return new Map;
   const preserved = new Map;
@@ -10374,7 +10442,7 @@ async function capturePreservedAgentServiceTier(input) {
   for (const entry of agentEntries) {
     if (!entry.name.endsWith(".toml"))
       continue;
-    const content = await readTextIfExists(join9(agentsDir, entry.name));
+    const content = await readTextIfExists(join10(agentsDir, entry.name));
     if (content === null)
       continue;
     preserved.set(agentNameFromToml(entry.name), extractServiceTier(content));
@@ -10384,7 +10452,7 @@ async function capturePreservedAgentServiceTier(input) {
 async function restorePreservedReasoning(input) {
   if (input.value === undefined)
     return;
-  const content = await readFile4(input.target, "utf8");
+  const content = await readFile5(input.target, "utf8");
   const bundledEffort = extractReasoningEffort(content);
   const effort = resolveManagedAgentReasoning({
     agentName: input.agentName,
@@ -10404,7 +10472,7 @@ async function restorePreservedReasoning(input) {
 async function restorePreservedServiceTier(input) {
   if (!input.preserved)
     return;
-  const content = await readFile4(input.linkPath, "utf8");
+  const content = await readFile5(input.linkPath, "utf8");
   if (extractServiceTier(content) === input.value)
     return;
   const replacement = replaceTopLevelStringSetting(content, "service_tier", input.value, { insertIfMissing: true });
@@ -10415,7 +10483,7 @@ async function restorePreservedServiceTier(input) {
 async function restorePreservedModel(input) {
   if (input.value === null)
     return;
-  const content = await readFile4(input.linkPath, "utf8");
+  const content = await readFile5(input.linkPath, "utf8");
   if (extractModel(content) === input.value)
     return;
   const replacement = replaceTopLevelStringSetting(content, "model", input.value, { insertIfMissing: true });
@@ -10425,7 +10493,7 @@ async function restorePreservedModel(input) {
 }
 async function readTextIfExists(path) {
   try {
-    return await readFile4(path, "utf8");
+    return await readFile5(path, "utf8");
   } catch (error) {
     if (nodeErrorCode(error) === "ENOENT")
       return null;
@@ -10553,7 +10621,7 @@ async function writeAgentModelReceipts(codexHome, receipts) {
 async function applyAgentOverride(input) {
   if (input.override === undefined)
     return;
-  let content = await readFile5(input.linkPath, "utf8");
+  let content = await readFile6(input.linkPath, "utf8");
   if (input.override.model !== undefined) {
     content = replaceTopLevelStringSetting(content, "model", input.override.model, { insertIfMissing: true }).content;
   }
@@ -10565,7 +10633,7 @@ async function applyAgentOverride(input) {
   await writeFile4(input.linkPath, content);
 }
 function receiptPath(codexHome) {
-  return join10(codexHome, "agents", RECEIPT_FILE);
+  return join11(codexHome, "agents", RECEIPT_FILE);
 }
 function parseJson(content) {
   try {
@@ -10597,8 +10665,8 @@ function handEditedAgentModel(installedModel, receipt) {
 }
 
 // ../src/install/retired-managed-agent-purge.ts
-import { lstat as lstat3, readFile as readFile6, rm as rm6 } from "node:fs/promises";
-import { join as join11 } from "node:path";
+import { lstat as lstat3, readFile as readFile7, rm as rm6 } from "node:fs/promises";
+import { join as join12 } from "node:path";
 var RETIRED_MANAGED_AGENT_FILES = [
   {
     fileName: "codex-ultrawork-reviewer.toml",
@@ -10610,11 +10678,11 @@ var RETIRED_MANAGED_AGENT_FILES = [
   }
 ];
 async function purgeRetiredManagedAgentFiles(input) {
-  const agentsDir = join11(input.codexHome, "agents");
+  const agentsDir = join12(input.codexHome, "agents");
   if (!await exists2(agentsDir))
     return;
   for (const retiredAgent of RETIRED_MANAGED_AGENT_FILES) {
-    const agentPath = join11(agentsDir, retiredAgent.fileName);
+    const agentPath = join12(agentsDir, retiredAgent.fileName);
     if (!await exists2(agentPath))
       continue;
     const agentStat = await lstat3(agentPath);
@@ -10631,7 +10699,7 @@ function hasRequiredMarkers(content, markers) {
 }
 async function readTextIfExists2(path) {
   try {
-    return await readFile6(path, "utf8");
+    return await readFile7(path, "utf8");
   } catch (error) {
     if (nodeErrorCode2(error) === "ENOENT")
       return null;
@@ -10656,17 +10724,17 @@ function nodeErrorCode2(error) {
 
 // ../src/install/default-agent-role.ts
 import { createHash as createHash4 } from "node:crypto";
-import { lstat as lstat5, readFile as readFile7, rm as rm7 } from "node:fs/promises";
-import { join as join13 } from "node:path";
+import { lstat as lstat5, readFile as readFile8, rm as rm7 } from "node:fs/promises";
+import { join as join14 } from "node:path";
 
 // ../src/install/codex-config-atomic-write.ts
 import { lstat as lstat4, readlink, realpath, rename as rename3, unlink, writeFile as writeFile5 } from "node:fs/promises";
-import { basename as basename3, dirname as dirname6, isAbsolute as isAbsolute2, join as join12, resolve as resolve4 } from "node:path";
+import { basename as basename3, dirname as dirname6, isAbsolute as isAbsolute2, join as join13, resolve as resolve4 } from "node:path";
 var RENAME_RETRY_DELAYS_MS = [10, 25, 50];
 var RETRIABLE_RENAME_CODES = new Set(["EPERM", "EBUSY"]);
 async function writeFileAtomic(targetPath, data) {
   const writeTarget = await resolveSymlinkTarget(targetPath);
-  const temporaryPath = join12(dirname6(writeTarget), `.tmp-${basename3(writeTarget)}-${process.pid}-${Date.now()}`);
+  const temporaryPath = join13(dirname6(writeTarget), `.tmp-${basename3(writeTarget)}-${process.pid}-${Date.now()}`);
   await writeFile5(temporaryPath, data);
   try {
     await renameWithRetry(temporaryPath, writeTarget);
@@ -10772,9 +10840,9 @@ function tomlKeySegment(value) {
 // ../src/install/default-agent-role.ts
 var REGISTRATION = { name: "default", configFile: "./agents/default.toml" };
 async function installDefaultAgentRole(input) {
-  const target = join13(input.codexHome, "agents", "default.toml");
-  const receipt = join13(input.codexHome, "agents", ".lazycodex-default.sha256");
-  const configPath = join13(input.codexHome, "config.toml");
+  const target = join14(input.codexHome, "agents", "default.toml");
+  const receipt = join14(input.codexHome, "agents", ".lazycodex-default.sha256");
+  const configPath = join14(input.codexHome, "config.toml");
   const config = await readIfPresent(configPath);
   const entry = await lstat5(target).catch((error) => {
     if (error instanceof Error && "code" in error && error.code === "ENOENT")
@@ -10805,7 +10873,7 @@ async function installDefaultAgentRole(input) {
   if (foreign || existing !== null && !owned) {
     throw new Error("Preserved user-owned agents.default / agents/default.toml. Move it aside to install the LazyCodex fallback, or set [codex].agents.default.disable = true in omo.jsonc. Explicit LazyCodex roles remain required.");
   }
-  const worker = await readFile7(input.worker.path, "utf8");
+  const worker = await readFile8(input.worker.path, "utf8");
   const content = worker.replace(/^name\s*=\s*["']lazycodex-worker-medium["']\s*$/m, 'name = "default"');
   if (content === worker)
     throw new Error("Cannot derive default: medium worker has no matching internal name");
@@ -10815,7 +10883,7 @@ async function installDefaultAgentRole(input) {
 }
 async function readIfPresent(path) {
   try {
-    return await readFile7(path, "utf8");
+    return await readFile8(path, "utf8");
   } catch (error) {
     if (error instanceof Error && "code" in error && error.code === "ENOENT")
       return null;
@@ -10835,7 +10903,7 @@ async function linkCachedPluginAgents(input) {
     await writeManifest(input.pluginRoot, []);
     return [];
   }
-  const agentsDir = join14(input.codexHome, "agents");
+  const agentsDir = join15(input.codexHome, "agents");
   await mkdir4(agentsDir, { recursive: true });
   const previousReceipts = await readAgentModelReceipts(input.codexHome);
   const receipts = new Map;
@@ -10843,7 +10911,7 @@ async function linkCachedPluginAgents(input) {
   for (const agentPath of bundledAgents) {
     const agentFileName = basename4(agentPath);
     const agentName = agentNameFromToml2(agentFileName);
-    const linkPath = join14(agentsDir, agentFileName);
+    const linkPath = join15(agentsDir, agentFileName);
     receipts.set(agentName, await syncAgentFile({
       ...input,
       agentName,
@@ -10889,14 +10957,14 @@ async function syncAgentFile(input) {
     value: input.preservedServiceTier?.get(input.agentName) ?? null
   });
   await applyAgentOverride({ linkPath: input.linkPath, override });
-  const model = override?.model ?? extractModel(await readFile8(input.agentPath, "utf8"));
+  const model = override?.model ?? extractModel(await readFile9(input.agentPath, "utf8"));
   return {
     ...model === null ? {} : { model },
     ...override?.reasoningEffort === undefined ? {} : { reasoningEffort: override.reasoningEffort }
   };
 }
 async function discoverBundledAgents(pluginRoot) {
-  const componentsRoot = join14(pluginRoot, "components");
+  const componentsRoot = join15(pluginRoot, "components");
   if (!await exists3(componentsRoot))
     return [];
   const componentEntries = await readdir2(componentsRoot, { withFileTypes: true });
@@ -10904,14 +10972,14 @@ async function discoverBundledAgents(pluginRoot) {
   for (const entry of componentEntries) {
     if (!entry.isDirectory())
       continue;
-    const agentsRoot = join14(componentsRoot, entry.name, "agents");
+    const agentsRoot = join15(componentsRoot, entry.name, "agents");
     if (!await exists3(agentsRoot))
       continue;
     const agentEntries = await readdir2(agentsRoot, { withFileTypes: true });
     for (const file of agentEntries) {
       if (!file.isFile() || !file.name.endsWith(".toml"))
         continue;
-      agents.push(join14(agentsRoot, file.name));
+      agents.push(join15(agentsRoot, file.name));
     }
   }
   agents.sort();
@@ -10931,7 +10999,7 @@ async function prepareReplacement(linkPath) {
   await rm8(linkPath, { force: true });
 }
 async function writeManifest(pluginRoot, agentPaths) {
-  const manifestPath = join14(pluginRoot, MANIFEST_FILE);
+  const manifestPath = join15(pluginRoot, MANIFEST_FILE);
   const payload = { agents: [...agentPaths].sort() };
   await writeFile6(manifestPath, `${JSON.stringify(payload, null, "\t")}
 `);
@@ -10956,8 +11024,8 @@ function nodeErrorCode3(error) {
 }
 
 // ../src/install/codex-cache-bins.ts
-import { chmod as chmod2, lstat as lstat9, mkdir as mkdir5, readFile as readFile11, readdir as readdir4, readlink as readlink4, rm as rm11, stat as stat4, symlink, writeFile as writeFile7 } from "node:fs/promises";
-import { basename as basename5, isAbsolute as isAbsolute4, join as join18, relative as relative2, resolve as resolve6, sep } from "node:path";
+import { chmod as chmod2, lstat as lstat9, mkdir as mkdir5, readFile as readFile12, readdir as readdir4, readlink as readlink4, rm as rm11, stat as stat4, symlink, writeFile as writeFile7 } from "node:fs/promises";
+import { basename as basename5, isAbsolute as isAbsolute4, join as join19, relative as relative2, resolve as resolve6, sep } from "node:path";
 
 // ../src/install/codex-cache-command-shim.ts
 var COMMAND_SHIM_MARKER = ":: generated by oh-my-openagent Codex installer";
@@ -11000,15 +11068,15 @@ function windowsCommandShim(targetPath) {
 }
 
 // ../src/install/codex-cache-dangling-bins.ts
-import { lstat as lstat7, readFile as readFile9, readdir as readdir3, readlink as readlink2, rm as rm9, stat as stat3 } from "node:fs/promises";
-import { dirname as dirname7, isAbsolute as isAbsolute3, join as join15, resolve as resolve5 } from "node:path";
+import { lstat as lstat7, readFile as readFile10, readdir as readdir3, readlink as readlink2, rm as rm9, stat as stat3 } from "node:fs/promises";
+import { dirname as dirname7, isAbsolute as isAbsolute3, join as join16, resolve as resolve5 } from "node:path";
 async function removeDanglingManagedComponentBins(binDir, platform, managedBinNames) {
   const entries = await readdir3(binDir, { withFileTypes: true });
   for (const entry of entries) {
     const binName = managedBinNameForEntry(entry.name, platform);
     if (binName === null || !managedBinNames.has(binName))
       continue;
-    const linkPath = join15(binDir, entry.name);
+    const linkPath = join16(binDir, entry.name);
     if (platform === "win32") {
       await removeDanglingGeneratedCommandShim(linkPath);
       continue;
@@ -11041,7 +11109,7 @@ async function removeDanglingGeneratedCommandShim(linkPath) {
     const linkStat = await lstat7(linkPath);
     if (!linkStat.isFile())
       return;
-    const content = await readFile9(linkPath, "utf8");
+    const content = await readFile10(linkPath, "utf8");
     if (!content.includes(COMMAND_SHIM_MARKER))
       return;
     const target = extractCommandShimTarget(content);
@@ -11089,8 +11157,8 @@ function hasOmoCodexPluginPrefix(parts, endExclusive) {
 }
 
 // ../src/install/codex-cache-legacy-bins.ts
-import { lstat as lstat8, readFile as readFile10, readlink as readlink3, rm as rm10 } from "node:fs/promises";
-import { join as join16 } from "node:path";
+import { lstat as lstat8, readFile as readFile11, readlink as readlink3, rm as rm10 } from "node:fs/promises";
+import { join as join17 } from "node:path";
 var LEGACY_CODEX_COMPONENT_BINS = [
   { name: "omo", component: "ulw-loop" },
   { name: "codex-comment-checker", component: "comment-checker" },
@@ -11103,7 +11171,7 @@ var LEGACY_CODEX_COMPONENT_BINS = [
 var LEGACY_CODEX_COMPONENT_BIN_NAMES = LEGACY_CODEX_COMPONENT_BINS.map((entry) => entry.name);
 async function removeLegacyCodexComponentBins(binDir, platform) {
   for (const entry of LEGACY_CODEX_COMPONENT_BINS) {
-    const linkPath = join16(binDir, platform === "win32" ? `${entry.name}.cmd` : entry.name);
+    const linkPath = join17(binDir, platform === "win32" ? `${entry.name}.cmd` : entry.name);
     await removeLegacyCodexComponentBin(linkPath, entry.component, platform);
   }
 }
@@ -11120,7 +11188,7 @@ async function removeLegacyCodexComponentBin(linkPath, component, platform) {
     }
     if (!stat.isFile())
       return;
-    const content = await readFile10(linkPath, "utf8");
+    const content = await readFile11(linkPath, "utf8");
     if (content.includes(COMMAND_SHIM_MARKER))
       await rm10(linkPath, { force: true });
   } catch (error) {
@@ -11154,10 +11222,10 @@ function isNodeErrorWithCode2(error) {
 }
 
 // ../src/install/codex-cache-runtime-wrapper.ts
-import { join as join17 } from "node:path";
+import { join as join18 } from "node:path";
 var RUNTIME_WRAPPER_MARKER = "OMO_GENERATED_RUNTIME_WRAPPER";
 function posixRuntimeWrapper(binName, cliPath, codexHome, binDir, nodeCliPath) {
-  const ulwLoopBin = toPosixPath2(join17(binDir, "omo-ulw-loop"));
+  const ulwLoopBin = toPosixPath2(join18(binDir, "omo-ulw-loop"));
   const nodeCli = escapePosixDoubleQuoted(toPosixPath2(nodeCliPath));
   const escapedCliPath = escapePosixDoubleQuoted(toPosixPath2(cliPath));
   const escapedCodexHome = escapePosixDoubleQuoted(toPosixPath2(codexHome));
@@ -11204,7 +11272,7 @@ function posixRuntimeWrapper(binName, cliPath, codexHome, binDir, nodeCliPath) {
 `);
 }
 function windowsRuntimeWrapper(binName, cliPath, codexHome, binDir, nodeCliPath) {
-  const ulwLoopBin = join17(binDir, "omo-ulw-loop.cmd");
+  const ulwLoopBin = join18(binDir, "omo-ulw-loop.cmd");
   return [
     "@echo off",
     `rem ${RUNTIME_WRAPPER_MARKER}`,
@@ -11270,23 +11338,23 @@ async function linkCachedPluginBins(input) {
   return linked;
 }
 async function linkRootRuntimeBin(input) {
-  const cliPath = join18(input.repoRoot, "dist", "cli", "index.js");
+  const cliPath = join19(input.repoRoot, "dist", "cli", "index.js");
   const platform = input.platform ?? process.platform;
-  const legacyPath = join18(input.binDir, platform === "win32" ? "omo.cmd" : "omo");
+  const legacyPath = join19(input.binDir, platform === "win32" ? "omo.cmd" : "omo");
   if (!await isFile2(cliPath)) {
     await removeGeneratedRuntimeWrapper(legacyPath);
     return null;
   }
   const binName = "omo-agent-toolkit";
-  const nodeCliPath = join18(input.repoRoot, "dist", "cli-node", "index.js");
+  const nodeCliPath = join19(input.repoRoot, "dist", "cli-node", "index.js");
   await mkdir5(input.binDir, { recursive: true });
   if (platform === "win32") {
-    const linkPath = join18(input.binDir, `${binName}.cmd`);
+    const linkPath = join19(input.binDir, `${binName}.cmd`);
     await replaceRuntimeWrapper(linkPath, windowsRuntimeWrapper(binName, cliPath, input.codexHome, input.binDir, nodeCliPath));
     await removeGeneratedRuntimeWrapper(legacyPath);
     return { name: binName, path: linkPath, target: cliPath };
   }
-  const linkPath = join18(input.binDir, binName);
+  const linkPath = join19(input.binDir, binName);
   await replaceRuntimeWrapper(linkPath, posixRuntimeWrapper(binName, cliPath, input.codexHome, input.binDir, nodeCliPath));
   await chmod2(linkPath, 493);
   await removeGeneratedRuntimeWrapper(legacyPath);
@@ -11294,11 +11362,11 @@ async function linkRootRuntimeBin(input) {
 }
 async function linkCachedPluginBin(binDir, link, platform) {
   if (platform === "win32") {
-    const linkPath = join18(binDir, `${link.name}.cmd`);
+    const linkPath = join19(binDir, `${link.name}.cmd`);
     await replaceCommandShim(linkPath, link.target);
     return linkPath;
   }
-  const linkPath = join18(binDir, link.name);
+  const linkPath = join19(binDir, link.name);
   await replaceSymlink(linkPath, link.target);
   return linkPath;
 }
@@ -11319,21 +11387,21 @@ async function discoverPackageBins(root) {
 async function collectPackageBins(directory, root, links) {
   const entries = await readdir4(directory, { withFileTypes: true });
   if (entries.some((entry) => entry.isFile() && entry.name === "package.json")) {
-    await appendPackageBinLinks(join18(directory, "package.json"), directory, root, links);
+    await appendPackageBinLinks(join19(directory, "package.json"), directory, root, links);
   }
   for (const entry of entries) {
     if (!entry.isDirectory())
       continue;
     if (entry.name === "node_modules" || entry.name === ".git" || entry.name === "dist")
       continue;
-    const childPath = join18(directory, entry.name);
+    const childPath = join19(directory, entry.name);
     if (!childPath.startsWith(root))
       continue;
     await collectPackageBins(childPath, root, links);
   }
 }
 async function appendPackageBinLinks(packageJsonPath, packageRoot, root, links) {
-  const packageJson = JSON.parse(await readFile11(packageJsonPath, "utf8"));
+  const packageJson = JSON.parse(await readFile12(packageJsonPath, "utf8"));
   if (!isPlainRecord(packageJson))
     return;
   const packageName = packageJson.name;
@@ -11409,7 +11477,7 @@ async function removeGeneratedRuntimeWrapper(path) {
 }
 async function readGeneratedWrapperContent(path) {
   try {
-    return await readFile11(path, "utf8");
+    return await readFile12(path, "utf8");
   } catch (error) {
     if (isNodeErrorWithCode(error) && (error.code === "ENOENT" || error.code === "EISDIR"))
       return "";
@@ -11423,7 +11491,7 @@ async function existingNonRuntimeWrapper(path) {
       return false;
     if (!stat.isFile())
       return true;
-    const content = await readFile11(path, "utf8");
+    const content = await readFile12(path, "utf8");
     return !content.includes(RUNTIME_WRAPPER_MARKER);
   } catch (error) {
     if (isNodeErrorWithCode(error) && error.code === "ENOENT")
@@ -11436,7 +11504,7 @@ async function existingNonShim(path) {
     const stat = await lstat9(path);
     if (!stat.isFile())
       return true;
-    const content = await readFile11(path, "utf8");
+    const content = await readFile12(path, "utf8");
     if (content.includes(COMMAND_SHIM_MARKER))
       return false;
     throw new Error(`${path} already exists and is not a generated command shim`);
@@ -11906,90 +11974,6 @@ function isRootSetting(line, key) {
     return false;
   const match = trimmed.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=/);
   return match?.[1] === key;
-}
-
-// ../src/install/codex-model-catalog.ts
-import { readFile as readFile12 } from "node:fs/promises";
-import { join as join19 } from "node:path";
-var FALLBACK_CODEX_MODEL_CATALOG = {
-  current: {
-    model: LATEST_MODEL_BY_FAMILY.gptAstra,
-    modelContextWindow: 600000,
-    modelReasoningEffort: "high",
-    planModeReasoningEffort: "xhigh"
-  },
-  managedProfiles: [
-    {
-      model: "gpt-5.5",
-      modelContextWindow: 400000,
-      modelReasoningEffort: "high",
-      planModeReasoningEffort: "xhigh"
-    },
-    {
-      model: "gpt-5.5",
-      modelContextWindow: 1e6,
-      modelReasoningEffort: "high",
-      planModeReasoningEffort: "xhigh"
-    },
-    { model: "gpt-5.5", modelContextWindow: 272000 },
-    {
-      model: "gpt-5.6-sol",
-      modelContextWindow: 650000,
-      modelReasoningEffort: "high",
-      planModeReasoningEffort: "xhigh"
-    }
-  ]
-};
-async function readCodexModelCatalog(codexPackageRoot) {
-  const catalogPath = join19(codexPackageRoot, "plugin", "model-catalog.json");
-  try {
-    const parsed = JSON.parse(await readFile12(catalogPath, "utf8"));
-    return parseCodexModelCatalog(parsed) ?? FALLBACK_CODEX_MODEL_CATALOG;
-  } catch (error) {
-    if (error instanceof Error)
-      return FALLBACK_CODEX_MODEL_CATALOG;
-    throw error;
-  }
-}
-function parseCodexModelCatalog(value) {
-  if (!isPlainRecord(value))
-    return null;
-  const current = value["current"];
-  const managedProfiles = value["managedProfiles"];
-  if (!isPlainRecord(current) || !Array.isArray(managedProfiles))
-    return null;
-  const model = current["model"];
-  const modelContextWindow = current["model_context_window"];
-  const modelReasoningEffort = current["model_reasoning_effort"];
-  const planModeReasoningEffort = current["plan_mode_reasoning_effort"];
-  if (typeof model !== "string" || typeof modelContextWindow !== "number" || typeof modelReasoningEffort !== "string" || typeof planModeReasoningEffort !== "string") {
-    return null;
-  }
-  const parsedManagedProfiles = [];
-  for (const profile of managedProfiles) {
-    if (!isPlainRecord(profile))
-      return null;
-    const match = profile["match"];
-    if (!isPlainRecord(match))
-      return null;
-    parsedManagedProfiles.push(parseProfileMatch(match));
-  }
-  return {
-    current: { model, modelContextWindow, modelReasoningEffort, planModeReasoningEffort },
-    managedProfiles: parsedManagedProfiles
-  };
-}
-function parseProfileMatch(match) {
-  const profile = {};
-  if (typeof match["model"] === "string")
-    profile.model = match["model"];
-  if (typeof match["model_context_window"] === "number")
-    profile.modelContextWindow = match["model_context_window"];
-  if (typeof match["model_reasoning_effort"] === "string")
-    profile.modelReasoningEffort = match["model_reasoning_effort"];
-  if (typeof match["plan_mode_reasoning_effort"] === "string")
-    profile.planModeReasoningEffort = match["plan_mode_reasoning_effort"];
-  return profile;
 }
 
 // ../src/install/codex-multi-agent-mode-config.ts

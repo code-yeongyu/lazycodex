@@ -2133,7 +2133,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.78",
+    version: "5.1.79",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2331,7 +2331,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.11.18-2",
+      "@code-yeongyu/senpi": "2026.11.18-3",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -2404,18 +2404,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.78",
-      "oh-my-opencode-darwin-x64": "5.1.78",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.78",
-      "oh-my-opencode-linux-arm64": "5.1.78",
-      "oh-my-opencode-linux-arm64-musl": "5.1.78",
-      "oh-my-opencode-linux-x64": "5.1.78",
-      "oh-my-opencode-linux-x64-baseline": "5.1.78",
-      "oh-my-opencode-linux-x64-musl": "5.1.78",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.78",
-      "oh-my-opencode-windows-arm64": "5.1.78",
-      "oh-my-opencode-windows-x64": "5.1.78",
-      "oh-my-opencode-windows-x64-baseline": "5.1.78"
+      "oh-my-opencode-darwin-arm64": "5.1.79",
+      "oh-my-opencode-darwin-x64": "5.1.79",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.79",
+      "oh-my-opencode-linux-arm64": "5.1.79",
+      "oh-my-opencode-linux-arm64-musl": "5.1.79",
+      "oh-my-opencode-linux-x64": "5.1.79",
+      "oh-my-opencode-linux-x64-baseline": "5.1.79",
+      "oh-my-opencode-linux-x64-musl": "5.1.79",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.79",
+      "oh-my-opencode-windows-arm64": "5.1.79",
+      "oh-my-opencode-windows-x64": "5.1.79",
+      "oh-my-opencode-windows-x64-baseline": "5.1.79"
     },
     overrides: {
       hono: "^4.13.8",
@@ -93008,7 +93008,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.78",
+    version: "5.1.79",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -98175,8 +98175,6 @@ async function connectDeviceService(options) {
           throw markNotSent(error);
         }
       }
-      if (endpoint === undefined)
-        throw new NotSentError("unsupported", "the device lists no engine endpoint");
       const waitMs = options?.waitMs === undefined ? undefined : options.waitMs - (timers.now() - started);
       if (waitMs !== undefined && waitMs <= 0)
         throw new NotSentError("request_timeout", "the wait ran out during the endpoint lookup; nothing was sent");
@@ -103884,6 +103882,7 @@ var init_close_ladder = __esm(() => {
   init_port();
   SESSION_GONE = new Set([
     "unknown_session",
+    "route_unlisted",
     "session_identity_mismatch",
     "session_not_attached",
     "not_attached"
@@ -104040,7 +104039,10 @@ var init_params = __esm(() => {
   ThreadCloseParams = _Object_({
     thread: SelfOrThread,
     idempotency_key: IdempotencyKey,
-    all_scope: AllScope
+    all_scope: AllScope,
+    force: Optional(Boolean2({
+      description: "Close even when the thread has messages it has not read yet; they are dropped and listed in dropped_deliveries."
+    }))
   });
   ThreadHandoffParams = _Object_({
     thread: String2({
@@ -108731,7 +108733,7 @@ var init_metadata = __esm(() => {
     {
       name: "thread_close",
       label: "Close session",
-      description: "Closes a session. Omit thread or pass self to close this session. thread accepts the thread value of a thread_list row (tool.thread_list() in an eval cell), an alias, or a unique name; the result is closed true or false plus a reason" + ROUTE_TO_TASK,
+      description: "Closes a session. Omit thread or pass self to close this session. thread accepts the thread value of a thread_list row (tool.thread_list() in an eval cell), an alias, or a unique name; the result is closed true or false plus a reason. A thread with messages it has not read is refused, naming them; pass force: true to close it anyway (dropped_deliveries lists them)" + ROUTE_TO_TASK,
       exposure: THREAD_TOOL_EXPOSURE
     },
     {
@@ -108924,7 +108926,10 @@ var init_relay_control = __esm(() => {
 });
 
 // packages/omo-senpi/src/components/thread/remote/attach-pool.ts
-var init_attach_pool = () => {};
+var CATALOG_RECORD = "get_available_models", HELD_RECORDS;
+var init_attach_pool = __esm(() => {
+  HELD_RECORDS = new Set([CATALOG_RECORD, "get_protocol_info"]);
+});
 
 // packages/omo-senpi/src/components/thread/remote/session-state.ts
 var ACCESS_ENDED, ACCESS_REFUSED, SESSION_LEFT, SESSION_GONE2;
@@ -108970,7 +108975,12 @@ var init_device_service3 = __esm(() => {
   init_attach_pool();
   init_remote_watch();
   init_call_deadline();
-  READ_ONLY_RECORDS = new Set(["get_state", "get_messages", "get_entries"]);
+  READ_ONLY_RECORDS = new Set([
+    "get_state",
+    "get_messages",
+    "get_entries",
+    "get_protocol_info"
+  ]);
   MARKED_RECORDS = new Set(["admit_external_message"]);
   LOOKUP_NONE = new Set(["session_not_found", "peer_not_found", "peer_not_session_client"]);
 });
@@ -124758,8 +124768,8 @@ var package_default3 = {
   },
   dependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.11.18-2",
-    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.18-2",
+    "@code-yeongyu/senpi": "2026.11.18-3",
+    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.18-3",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/boulder-state": "workspace:*",
@@ -131806,6 +131816,9 @@ var forgetDeviceService = async (options) => {
   }
   return "forgotten";
 };
+// packages/device-service-core/src/cold-wake/host.ts
+var UNREPAIRABLE = new Set(["EPERM", "EACCES", "EROFS"]);
+
 // packages/device-service-core/src/cold-wake/service-table.ts
 var SERVICE_TABLE_ENV = "OMO_RELAYD_SERVICES";
 
@@ -131971,7 +131984,7 @@ init_timers();
 // packages/omo-native/package.json
 var package_default4 = {
   name: "omo-ai",
-  version: "5.1.78",
+  version: "5.1.79",
   type: "module",
   description: "OmO Native - the standalone omo command with the OMO extension built in: bun add -g omo-ai",
   bin: {
@@ -131988,7 +132001,7 @@ var package_default4 = {
     postinstall: "node bin/senpi-patch.mjs"
   },
   dependencies: {
-    "@code-yeongyu/senpi": "2026.11.18-2"
+    "@code-yeongyu/senpi": "2026.11.18-3"
   },
   repository: {
     type: "git",
@@ -132300,7 +132313,7 @@ var USAGE_ENTRIES = [
   },
   {
     verbs: ["close"],
-    text: "  close <session>                          end the session; also takes <device>/<session>"
+    text: "  close <session> [--force]                end the session; --force also drops messages it has not read"
   }
 ];
 var REMOTE_USAGE = [USAGE_HEAD, ...USAGE_ENTRIES.map((entry) => entry.text)].join(`

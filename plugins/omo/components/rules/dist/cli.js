@@ -3884,6 +3884,12 @@ var POST_COMPACT_MIN_RESERVED_TOKENS = 8000;
 var POST_COMPACT_MIN_GUIDE_CHARS = 500;
 var FALLBACK_CONTEXT_WINDOW_TOKENS = 200000;
 var MODEL_CONTEXT_BUDGETS = [
+  { slug: "gpt-6.2-astra", contextWindowTokens: 600000, effectivePercent: DEFAULT_EFFECTIVE_CONTEXT_WINDOW_PERCENT },
+  {
+    slug: "gpt-6.2-astra-fast",
+    contextWindowTokens: 600000,
+    effectivePercent: DEFAULT_EFFECTIVE_CONTEXT_WINDOW_PERCENT
+  },
   { slug: "gpt-6-astra", contextWindowTokens: 600000, effectivePercent: DEFAULT_EFFECTIVE_CONTEXT_WINDOW_PERCENT },
   {
     slug: "gpt-6-astra-fast",

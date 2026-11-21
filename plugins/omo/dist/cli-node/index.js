@@ -2133,7 +2133,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.79",
+    version: "5.1.81",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2141,6 +2141,7 @@ var init_package = __esm(() => {
     workspaces: [
       "packages/rules-engine",
       "packages/delegate-core",
+      "packages/thread-address-core",
       "packages/ast-grep-mcp",
       "packages/git-bash-mcp",
       "packages/mcp-stdio-core",
@@ -2285,8 +2286,8 @@ var init_package = __esm(() => {
       "test:model-capabilities": "bun test --timeout 20000 packages/model-core/src/model-capability-aliases.test.ts packages/model-core/src/model-capability-guardrails.test.ts packages/model-core/src/model-capabilities.test.ts packages/omo-opencode/src/cli/doctor/checks/model-resolution.test.ts --bail",
       "check:copy": "bun script/check-copy.ts",
       typecheck: "bun run check:copy && bun check --no-script --all -p tsconfig.json && bun run typecheck:script && bun run typecheck:packages && bun run typecheck:skill-scripts",
-      "typecheck:skill-scripts": "bun check --no-script --all -p packages/shared-skills/skills/frontend/scripts/detect/tsconfig.json",
-      "typecheck:packages": "bun check --no-script --all -p packages/rules-engine/tsconfig.json && bun check --no-script --all -p packages/delegate-core/tsconfig.json && bun check --no-script --all -p packages/mcp-stdio-core/tsconfig.json && bun check --no-script --all -p packages/mcp-client-core/tsconfig.json && bun check --no-script --all -p packages/git-bash-mcp/tsconfig.json && bun check --no-script --all -p packages/ast-grep-mcp/tsconfig.json && bun check --no-script --all -p packages/lsp-core/tsconfig.json && bun check --no-script --all -p packages/utils/tsconfig.json && bun check --no-script --all -p packages/device-service-core/tsconfig.json && bun check --no-script --all -p packages/model-core/tsconfig.json && bun check --no-script --all -p packages/omo-config-core/tsconfig.json && bun check --no-script --all -p packages/prompts-core/tsconfig.json && bun check --no-script --all -p packages/comment-checker-core/tsconfig.json && bun check --no-script --all -p packages/hashline-core/tsconfig.json && bun check --no-script --all -p packages/tmux-core/tsconfig.json && bun check --no-script --all -p packages/team-core/tsconfig.json && bun check --no-script --all -p packages/openclaw-core/tsconfig.json && bun check --no-script --all -p packages/boulder-state/tsconfig.json && bun check --no-script --all -p packages/isolation-core/tsconfig.json && bun check --no-script --all -p packages/memory-core/tsconfig.json && bun check --no-script --all -p packages/telemetry-core/tsconfig.json && bun check --no-script --all -p packages/claude-code-compat-core/tsconfig.json && bun check --no-script --all -p packages/skills-loader-core/tsconfig.json && bun check --no-script --all -p packages/agents-md-core/tsconfig.json && bun check --no-script --all -p packages/omo-codex/plugin/shared/tsconfig.json && bun check --no-script --all -p packages/omo-codex/tsconfig.json && bun check --no-script --all -p packages/omo-senpi/tsconfig.json && bun check --no-script --all -p packages/senpi-task/tsconfig.json && bun check --no-script --all -p packages/omo-opencode/tsconfig.json && bun check --no-script --all -p packages/omo-native/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-protocol/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-engine/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-prelude/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-sdk/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-service/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-tool/tsconfig.json && bun check --no-script --all -p packages/omo-computer-protocol/tsconfig.json && bun check --no-script --all -p packages/omo-computer-sdk/tsconfig.json && bun check --no-script --all -p packages/omo-computer-engine/tsconfig.json && bun check --no-script --all -p packages/omo-computer-hand/tsconfig.json && bun check --no-script --all -p packages/omo-computer-carriers/tsconfig.json && bun check --no-script --all -p packages/omo-computer-tool/tsconfig.json && bun check --no-script --all -p packages/omo-computer-prelude/tsconfig.json",
+      "typecheck:skill-scripts": "bun check --no-script --all -p packages/shared-skills/skills/frontend/scripts/detect/tsconfig.json && bun check --no-script --all -p packages/omo-senpi/skills/omo-relay/scripts/sdk/tsconfig.json",
+      "typecheck:packages": "bun check --no-script --all -p packages/rules-engine/tsconfig.json && bun check --no-script --all -p packages/delegate-core/tsconfig.json && bun check --no-script --all -p packages/thread-address-core/tsconfig.json && bun check --no-script --all -p packages/thread-address-core/tsconfig.test.json && bun check --no-script --all -p packages/mcp-stdio-core/tsconfig.json && bun check --no-script --all -p packages/mcp-client-core/tsconfig.json && bun check --no-script --all -p packages/git-bash-mcp/tsconfig.json && bun check --no-script --all -p packages/ast-grep-mcp/tsconfig.json && bun check --no-script --all -p packages/lsp-core/tsconfig.json && bun check --no-script --all -p packages/utils/tsconfig.json && bun check --no-script --all -p packages/device-service-core/tsconfig.json && bun check --no-script --all -p packages/model-core/tsconfig.json && bun check --no-script --all -p packages/omo-config-core/tsconfig.json && bun check --no-script --all -p packages/prompts-core/tsconfig.json && bun check --no-script --all -p packages/comment-checker-core/tsconfig.json && bun check --no-script --all -p packages/hashline-core/tsconfig.json && bun check --no-script --all -p packages/tmux-core/tsconfig.json && bun check --no-script --all -p packages/team-core/tsconfig.json && bun check --no-script --all -p packages/openclaw-core/tsconfig.json && bun check --no-script --all -p packages/boulder-state/tsconfig.json && bun check --no-script --all -p packages/isolation-core/tsconfig.json && bun check --no-script --all -p packages/memory-core/tsconfig.json && bun check --no-script --all -p packages/telemetry-core/tsconfig.json && bun check --no-script --all -p packages/claude-code-compat-core/tsconfig.json && bun check --no-script --all -p packages/skills-loader-core/tsconfig.json && bun check --no-script --all -p packages/agents-md-core/tsconfig.json && bun check --no-script --all -p packages/omo-codex/plugin/shared/tsconfig.json && bun check --no-script --all -p packages/omo-codex/tsconfig.json && bun check --no-script --all -p packages/omo-senpi/tsconfig.json && bun check --no-script --all -p packages/senpi-task/tsconfig.json && bun check --no-script --all -p packages/omo-opencode/tsconfig.json && bun check --no-script --all -p packages/omo-native/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-protocol/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-engine/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-prelude/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-sdk/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-service/tsconfig.json && bun check --no-script --all -p packages/senpi-desktop-tool/tsconfig.json && bun check --no-script --all -p packages/omo-computer-protocol/tsconfig.json && bun check --no-script --all -p packages/omo-computer-sdk/tsconfig.json && bun check --no-script --all -p packages/omo-computer-engine/tsconfig.json && bun check --no-script --all -p packages/omo-computer-hand/tsconfig.json && bun check --no-script --all -p packages/omo-computer-carriers/tsconfig.json && bun check --no-script --all -p packages/omo-computer-tool/tsconfig.json && bun check --no-script --all -p packages/omo-computer-prelude/tsconfig.json",
       "typecheck:script": "bun check --no-script --all -p script/tsconfig.json",
       test: "bun test --timeout 20000",
       "changelog:section": "bun script/changelog-section.ts",
@@ -2302,6 +2303,7 @@ var init_package = __esm(() => {
       "fmt:check": "bun fmt --no-script --check",
       "lint:ratchet": "bun script/lint-ratchet.ts",
       "knip:check": "knip --no-progress --no-config-hints",
+      "qa:rpc-relay-parity": "bun script/qa/rpc-relay-parity-live.ts",
       "lint:ratchet:update": "bun script/lint-ratchet.ts --update",
       lint: "bun run check:copy && bun run fmt:check && oxlint packages/lsp-tools-mcp packages/lsp-daemon packages/web packages/omo-codex/plugin/components/comment-checker packages/omo-codex/plugin/components/lazycodex-executor-verify packages/omo-codex/plugin/components/lsp packages/omo-codex/plugin/components/rules packages/omo-codex/plugin/components/telemetry packages/omo-codex/plugin/components/ultrawork packages/omo-codex/plugin/components/ulw-execute-continuation packages/omo-codex/plugin/components/ulw-loop"
     },
@@ -2331,7 +2333,7 @@ var init_package = __esm(() => {
     },
     devDependencies: {
       "@clack/prompts": "^1.8.1",
-      "@code-yeongyu/senpi": "2026.11.18-3",
+      "@code-yeongyu/senpi": "2026.11.19-5",
       "@modelcontextprotocol/sdk": "^1.30.0",
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
@@ -2340,6 +2342,7 @@ var init_package = __esm(() => {
       "@oh-my-opencode/claude-code-compat-core": "workspace:*",
       "@oh-my-opencode/comment-checker-core": "workspace:*",
       "@oh-my-opencode/delegate-core": "workspace:*",
+      "@oh-my-opencode/thread-address-core": "workspace:*",
       "@oh-my-opencode/git-bash-mcp": "workspace:*",
       "@oh-my-opencode/hashline-core": "workspace:*",
       "@oh-my-opencode/isolation-core": "workspace:*",
@@ -2404,18 +2407,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.79",
-      "oh-my-opencode-darwin-x64": "5.1.79",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.79",
-      "oh-my-opencode-linux-arm64": "5.1.79",
-      "oh-my-opencode-linux-arm64-musl": "5.1.79",
-      "oh-my-opencode-linux-x64": "5.1.79",
-      "oh-my-opencode-linux-x64-baseline": "5.1.79",
-      "oh-my-opencode-linux-x64-musl": "5.1.79",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.79",
-      "oh-my-opencode-windows-arm64": "5.1.79",
-      "oh-my-opencode-windows-x64": "5.1.79",
-      "oh-my-opencode-windows-x64-baseline": "5.1.79"
+      "oh-my-opencode-darwin-arm64": "5.1.81",
+      "oh-my-opencode-darwin-x64": "5.1.81",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.81",
+      "oh-my-opencode-linux-arm64": "5.1.81",
+      "oh-my-opencode-linux-arm64-musl": "5.1.81",
+      "oh-my-opencode-linux-x64": "5.1.81",
+      "oh-my-opencode-linux-x64-baseline": "5.1.81",
+      "oh-my-opencode-linux-x64-musl": "5.1.81",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.81",
+      "oh-my-opencode-windows-arm64": "5.1.81",
+      "oh-my-opencode-windows-x64": "5.1.81",
+      "oh-my-opencode-windows-x64-baseline": "5.1.81"
     },
     overrides: {
       hono: "^4.13.8",
@@ -9607,45 +9610,27 @@ var init_category_model_requirements = __esm(() => {
       ]
     },
     ultrabrain: {
+      requiresAnyModel: true,
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptAstra, variant: "max" },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6-astra", variant: "max" },
-        { providers: ["github-copilot"], model: "gpt-6-astra", variant: "max" },
         {
           providers: ["openai", "chatgpt-subscription", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.gptAstra,
           variant: "max"
-        },
-        { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-6-astra", variant: "max" },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-5.6-sol", variant: "max" },
-        { providers: ["github-copilot"], model: "gpt-5.6-sol", variant: "max" },
-        { providers: ["openai", "chatgpt-subscription", "opencode"], model: "gpt-5.6-sol", variant: "max" }
+        }
       ]
     },
     "deep-low": {
+      requiresAnyModel: true,
       fallbackChain: [
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "medium" },
-        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSolFast, variant: "medium" },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6.1-sol", variant: "medium" },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-6.1-sol-fast", variant: "medium" },
-        {
-          providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
-          model: "gpt-5.6-sol",
-          variant: "medium"
-        },
-        { providers: ["openai", "chatgpt-subscription"], model: "gpt-5.6-sol-fast", variant: "medium" }
+        { providers: ["openai", "chatgpt-subscription"], model: LATEST_MODEL_BY_FAMILY.gptSol, variant: "medium" }
       ]
     },
     "deep-high": {
+      requiresAnyModel: true,
       fallbackChain: [
         {
           providers: ["openai", "chatgpt-subscription", "opencode"],
           model: LATEST_MODEL_BY_FAMILY.gptAstra,
-          variant: "high"
-        },
-        {
-          providers: ["openai", "chatgpt-subscription", "github-copilot", "opencode"],
-          model: "gpt-6-astra",
           variant: "high"
         }
       ]
@@ -11537,6 +11522,14 @@ var init_agent_display_names = __esm(() => {
     "athena-junior (council)": "athena-junior"
   };
 });
+// packages/omo-opencode/src/shared/model-requirements.ts
+var init_model_requirements2 = __esm(() => {
+  init_src2();
+});
+
+// packages/omo-opencode/src/shared/provider-model-id-transform.ts
+var init_provider_model_id_transform2 = () => {};
+
 // packages/omo-opencode/src/tools/delegate-task/google-categories.ts
 var VISUAL_CATEGORY_PROMPT_APPEND = `<Category_Context>
 You are working on VISUAL/UI tasks.
@@ -11829,26 +11822,20 @@ You are working on tasks that don't fit specific categories but require moderate
 </Category_Context>`, UNSPECIFIED_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits, effort is moderate, and scope stays within a few files/modules. Prefer any matching specialist category.</Selection_Gate>
 <Caller_Warning>Provide explicit must-do steps, forbidden scope, and concrete success criteria.</Caller_Warning>`, UNSPECIFIED_HIGH_CATEGORY_PROMPT_APPEND = `<Category_Context>
 You are working on tasks that don't fit specific categories but require substantial effort.
-</Category_Context>`, UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits and substantial effort spans systems/modules with broad impact. Use unspecified-low for contained moderate work.</Selection_Gate>`, DEEP_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Of the two deep lanes this is the default: the child settles its decisions from what it reads. When unsure, choose deep-low; a misrouted child returns \`ESCALATE: deep-high\` after one cheap attempt, and you re-spawn the same brief as deep-high with its findings.</Selection_Gate>`, DEEP_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Route here only when you can name the decision evidence cannot settle: a trade-off with no single right answer, a contract change crossing a package or process boundary, a mechanism with no in-repo pattern to copy, or correctness argued from invariants rather than observed in a test. Wide scope with easy decisions is deep-low or unspecified-high; reasoning as the deliverable is ultrabrain.</Selection_Gate>`, DEEP_LOW_GATE_MODELS, DEEP_HIGH_GATE_MODELS, OPENAI_CATEGORIES;
+</Category_Context>`, UNSPECIFIED_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Use only when no specialist category fits and substantial effort spans systems/modules with broad impact. Use unspecified-low for contained moderate work.</Selection_Gate>`, DEEP_LOW_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Of the two deep lanes this is the default: the child settles its decisions from what it reads. When unsure, choose deep-low; a misrouted child returns \`ESCALATE: deep-high\` after one cheap attempt, and you re-spawn the same brief as deep-high with its findings.</Selection_Gate>`, DEEP_HIGH_CATEGORY_CALLER_GUIDANCE = `<Selection_Gate>Route here only when you can name the decision evidence cannot settle: a trade-off with no single right answer, a contract change crossing a package or process boundary, a mechanism with no in-repo pattern to copy, or correctness argued from invariants rather than observed in a test. Wide scope with easy decisions is deep-low or unspecified-high; reasoning as the deliverable is ultrabrain.</Selection_Gate>`, GPT_ASTRA_GATE_MODELS, DEEP_LOW_GATE_MODELS, OPENAI_CATEGORIES;
 var init_openai_categories = __esm(() => {
   init_types();
   init_latest_models();
-  DEEP_LOW_GATE_MODELS = [
-    LATEST_MODEL_BY_FAMILY.gptSol,
-    LATEST_MODEL_BY_FAMILY.gptSolFast,
-    "gpt-6.1-sol",
-    "gpt-6.1-sol-fast",
-    "gpt-5.6-sol-fast",
-    "gpt-5.6-sol"
-  ];
-  DEEP_HIGH_GATE_MODELS = [LATEST_MODEL_BY_FAMILY.gptAstra, "gpt-6-astra"];
+  GPT_ASTRA_GATE_MODELS = [LATEST_MODEL_BY_FAMILY.gptAstra];
+  DEEP_LOW_GATE_MODELS = [LATEST_MODEL_BY_FAMILY.gptSol];
   OPENAI_CATEGORIES = [
     {
       name: "ultrabrain",
       config: { model: `openai/${LATEST_MODEL_BY_FAMILY.gptAstra}`, variant: "max" },
       description: "Use ONLY for genuinely hard, logic-heavy tasks. Give clear goals only, not step-by-step instructions.",
       promptAppend: ULTRABRAIN_CATEGORY_PROMPT_APPEND,
-      resolvePromptAppend: resolveUltrabrainCategoryPromptAppend
+      resolvePromptAppend: resolveUltrabrainCategoryPromptAppend,
+      requiresModel: GPT_ASTRA_GATE_MODELS
     },
     {
       name: "deep-low",
@@ -11866,7 +11853,7 @@ var init_openai_categories = __esm(() => {
       callerGuidance: DEEP_HIGH_CATEGORY_CALLER_GUIDANCE,
       promptAppend: DEEP_HIGH_CATEGORY_PROMPT_APPEND,
       resolvePromptAppend: resolveDeepHighCategoryPromptAppend,
-      requiresModel: DEEP_HIGH_GATE_MODELS
+      requiresModel: GPT_ASTRA_GATE_MODELS
     },
     {
       name: "quick",
@@ -11899,6 +11886,8 @@ function buildCategoryRecord(selector) {
 }
 var BUILTIN_CATEGORIES, DEFAULT_CATEGORIES, CATEGORY_PROMPT_APPENDS, CATEGORY_DESCRIPTIONS, CATEGORY_CALLER_GUIDANCE, CATEGORY_PROMPT_APPEND_RESOLVERS, BUILTIN_CATEGORY_REQUIRES_MODEL;
 var init_builtin_categories = __esm(() => {
+  init_model_requirements2();
+  init_provider_model_id_transform2();
   init_google_categories();
   init_kimi_categories();
   init_openai_categories();
@@ -67562,11 +67551,6 @@ var init_model_capabilities2 = __esm(() => {
   init_model_capabilities_generated();
 });
 
-// packages/omo-opencode/src/shared/model-requirements.ts
-var init_model_requirements2 = __esm(() => {
-  init_src2();
-});
-
 // packages/omo-opencode/src/shared/agent-variant.ts
 var init_agent_variant = __esm(() => {
   init_agent_display_names();
@@ -77234,6 +77218,17 @@ var init_git_master = __esm(() => {
   }).strict();
 });
 
+// packages/omo-config-core/src/schema/keyword-detector.ts
+var KeywordTypeSchema, OmoKeywordDetectorSettingsSchema;
+var init_keyword_detector = __esm(() => {
+  init_zod();
+  KeywordTypeSchema = _enum(["ultrawork", "team", "hyperplan", "hyperplan-ultrawork"]);
+  OmoKeywordDetectorSettingsSchema = object({
+    enabled_expansions: array(KeywordTypeSchema).optional(),
+    disabled_keywords: array(KeywordTypeSchema).optional()
+  });
+});
+
 // packages/omo-config-core/src/schema/harness.ts
 var HARNESS_IDS, OMO_CONFIG_HARNESS_IDS, OmoHarnessIdSchema, OMO_CONFIG_LEGACY_HARNESS_ALIASES, OMO_CONFIG_LEGACY_HARNESS_IDS;
 var init_harness = __esm(() => {
@@ -77897,6 +77892,20 @@ var init_session_wake = __esm(() => {
   }).strict();
 });
 
+// packages/omo-config-core/src/schema/operator-alerts.ts
+var OmoOperatorAlertsSettingsSchema;
+var init_operator_alerts = __esm(() => {
+  init_zod();
+  OmoOperatorAlertsSettingsSchema = object({
+    error_streak: object({
+      threshold: number2().int().min(1).optional(),
+      realert_minutes: number2().min(0).optional(),
+      threads: array(string2().trim().min(1)).optional(),
+      webhook_url_env: string2().regex(/^[A-Za-z_][A-Za-z0-9_]*$/).optional()
+    }).strict().optional()
+  }).strict();
+});
+
 // packages/omo-config-core/src/schema/config.ts
 var OmoOpenCodeHarnessConfigSchema, OmoDisabledSkillsSchema, OmoExcludedModelsSchema, OmoTypedHarnessConfigSchema, OmoConfigProfileSchema, OmoConfigSchema, OmoConfigLayerSchema;
 var init_config = __esm(() => {
@@ -77905,6 +77914,7 @@ var init_config = __esm(() => {
   init_category();
   init_computer();
   init_git_master();
+  init_keyword_detector();
   init_memory();
   init_model_catalog();
   init_model_pad();
@@ -77917,12 +77927,14 @@ var init_config = __esm(() => {
   init_format_on_mutation();
   init_provenance();
   init_session_wake();
+  init_operator_alerts();
   OmoOpenCodeHarnessConfigSchema = record(string2(), unknown());
   OmoDisabledSkillsSchema = array(string2());
   OmoExcludedModelsSchema = array(string2());
   OmoTypedHarnessConfigSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
     session_wake: OmoSessionWakeSettingsSchema.optional(),
+    operator_alerts: OmoOperatorAlertsSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -77939,11 +77951,13 @@ var init_config = __esm(() => {
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
+    keyword_detector: OmoKeywordDetectorSettingsSchema.optional(),
     exclude_models: OmoExcludedModelsSchema.optional()
   }).strict();
   OmoConfigProfileSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
     session_wake: OmoSessionWakeSettingsSchema.optional(),
+    operator_alerts: OmoOperatorAlertsSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
     categories: OmoCategoriesConfigSchema.optional(),
     agents: OmoAgentsConfigSchema.optional(),
@@ -77960,6 +77974,7 @@ var init_config = __esm(() => {
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
+    keyword_detector: OmoKeywordDetectorSettingsSchema.optional(),
     exclude_models: OmoExcludedModelsSchema.optional(),
     "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
     "[native]": OmoTypedHarnessConfigSchema.optional(),
@@ -77969,6 +77984,7 @@ var init_config = __esm(() => {
   OmoConfigSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
     session_wake: OmoSessionWakeSettingsSchema.optional(),
+    operator_alerts: OmoOperatorAlertsSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
@@ -77986,6 +78002,7 @@ var init_config = __esm(() => {
     side_panel: OmoSidePanelSettingsSchema.optional(),
     computer: OmoComputerSettingsSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
+    keyword_detector: OmoKeywordDetectorSettingsSchema.optional(),
     exclude_models: OmoExcludedModelsSchema.optional(),
     "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
     "[native]": OmoTypedHarnessConfigSchema.optional(),
@@ -77998,6 +78015,7 @@ var init_config = __esm(() => {
   OmoConfigLayerSchema = object({
     provenance: OmoProvenanceSettingsSchema.optional(),
     session_wake: OmoSessionWakeSettingsSchema.optional(),
+    operator_alerts: OmoOperatorAlertsSettingsSchema.optional(),
     formatOnMutation: OmoFormatOnMutationLayerSchema.optional(),
     $schema: string2().optional(),
     categories: OmoCategoriesConfigSchema.optional(),
@@ -78015,6 +78033,7 @@ var init_config = __esm(() => {
     side_panel: OmoSidePanelSettingsLayerSchema.optional(),
     computer: OmoComputerSettingsLayerSchema.optional(),
     disabled_skills: OmoDisabledSkillsSchema.optional(),
+    keyword_detector: OmoKeywordDetectorSettingsSchema.optional(),
     exclude_models: OmoExcludedModelsSchema.optional(),
     "[opencode]": OmoOpenCodeHarnessConfigSchema.optional(),
     "[native]": OmoTypedHarnessConfigSchema.optional(),
@@ -78151,6 +78170,7 @@ var init_schema = __esm(() => {
   init_format_on_mutation();
   init_git_master();
   init_harness();
+  init_keyword_detector();
   init_legacy_category_names();
   init_legacy_harness_names();
   init_memory();
@@ -78160,6 +78180,7 @@ var init_schema = __esm(() => {
   init_model_ref();
   init_provenance();
   init_session_wake();
+  init_operator_alerts();
   init_side_panel();
   init_task();
   init_team();
@@ -81111,7 +81132,7 @@ var init_provider_availability = __esm(() => {
 });
 
 // packages/omo-opencode/src/cli/provider-model-id-transform.ts
-var init_provider_model_id_transform2 = __esm(() => {
+var init_provider_model_id_transform3 = __esm(() => {
   init_src2();
 });
 
@@ -81148,7 +81169,7 @@ function isRequiredProviderAvailable(requiredProviders, availability) {
 var init_fallback_chain_resolution = __esm(() => {
   init_model_fallback_requirements();
   init_provider_availability();
-  init_provider_model_id_transform2();
+  init_provider_model_id_transform3();
 });
 
 // packages/omo-opencode/src/cli/fallback-lane-policy.ts
@@ -81349,7 +81370,7 @@ var init_model_fallback = __esm(() => {
   init_openai_only_model_catalog();
   init_provider_availability();
   init_fallback_chain_resolution();
-  init_provider_model_id_transform2();
+  init_provider_model_id_transform3();
   init_fallback_lane_policy();
   init_latest_models();
 });
@@ -93008,7 +93029,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.79",
+    version: "5.1.81",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -94322,8 +94343,8 @@ var init_bytes_encoding = __esm(() => {
 });
 
 // packages/device-service-core/src/local-api/proof.ts
-import { createHmac as createHmac2, randomBytes as randomBytes7, timingSafeEqual as timingSafeEqual2 } from "node:crypto";
-var NONCE_BYTES = 32, mintNonce = () => toBase64url(randomBytes7(NONCE_BYTES)), mintId = () => toBase64url(randomBytes7(16)), decodedBytes = (value, bytes, what) => {
+import { createHmac as createHmac2, randomBytes as randomBytes8, timingSafeEqual as timingSafeEqual2 } from "node:crypto";
+var NONCE_BYTES = 32, mintNonce = () => toBase64url(randomBytes8(NONCE_BYTES)), mintId = () => toBase64url(randomBytes8(16)), decodedBytes = (value, bytes, what) => {
   const violation = () => new LocalApiError("protocol_violation", `${what} is not ${bytes} base64url bytes`);
   let out;
   try {
@@ -94520,7 +94541,7 @@ import {
   rmSync as rmSync10,
   writeFileSync as writeFileSync18
 } from "node:fs";
-import { join as join120 } from "node:path";
+import { join as join121 } from "node:path";
 var TOKEN_FILE = "token", TOKEN_BYTES = 32, SOCKET_FILE = "service.sock", insecure = (detail) => {
   throw new LocalApiError("insecure_state_dir", detail);
 }, UNIX_ENDPOINT = "unix", tcpEndpoint = (port) => `tcp:${port}`, isMissing = (error) => typeof error === "object" && error !== null && ("code" in error) && (error.code === "ENOENT" || error.code === "ENOTDIR"), currentUid = () => process.getuid?.() ?? insecure("this platform has no uid"), privateEntry = (path, kind, uid, checkMode = true) => {
@@ -94542,8 +94563,8 @@ var TOKEN_FILE = "token", TOKEN_BYTES = 32, SOCKET_FILE = "service.sock", insecu
 }, checkPosixAccess = (stateDir) => {
   const uid = currentUid();
   privateEntry(stateDir, "dir", uid);
-  privateEntry(join120(stateDir, SOCKET_FILE), "socket", uid);
-  privateEntry(join120(stateDir, TOKEN_FILE), "file", uid);
+  privateEntry(join121(stateDir, SOCKET_FILE), "socket", uid);
+  privateEntry(join121(stateDir, TOKEN_FILE), "file", uid);
 }, posixSecureFile = async (path, kind) => {
   const uid = currentUid();
   privateEntry(path, kind, uid, false);
@@ -94552,7 +94573,7 @@ var TOKEN_FILE = "token", TOKEN_BYTES = 32, SOCKET_FILE = "service.sock", insecu
 }, readToken = (stateDir) => {
   let value;
   try {
-    value = readFileSync46(join120(stateDir, TOKEN_FILE), "utf8");
+    value = readFileSync46(join121(stateDir, TOKEN_FILE), "utf8");
   } catch (error) {
     if (isMissing(error))
       return insecure("the token is missing");
@@ -97377,7 +97398,7 @@ var init_client_open = __esm(() => {
 // packages/device-service-core/src/local-api/transport.ts
 import { lstatSync as lstatSync8, readFileSync as readFileSync47, unlinkSync as unlinkSync11 } from "node:fs";
 import { createConnection, createServer as createServer4 } from "node:net";
-import { join as join121 } from "node:path";
+import { join as join122 } from "node:path";
 var ENDPOINT_FILE = "endpoint.json", wrap = (socket, endpoint) => {
   const closeListeners = [];
   let closed = false;
@@ -97410,7 +97431,7 @@ var ENDPOINT_FILE = "endpoint.json", wrap = (socket, endpoint) => {
     }
   };
 }, readEndpointPort = (stateDir) => {
-  const parsed = JSON.parse(readFileSync47(join121(stateDir, ENDPOINT_FILE), "utf8"));
+  const parsed = JSON.parse(readFileSync47(join122(stateDir, ENDPOINT_FILE), "utf8"));
   const port = typeof parsed === "object" && parsed !== null ? Reflect.get(parsed, "port") : undefined;
   if (typeof port !== "number" || !Number.isInteger(port) || port < 1 || port > 65535)
     throw new LocalApiError("insecure_state_dir", "endpoint.json holds no port");
@@ -97418,7 +97439,7 @@ var ENDPOINT_FILE = "endpoint.json", wrap = (socket, endpoint) => {
 }, connectLocal = (stateDir) => new Promise((resolve, reject) => {
   const port = process.platform === "win32" ? readEndpointPort(stateDir) : undefined;
   const endpoint = port === undefined ? UNIX_ENDPOINT : tcpEndpoint(port);
-  const socket = port === undefined ? createConnection({ path: join121(stateDir, SOCKET_FILE) }) : createConnection({ host: "127.0.0.1", port });
+  const socket = port === undefined ? createConnection({ path: join122(stateDir, SOCKET_FILE) }) : createConnection({ host: "127.0.0.1", port });
   socket.once("error", reject);
   socket.once("connect", () => {
     socket.off("error", reject);
@@ -97451,7 +97472,7 @@ var init_client4 = __esm(() => {
 
 // packages/device-service-core/src/background-transport.ts
 import { createConnection as createConnection2 } from "node:net";
-import { join as join122 } from "node:path";
+import { join as join123 } from "node:path";
 var wrap2 = (socket, endpoint) => {
   const closeListeners = [];
   let closed = false;
@@ -97486,7 +97507,7 @@ var wrap2 = (socket, endpoint) => {
 }, connectLocalBackground = (stateDir) => new Promise((resolve, reject) => {
   const port = process.platform === "win32" ? readEndpointPort(stateDir) : undefined;
   const endpoint = port === undefined ? UNIX_ENDPOINT : tcpEndpoint(port);
-  const socket = port === undefined ? createConnection2({ path: join122(stateDir, SOCKET_FILE) }) : createConnection2({ host: "127.0.0.1", port });
+  const socket = port === undefined ? createConnection2({ path: join123(stateDir, SOCKET_FILE) }) : createConnection2({ host: "127.0.0.1", port });
   socket.unref();
   socket.once("error", reject);
   socket.once("connect", () => {
@@ -97676,7 +97697,7 @@ var init_unsettled_command = __esm(() => {
 });
 
 // packages/device-service-core/src/remote-attach.ts
-import { randomBytes as randomBytes8 } from "node:crypto";
+import { randomBytes as randomBytes9 } from "node:crypto";
 function openAttach(client, device, sessionId, timers = realTimers) {
   const early = [];
   const history = [];
@@ -97785,7 +97806,7 @@ function openAttach(client, device, sessionId, timers = realTimers) {
         if (ended)
           return reject(new Error("the attach has ended"));
         const { waitMs = ATTACH_COMMAND_WAIT_MS, accepts } = options;
-        const commandId = randomBytes8(16).toString("base64url");
+        const commandId = randomBytes9(16).toString("base64url");
         let progress;
         const settle = () => {
           stopState();
@@ -97979,16 +98000,16 @@ var init_version2 = __esm(() => {
 // packages/device-service-core/src/state-dir.ts
 import { readFileSync as readFileSync48, statSync as statSync10 } from "node:fs";
 import { homedir as homedir36 } from "node:os";
-import { dirname as dirname50, join as join123, posix as posix17, win32 as win3212 } from "node:path";
+import { dirname as dirname50, join as join124, posix as posix17, win32 as win3212 } from "node:path";
 function defaultStateDir(platform, env, home) {
   if (platform !== "win32")
-    return join123(home, ".omo", "device-service");
-  const localAppData = env.LOCALAPPDATA ?? join123(home, "AppData", "Local");
-  return join123(localAppData, "OmO", "device-service");
+    return join124(home, ".omo", "device-service");
+  const localAppData = env.LOCALAPPDATA ?? join124(home, "AppData", "Local");
+  return join124(localAppData, "OmO", "device-service");
 }
 function discoveredStateDir(platform, defaultDir) {
   try {
-    const parsed = JSON.parse(readFileSync48(join123(dirname50(defaultDir), LOCATION_FILE), "utf8"));
+    const parsed = JSON.parse(readFileSync48(join124(dirname50(defaultDir), LOCATION_FILE), "utf8"));
     if (typeof parsed !== "object" || parsed === null || !("v" in parsed) || !("state_dir" in parsed))
       return;
     const { v, state_dir: stateDir } = parsed;
@@ -98022,6 +98043,11 @@ async function engineEndpointOf(client, device) {
     return only;
   throw new NoPrimaryEndpointError(device, listed.endpoints.length);
 }
+async function engineEndpointsOf(client, device) {
+  const asksPrimary = compareVersions4(client.welcome.service_version, ENDPOINT_PRIMARY_MIN_SERVICE_VERSION) >= 0;
+  const listed = await client.request("session.endpoints", asksPrimary ? { device, primary: true } : { device });
+  return { keys: listed.endpoints, ...listed.primary === undefined ? {} : { primary: listed.primary } };
+}
 var ENDPOINT_PRIMARY_MIN_SERVICE_VERSION = "0.1.11", NoPrimaryEndpointError;
 var init_engine_endpoint = __esm(() => {
   init_not_sent_error();
@@ -98041,8 +98067,8 @@ var init_protocol = __esm(() => {
 });
 
 // packages/device-service-core/src/device-service.ts
-import { join as join124 } from "node:path";
-import { randomBytes as randomBytes9 } from "node:crypto";
+import { join as join125 } from "node:path";
+import { randomBytes as randomBytes10 } from "node:crypto";
 function sendToEndpoint(client, device, endpoint, rpc, locate, timers, waitMs) {
   return followDelegatedCommand(client, device, timers, (commandId) => {
     const send = (asked) => client.commandTo({ device, endpoint }, rpc, commandId, asked ? { locate: true } : {});
@@ -98051,7 +98077,7 @@ function sendToEndpoint(client, device, endpoint, rpc, locate, timers, waitMs) {
 }
 function followDelegatedCommand(client, device, timers, send, waitMs = ENDPOINT_COMMAND_WAIT_MS) {
   return new Promise((resolve, reject) => {
-    const commandId = randomBytes9(16).toString("base64url");
+    const commandId = randomBytes10(16).toString("base64url");
     const channel = followDelegatedChannel(device);
     let done = false;
     const settle = () => {
@@ -98087,7 +98113,7 @@ function followDelegatedCommand(client, device, timers, send, waitMs = ENDPOINT_
   });
 }
 function deviceServiceEndpointPath(stateDir, platform = process.platform) {
-  return join124(stateDir, platform === "win32" ? ENDPOINT_FILE : SOCKET_FILE);
+  return join125(stateDir, platform === "win32" ? ENDPOINT_FILE : SOCKET_FILE);
 }
 async function connectDeviceService(options) {
   const stateDir = options.stateDir ?? deviceServiceStateDir();
@@ -98153,6 +98179,7 @@ async function connectDeviceService(options) {
         command: (rpc, options) => attached.command(rpc, options?.waitMs === undefined ? undefined : { waitMs: options.waitMs })
       };
     },
+    engineEndpoints: async (device) => await engineEndpointsOf(client, device),
     endpointCommand: async (device, rpc, options) => {
       const started = timers.now();
       let endpoint = options?.endpoint;
@@ -103713,7 +103740,7 @@ var init_bindings = __esm(() => {
 });
 
 // packages/omo-senpi/src/components/thread/contracts/fields.ts
-var THREAD_MESSAGE_MAX_BYTES = 32768, THREAD_SUMMARY_MAX_LENGTH = 200, THREAD_READ_DEFAULT_BYTES = 131072, THREAD_READ_MAX_BYTES = 1048576, ThreadAddress, AllScope, IdempotencyKey, ExpectedTurnId, Summary, Message2, thinkingLevel = (description) => Union([
+var THREAD_MESSAGE_MAX_BYTES = 32768, THREAD_SUMMARY_MAX_LENGTH = 200, THREAD_READ_DEFAULT_BYTES = 131072, THREAD_READ_MAX_BYTES = 1048576, ThreadAddress, AllScope, IdempotencyKey, CollapseKey, ExpectedTurnId, Summary, Message2, thinkingLevel = (description) => Union([
   Literal("off"),
   Literal("minimal"),
   Literal("low"),
@@ -103721,7 +103748,7 @@ var THREAD_MESSAGE_MAX_BYTES = 32768, THREAD_SUMMARY_MAX_LENGTH = 200, THREAD_RE
   Literal("high"),
   Literal("xhigh"),
   Literal("max")
-], { description }), BindingId, RelayText, ThreadDeliveryMode;
+], { description }), BindingId, RelayText, DEFAULT_THREAD_DELIVERY = "auto", ThreadDeliveryMode;
 var init_fields = __esm(() => {
   init_build();
   init_bindings();
@@ -103733,6 +103760,11 @@ var init_fields = __esm(() => {
   }));
   IdempotencyKey = Optional(String2({
     description: "Caller-chosen key that makes a retried call return the earlier result instead of repeating the side effect; reusing the key with different arguments returns idempotency_conflict."
+  }));
+  CollapseKey = Optional(String2({
+    minLength: 1,
+    maxLength: 200,
+    description: "Caller-chosen key for a repeating message (an alert re-sent each minute): a send replaces this sender's earlier message with the same key that the target has not taken yet, and is answered deduplicated and collapsed: true with the earlier delivery_id when the target already holds that one (this text is then not delivered), so one key never leaves more than one undelivered message. Reaches sessions on this device only."
   }));
   ExpectedTurnId = Optional(String2({
     description: "Turn id the steer applies to; required with delivery steer, and a changed active turn returns turn_conflict with the message held undelivered."
@@ -103753,7 +103785,8 @@ var init_fields = __esm(() => {
     description: `Text relayed to or from the external thread; longer than ${RELAY_TEXT_MAX_BYTES} UTF-8 bytes returns message_too_large.`
   });
   ThreadDeliveryMode = Union([Literal("auto"), Literal("steer"), Literal("follow_up")], {
-    description: "auto steers the running turn when one is active and starts a new turn otherwise; steer requires expected_turn_id and becomes turn_conflict when the active turn changed; follow_up queues the message behind the running turn."
+    default: DEFAULT_THREAD_DELIVERY,
+    description: "Omitted: auto. auto steers the running turn when one is active and starts a new turn otherwise; steer requires expected_turn_id and becomes turn_conflict when the active turn changed; follow_up queues the message behind the running turn (pass it only when the message must wait for that turn to end)."
   });
 });
 
@@ -103797,6 +103830,7 @@ var init_errors5 = __esm(() => {
     "idempotency_in_progress",
     "idempotency_uncertain",
     "delivered_unconfirmed",
+    "prompt_not_started",
     "approval_unavailable",
     "approval_route_locked",
     "partial_commit",
@@ -103809,6 +103843,7 @@ var init_errors5 = __esm(() => {
     "model_ambiguous",
     "thinking_level_unsupported",
     "loop_detected",
+    "pair_loop_guard",
     "chain_count_limit",
     "binding_conflict",
     "binding_mismatch",
@@ -103828,10 +103863,16 @@ var init_errors5 = __esm(() => {
 // packages/omo-senpi/src/components/thread/initial-skills.ts
 var init_initial_skills = () => {};
 
+// packages/omo-senpi/src/components/thread/gateway/result.ts
+var init_result2 = __esm(() => {
+  init_errors5();
+});
+
 // packages/omo-senpi/src/components/thread/remote/outcome.ts
 var READ_UNCERTAIN, UNANSWERED, NOT_SIGNED_IN;
 var init_outcome = __esm(() => {
   init_errors5();
+  init_result2();
   READ_UNCERTAIN = {
     request_gone: "retry",
     no_receipt: "retry",
@@ -103863,58 +103904,47 @@ var init_outcome = __esm(() => {
   ]);
   NOT_SIGNED_IN = new Set(["sign_in_required", "signed_out"]);
 });
+
+// packages/omo-senpi/src/components/thread/address/refusals.ts
+var init_refusals = __esm(() => {
+  init_errors5();
+});
+
+// packages/omo-senpi/src/components/thread/remote/address-book.ts
+var REMOTE_NOT_SET_UP;
+var init_address_book = __esm(() => {
+  REMOTE_NOT_SET_UP = new Set(["not_configured", "disabled", "signed_out", "sign_in_required"]);
+});
+
+// packages/omo-senpi/src/components/thread/address/account.ts
+var NOT_SET_UP, lastListed;
+var init_account = __esm(() => {
+  init_remote_ops();
+  init_address_book();
+  NOT_SET_UP = new Set(["not_configured", "disabled", "signed_out", "sign_in_required"]);
+  lastListed = new WeakMap;
+});
+
+// packages/omo-senpi/src/components/thread/address/device.ts
+var init_device = __esm(() => {
+  init_errors5();
+  init_account();
+  init_refusals();
+});
+
 // packages/omo-senpi/src/components/thread/remote/remote-ops.ts
 var init_remote_ops = __esm(() => {
-  init_errors5();
+  init_refusals();
+  init_device();
+  init_account();
   init_outcome();
 });
 
-// packages/omo-senpi/src/components/thread/control/port.ts
-var REFUSAL;
-var init_port = __esm(() => {
-  init_errors5();
-  REFUSAL = Symbol.for("omo.thread.control.refusal");
-});
-
-// packages/omo-senpi/src/components/thread/control/close-ladder.ts
-var SESSION_GONE;
-var init_close_ladder = __esm(() => {
-  init_port();
-  SESSION_GONE = new Set([
-    "unknown_session",
-    "route_unlisted",
-    "session_identity_mismatch",
-    "session_not_attached",
-    "not_attached"
-  ]);
-});
-
-// packages/omo-senpi/src/components/thread/worktree/failures.ts
-var init_failures = __esm(() => {
-  init_errors5();
-});
-
-// packages/omo-senpi/src/components/thread/control/open-reply.ts
-var init_open_reply = __esm(() => {
-  init_errors5();
-  init_outcome();
-  init_failures();
-});
-// packages/omo-senpi/src/components/thread/worktree/remote-worktree.ts
-var init_remote_worktree = __esm(() => {
-  init_close_ladder();
-  init_open_reply();
-  init_port();
-  init_errors5();
-  init_outcome();
-  init_remote_ops();
-  init_failures();
-});
-
-// packages/omo-senpi/src/components/thread/thread-link.ts
-var THREAD_LINK_SCHEME = "omo-thread", PREFIX;
-var init_thread_link = __esm(() => {
-  PREFIX = `${THREAD_LINK_SCHEME}://v1/`;
+// packages/omo-senpi/src/components/call-budget/call-deadline.ts
+import { AsyncLocalStorage as AsyncLocalStorage4 } from "node:async_hooks";
+var scope;
+var init_call_deadline = __esm(() => {
+  scope = new AsyncLocalStorage4;
 });
 
 // packages/omo-senpi/src/components/thread/contracts/create-params.ts
@@ -103977,7 +104007,7 @@ var init_create_params = __esm(() => {
     prompt: Optional(String2({
       minLength: 1,
       maxLength: THREAD_MESSAGE_MAX_BYTES,
-      description: `First message for the new thread, delivered as thread_send (tool.thread_send() in an eval cell) delivers it once the thread exists (delivery picks its mode); the result's prompt field names that delivery, or its failure while the thread stays created. Covered by the same idempotency_key as the create. Longer than ${THREAD_MESSAGE_MAX_BYTES} UTF-8 bytes returns message_too_large. Only for a new thread.`
+      description: `First message for the new thread, delivered as thread_send (tool.thread_send() in an eval cell) delivers it once the thread exists (delivery picks its mode); the result's prompt field names that delivery, or its failure while the thread stays created. Covered by the same idempotency_key as the create. Also sent when thread opens an existing thread: it goes to that thread (#14335). Longer than ${THREAD_MESSAGE_MAX_BYTES} UTF-8 bytes returns message_too_large.`
     })),
     delivery: Optional(ThreadDeliveryMode),
     idempotency_key: IdempotencyKey
@@ -103997,7 +104027,8 @@ var init_params = __esm(() => {
     state: Optional(_Array_(Union([Literal("running"), Literal("idle"), Literal("inactive"), Literal("archived")]), {
       minItems: 1,
       description: "Thread states to list: running, idle, inactive (no engine holds it) or archived; the default lists every state but archived."
-    }))
+    })),
+    idempotency_key: IdempotencyKey
   });
   ThreadReadParams = _Object_({
     thread: ThreadAddress,
@@ -104014,7 +104045,8 @@ var init_params = __esm(() => {
       maximum: THREAD_READ_WAIT_MAX_MS,
       description: "Wait up to this many ms for the thread's turn to end, then read; see result.wait."
     })),
-    all_scope: AllScope
+    all_scope: AllScope,
+    idempotency_key: IdempotencyKey
   });
   ThreadSendParams = _Object_({
     thread: ThreadAddress,
@@ -104023,6 +104055,7 @@ var init_params = __esm(() => {
     expected_turn_id: ExpectedTurnId,
     summary: Summary,
     idempotency_key: IdempotencyKey,
+    collapse_key: CollapseKey,
     all_scope: AllScope
   });
   ThreadInterruptParams = _Object_({
@@ -104030,7 +104063,8 @@ var init_params = __esm(() => {
     turn_id: Optional(String2({
       description: "Running turn to stop, defaulting to the newest running turn; interrupting an idle thread returns success with interrupted false."
     })),
-    all_scope: AllScope
+    all_scope: AllScope,
+    idempotency_key: IdempotencyKey
   });
   SelfOrThread = Optional(String2({
     minLength: 1,
@@ -104042,6 +104076,14 @@ var init_params = __esm(() => {
     all_scope: AllScope,
     force: Optional(Boolean2({
       description: "Close even when the thread has messages it has not read yet; they are dropped and listed in dropped_deliveries."
+    })),
+    graceful: Optional(Boolean2({
+      description: "Let the running turn end instead of stopping it; new messages are refused and unread ones go back to their senders. Monitors, loops and the goal stop cleanly. Also closes a terminal's thread, which then exits."
+    })),
+    wait_ms: Optional(Integer({
+      minimum: 1,
+      maximum: 600000,
+      description: "How long a graceful close waits for the turn (default 30000, cut to what the call has left)."
     }))
   });
   ThreadHandoffParams = _Object_({
@@ -104077,7 +104119,7 @@ var init_params = __esm(() => {
     thread: ThreadAddress,
     model: String2({
       minLength: 1,
-      description: "Model to switch the thread to, as provider/id, an exact model id, or a case-insensitive fragment of the id or display name resolved against the host's model catalog; no match returns model_not_found with the available list, several matches return model_ambiguous with candidates."
+      description: "Model to switch the thread to, as provider/id, an exact model id, or a case-insensitive fragment of the id or display name, resolved against the target's catalog. Append a thinking level such as :max to apply it after switching. No match returns model_not_found with the available list; an absent provider adds details.reason = provider_not_configured and lists the target's available providers. Several matches return model_ambiguous with candidates."
     }),
     provider: Optional(String2({
       description: "Restricts resolution to one provider when the fragment alone would match models from several providers."
@@ -104132,7 +104174,8 @@ var init_params = __esm(() => {
       minimum: 0,
       description: "Read rows after this cursor; unset continues after the binding's acknowledged cursor."
     })),
-    limit: Optional(Integer({ minimum: 1, maximum: 500, description: "Rows per read, default 100 and at most 500." }))
+    limit: Optional(Integer({ minimum: 1, maximum: 500, description: "Rows per read, default 100 and at most 500." })),
+    idempotency_key: IdempotencyKey
   });
   ThreadOutboxAckParams = _Object_({
     binding_id: BindingId,
@@ -104144,7 +104187,8 @@ var init_params = __esm(() => {
       minLength: 1,
       maxLength: 256,
       description: "Platform id of the message posted for the row at cursor; the first one for a milestone becomes the progress message later milestones edit."
-    }))
+    })),
+    idempotency_key: IdempotencyKey
   });
   ThreadAnswerParams = _Object_({
     binding_id: String2({
@@ -104152,7 +104196,8 @@ var init_params = __esm(() => {
       description: "Binding the answer arrived through; it must be the binding that asked the question."
     }),
     reply_token: String2({ minLength: 1, description: "reply_token of the question row being answered." }),
-    answer: RelayText
+    answer: RelayText,
+    idempotency_key: IdempotencyKey
   });
 });
 
@@ -108663,19 +108708,61 @@ var init_contracts = __esm(() => {
 });
 
 // packages/omo-senpi/src/components/thread/tools/thread-state.ts
-var ACTIVITIES;
+var ACTIVITIES, RETRY_WAIT_KINDS;
 var init_thread_state = __esm(() => {
   init_contracts();
   ACTIVITIES = new Set(THREAD_ACTIVITIES);
+  RETRY_WAIT_KINDS = new Set(["rate_limit", "retry"]);
 });
 
-// packages/omo-senpi/src/components/thread/remote/address-book.ts
-var lastListed, REMOTE_NOT_SET_UP;
-var init_address_book = __esm(() => {
+// packages/omo-senpi/src/components/thread/control/port.ts
+var REFUSAL;
+var init_port = __esm(() => {
   init_errors5();
+  init_thread_state();
+  REFUSAL = Symbol.for("omo.thread.control.refusal");
+});
+
+// packages/omo-senpi/src/components/thread/control/close-ladder.ts
+var SESSION_GONE;
+var init_close_ladder = __esm(() => {
+  init_call_deadline();
+  init_port();
+  SESSION_GONE = new Set([
+    "unknown_session",
+    "route_unlisted",
+    "session_identity_mismatch",
+    "session_not_attached",
+    "not_attached"
+  ]);
+});
+
+// packages/omo-senpi/src/components/thread/worktree/failures.ts
+var init_failures = __esm(() => {
+  init_errors5();
+});
+
+// packages/omo-senpi/src/components/thread/control/open-reply.ts
+var init_open_reply = __esm(() => {
+  init_errors5();
+  init_outcome();
+  init_failures();
+});
+// packages/omo-senpi/src/components/thread/worktree/remote-worktree.ts
+var init_remote_worktree = __esm(() => {
+  init_close_ladder();
+  init_open_reply();
+  init_port();
+  init_errors5();
+  init_outcome();
   init_remote_ops();
-  lastListed = new WeakMap;
-  REMOTE_NOT_SET_UP = new Set(["not_configured", "disabled", "signed_out", "sign_in_required"]);
+  init_failures();
+});
+
+// packages/omo-senpi/src/components/thread/thread-link.ts
+var THREAD_LINK_SCHEME = "omo-thread", PREFIX;
+var init_thread_link = __esm(() => {
+  PREFIX = `${THREAD_LINK_SCHEME}://v1/`;
 });
 
 // packages/omo-senpi/src/components/thread/addressing.ts
@@ -108792,13 +108879,12 @@ var init_metadata = __esm(() => {
     }
   ];
 });
+
 // packages/omo-senpi/src/components/thread/tools/internals.ts
 function failure3(code, message, next, details) {
   return { kind: "error", error: threadToolFailure(code, message, next, details) };
 }
 var init_internals = __esm(() => {
-  init_address_book();
-  init_remote_ops();
   init_address_book2();
   init_addressing();
   init_errors5();
@@ -108819,6 +108905,7 @@ var init_relay_session_host = __esm(() => {
   init_initial_skills();
   init_outcome();
   init_remote_ops();
+  init_device();
   init_remote_worktree();
   init_open_reply();
   init_thread_link();
@@ -108839,13 +108926,6 @@ var init_operations = __esm(() => {
   init_port();
   NOT_LIVE = failure3("not_resumable", "The thread has no live owner.", "Retry when the target is live.");
 });
-
-// packages/omo-senpi/src/components/call-budget/call-deadline.ts
-import { AsyncLocalStorage as AsyncLocalStorage4 } from "node:async_hooks";
-var scope;
-var init_call_deadline = __esm(() => {
-  scope = new AsyncLocalStorage4;
-});
 // packages/omo-senpi/src/components/thread/reader.ts
 var init_reader = __esm(() => {
   init_contracts();
@@ -108853,10 +108933,12 @@ var init_reader = __esm(() => {
 });
 
 // packages/omo-senpi/src/components/thread/paged-reader.ts
+var RETIRED_CURSOR_VERSIONS;
 var init_paged_reader = __esm(() => {
   init_contracts();
   init_errors5();
   init_reader();
+  RETIRED_CURSOR_VERSIONS = new Set(["t2"]);
 });
 
 // packages/omo-senpi/src/components/thread/remote/context-tail.ts
@@ -108918,6 +109000,7 @@ var init_relay_control = __esm(() => {
   init_transcript_tail();
   init_paged_reader();
   init_remote_ops();
+  init_fields();
   init_close_ladder();
   init_port();
   init_wait_settled();
@@ -109035,10 +109118,19 @@ var init_seams = __esm(() => {
   init_codes();
 });
 
+// packages/omo-senpi/src/components/remote/resolve.ts
+var init_resolve3 = __esm(() => {
+  init_client5();
+  init_deadlines();
+  init_codes();
+  init_seams();
+});
+
 // packages/omo-senpi/src/components/remote/aliases.ts
 var init_aliases = __esm(() => {
   init_codes();
   init_deadlines();
+  init_resolve3();
   init_seams();
 });
 
@@ -109051,6 +109143,7 @@ var init_attach = __esm(() => {
   init_codes();
   init_deadlines();
   init_device_service3();
+  init_resolve3();
   init_seams();
   DIALOG_KINDS = new Set(["select", "confirm", "input", "editor", "question"]);
 });
@@ -109067,21 +109160,15 @@ var init_follow = __esm(() => {
   RUN_OVER = new Set(["waiting_children", "waiting_background", "done", "failed", "cancelled"]);
 });
 
-// packages/omo-senpi/src/components/remote/resolve.ts
-var init_resolve3 = __esm(() => {
-  init_addressing();
-  init_codes();
-  init_seams();
-});
-
 // packages/omo-senpi/src/components/thread/gateway/provenance-resolver.ts
 var init_provenance_resolver = () => {};
 // packages/omo-senpi/src/components/thread/gateway/constants.ts
-var QUEUED_TTL_MS, ROOT_LIFETIME_MS, TARGET_MAX_BYTES, GATEWAY_RECEIPT_RETENTION_MS, DELIVERY_RETENTION_MS, RETENTION_SWEEP_INTERVAL_MS;
+var QUEUED_TTL_MS, ROOT_LIFETIME_MS, TARGET_MAX_BYTES, STEER_RESERVE_BYTES, GATEWAY_RECEIPT_RETENTION_MS, DELIVERY_RETENTION_MS, RETENTION_SWEEP_INTERVAL_MS;
 var init_constants6 = __esm(() => {
   QUEUED_TTL_MS = 24 * 60 * 60 * 1000;
   ROOT_LIFETIME_MS = 7 * 24 * 60 * 60 * 1000;
   TARGET_MAX_BYTES = 1024 * 1024;
+  STEER_RESERVE_BYTES = 256 * 1024;
   GATEWAY_RECEIPT_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
   DELIVERY_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
   RETENTION_SWEEP_INTERVAL_MS = 60 * 60 * 1000;
@@ -109091,12 +109178,6 @@ var init_constants6 = __esm(() => {
 var init_provenance2 = __esm(() => {
   init_constants6();
 });
-
-// packages/omo-senpi/src/components/thread/gateway/result.ts
-var init_result2 = __esm(() => {
-  init_errors5();
-});
-
 // packages/omo-senpi/src/components/thread/remote/find-session.ts
 var NO_FIND_SESSION;
 var init_find_session = __esm(() => {
@@ -109120,6 +109201,7 @@ var init_relay_transport = __esm(() => {
   init_provenance2();
   init_result2();
   init_remote_ops();
+  init_device();
   init_outcome();
   init_find_session();
   init_call_deadline();
@@ -109137,6 +109219,7 @@ var init_relay_transport = __esm(() => {
 // packages/omo-senpi/src/components/thread/remote/this-device.ts
 var known2;
 var init_this_device = __esm(() => {
+  init_account();
   known2 = new WeakMap;
 });
 
@@ -109145,6 +109228,7 @@ var init_client_message_id = () => {};
 // packages/omo-senpi/src/components/remote/sessions.ts
 var NO_SESSION;
 var init_sessions = __esm(() => {
+  init_fields();
   init_permission_presets();
   init_operations();
   init_port();
@@ -109161,6 +109245,7 @@ var init_sessions = __esm(() => {
   init_codes();
   init_deadlines();
   init_device_service3();
+  init_resolve3();
   init_seams();
   init_client_message_id();
   NO_SESSION = new Set(["unknown_session", "session_not_found"]);
@@ -109190,19 +109275,69 @@ var init_factories = __esm(() => {
   init_client5();
 });
 
-// packages/omo-senpi/src/components/thread/remote/plan-create.ts
-var ALIASES_UNAVAILABLE;
-var init_plan_create = __esm(() => {
+// packages/omo-senpi/src/components/thread/address/holder.ts
+var init_holder = __esm(() => {
+  init_account();
+  init_outcome();
+  init_refusals();
+});
+
+// packages/omo-senpi/src/components/thread/address/ladder.ts
+var init_ladder = __esm(() => {
   init_addressing();
-  init_relay_session_host();
   init_errors5();
-  init_thread_row();
-  init_find_session();
+});
+
+// packages/omo-senpi/src/components/thread/address/probe.ts
+var init_probe = __esm(() => {
+  init_errors5();
+  init_address_book();
   init_remote_ops();
-  ALIASES_UNAVAILABLE = {
-    kind: "error",
-    error: threadToolFailure("host_unavailable", "Thread aliases need the account's alias registry, which this device cannot reach.", "Create or address the thread by its id; retry the alias later.")
-  };
+  init_account();
+  init_refusals();
+});
+
+// packages/omo-senpi/src/components/thread/address/bare.ts
+var init_bare = __esm(() => {
+  init_addressing();
+  init_errors5();
+  init_address_book();
+  init_holder();
+  init_ladder();
+  init_probe();
+  init_refusals();
+});
+
+// packages/omo-senpi/src/components/thread/address/on-device.ts
+var init_on_device = __esm(() => {
+  init_address_book();
+  init_holder();
+  init_bare();
+  init_device();
+  init_ladder();
+  init_probe();
+  init_refusals();
+});
+
+// packages/omo-senpi/src/components/thread/address/resolve.ts
+var init_resolve4 = __esm(() => {
+  init_errors5();
+  init_address_book();
+  init_remote_ops();
+  init_account();
+  init_bare();
+  init_device();
+  init_on_device();
+  init_probe();
+  init_refusals();
+});
+
+// packages/omo-senpi/src/components/thread/address/index.ts
+var init_address = __esm(() => {
+  init_account();
+  init_device();
+  init_refusals();
+  init_resolve4();
 });
 
 // packages/omo-opencode/src/cli/cli-program.ts
@@ -112079,7 +112214,7 @@ function isRootSetting(line, key) {
 // packages/omo-codex/src/install/codex-model-catalog.ts
 import { readFile as readFile11 } from "node:fs/promises";
 import { join as join38 } from "node:path";
-var CODEX_ASTRA_MODEL = "gpt-6-astra";
+var CODEX_ASTRA_MODEL = "gpt-6.2-astra";
 var FALLBACK_CODEX_MODEL_CATALOG = {
   current: {
     model: CODEX_ASTRA_MODEL,
@@ -112104,6 +112239,12 @@ var FALLBACK_CODEX_MODEL_CATALOG = {
     {
       model: "gpt-5.6-sol",
       modelContextWindow: 650000,
+      modelReasoningEffort: "high",
+      planModeReasoningEffort: "xhigh"
+    },
+    {
+      model: "gpt-6-astra",
+      modelContextWindow: 600000,
       modelReasoningEffort: "high",
       planModeReasoningEffort: "xhigh"
     }
@@ -112655,6 +112796,7 @@ import { lstat as lstat8, readFile as readFile14, readdir as readdir7, writeFile
 import { join as join42 } from "node:path";
 
 // packages/omo-codex/src/install/managed-agent-reasoning-defaults.ts
+var PREVIOUS_CODEX_ASTRA_MODEL = "gpt-6-astra";
 var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
   [
     "explorer",
@@ -112669,7 +112811,11 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-luna", effort: "low" },
-        current: { model: CODEX_ASTRA_MODEL, effort: "low" }
+        current: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "low" }
+      },
+      {
+        previous: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "low" },
+        current: { model: "gpt-6-luna", effort: "low" }
       }
     ]
   ],
@@ -112686,7 +112832,11 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-luna", effort: "low" },
-        current: { model: CODEX_ASTRA_MODEL, effort: "low" }
+        current: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "low" }
+      },
+      {
+        previous: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "low" },
+        current: { model: "gpt-6-luna", effort: "low" }
       }
     ]
   ],
@@ -112695,6 +112845,10 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
     [
       {
         previous: { model: "gpt-5.6-sol", effort: "high" },
+        current: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "high" }
+      },
+      {
+        previous: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "high" },
         current: { model: CODEX_ASTRA_MODEL, effort: "high" }
       }
     ]
@@ -112704,6 +112858,10 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
     [
       {
         previous: { model: "gpt-5.6-luna", effort: "high" },
+        current: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "high" }
+      },
+      {
+        previous: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "high" },
         current: { model: CODEX_ASTRA_MODEL, effort: "high" }
       }
     ]
@@ -112721,6 +112879,10 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-terra", effort: "high" },
+        current: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "high" }
+      },
+      {
+        previous: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "high" },
         current: { model: CODEX_ASTRA_MODEL, effort: "high" }
       }
     ]
@@ -112738,6 +112900,10 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-sol", effort: "high" },
+        current: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "high" }
+      },
+      {
+        previous: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "high" },
         current: { model: CODEX_ASTRA_MODEL, effort: "high" }
       }
     ]
@@ -112755,6 +112921,10 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-terra", effort: "high" },
+        current: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "high" }
+      },
+      {
+        previous: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "high" },
         current: { model: CODEX_ASTRA_MODEL, effort: "high" }
       }
     ]
@@ -112768,6 +112938,10 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-sol", effort: "medium" },
+        current: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "medium" }
+      },
+      {
+        previous: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "medium" },
         current: { model: CODEX_ASTRA_MODEL, effort: "medium" }
       }
     ]
@@ -112781,6 +112955,10 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-terra", effort: "medium" },
+        current: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "medium" }
+      },
+      {
+        previous: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "medium" },
         current: { model: CODEX_ASTRA_MODEL, effort: "medium" }
       }
     ]
@@ -112794,6 +112972,10 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-terra", effort: "high" },
+        current: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "high" }
+      },
+      {
+        previous: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "high" },
         current: { model: CODEX_ASTRA_MODEL, effort: "high" }
       }
     ]
@@ -112807,6 +112989,10 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-luna", effort: "high" },
+        current: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "high" }
+      },
+      {
+        previous: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "high" },
         current: { model: CODEX_ASTRA_MODEL, effort: "high" }
       }
     ]
@@ -112824,6 +113010,10 @@ var MANAGED_REASONING_DEFAULT_UPGRADES = new Map([
       },
       {
         previous: { model: "gpt-5.6-sol", effort: "low" },
+        current: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "low" }
+      },
+      {
+        previous: { model: PREVIOUS_CODEX_ASTRA_MODEL, effort: "low" },
         current: { model: CODEX_ASTRA_MODEL, effort: "low" }
       }
     ]
@@ -115173,7 +115363,8 @@ const agentDir = process.env.OMO_CODING_AGENT_DIR ?? process.env.SENPI_CODING_AG
   ?? process.env.PI_CODING_AGENT_DIR ?? join(homedir(), ".omo", "agent")
 const env = {
   ...process.env,
-  SENPI_BRAND: JSON.stringify(brand),
+  // The plugin this launcher prepends with --extension is the engine's own, never a user flag (#14465).
+  SENPI_BRAND: JSON.stringify({ ...brand, extensions: [plugin] }),
   OMO_NATIVE: "1",
   OMO_CODING_AGENT_DIR: agentDir,
   SENPI_CODING_AGENT_DIR: agentDir,
@@ -115407,6 +115598,7 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
   join66("skills-conditional", "x-search", "SKILL.md"),
   join66("runtime", "agent-toolkit-sdk", "sdk.js"),
   join66("runtime", "bunshin-ts", "sdk.js"),
+  join66("runtime", "omo-sdk", "sdk.js"),
   join66("runtime", "thread-sdk", "sdk.js"),
   join66("runtime", "ast-grep-mcp", "cli.js"),
   join66("runtime", "lsp-daemon", "dist", "cli.js"),
@@ -120050,12 +120242,7 @@ var I18nConfigSchema = object({
   locale: string2().optional()
 });
 // packages/omo-opencode/src/config/schema/keyword-detector.ts
-init_zod();
-var KeywordTypeSchema = _enum(["ultrawork", "team", "hyperplan", "hyperplan-ultrawork"]);
-var KeywordDetectorConfigSchema = object({
-  enabled_expansions: array(KeywordTypeSchema).optional(),
-  disabled_keywords: array(KeywordTypeSchema).optional()
-});
+init_src4();
 // packages/omo-opencode/src/config/schema/model-capabilities.ts
 init_zod();
 var ModelCapabilitiesConfigSchema = object({
@@ -120287,7 +120474,7 @@ var OhMyOpenCodeConfigSchema = object({
   i18n: I18nConfigSchema.optional(),
   monitor: MonitorConfigSchema.optional(),
   team_mode: TeamModeConfigSchema.optional(),
-  keyword_detector: KeywordDetectorConfigSchema.optional(),
+  keyword_detector: OmoKeywordDetectorSettingsSchema.optional(),
   babysitting: BabysittingConfigSchema.optional(),
   git_master: GitMasterConfigSchema.default({
     commit_footer: false,
@@ -124768,8 +124955,8 @@ var package_default3 = {
   },
   dependencies: {
     "@clack/prompts": "^1.8.1",
-    "@code-yeongyu/senpi": "2026.11.18-3",
-    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.18-3",
+    "@code-yeongyu/senpi": "2026.11.19-5",
+    "@earendil-works/pi-ai": "npm:@code-yeongyu/senpi-ai@2026.11.19-5",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@oh-my-opencode/agents-md-core": "workspace:*",
     "@oh-my-opencode/boulder-state": "workspace:*",
@@ -128003,9 +128190,9 @@ function deviceName(host = machineHost()) {
   const bounded = [...clean].slice(0, 64).join("").trim();
   return bounded === "" ? UNNAMED : bounded;
 }
-var LEGACY_PREFIX = "omo CLI on ";
+var LEGACY_PREFIXES = ["omo CLI on ", "OmO Desktop on "];
 function isGeneratedDeviceName(name) {
-  return name.startsWith(LEGACY_PREFIX) || name === UNNAMED || name === deviceName(hostname());
+  return LEGACY_PREFIXES.some((prefix) => name.startsWith(prefix)) || name === UNNAMED || name === deviceName(hostname());
 }
 function devicePlatform() {
   switch (process.platform) {
@@ -130235,12 +130422,16 @@ var parseLockedReply = (stdout) => {
     return null;
   return match[1] === "true" ? "locked" : "unlocked";
 };
+var NO_SECRET_SERVICE = /^Error connecting: (?:Could not connect: No such file or directory|Cannot autolaunch D-Bus without X11 \$DISPLAY|Failed to execute child process .dbus-launch. \(No such file or directory\))|org\.freedesktop\.DBus\.Error\.(?:ServiceUnknown|NameHasNoOwner)\b/m;
+var classifyProbeFailure = (stderr) => NO_SECRET_SERVICE.test(stderr) ? "absent" : "unknown";
 var finishedWithoutPrompt = (stdout) => /objectpath\s+'\/'\s*\)\s*$/.test(stdout);
 var gdbus = (args, timeoutMs) => new Promise((resolve) => {
   const child = spawn5("gdbus", ["call", "--session", "--dest", "org.freedesktop.secrets", ...args], {
-    stdio: ["ignore", "pipe", "ignore"]
+    stdio: ["ignore", "pipe", "pipe"],
+    env: { ...process.env, LC_ALL: "C" }
   });
   let stdout = "";
+  let stderr = "";
   const timer = setTimeout(() => {
     child.kill();
     resolve({ kind: "unknown" });
@@ -130248,13 +130439,16 @@ var gdbus = (args, timeoutMs) => new Promise((resolve) => {
   child.stdout.on("data", (chunk) => {
     stdout += chunk.toString();
   });
+  child.stderr.on("data", (chunk) => {
+    stderr += chunk.toString();
+  });
   child.on("error", () => {
     clearTimeout(timer);
     resolve({ kind: "unknown" });
   });
   child.on("close", (code) => {
     clearTimeout(timer);
-    resolve(code === 0 ? { kind: "reply", stdout } : { kind: "failed" });
+    resolve(code === 0 ? { kind: "reply", stdout } : { kind: "failed", stderr });
   });
 });
 var readLocked = async (timeoutMs) => {
@@ -130268,7 +130462,7 @@ var readLocked = async (timeoutMs) => {
   ], timeoutMs);
   if (answer.kind === "unknown")
     return "unknown";
-  return answer.kind === "reply" ? parseLockedReply(answer.stdout) ?? "absent" : "absent";
+  return answer.kind === "reply" ? parseLockedReply(answer.stdout) ?? "unknown" : classifyProbeFailure(answer.stderr);
 };
 var probeSecretServiceLock = async () => {
   const state = await readLocked(PROBE_TIMEOUT_MS2);
@@ -130355,6 +130549,218 @@ async function credentialLockBusy(error) {
   return new SignInError(`Another process (pid ${pid}, ${name}) ${held}. Wait for it to finish, or end it with \`${endCommand(pid, false)}\`, then run the command again.`);
 }
 
+// packages/omo-opencode/src/cli/service-auth/linux-store-route.ts
+var LIBSECRET_NOTICE = "omo: could not check whether the keyring is locked (gdbus or the Secret Service did not answer); using libsecret directly.";
+function routeLinuxStore(input) {
+  const { keyring, file, notice } = input;
+  let storage = "keyring";
+  let libsecretNoticed = false;
+  let keptNoticed = false;
+  const underLock = (action) => withCredentialLock(input.api, action, input.home ?? accountHome());
+  const migrate = () => underLock(async () => {
+    const text = await file.text();
+    if (text === null)
+      return;
+    const relation = await input.relation(text);
+    if (relation === "empty" || relation === "older") {
+      await input.moveToKeyring(text);
+      await file.clear();
+      return;
+    }
+    if (keptNoticed)
+      return;
+    keptNoticed = true;
+    notice(`omo: the keyring already holds ${relation === "newer" ? "a newer copy of this" : "another"} OmO sign-in, which stays in use; the private sign-in file in ${file.directory()} is left as it is.`);
+  });
+  const choose = async () => {
+    const answer = await input.probe();
+    if (answer === "absent")
+      return "file";
+    if (await file.present()) {
+      if (answer === "unknown")
+        return "file";
+      await migrate();
+      return "keyring";
+    }
+    if (answer === "unknown" && !libsecretNoticed) {
+      libsecretNoticed = true;
+      notice(LIBSECRET_NOTICE);
+    }
+    return "keyring";
+  };
+  const target = async () => {
+    storage = await choose();
+    return storage === "file" ? file : keyring;
+  };
+  return {
+    read: async () => (await target()).read(),
+    readAuthoritative: async () => (await target()).readAuthoritative(),
+    write: async (value, intent, beforeRetire) => {
+      const store = await target();
+      if (store === file)
+        notice(`omo: No keyring is running; OmO keeps this sign-in in a private file in ${file.directory()}, readable only by you. Start a keyring to keep it there instead.`);
+      await store.write(value, intent, beforeRetire);
+    },
+    clear: async () => {
+      const answer = await input.probe();
+      const present = await file.present();
+      storage = answer === "absent" || answer === "unknown" && present ? "file" : "keyring";
+      if (storage === "file")
+        return file.clear();
+      if (present)
+        await underLock(async () => {
+          const text = await file.text();
+          if (text !== null && await input.relation(text) !== "other")
+            await file.clear();
+        });
+      await keyring.clear();
+    },
+    storage: () => storage
+  };
+}
+
+// packages/omo-opencode/src/cli/service-auth/state-file-store.ts
+import { randomBytes as randomBytes5 } from "node:crypto";
+import { constants as constants15 } from "node:fs";
+import { lstat as lstat19, mkdir as mkdir14, open as open5, readdir as readdir19, rename as rename11, rm as rm19 } from "node:fs/promises";
+import { join as join115 } from "node:path";
+var ACCOUNT_STATE_DIR = "account-state";
+var { O_RDONLY, O_WRONLY, O_CREAT, O_EXCL, O_NOFOLLOW, O_NONBLOCK, O_DIRECTORY } = constants15;
+var GROUP_OR_WORLD = 63;
+
+class StateFileRefused extends Error {
+  refusal;
+  constructor(refusal) {
+    super(`the private sign-in file was refused (${refusal})`);
+    this.refusal = refusal;
+  }
+}
+var stateFileDirectory = (home) => join115(home, ".omo", ACCOUNT_STATE_DIR);
+var errnoCode = (error) => typeof error === "object" && error !== null && ("code" in error) && typeof error.code === "string" ? error.code : undefined;
+var dirRefusal = (stat, uid) => !stat.isDirectory() ? "dir-not-a-directory" : stat.uid !== uid ? "dir-other-owner" : (stat.mode & GROUP_OR_WORLD) !== 0 ? "dir-open" : undefined;
+var fileRefusal = (stat, uid) => !stat.isFile() ? "not-a-file" : stat.uid !== uid ? "other-owner" : (stat.mode & GROUP_OR_WORLD) !== 0 ? "open" : undefined;
+async function checkDir(dir, uid) {
+  const stat = await lstat19(dir).catch((error) => {
+    if (errnoCode(error) === "ENOENT")
+      return null;
+    throw error;
+  });
+  if (stat === null)
+    return false;
+  const refusal = dirRefusal(stat, uid);
+  if (refusal !== undefined)
+    throw new StateFileRefused(refusal);
+  return true;
+}
+async function readStateFile(dir, name, uid) {
+  if (!await checkDir(dir, uid))
+    return null;
+  const handle = await open5(join115(dir, name), O_RDONLY | O_NOFOLLOW | O_NONBLOCK).catch((error) => {
+    const code = errnoCode(error);
+    if (code === "ENOENT")
+      return null;
+    if (code === "ELOOP")
+      throw new StateFileRefused("symlink");
+    throw error;
+  });
+  if (handle === null)
+    return null;
+  try {
+    const refusal = fileRefusal(await handle.stat(), uid);
+    if (refusal !== undefined)
+      throw new StateFileRefused(refusal);
+    return await handle.readFile("utf8");
+  } finally {
+    await handle.close();
+  }
+}
+async function removeTempLeftovers(dir, name) {
+  const entries = await readdir19(dir).catch((error) => {
+    if (errnoCode(error) === "ENOENT")
+      return [];
+    throw error;
+  });
+  for (const entry of entries)
+    if (entry.startsWith(`.${name}.`) && entry.endsWith(".tmp"))
+      await rm19(join115(dir, entry), { force: true });
+}
+async function writeStateFile(dir, name, contents, uid) {
+  await mkdir14(dir, { recursive: true, mode: 448 });
+  await checkDir(dir, uid);
+  await removeTempLeftovers(dir, name);
+  const temp = join115(dir, `.${name}.${randomBytes5(8).toString("hex")}.tmp`);
+  try {
+    const handle = await open5(temp, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW, 384);
+    try {
+      await handle.writeFile(contents, "utf8");
+      await handle.sync();
+    } finally {
+      await handle.close();
+    }
+    await rename11(temp, join115(dir, name));
+  } catch (error) {
+    await rm19(temp, { force: true });
+    throw error;
+  }
+  const directory = await open5(dir, O_RDONLY | O_DIRECTORY);
+  try {
+    await directory.sync().catch(() => {
+      return;
+    });
+  } finally {
+    await directory.close();
+  }
+}
+async function removeStateFile(dir, name) {
+  await removeTempLeftovers(dir, name);
+  await rm19(join115(dir, name), { force: true });
+}
+function createStateFileStore(input) {
+  const { api, name, codec, failure } = input;
+  const log = input.log ?? ((line) => process.stderr.write(`${line}
+`));
+  const uid = process.getuid?.() ?? -1;
+  const directory = () => stateFileDirectory(input.home ?? accountHome());
+  const failed = (operation, error) => error instanceof StateFileRefused ? failure(`omo: cannot ${operation} the private sign-in file in ${directory()}: ${error.message}.`) : failure(`omo: cannot ${operation} the private sign-in file in ${directory()} (${errnoCode(error) ?? "unknown"}).`);
+  const text = async () => {
+    try {
+      return await readStateFile(directory(), name, uid);
+    } catch (error) {
+      if (!(error instanceof StateFileRefused))
+        throw failed("read", error);
+      log(`omo: ${error.message} in ${directory()} and is not used; this computer reads as signed out.`);
+      return null;
+    }
+  };
+  const read = async () => {
+    const stored = await text();
+    return stored === null ? null : codec.parse(stored);
+  };
+  const locked = (action) => withCredentialLock(api, action, input.home ?? accountHome());
+  return {
+    read,
+    readAuthoritative: read,
+    text,
+    directory,
+    present: async () => await lstat19(join115(directory(), name)).catch(() => null) !== null,
+    write: (value) => locked(async () => {
+      const next = codec.amend === undefined ? value : codec.amend(await text(), value);
+      try {
+        await writeStateFile(directory(), name, codec.serialize(next), uid);
+      } catch (error) {
+        throw failed("write", error);
+      }
+    }),
+    clear: () => locked(async () => {
+      try {
+        await removeStateFile(directory(), name);
+      } catch (error) {
+        throw failed("remove", error);
+      }
+    })
+  };
+}
+
 // packages/omo-opencode/src/cli/service-auth/keystore.ts
 class CredentialStoreError extends SignInError {
 }
@@ -130397,19 +130803,21 @@ var stderrNoticeOncePerProcess = (message) => {
 `);
 };
 var isLocked = (error) => error instanceof Error && (LOCKED.test(error.message) || LOCKED.test(String(error.code ?? "")));
+var sameCredentialIdentity = (current, value) => current.device.id === value.device.id && current.signingPrivateKey === value.signingPrivateKey && current.sealingPrivateKey === value.sealingPrivateKey && (value.accountId === undefined || current.accountId === undefined || current.accountId === value.accountId);
+var relateCredentials = (keyring, file) => !sameCredentialIdentity(keyring, file) || keyring.credentialGeneration !== undefined && file.credentialGeneration !== undefined && keyring.credentialGeneration !== file.credentialGeneration ? "other" : Date.parse(keyring.accessTokenExpiresAt) <= Date.parse(file.accessTokenExpiresAt) ? "older" : "newer";
 function credentialId(api) {
   return createHash14("sha256").update(serviceOrigin(api)).digest("hex");
 }
 function createCredentialStore(api, options = {}) {
   const store = createSealedStore(api, "omo-cli", credentialSchema, options.secrets, options.platform, options.lockProbe, options.notice, options.wait, (current, value) => {
-    const sameIdentity = current !== null && current.device.id === value.device.id && current.signingPrivateKey === value.signingPrivateKey && current.sealingPrivateKey === value.sealingPrivateKey && (value.accountId === undefined || current.accountId === undefined || current.accountId === value.accountId);
+    const sameIdentity = current !== null && sameCredentialIdentity(current, value);
     const accountId = value.accountId ?? (sameIdentity ? current?.accountId : undefined);
     return {
       ...value,
       ...accountId === undefined ? {} : { accountId },
       credentialGeneration: sameIdentity ? current?.credentialGeneration ?? randomUUID8() : randomUUID8()
     };
-  }, options.keychainHelper);
+  }, options.keychainHelper, { ...options.home === undefined ? {} : { home: options.home }, relate: relateCredentials });
   const sections = new WeakMap;
   const underLock = (lease) => {
     const known = sections.get(lease);
@@ -130448,12 +130856,46 @@ function createCredentialStore(api, options = {}) {
     clear: () => locked((view) => view.clear(), store.clear),
     ...store.prepare === undefined ? {} : { prepare: store.prepare },
     underLock,
-    ...store.migrationPending === undefined ? {} : { migrationPending: store.migrationPending }
+    ...store.migrationPending === undefined ? {} : { migrationPending: store.migrationPending },
+    ...store.storage === undefined ? {} : { storage: store.storage }
   };
 }
-function createSealedStore(api, namespace, schema, secrets = typeof Bun === "undefined" ? null : Bun.secrets, platform = process.platform, lockProbe = probeSecretServiceLock, notice = stderrNoticeOncePerProcess, wait = SESSION_READ_WAIT, amendWrite, keychainHelper) {
-  if (!secrets)
+function createSealedStore(api, namespace, schema, secrets = typeof Bun === "undefined" ? null : Bun.secrets, platform = process.platform, lockProbe = probeSecretServiceLock, notice = stderrNoticeOncePerProcess, wait = SESSION_READ_WAIT, amendWrite, keychainHelper, linux = {}) {
+  const { home } = linux;
+  const parseStored = (value) => {
+    try {
+      return schema.parse(JSON.parse(value));
+    } catch {
+      throw new InvalidCredentialState(signInRoute() === "cli" ? "Stored sign-in data is invalid. Run omo account forget, then omo login." : "The OmO sign-in saved on this computer can't be read. Run omo account forget to remove it, then sign in again from the OmO desktop app on this computer, or with omo login in a terminal.");
+    }
+  };
+  const previousOf = (raw) => {
+    if (raw === null)
+      return null;
+    try {
+      return schema.parse(JSON.parse(raw));
+    } catch {
+      return null;
+    }
+  };
+  const codec = {
+    parse: parseStored,
+    serialize: (value) => JSON.stringify(schema.parse(value)),
+    ...amendWrite === undefined ? {} : { amend: (raw, next) => amendWrite(previousOf(raw), next) }
+  };
+  const stateFile = platform === "linux" ? createStateFileStore({
+    api,
+    name: `${namespace}-${credentialId(api)}.json`,
+    codec,
+    failure: (message) => new CredentialStoreError(message),
+    ...home === undefined ? {} : { home }
+  }) : null;
+  if (!secrets) {
+    if (stateFile !== null)
+      return { ...stateFile, storage: () => "file" };
     throw new SignInError("OmO sign-in needs Bun 1.4 or newer with OS credential storage. No file fallback is available.");
+  }
+  const neverInAFile = platform === "linux" ? "" : " Credentials are never saved to a file.";
   const platformName = platform === "darwin" ? "macOS Keychain" : platform === "linux" ? "Linux Secret Service (libsecret and an unlocked keyring)" : platform === "win32" ? "Windows Credential Manager" : null;
   if (platformName === null)
     throw new SignInError("This platform has no supported OS credential store.");
@@ -130509,7 +130951,7 @@ ${key.name}`;
         return await read;
       }
       const expired = new Promise((_, reject) => {
-        timer = setTimeout(() => reject(new KeychainApprovalPendingError(`${waitingFor}, then try again. Credentials are never saved to a file.`)), wait.deadlineMs);
+        timer = setTimeout(() => reject(new KeychainApprovalPendingError(`${waitingFor}, then try again.${neverInAFile}`)), wait.deadlineMs);
       });
       return await Promise.race([read, expired]);
     } finally {
@@ -130517,42 +130959,19 @@ ${key.name}`;
     }
   };
   const lockedHint = platform === "darwin" ? " On an unattended Mac, omo account store enable keeps the sign-in in OmO's own keychain." : "";
-  const unavailable = (error) => isLocked(error) ? new KeychainLockedError(`${platformName} is locked. Unlock it, then try again. Credentials are never saved to a file.${lockedHint}`) : new CredentialStoreError(`Cannot access ${platformName}. Unlock or enable the OS credential store and try again. Credentials are never saved to a file.`);
+  const unavailable = (error) => isLocked(error) ? new KeychainLockedError(`${platformName} is locked. Unlock it, then try again.${neverInAFile}${lockedHint}`) : new CredentialStoreError(`Cannot access ${platformName}. Unlock or enable the OS credential store and try again.${neverInAFile}`);
   let unlockedUntil = 0;
-  let noticed = false;
-  const assertUsable = async () => {
-    if (platform !== "linux" || Date.now() < unlockedUntil)
-      return;
+  const keyringState = async () => {
+    if (Date.now() < unlockedUntil)
+      return "unlocked";
     const lock = await lockProbe();
     if (lock === "locked")
-      throw new KeychainLockedError(`${platformName} is locked. Unlock it, then try again. Credentials are never saved to a file.`);
-    if (lock === "unlocked") {
+      throw new KeychainLockedError(`${platformName} is locked. Unlock it, then try again.`);
+    if (lock === "unlocked")
       unlockedUntil = Date.now() + UNLOCKED_REUSE_MS;
-      return;
-    }
-    if (!noticed) {
-      noticed = true;
-      notice("omo: could not check whether the keyring is locked (gdbus or the Secret Service did not answer); using libsecret directly.");
-    }
-  };
-  const parseStored = (value) => {
-    try {
-      return schema.parse(JSON.parse(value));
-    } catch {
-      throw new InvalidCredentialState(signInRoute() === "cli" ? "Stored sign-in data is invalid. Run omo account forget, then omo login." : "The OmO sign-in saved on this computer can't be read. Run omo account forget to remove it, then sign in again from the OmO desktop app on this computer, or with omo login in a terminal.");
-    }
-  };
-  const previousOf = (raw) => {
-    if (raw === null)
-      return null;
-    try {
-      return schema.parse(JSON.parse(raw));
-    } catch {
-      return null;
-    }
+    return lock;
   };
   const rawRead = async (fresh) => {
-    await assertUsable();
     const backend = await helper.backend();
     try {
       if (backend === null)
@@ -130582,7 +131001,7 @@ ${key.name}`;
       return mapped;
     return unavailable(mapped);
   };
-  return {
+  const keyring = {
     read: () => parsedRead(false),
     readAuthoritative: () => parsedRead(true),
     async prepare() {
@@ -130593,16 +131012,10 @@ ${key.name}`;
       const backend = await helper.backend();
       if (backend === null)
         return null;
-      const codec = {
-        parse: parseStored,
-        serialize: (value) => JSON.stringify(schema.parse(value)),
-        ...amendWrite === undefined ? {} : { amend: (raw, next) => amendWrite(previousOf(raw), next) }
-      };
       return lockedStoreView(backend, lease, codec, lockedFailure, () => forget(helper.reader(backend)));
     },
     migrationPending: async () => (await helper.backend())?.migrationPending() ?? false,
     async write(value) {
-      await assertUsable();
       if (await helper.backend() !== null)
         throw new Error("OmO's keychain helper writes only under the session lock.");
       try {
@@ -130614,7 +131027,6 @@ ${key.name}`;
       forget(secrets);
     },
     async clear() {
-      await assertUsable();
       if (await helper.backend() !== null)
         throw new Error("OmO's keychain helper deletes only under the session lock.");
       try {
@@ -130623,8 +131035,49 @@ ${key.name}`;
         throw unavailable(error);
       }
       forget(secrets);
-    }
+    },
+    storage: () => "keyring"
   };
+  if (stateFile === null)
+    return keyring;
+  return routeLinuxStore({
+    api,
+    keyring,
+    file: stateFile,
+    probe: keyringState,
+    notice,
+    ...home === undefined ? {} : { home },
+    async relation(text) {
+      let stored;
+      try {
+        stored = await answered(secrets, true);
+      } catch (error) {
+        throw error instanceof CredentialStoreError ? error : unavailable(error);
+      } finally {
+        forget(secrets);
+      }
+      if (stored === null)
+        return "empty";
+      if (stored === text)
+        return "older";
+      const inKeyring = previousOf(stored);
+      const inFile = previousOf(text);
+      if (inKeyring === null || inFile === null || linux.relate === undefined)
+        return "other";
+      return linux.relate(inKeyring, inFile);
+    },
+    async moveToKeyring(text) {
+      try {
+        await secrets.set({ ...key, value: text });
+        if (await answered(secrets, true) !== text)
+          throw new CredentialStoreError(`${platformName} did not return the sign-in it was given; it stays in the private file until it does.`);
+      } catch (error) {
+        throw error instanceof CredentialStoreError ? error : unavailable(error);
+      } finally {
+        forget(secrets);
+      }
+    }
+  });
 }
 
 // packages/omo-opencode/src/cli/service-auth/session.ts
@@ -130739,8 +131192,8 @@ async function requestApi(api, path, init, signal) {
 
 // packages/omo-opencode/src/cli/service-auth/machine-reconcile.ts
 import { createHash as createHash15, createPrivateKey as createPrivateKey3, sign } from "node:crypto";
-import { mkdir as mkdir14, readFile as readFile39, rename as rename11, rm as rm19, writeFile as writeFile18 } from "node:fs/promises";
-import { dirname as dirname48, join as join115 } from "node:path";
+import { mkdir as mkdir15, readFile as readFile39, rename as rename12, rm as rm20, writeFile as writeFile18 } from "node:fs/promises";
+import { dirname as dirname48, join as join116 } from "node:path";
 init_zod();
 var MACHINE_BIND_CONTEXT = "omo-machine-bind-v1";
 var DEVICE_FIXUP_BUDGET_MS = 5000;
@@ -130755,7 +131208,7 @@ var ownDeviceSchema = object({
 });
 var refusalNoteSchema = object({ key: string2(), at: number2() });
 var thisMachine = { digest: () => readMachineDigest(), name: () => deviceName() };
-var machineRefusalPath = (home, credential) => join115(home, ".omo", "account-state", `${credential}.machine-exists.json`);
+var machineRefusalPath = (home, credential) => join116(home, ".omo", "account-state", `${credential}.machine-exists.json`);
 var describe4 = (error) => error instanceof Error ? error.message : String(error);
 var refusalKey = (deviceId, digest) => createHash15("sha256").update(`${deviceId}
 ${digest}`, "utf8").digest("hex");
@@ -130782,13 +131235,13 @@ async function refusedRecently(path, key, nowMs, signal) {
   return note.success && note.data.key === key && nowMs - note.data.at < MACHINE_EXISTS_RETRY_MS;
 }
 async function rememberRefusal(path, key, nowMs, signal) {
-  await mkdir14(dirname48(path), { recursive: true, mode: 448 });
+  await mkdir15(dirname48(path), { recursive: true, mode: 448 });
   const staging = `${path}.${process.pid}.tmp`;
   await writeFile18(staging, JSON.stringify({ key, at: nowMs }), { mode: 384, signal });
   if (signal.aborted)
-    await rm19(staging, { force: true });
+    await rm20(staging, { force: true });
   else
-    await rename11(staging, path);
+    await rename12(staging, path);
 }
 async function reconcileDevice(options) {
   const { credentials, request, signal } = options;
@@ -130883,10 +131336,10 @@ async function bindOnce(options, auth, log) {
 
 // packages/omo-opencode/src/cli/service-auth/signed-out-marker.ts
 init_zod();
-import { mkdir as mkdir15, readFile as readFile40, rename as rename12, rm as rm20, writeFile as writeFile19 } from "node:fs/promises";
-import { dirname as dirname49, join as join116 } from "node:path";
+import { mkdir as mkdir16, readFile as readFile40, rename as rename13, rm as rm21, writeFile as writeFile19 } from "node:fs/promises";
+import { dirname as dirname49, join as join117 } from "node:path";
 var markerSchema = object({ device: string2().nullable(), at: string2() });
-var signedOutMarkerPath = (home, credential) => join116(home, ".omo", "account-state", `${credential}.signed-out.json`);
+var signedOutMarkerPath = (home, credential) => join117(home, ".omo", "account-state", `${credential}.signed-out.json`);
 async function readSignedOutMarker(path) {
   const text = await readFile40(path, "utf8").catch(() => null);
   if (text === null)
@@ -130901,14 +131354,14 @@ async function readSignedOutMarker(path) {
   return parsed.success ? parsed.data : null;
 }
 async function writeSignedOutMarker(path, device) {
-  await mkdir15(dirname49(path), { recursive: true, mode: 448 });
+  await mkdir16(dirname49(path), { recursive: true, mode: 448 });
   const staging = `${path}.${process.pid}.tmp`;
   await writeFile19(staging, JSON.stringify({ device, at: new Date().toISOString() }), {
     mode: 384
   });
-  await rename12(staging, path);
+  await rename13(staging, path);
 }
-var clearSignedOutMarker = (path) => rm20(path, { force: true });
+var clearSignedOutMarker = (path) => rm21(path, { force: true });
 
 // packages/omo-opencode/src/cli/service-auth/session.ts
 class SessionEnded extends SignInError {
@@ -130949,6 +131402,18 @@ function createSession(options) {
     const id = typeof body === "object" && body !== null && "account" in body && typeof body.account === "object" && body.account !== null && "id" in body.account ? body.account.id : undefined;
     return typeof id === "string" && id !== "" ? id : undefined;
   };
+  const unstampedAccount = async (current, access) => {
+    if (current.accountId !== undefined || current.owner !== undefined)
+      return;
+    if (await beforeKeysDiscarded.wantsAccount?.() !== true)
+      return;
+    const budget = AbortSignal.timeout(options.machine?.budgetMs ?? DEVICE_FIXUP_BUDGET_MS);
+    return accountOf(access, signal === undefined ? budget : AbortSignal.any([signal, budget]));
+  };
+  async function discard(current, cause) {
+    const account = Date.parse(current.accessTokenExpiresAt) > now() ? await unstampedAccount(current, current.accessToken) : undefined;
+    await beforeKeysDiscarded(discardedOf(account === undefined ? current : { ...current, accountId: account }, cause));
+  }
   async function refreshed(current) {
     if (current.refreshState === "uncertain" || current.refreshAttempt !== undefined) {
       throw new SessionEnded(`Refresh recovery can no longer be proved safe. ${signInHint("again")}`, false, "refresh_recovery_expired");
@@ -130966,7 +131431,7 @@ function createSession(options) {
       if (error instanceof CredentialStoreError)
         throw error;
       if (error instanceof ApiRefusal && error.status < 500 && ["unauthorized", "account_deleted", "reauth_required", "invalid_grant", "device_revoked"].includes(error.code)) {
-        await beforeKeysDiscarded(discardedOf(current, "refused"));
+        await discard(current, "refused");
         await store.clear();
         await deviceService?.forget();
         throw new SessionEnded(error.code === "reauth_required" ? `This session was ended because its refresh token was reused. ${signInHint("again")}` : refusalMessage(refusalGuidance(error.code, error.status)), DEVICE_REVOKING_REFUSALS.has(error.code), error.code);
@@ -131075,7 +131540,7 @@ function createSession(options) {
           stored = null;
         }
         if (stored !== null && stored.device.id !== value.device.id)
-          await beforeKeysDiscarded(discardedOf(stored, "replaced"));
+          await discard(stored, "replaced");
         await store.write(value, "fresh-sign-in", () => beforeKeysDiscarded({ kind: "unreadable" }));
         await clearSignedOutMarker(markerPath);
       });
@@ -131096,8 +131561,23 @@ function createSession(options) {
         return action(current);
       });
     },
+    discard,
     async forget() {
-      await locked(() => store.clear());
+      await locked(async () => {
+        let current;
+        try {
+          current = await store.readAuthoritative();
+        } catch (error) {
+          if (!(error instanceof InvalidCredentialState || error instanceof CredentialStoreError))
+            throw error;
+          await store.clear();
+          await beforeKeysDiscarded({ kind: "unreadable" });
+          return;
+        }
+        if (current !== null)
+          await discard(current, "forget");
+        await store.clear();
+      });
       await deviceService?.forget();
     },
     accessSnapshot: snapshot,
@@ -131113,9 +131593,7 @@ function createSession(options) {
               if (current.refreshState === "uncertain")
                 return false;
               const access = Date.parse(current.accessTokenExpiresAt) <= now() ? (await refreshed(current)).accessToken : current.accessToken;
-              if (current.accountId === undefined && current.owner === undefined && await beforeKeysDiscarded.wantsAccount?.() === true) {
-                account = await accountOf(access);
-              }
+              account = await unstampedAccount(current, access);
               await request(`/v1/devices/${encodeURIComponent(current.device.id)}`, {
                 method: "DELETE",
                 headers: syncRequestHeaders(access)
@@ -131211,6 +131689,26 @@ async function refuseSecondMachineDevice(session, deviceService) {
   }
 }
 
+// packages/omo-opencode/src/cli/service-auth/login-prelude.ts
+class AccountsUnreachable extends SignInError {
+}
+async function ensureServiceAvailable(session, api) {
+  try {
+    return await session.request("/v1/health", { method: "GET" });
+  } catch (error) {
+    if (!(error instanceof SignInError))
+      throw error;
+    if (error instanceof RequestFailure) {
+      throw new AccountsUnreachable(`Can't reach OmO accounts at ${api}. The service may not be available yet, or your network, proxy or certificate settings are blocking it.`);
+    }
+    throw new AccountsUnreachable(`OmO accounts at ${api} aren't available right now. Try again later.`);
+  }
+}
+async function beginLogin(session, deviceService, api) {
+  await refuseSecondMachineDevice(session, deviceService);
+  return ensureServiceAvailable(session, api);
+}
+
 // packages/omo-opencode/src/cli/service-auth/device-flow.ts
 import { setTimeout as setTimeout2 } from "node:timers/promises";
 
@@ -131233,6 +131731,13 @@ function generateDeviceKeys() {
 }
 
 // packages/omo-opencode/src/cli/service-auth/device-flow.ts
+class DeviceSignInRefused extends SignInError {
+  code;
+  constructor(code, message) {
+    super(message);
+    this.code = code;
+  }
+}
 var REPLACE_UNSUPPORTED = "This OmO service can't replace a computer's earlier device yet. Remove that device on the Devices page of your OmO account, then run omo login again.";
 var REPLACE_MISMATCH = "The device chosen on the approval page is not this computer's earlier device, so nothing was replaced or saved. Run omo login again to start over, and choose this computer's device when replacing.";
 async function loginDevice(session, options) {
@@ -131257,7 +131762,7 @@ async function replaceEarlierDevice(session, options, keys, existing) {
     });
   } catch (error) {
     if (error instanceof ApiRefusal && error.code === "machine_exists")
-      throw new SignInError(REPLACE_UNSUPPORTED);
+      throw new DeviceSignInRefused("replace_unsupported", REPLACE_UNSUPPORTED);
     throw error;
   }
 }
@@ -131273,7 +131778,8 @@ async function authorizeDevice(session, options, keys, replace) {
   options.show({
     verificationUri: minted.verificationUri,
     userCode: minted.userCode,
-    matchingCode: minted.matchingCode
+    matchingCode: minted.matchingCode,
+    expiresAt: minted.expiresAt
   });
   const now = options.now ?? Date.now;
   const sleep = options.sleep ?? ((ms) => setTimeout2(ms, undefined, { signal: session.signal }));
@@ -131310,27 +131816,27 @@ async function authorizeDevice(session, options, keys, replace) {
       if (error.detail !== undefined) {
         if (await session.removeForLimit(error, options.chooseDevice))
           continue;
-        throw new SignInError("Sign-in cancelled. No device was removed.");
+        throw new DeviceSignInRefused("device_limit", "Sign-in cancelled. No device was removed.");
       }
       if (error.replaceMismatch)
-        throw new SignInError(REPLACE_MISMATCH);
+        throw new DeviceSignInRefused("replace_mismatch", REPLACE_MISMATCH);
       if (["access_denied", "expired_token", "invalid_grant"].includes(error.code)) {
-        throw new SignInError("Device sign-in was denied or expired. Run omo login again for a new code.");
+        throw new DeviceSignInRefused(error.code === "access_denied" ? "approval_denied" : "approval_expired", "Device sign-in was denied or expired. Run omo login again for a new code.");
       }
       throw error;
     }
   }
-  throw new SignInError("Device sign-in expired. Run omo login again for a new code.");
+  throw new DeviceSignInRefused("approval_expired", "Device sign-in expired. Run omo login again for a new code.");
 }
 
 // packages/omo-opencode/src/cli/service-auth/loopback.ts
-import { createHash as createHash16, randomBytes as randomBytes5, timingSafeEqual } from "node:crypto";
+import { createHash as createHash16, randomBytes as randomBytes6, timingSafeEqual } from "node:crypto";
 import { createServer as createServer3 } from "node:http";
 class BrowserUnavailable extends SignInError {
 }
 async function authorize(options) {
-  const verifier = randomBytes5(32).toString("base64url");
-  const state = randomBytes5(32).toString("base64url");
+  const verifier = randomBytes6(32).toString("base64url");
+  const state = randomBytes6(32).toString("base64url");
   const answer = Promise.withResolvers();
   const abort = () => answer.reject(new SignInError("Browser sign-in cancelled or timed out."));
   let accepted = false;
@@ -131468,15 +131974,15 @@ function decideReplace(options) {
 }
 
 // packages/memory-core/src/sync/device-retire.ts
-import { createHash as createHash17, randomBytes as randomBytes6 } from "node:crypto";
-import { join as join119 } from "node:path";
+import { createHash as createHash17, randomBytes as randomBytes7 } from "node:crypto";
+import { join as join120 } from "node:path";
 
 // packages/memory-core/src/identity/layout.ts
 import { homedir as homedir35 } from "node:os";
-import { join as join117, resolve as resolve31 } from "node:path";
+import { join as join118, resolve as resolve31 } from "node:path";
 var MEMORY_ROOT_ENV_VAR = "OMO_MEMORY_HOME";
 function defaultMemoryRoot() {
-  return join117(homedir35(), ".omo", "memory");
+  return join118(homedir35(), ".omo", "memory");
 }
 function resolveMemoryRoot(env, cwd) {
   const override = env[MEMORY_ROOT_ENV_VAR];
@@ -131486,13 +131992,13 @@ function resolveMemoryRoot(env, cwd) {
   return resolve31(cwd, override);
 }
 // packages/memory-core/src/sync/pin-dir.ts
-import { join as join118 } from "node:path";
-var syncPinDir = (memoryRoot) => join118(memoryRoot, "sync-device");
+import { join as join119 } from "node:path";
+var syncPinDir = (memoryRoot) => join119(memoryRoot, "sync-device");
 
 // packages/memory-core/src/sync/device-retire.ts
-var trustAnchorRoot = (pinDir) => join119(pinDir, "trust-anchor");
+var trustAnchorRoot = (pinDir) => join120(pinDir, "trust-anchor");
 var trustAnchorKey = (account) => createHash17("sha256").update(account, "utf8").digest("base64url");
-var trustAnchorDir = (pinDir, account) => join119(trustAnchorRoot(pinDir), trustAnchorKey(account));
+var trustAnchorDir = (pinDir, account) => join120(trustAnchorRoot(pinDir), trustAnchorKey(account));
 var hasLiveTrustAnchor = async (pinDir) => {
   try {
     return (await readdir17(trustAnchorRoot(pinDir))).some((name) => !name.includes(".retired-"));
@@ -131505,7 +132011,7 @@ var hasLiveTrustAnchor = async (pinDir) => {
 var retireSyncDevice = async (input) => {
   const dir = trustAnchorDir(input.pinDir, input.account);
   try {
-    await rename8(dir, `${dir}.retired-${Date.now()}-${randomBytes6(4).toString("hex")}`);
+    await rename8(dir, `${dir}.retired-${Date.now()}-${randomBytes7(4).toString("hex")}`);
   } catch (error) {
     if (!(error instanceof Error && ("code" in error) && error.code === "ENOENT"))
       throw error;
@@ -131515,43 +132021,32 @@ var retireSyncDevice = async (input) => {
 // packages/omo-opencode/src/cli/service-auth/sync-pin-retire.ts
 var reason = (error) => error instanceof Error && ("code" in error) && typeof error.code === "string" ? error.code : "unknown";
 function retireSyncPinOnDiscard(options) {
+  const livePin = () => hasLiveTrustAnchor(options.pinDir()).catch(() => false);
   const hook = async (discarded) => {
     if (discarded.kind === "unreadable") {
-      options.log("memory sync: a stored sign-in could not be read while it was replaced; its sync pin was left in place");
+      if (await livePin())
+        options.log("memory sync: a stored sign-in could not be read when its keys were discarded; its sync pin was left in place");
       return;
     }
     const account = discarded.owner?.accountId ?? discarded.accountId;
-    if (account === undefined)
+    if (account === undefined) {
+      if (await livePin())
+        options.log("memory sync: the account of this sign-in is unknown, so a sync pin was kept; if it belongs to this sign-in's account, clear it with `omo account retire-sync --account <id>`. Do not retire the pin of an account that is still signed in here, such as the desktop's.");
       return;
+    }
     try {
       await retireSyncDevice({ pinDir: options.pinDir(), account });
     } catch (error) {
       options.log(`memory sync: the sync pin could not be retired (${reason(error)}); it was left in place`);
     }
   };
-  return Object.assign(hook, { wantsAccount: () => hasLiveTrustAnchor(options.pinDir()).catch(() => false) });
+  return Object.assign(hook, { wantsAccount: livePin });
 }
 
 // packages/omo-opencode/src/cli/service-auth/commands.ts
 function noteDedicatedStore() {
   if (process.platform === "darwin" && dedicatedStoreState() === "active")
     console.log("The sign-in is kept in OmO's own keychain on this Mac (omo account store status).");
-}
-async function ensureServiceAvailable(session, api) {
-  try {
-    return await session.request("/v1/health", { method: "GET" });
-  } catch (error) {
-    if (!(error instanceof SignInError))
-      throw error;
-    if (error instanceof RequestFailure) {
-      throw new SignInError(`Can't reach OmO accounts at ${api}. The service may not be available yet, or your network, proxy or certificate settings are blocking it.`);
-    }
-    throw new SignInError(`OmO accounts at ${api} aren't available right now. Try again later.`);
-  }
-}
-async function beginLogin(session, deviceService, api) {
-  await refuseSecondMachineDevice(session, deviceService);
-  return ensureServiceAvailable(session, api);
 }
 function deviceChoices(devices) {
   return devices.map((device) => ({ value: device.id, label: terminalText(device.name) }));
@@ -131984,7 +132479,7 @@ init_timers();
 // packages/omo-native/package.json
 var package_default4 = {
   name: "omo-ai",
-  version: "5.1.79",
+  version: "5.1.81",
   type: "module",
   description: "OmO Native - the standalone omo command with the OMO extension built in: bun add -g omo-ai",
   bin: {
@@ -132001,7 +132496,7 @@ var package_default4 = {
     postinstall: "node bin/senpi-patch.mjs"
   },
   dependencies: {
-    "@code-yeongyu/senpi": "2026.11.18-3"
+    "@code-yeongyu/senpi": "2026.11.19-5"
   },
   repository: {
     type: "git",
@@ -132179,10 +132674,11 @@ init_device_service3();
 init_codes();
 init_factories();
 init_seams();
+init_address();
 
 // packages/omo-senpi/src/components/remote/device-address.ts
-init_plan_create();
-init_remote_ops();
+init_address();
+init_errors5();
 // packages/omo-senpi/src/components/thread/gateway/store.ts
 init_constants6();
 init_provenance_resolver();
@@ -132214,6 +132710,7 @@ init_relay_transport();
 // packages/omo-senpi/src/components/thread/gateway/engine.ts
 init_addressing();
 init_errors5();
+init_fields();
 init_constants6();
 init_result2();
 init_provenance_resolver();
@@ -132230,9 +132727,6 @@ init_thread_row();
 // packages/omo-native/bin/lib/package-paths.js
 import { fileURLToPath as fileURLToPath9 } from "node:url";
 var packageRoot = fileURLToPath9(new URL("../..", import.meta.url));
-// packages/omo-native/remote-session-target.ts
-init_errors5();
-init_address_book();
 
 // packages/omo-native/remote-session-verbs.ts
 init_remote_ops();

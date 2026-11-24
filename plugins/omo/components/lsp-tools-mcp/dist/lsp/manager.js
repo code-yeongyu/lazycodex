@@ -21,6 +21,24 @@ var realTimerProvider = {
   setTimeout: (callback, delayMs) => setTimeout(callback, delayMs),
   clearTimeout: (handle) => clearTimeout(handle)
 };
+function repeatEvery(timers, intervalMs, tick) {
+  let handle = null;
+  const arm = () => {
+    handle = timers.setTimeout(() => {
+      tick();
+      if (handle !== null)
+        arm();
+    }, intervalMs);
+    if (typeof handle.unref === "function")
+      handle.unref();
+  };
+  arm();
+  return () => {
+    if (handle !== null)
+      timers.clearTimeout(handle);
+    handle = null;
+  };
+}
 
 // ../lsp-core/src/lsp/constants.ts
 var DEFAULT_MAX_REFERENCES = 200;
@@ -2770,30 +2788,54 @@ function abortError2(signal) {
   return error;
 }
 
-// ../lsp-core/src/lsp/process-signal-cleanup.ts
-function installProcessSignalCleanup(cleanup) {
-  const signals = process.platform === "win32" ? ["SIGINT", "SIGTERM", "SIGBREAK"] : ["SIGINT", "SIGTERM"];
-  const handler = () => {
-    cleanup().catch((error) => {
-      reportBestEffortCleanupError("signal cleanup", error);
-    });
-  };
-  for (const signal of signals) {
-    process.on(signal, handler);
-  }
-  return () => {
-    for (const signal of signals) {
-      process.removeListener(signal, handler);
-    }
-  };
+// ../lsp-core/src/lsp/client-key.ts
+function lspClientKey(root, server) {
+  return JSON.stringify([root, server.id, server.command]);
 }
 
-// ../lsp-core/src/lsp/manager.ts
-async function stopClientBestEffort(client) {
-  try {
-    await client.stop();
-  } catch (error) {
-    reportBestEffortCleanupError("client stop", error);
+// ../lsp-core/src/lsp/client-startup.ts
+class ClientStartups {
+  constructor(now, discard) {
+    this.now = now;
+    this.discard = discard;
+  }
+  begin(request) {
+    const { client } = request;
+    const startedAt = this.now();
+    const initPromise = (async () => {
+      await client.start();
+      await client.initialize();
+    })();
+    const managed = {
+      ...request,
+      refCount: 0,
+      pendingWaiters: 0,
+      lastUsedAt: startedAt,
+      initPromise,
+      isInitializing: true,
+      initializingSince: startedAt
+    };
+    initPromise.then(() => {
+      managed.isInitializing = false;
+      managed.initializingSince = null;
+      managed.initPromise = null;
+      managed.lastUsedAt = this.now();
+    }, () => this.discard(managed));
+    return managed;
+  }
+  async wait(managed, initPromise, signal) {
+    managed.pendingWaiters++;
+    try {
+      await awaitWithSignal(initPromise, signal);
+    } catch (error) {
+      this.detach(managed);
+      throw error;
+    }
+  }
+  detach(managed) {
+    managed.pendingWaiters--;
+    if (managed.pendingWaiters === 0 && managed.refCount === 0 && managed.heldByWaiters)
+      this.discard(managed);
   }
 }
 function awaitWithSignal(promise, signal) {
@@ -2828,35 +2870,49 @@ function awaitWithSignal(promise, signal) {
   });
 }
 
+// ../lsp-core/src/lsp/process-signal-cleanup.ts
+function installProcessSignalCleanup(cleanup) {
+  const signals = process.platform === "win32" ? ["SIGINT", "SIGTERM", "SIGBREAK"] : ["SIGINT", "SIGTERM"];
+  const handler = () => {
+    cleanup().catch((error) => {
+      reportBestEffortCleanupError("signal cleanup", error);
+    });
+  };
+  for (const signal of signals) {
+    process.on(signal, handler);
+  }
+  return () => {
+    for (const signal of signals) {
+      process.removeListener(signal, handler);
+    }
+  };
+}
+
+// ../lsp-core/src/lsp/manager.ts
+async function stopClientBestEffort(client) {
+  try {
+    await client.stop();
+  } catch (error) {
+    reportBestEffortCleanupError("client stop", error);
+  }
+}
+
 class LspManager {
   constructor(options = {}) {
     this.clients = new Map;
     this.pendingStops = new Map;
     this.respawnBudgets = new Map;
-    this.reaperHandle = null;
     this.signalDisposer = null;
     this.disposed = false;
     this.idleTimeoutMs = options.idleTimeoutMs ?? IDLE_TIMEOUT_MS;
     this.initTimeoutMs = options.initTimeoutMs ?? INIT_TIMEOUT_MS;
     this.maxResidentClients = options.maxResidentClients ?? MAX_RESIDENT_CLIENTS;
-    this.reaperIntervalMs = options.reaperIntervalMs ?? REAPER_INTERVAL_MS;
     this.clientFactory = options.clientFactory ?? ((root, server) => new LspClient(root, server));
     this.now = options.now ?? (() => Date.now());
-    this.startReaper();
+    this.startups = new ClientStartups(this.now, (managed) => this.discard(managed));
+    const reaperIntervalMs = options.reaperIntervalMs ?? REAPER_INTERVAL_MS;
+    this.stopReaper = repeatEvery(options.timers ?? realTimerProvider, reaperIntervalMs, () => this.reapStale());
     this.signalDisposer = installProcessSignalCleanup(() => this.stopAll());
-  }
-  startReaper() {
-    if (this.reaperHandle)
-      return;
-    this.reaperHandle = setInterval(() => {
-      this.reapStale();
-    }, this.reaperIntervalMs);
-    if (typeof this.reaperHandle.unref === "function") {
-      this.reaperHandle.unref();
-    }
-  }
-  getKey(root, serverId) {
-    return `${root}::${serverId}`;
   }
   tombstoneStop(key, client) {
     const stop = stopClientBestEffort(client);
@@ -2893,18 +2949,15 @@ class LspManager {
     budget.deadGenerations = 0;
     budget.exhaustedAt = null;
   }
+  startupExpired(managed, t) {
+    return managed.isInitializing && managed.initializingSince !== null && t - managed.initializingSince > this.initTimeoutMs;
+  }
   reapStale() {
     const t = this.now();
-    for (const [key, managed] of this.clients) {
-      if (managed.isInitializing && managed.initializingSince !== null && t - managed.initializingSince > this.initTimeoutMs) {
-        this.clients.delete(key);
-        this.tombstoneStop(key, managed.client);
-        continue;
-      }
-      if (!managed.isInitializing && managed.refCount === 0 && managed.pendingWaiters === 0 && t - managed.lastUsedAt > this.idleTimeoutMs) {
-        this.clients.delete(key);
-        this.tombstoneStop(key, managed.client);
-      }
+    for (const managed of [...this.clients.values()]) {
+      const idle = !managed.isInitializing && managed.refCount === 0 && managed.pendingWaiters === 0 && t - managed.lastUsedAt > this.idleTimeoutMs;
+      if (idle || this.startupExpired(managed, t))
+        this.discard(managed);
     }
   }
   evictForAdmission() {
@@ -2912,152 +2965,96 @@ class LspManager {
       const victim = this.leastRecentlyUsedIdleClient();
       if (!victim)
         return;
-      this.clients.delete(victim.key);
-      this.tombstoneStop(victim.key, victim.managed.client);
+      this.discard(victim);
     }
   }
   leastRecentlyUsedIdleClient() {
     let candidate = null;
-    for (const [key, managed] of this.clients) {
+    for (const managed of this.clients.values()) {
       if (managed.refCount > 0 || managed.pendingWaiters > 0 || managed.isInitializing)
         continue;
-      if (candidate === null || managed.lastUsedAt < candidate.managed.lastUsedAt) {
-        candidate = { key, managed };
-      }
+      if (candidate === null || managed.lastUsedAt < candidate.lastUsedAt)
+        candidate = managed;
     }
     return candidate;
   }
-  async tryDeleteIfOrphaned(key, managed) {
-    if (managed.refCount === 0 && managed.pendingWaiters === 0 && !managed.isInitializing && this.clients.get(key) === managed) {
-      this.clients.delete(key);
-      await this.tombstoneStop(key, managed.client);
-    }
+  discard(managed) {
+    if (this.clients.get(managed.key) !== managed)
+      return;
+    this.clients.delete(managed.key);
+    this.tombstoneStop(managed.key, managed.client);
   }
   async getClient(root, server, signal) {
-    if (this.disposed) {
-      throw new Error("LspManager has been disposed");
-    }
-    signal?.throwIfAborted();
-    const key = this.getKey(root, server.id);
+    const key = lspClientKey(root, server);
     for (;; ) {
-      const pendingStop = this.pendingStops.get(key);
-      if (pendingStop === undefined)
-        break;
-      await awaitWithSignal(pendingStop, signal);
-      signal?.throwIfAborted();
-    }
-    if (this.disposed) {
-      throw new Error("LspManager has been disposed");
-    }
-    let managed = this.clients.get(key);
-    if (managed) {
-      const t = this.now();
-      if (managed.isInitializing && managed.initializingSince !== null && t - managed.initializingSince > this.initTimeoutMs) {
-        this.clients.delete(key);
-        await this.tombstoneStop(key, managed.client);
-        managed = undefined;
+      if (this.disposed) {
+        throw new Error("LspManager has been disposed");
       }
-    }
-    if (managed) {
-      if (managed.initPromise) {
-        managed.pendingWaiters++;
-        try {
-          await awaitWithSignal(managed.initPromise, signal);
-        } catch (err) {
-          managed.pendingWaiters--;
-          await this.tryDeleteIfOrphaned(key, managed);
-          throw err;
+      signal?.throwIfAborted();
+      const pendingStop = this.pendingStops.get(key);
+      if (pendingStop !== undefined) {
+        await awaitWithSignal(pendingStop, signal);
+        continue;
+      }
+      let managed = this.clients.get(key);
+      if (managed !== undefined && this.startupExpired(managed, this.now())) {
+        this.discard(managed);
+        continue;
+      }
+      if (managed === undefined) {
+        this.evictForAdmission();
+        this.ensureRespawnAllowed(key, root, server.id);
+        managed = this.startClient(key, root, server, true);
+      }
+      const { initPromise } = managed;
+      if (initPromise !== null) {
+        await this.startups.wait(managed, initPromise, signal);
+        if (signal?.aborted) {
+          this.startups.detach(managed);
+          signal.throwIfAborted();
         }
         managed.pendingWaiters--;
       }
-      if (signal?.aborted) {
-        await this.tryDeleteIfOrphaned(key, managed);
-        signal.throwIfAborted();
-      }
+      if (this.clients.get(key) !== managed)
+        continue;
       if (!managed.client.isAlive()) {
         this.recordDeadGeneration(key);
-        if (this.clients.get(key) === managed) {
-          this.clients.delete(key);
-        }
-        await this.tombstoneStop(key, managed.client);
-        return this.getClient(root, server, signal);
+        this.discard(managed);
+        continue;
       }
       this.markHealthyGeneration(key);
       managed.refCount++;
       managed.lastUsedAt = this.now();
       return managed.client;
     }
-    this.evictForAdmission();
-    this.ensureRespawnAllowed(key, root, server.id);
-    const client = this.clientFactory(root, server);
-    const initStartedAt = this.now();
-    const initPromise = (async () => {
-      await client.start();
-      await client.initialize();
-    })();
-    const newManaged = {
-      client,
-      refCount: 0,
-      pendingWaiters: 1,
-      lastUsedAt: initStartedAt,
-      initPromise,
-      isInitializing: true,
-      initializingSince: initStartedAt
-    };
-    this.clients.set(key, newManaged);
-    try {
-      await awaitWithSignal(initPromise, signal);
-    } catch (err) {
-      newManaged.pendingWaiters--;
-      if (this.clients.get(key) === newManaged) {
-        this.clients.delete(key);
-      }
-      await this.tombstoneStop(key, client);
-      throw err;
-    }
-    newManaged.pendingWaiters--;
-    newManaged.isInitializing = false;
-    newManaged.initializingSince = null;
-    newManaged.initPromise = null;
-    if (signal?.aborted) {
-      await this.tryDeleteIfOrphaned(key, newManaged);
-      signal.throwIfAborted();
-    }
-    if (!client.isAlive()) {
-      this.recordDeadGeneration(key);
-      if (this.clients.get(key) === newManaged) {
-        this.clients.delete(key);
-      }
-      await this.tombstoneStop(key, client);
-      return this.getClient(root, server, signal);
-    }
-    this.markHealthyGeneration(key);
-    newManaged.refCount++;
-    newManaged.lastUsedAt = this.now();
-    return client;
   }
-  releaseClient(root, serverId) {
-    const key = this.getKey(root, serverId);
-    const managed = this.clients.get(key);
+  startClient(key, root, server, heldByWaiters) {
+    const client = this.clientFactory(root, server);
+    const managed = this.startups.begin({ key, root, serverId: server.id, client, heldByWaiters });
+    this.clients.set(key, managed);
+    return managed;
+  }
+  releaseClient(root, server, client) {
+    const managed = this.clients.get(lspClientKey(root, server));
+    if (client !== undefined && managed?.client !== client)
+      return;
     if (managed && managed.refCount > 0) {
       managed.refCount--;
       managed.lastUsedAt = this.now();
     }
   }
-  invalidateClient(root, serverId, client) {
-    const key = this.getKey(root, serverId);
-    const managed = this.clients.get(key);
+  invalidateClient(root, server, client) {
+    const managed = this.clients.get(lspClientKey(root, server));
     if (!managed)
       return;
     if (client && managed.client !== client)
       return;
-    this.clients.delete(key);
-    this.tombstoneStop(key, managed.client);
+    this.discard(managed);
   }
   warmupClient(root, server) {
     if (this.disposed)
       return;
-    const key = this.getKey(root, server.id);
+    const key = lspClientKey(root, server);
     if (this.clients.has(key) || this.pendingStops.has(key))
       return;
     this.evictForAdmission();
@@ -3066,45 +3063,18 @@ class LspManager {
     } catch {
       return;
     }
-    const client = this.clientFactory(root, server);
-    const initStartedAt = this.now();
-    const initPromise = (async () => {
-      await client.start();
-      await client.initialize();
-    })();
-    const managed = {
-      client,
-      refCount: 0,
-      pendingWaiters: 0,
-      lastUsedAt: initStartedAt,
-      initPromise,
-      isInitializing: true,
-      initializingSince: initStartedAt
-    };
-    this.clients.set(key, managed);
-    initPromise.then(() => {
-      managed.isInitializing = false;
-      managed.initializingSince = null;
-      managed.initPromise = null;
-      managed.lastUsedAt = this.now();
-    }, () => {
-      if (this.clients.get(key) === managed) {
-        this.clients.delete(key);
-      }
-      this.tombstoneStop(key, client);
-    });
+    this.startClient(key, root, server, false);
   }
-  isServerInitializing(root, serverId) {
-    const managed = this.clients.get(this.getKey(root, serverId));
+  isServerInitializing(root, server) {
+    const managed = this.clients.get(lspClientKey(root, server));
     return managed?.isInitializing ?? false;
   }
   getSnapshot() {
     const snapshots = [];
-    for (const [key, managed] of this.clients) {
-      const [root, serverId] = key.split("::");
+    for (const managed of this.clients.values()) {
       snapshots.push({
-        root,
-        serverId,
+        root: managed.root,
+        serverId: managed.serverId,
         refCount: managed.refCount,
         pendingWaiters: managed.pendingWaiters,
         lastUsedAt: managed.lastUsedAt,
@@ -3115,18 +3085,15 @@ class LspManager {
     }
     return snapshots;
   }
-  hasClient(root, serverId) {
-    return this.clients.has(this.getKey(root, serverId));
+  hasClient(root, server) {
+    return this.clients.has(lspClientKey(root, server));
   }
   clientCount() {
     return this.clients.size;
   }
   async stopAll() {
     this.disposed = true;
-    if (this.reaperHandle) {
-      clearInterval(this.reaperHandle);
-      this.reaperHandle = null;
-    }
+    this.stopReaper();
     if (this.signalDisposer) {
       this.signalDisposer();
       this.signalDisposer = null;

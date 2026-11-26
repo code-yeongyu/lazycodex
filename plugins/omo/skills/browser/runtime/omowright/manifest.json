@@ -1,10 +1,10 @@
 {
-  "version": "0.3.2",
-  "sourceDigest": "c723f2a6dc33c2adb3e74ad9e31ca92653fa5ac3aa342df6c606ffc6b20e82f0",
+  "version": "0.3.4",
+  "sourceDigest": "fe852d313d66bead31fcc5eaff09b2608c6743b49e093cf4a76a01f1831ec84b",
   "files": {
-    "index.js": "d955f8a811637fad81f1d1219ffe8e474f1b8767f865589bf230957edd20bc10",
+    "index.js": "792c4dbf1a9dbceff36888470b29706dd5b9ab22b25ba20d8da875fb57f7ade6",
     "page-bundle.js": "c517fa11a62a1b83dc79f72b288159a420831426418b1d4d9d492fc6c414f78c",
     "LICENSE": "b083425948376611de9b92b0aeb7377e604505756ea427e541a34d9b030d4dc1"
   },
-  "stagedAtUtc": "2026-11-24T02:39:16.356Z"
+  "stagedAtUtc": "2026-11-26T15:59:16.464Z"
 }

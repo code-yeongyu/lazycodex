@@ -2133,7 +2133,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.83",
+    version: "5.1.84",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2397,7 +2397,7 @@ var init_package = __esm(() => {
       "jsonc-parser": "^3.3.1",
       knip: "6.43.0",
       "node-pty": "^1.1.0",
-      omowright: "^0.3.2",
+      omowright: "^0.3.4",
       "oxc-parser": "0.148.0",
       oxlint: "1.89.0",
       picocolors: "^1.1.1",
@@ -2407,18 +2407,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.83",
-      "oh-my-opencode-darwin-x64": "5.1.83",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.83",
-      "oh-my-opencode-linux-arm64": "5.1.83",
-      "oh-my-opencode-linux-arm64-musl": "5.1.83",
-      "oh-my-opencode-linux-x64": "5.1.83",
-      "oh-my-opencode-linux-x64-baseline": "5.1.83",
-      "oh-my-opencode-linux-x64-musl": "5.1.83",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.83",
-      "oh-my-opencode-windows-arm64": "5.1.83",
-      "oh-my-opencode-windows-x64": "5.1.83",
-      "oh-my-opencode-windows-x64-baseline": "5.1.83"
+      "oh-my-opencode-darwin-arm64": "5.1.84",
+      "oh-my-opencode-darwin-x64": "5.1.84",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.84",
+      "oh-my-opencode-linux-arm64": "5.1.84",
+      "oh-my-opencode-linux-arm64-musl": "5.1.84",
+      "oh-my-opencode-linux-x64": "5.1.84",
+      "oh-my-opencode-linux-x64-baseline": "5.1.84",
+      "oh-my-opencode-linux-x64-musl": "5.1.84",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.84",
+      "oh-my-opencode-windows-arm64": "5.1.84",
+      "oh-my-opencode-windows-x64": "5.1.84",
+      "oh-my-opencode-windows-x64-baseline": "5.1.84"
     },
     overrides: {
       hono: "^4.13.8",
@@ -2432,6 +2432,91 @@ var init_package = __esm(() => {
     },
     trustedDependencies: []
   };
+});
+
+// packages/telemetry-core/src/constants.ts
+var DEFAULT_POSTHOG_HOST = "https://us.i.posthog.com", DEFAULT_POSTHOG_API_KEY = "phc_CFJhj5HyvA62QPhvyaUCtaq23aUfznnijg5VaaGkNk74", UNCONFIGURED_POSTHOG_API_KEY = "phc_REPLACE_ME_OMO_NATIVE";
+
+// packages/telemetry-core/src/env.ts
+function normalizeEnvValue(value) {
+  return value?.trim().toLowerCase();
+}
+function includesValue(values, value) {
+  const normalized = normalizeEnvValue(value);
+  return normalized !== undefined && values.includes(normalized);
+}
+function isDisableFlag(value) {
+  return includesValue(TRUTHY_DISABLE_VALUES, value);
+}
+function isSendOptOutFlag(value) {
+  return includesValue(SEND_OPT_OUT_VALUES, value);
+}
+function shouldDisableTelemetry(input) {
+  const env = input.env ?? process.env;
+  const globalPrefix = input.globalEnvPrefix ?? "OMO";
+  const prefixes = Array.from(new Set([globalPrefix, input.productEnvPrefix]));
+  if (isDisableFlag(env["DO_NOT_TRACK"]) || isDisableFlag(env[`${globalPrefix}_DISABLE_TELEMETRY`])) {
+    return true;
+  }
+  if (env["OTEL_SDK_DISABLED"]?.trim().toLowerCase() === "true") {
+    return true;
+  }
+  for (const prefix of prefixes) {
+    if (isDisableFlag(env[`${prefix}_DISABLE_POSTHOG`])) {
+      return true;
+    }
+    if (isSendOptOutFlag(env[`${prefix}_SEND_ANONYMOUS_TELEMETRY`])) {
+      return true;
+    }
+  }
+  return false;
+}
+function getTelemetryApiKey(env = process.env, defaultApiKey = DEFAULT_POSTHOG_API_KEY) {
+  return env["POSTHOG_API_KEY"]?.trim() ?? defaultApiKey;
+}
+function isConfiguredTelemetryApiKey(apiKey) {
+  const normalized = apiKey.trim();
+  return normalized.length > 0 && normalized !== UNCONFIGURED_POSTHOG_API_KEY;
+}
+function hasTelemetryApiKey(env, defaultApiKey) {
+  return isConfiguredTelemetryApiKey(getTelemetryApiKey(env, defaultApiKey));
+}
+function getTelemetryHost(env = process.env, defaultHost = DEFAULT_POSTHOG_HOST) {
+  return env["POSTHOG_HOST"]?.trim() || defaultHost;
+}
+var TRUTHY_DISABLE_VALUES, SEND_OPT_OUT_VALUES;
+var init_env = __esm(() => {
+  TRUTHY_DISABLE_VALUES = ["1", "true", "yes"];
+  SEND_OPT_OUT_VALUES = ["0", "false", "no"];
+});
+
+// packages/telemetry-core/src/otlp-config.ts
+var DEFAULT_OTLP_ENDPOINT = "https://t.omo.dev", RESOURCE_OR_RELAY_KEYS;
+var init_otlp_config = __esm(() => {
+  RESOURCE_OR_RELAY_KEYS = new Set([
+    "$os",
+    "$os_version",
+    "$process_person_profile",
+    "$session_id",
+    "ci",
+    "event_id",
+    "install_hash",
+    "package_version",
+    "platform",
+    "product_name",
+    "schema_version",
+    "surface"
+  ]);
+});
+
+// packages/telemetry-core/src/destinations.ts
+var TELEMETRY_DESTINATIONS;
+var init_destinations = __esm(() => {
+  init_otlp_config();
+  TELEMETRY_DESTINATIONS = [
+    { kind: "posthog", label: "PostHog in the United States", host: DEFAULT_POSTHOG_HOST },
+    { kind: "otlp", label: "the OmO telemetry collector", host: DEFAULT_OTLP_ENDPOINT }
+  ];
 });
 
 // node_modules/.bun/picocolors@1.1.1/node_modules/picocolors/picocolors.js
@@ -77824,6 +77909,9 @@ var init_team = __esm(() => {
 });
 
 // packages/omo-config-core/src/schema/telemetry.ts
+function isOmoTelemetryEnabled(config) {
+  return config.telemetry?.enabled ?? true;
+}
 var OmoTelemetrySettingsShape, OmoTelemetrySettingsLayerSchema, OmoTelemetrySettingsSchema;
 var init_telemetry = __esm(() => {
   init_zod();
@@ -78047,7 +78135,7 @@ var init_config = __esm(() => {
 
 // packages/omo-config-core/src/schema/legacy-category-names.ts
 function canonicalCategoryName(name) {
-  return Object.hasOwn(LEGACY_CATEGORY_NAME_ALIASES, name) ? LEGACY_CATEGORY_NAME_ALIASES[name] : name;
+  return Object.hasOwn(LEGACY_CATEGORY_NAME_ALIASES, name) ? LEGACY_CATEGORY_NAME_ALIASES[name] ?? name : name;
 }
 function isRecord9(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -78109,7 +78197,7 @@ var init_legacy_category_names = __esm(() => {
 
 // packages/omo-config-core/src/schema/legacy-harness-names.ts
 function canonicalHarnessName(name) {
-  return Object.hasOwn(OMO_CONFIG_LEGACY_HARNESS_ALIASES, name) ? OMO_CONFIG_LEGACY_HARNESS_ALIASES[name] : name;
+  return Object.hasOwn(OMO_CONFIG_LEGACY_HARNESS_ALIASES, name) ? OMO_CONFIG_LEGACY_HARNESS_ALIASES[name] ?? name : name;
 }
 function harnessBlockKey(harness) {
   return `[${harness}]`;
@@ -79798,15 +79886,15 @@ function stripRetiredCodegraph(document) {
     if (!isPlainObject5(value))
       return;
     if (Object.prototype.hasOwnProperty.call(value, "codegraph")) {
-      delete value.codegraph;
+      delete value["codegraph"];
       removedPaths.push([...path, "codegraph"]);
     }
   };
   strip(stripped, []);
   for (const harness of OMO_HARNESS_BLOCKS)
     strip(stripped[harness], [harness]);
-  if (isPlainObject5(stripped.profiles)) {
-    for (const [profileName, profile] of Object.entries(stripped.profiles)) {
+  if (isPlainObject5(stripped["profiles"])) {
+    for (const [profileName, profile] of Object.entries(stripped["profiles"])) {
       strip(profile, ["profiles", profileName]);
       if (!isPlainObject5(profile))
         continue;
@@ -83054,9 +83142,6 @@ var init_activity_state = __esm(() => {
 // packages/telemetry-core/src/consent-gated-fetch.ts
 var init_consent_gated_fetch = () => {};
 
-// packages/telemetry-core/src/constants.ts
-var DEFAULT_POSTHOG_HOST = "https://us.i.posthog.com", DEFAULT_POSTHOG_API_KEY = "phc_CFJhj5HyvA62QPhvyaUCtaq23aUfznnijg5VaaGkNk74", UNCONFIGURED_POSTHOG_API_KEY = "phc_REPLACE_ME_OMO_NATIVE";
-
 // packages/telemetry-core/src/diagnostics.ts
 import { appendFileSync as appendFileSync2, existsSync as existsSync26, mkdirSync as mkdirSync11, readFileSync as readFileSync13 } from "node:fs";
 import { join as join57 } from "node:path";
@@ -83176,56 +83261,6 @@ var init_diagnostics = __esm(() => {
   init_atomic_write();
   DIAGNOSTICS_RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
   DIAGNOSTICS_MAX_BYTES = 256 * 1024;
-});
-
-// packages/telemetry-core/src/env.ts
-function normalizeEnvValue(value) {
-  return value?.trim().toLowerCase();
-}
-function includesValue(values, value) {
-  const normalized = normalizeEnvValue(value);
-  return normalized !== undefined && values.includes(normalized);
-}
-function isDisableFlag(value) {
-  return includesValue(TRUTHY_DISABLE_VALUES, value);
-}
-function isSendOptOutFlag(value) {
-  return includesValue(SEND_OPT_OUT_VALUES, value);
-}
-function shouldDisableTelemetry(input) {
-  const env = input.env ?? process.env;
-  const globalPrefix = input.globalEnvPrefix ?? "OMO";
-  const prefixes = Array.from(new Set([globalPrefix, input.productEnvPrefix]));
-  if (isDisableFlag(env["DO_NOT_TRACK"]) || isDisableFlag(env[`${globalPrefix}_DISABLE_TELEMETRY`])) {
-    return true;
-  }
-  for (const prefix of prefixes) {
-    if (isDisableFlag(env[`${prefix}_DISABLE_POSTHOG`])) {
-      return true;
-    }
-    if (isSendOptOutFlag(env[`${prefix}_SEND_ANONYMOUS_TELEMETRY`])) {
-      return true;
-    }
-  }
-  return false;
-}
-function getTelemetryApiKey(env = process.env, defaultApiKey = DEFAULT_POSTHOG_API_KEY) {
-  return env["POSTHOG_API_KEY"]?.trim() ?? defaultApiKey;
-}
-function isConfiguredTelemetryApiKey(apiKey) {
-  const normalized = apiKey.trim();
-  return normalized.length > 0 && normalized !== UNCONFIGURED_POSTHOG_API_KEY;
-}
-function hasTelemetryApiKey(env, defaultApiKey) {
-  return isConfiguredTelemetryApiKey(getTelemetryApiKey(env, defaultApiKey));
-}
-function getTelemetryHost(env = process.env, defaultHost = DEFAULT_POSTHOG_HOST) {
-  return env["POSTHOG_HOST"]?.trim() || defaultHost;
-}
-var TRUTHY_DISABLE_VALUES, SEND_OPT_OUT_VALUES;
-var init_env = __esm(() => {
-  TRUTHY_DISABLE_VALUES = ["1", "true", "yes"];
-  SEND_OPT_OUT_VALUES = ["0", "false", "no", "yes"];
 });
 
 // packages/telemetry-core/src/event-id.ts
@@ -93013,6 +93048,7 @@ var init_turn_trace_bridge = __esm(() => {
 var init_src5 = __esm(() => {
   init_activity_state();
   init_consent_gated_fetch();
+  init_destinations();
   init_diagnostics();
   init_env();
   init_event_id();
@@ -93029,7 +93065,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.83",
+    version: "5.1.84",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -93060,6 +93096,7 @@ var init_package2 = __esm(() => {
       "sync:skills": "node plugin/scripts/sync-skills.mjs"
     },
     dependencies: {
+      "@oh-my-opencode/omo-config-core": "workspace:*",
       "@oh-my-opencode/shared-skills": "workspace:*",
       "@oh-my-opencode/utils": "workspace:*"
     },
@@ -93115,6 +93152,18 @@ var init_data_path2 = __esm(() => {
   init_product_identity();
 });
 
+// packages/omo-codex/src/telemetry/config-gate.ts
+function isOmoConfigTelemetryEnabled(env = process.env) {
+  try {
+    return isOmoTelemetryEnabled(loadOmoConfig({ env, harness: "codex" }).config);
+  } catch {
+    return true;
+  }
+}
+var init_config_gate = __esm(() => {
+  init_src4();
+});
+
 // packages/omo-codex/src/telemetry/diagnostics.ts
 function writeTelemetryDiagnostic2(input, now = new Date) {
   writeTelemetryDiagnostic(input, {
@@ -93158,6 +93207,9 @@ function resolveActivityStateProvider(options) {
   return () => getPostHogActivityCaptureState(options.now ?? new Date);
 }
 function createPostHogClient(source, options = {}) {
+  if (!isOmoConfigTelemetryEnabled(options.env ?? process.env)) {
+    return NO_OP_POSTHOG;
+  }
   const client = createTelemetryClient2({
     diagnostics: writeTelemetryDiagnostic2,
     env: options.env ?? process.env,
@@ -93198,6 +93250,7 @@ var osProviderOverride2 = null, activityStateProviderOverride = null, transportF
 var init_posthog = __esm(() => {
   init_src5();
   init_data_path2();
+  init_config_gate();
   init_diagnostics2();
   init_posthog_activity_state();
   init_product_identity();
@@ -97818,6 +97871,7 @@ var init_unsettled_command = __esm(() => {
 import { randomBytes as randomBytes9 } from "node:crypto";
 function openAttach(client, device, sessionId, timers = realTimers) {
   const early = [];
+  const ATTACH_HISTORY_MAX = 512;
   const history = [];
   const listeners = new Set;
   let handle;
@@ -97869,6 +97923,8 @@ function openAttach(client, device, sessionId, timers = realTimers) {
       resolveSnapshot(remote.snapshot);
     }
     history.push(remote);
+    if (history.length > ATTACH_HISTORY_MAX)
+      history.splice(0, history.length - ATTACH_HISTORY_MAX);
     for (const listener of [...listeners]) {
       try {
         listener(remote);
@@ -103852,13 +103908,6 @@ var init_build = __esm(() => {
   init_types10();
 });
 
-// packages/omo-senpi/src/components/thread/gateway/bindings.ts
-var BINDING_MAX_TTL_SECONDS, OUTBOX_RETENTION_MS, RELAY_TEXT_MAX_BYTES = 32768;
-var init_bindings = __esm(() => {
-  BINDING_MAX_TTL_SECONDS = 366 * 24 * 60 * 60;
-  OUTBOX_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
-});
-
 // packages/omo-senpi/src/components/thread/contracts/fields.ts
 var THREAD_MESSAGE_MAX_BYTES = 32768, THREAD_SUMMARY_MAX_LENGTH = 200, THREAD_READ_DEFAULT_BYTES = 131072, THREAD_READ_MAX_BYTES = 1048576, ThreadAddress, AllScope, IdempotencyKey, CollapseKey, ExpectedTurnId, Summary, Message2, thinkingLevel = (description) => Union([
   Literal("off"),
@@ -103868,10 +103917,9 @@ var THREAD_MESSAGE_MAX_BYTES = 32768, THREAD_SUMMARY_MAX_LENGTH = 200, THREAD_RE
   Literal("high"),
   Literal("xhigh"),
   Literal("max")
-], { description }), BindingId, RelayText, DEFAULT_THREAD_DELIVERY = "auto", ThreadDeliveryMode;
+], { description }), DEFAULT_THREAD_DELIVERY = "auto", ThreadDeliveryMode;
 var init_fields = __esm(() => {
   init_build();
-  init_bindings();
   ThreadAddress = String2({
     description: "Recipient thread: the thread value of a thread_list row (tool.thread_list() in an eval cell) or of any thread tool result, an alias, a unique name, or the first 8+ characters of a thread value when only one thread starts with them. A name or prefix shared by several threads returns ambiguous_target with candidates. self addresses the caller's own session."
   });
@@ -103896,13 +103944,6 @@ var init_fields = __esm(() => {
   Message2 = String2({
     maxLength: THREAD_MESSAGE_MAX_BYTES,
     description: `Instruction to deliver to the target thread; longer than ${THREAD_MESSAGE_MAX_BYTES} UTF-8 bytes returns message_too_large.`
-  });
-  BindingId = String2({
-    minLength: 1,
-    description: "Id of the chat binding the gateway keeps for the thread."
-  });
-  RelayText = String2({
-    description: `Text relayed to or from the external thread; longer than ${RELAY_TEXT_MAX_BYTES} UTF-8 bytes returns message_too_large.`
   });
   ThreadDeliveryMode = Union([Literal("auto"), Literal("steer"), Literal("follow_up")], {
     default: DEFAULT_THREAD_DELIVERY,
@@ -103969,13 +104010,6 @@ var init_errors5 = __esm(() => {
     "loop_detected",
     "pair_loop_guard",
     "chain_count_limit",
-    "binding_conflict",
-    "binding_mismatch",
-    "binding_inactive",
-    "stale_revision",
-    "stale_token",
-    "already_answered",
-    "answer_in_progress",
     "device_offline",
     "relay_requires_paid_plan",
     "alias_taken",
@@ -103993,7 +104027,7 @@ var init_result2 = __esm(() => {
 });
 
 // packages/omo-senpi/src/components/thread/remote/outcome.ts
-var READ_UNCERTAIN, UNANSWERED, NOT_SIGNED_IN;
+var READ_UNCERTAIN, UNANSWERED, NOT_SIGNED_IN, ENGINE_NOT_READY;
 var init_outcome = __esm(() => {
   init_errors5();
   init_result2();
@@ -104027,6 +104061,7 @@ var init_outcome = __esm(() => {
     ...Object.entries(READ_UNCERTAIN).filter(([, answer]) => answer === "retry").map(([reason]) => reason)
   ]);
   NOT_SIGNED_IN = new Set(["sign_in_required", "signed_out"]);
+  ENGINE_NOT_READY = new Set(["attach_required", "daemon_unavailable"]);
 });
 
 // packages/omo-senpi/src/components/thread/address/refusals.ts
@@ -104140,7 +104175,7 @@ var init_create_params = __esm(() => {
 });
 
 // packages/omo-senpi/src/components/thread/contracts/params.ts
-var ThreadListParams, THREAD_READ_WAIT_MAX_MS = 600000, ThreadReadParams, ThreadSendParams, ThreadInterruptParams, SelfOrThread, ThreadCloseParams, ThreadHandoffParams, ThreadRenameParams, ThreadSetModelParams, ThreadSetReasoningParams, ThreadArchiveParams, ThreadReportParams, ThreadOutboxParams, ThreadOutboxAckParams, ThreadAnswerParams;
+var ThreadListParams, THREAD_READ_WAIT_MAX_MS = 600000, ThreadReadParams, ThreadSendParams, ThreadInterruptParams, SelfOrThread, ThreadCloseParams, ThreadHandoffParams, ThreadRenameParams, ThreadSetModelParams, ThreadSetReasoningParams, ThreadArchiveParams;
 var init_params = __esm(() => {
   init_build();
   init_fields();
@@ -104149,14 +104184,25 @@ var init_params = __esm(() => {
     all_scope: Optional(Boolean2({
       description: "List this machine's threads from every workspace; the default returns only the caller's workspace here. The account's other devices' threads are always listed."
     })),
-    state: Optional(_Array_(Union([Literal("running"), Literal("idle"), Literal("inactive"), Literal("archived")]), {
+    state: Optional(_Array_(Union([
+      Literal("opening"),
+      Literal("running"),
+      Literal("idle"),
+      Literal("inactive"),
+      Literal("archived")
+    ]), {
       minItems: 1,
-      description: "Thread states to list: running, idle, inactive (no engine holds it) or archived; the default lists every state but archived."
+      description: "Thread states to list: opening (not yet ready for controls), running, idle, inactive (no engine holds it) or archived; the default lists every state but archived."
     })),
     idempotency_key: IdempotencyKey
   });
   ThreadReadParams = _Object_({
     thread: ThreadAddress,
+    delivery_id: Optional(String2({
+      minLength: 1,
+      maxLength: 128,
+      description: "Query only the outcome of your original delivery to this exact thread ID. Reads no conversation, sends no message and wakes no session; after evidence expires answers outcome_unavailable."
+    })),
     cursor: Optional(String2({
       description: "Opaque cursor from an earlier thread_read (tool.thread_read() in an eval cell) to page the older messages of a truncated read (a read without one returns the newest messages that fit max_bytes); a transcript revision that moved past it returns cursor_stale."
     })),
@@ -104267,61 +104313,6 @@ var init_params = __esm(() => {
       description: "true (the default) archives the thread, so thread_list (tool.thread_list() in an eval cell) hides it unless state includes archived; false unarchives it."
     })),
     all_scope: AllScope,
-    idempotency_key: IdempotencyKey
-  });
-  ThreadReportParams = _Object_({
-    binding_id: Optional(String2({
-      minLength: 1,
-      description: "Binding to report to; defaults to the originating binding, the one the message this session is answering now arrived through; refused when that is ambiguous."
-    })),
-    kind: Union([Literal("milestone"), Literal("report"), Literal("question"), Literal("completion")], {
-      description: "milestone updates the thread's progress message, report posts a result, question relays a pending question of this session and returns a reply_token, completion is written once when this session's run settles, with the run's real outcome."
-    }),
-    text: RelayText,
-    request_id: Optional(String2({
-      minLength: 1,
-      description: "For kind question: the id of this session's pending extension UI request the answer resolves."
-    })),
-    request_kind: Optional(Union([
-      Literal("question"),
-      Literal("select"),
-      Literal("confirm"),
-      Literal("input"),
-      Literal("editor")
-    ], {
-      description: "For kind question: which extension UI request request_id is. It decides the answer forms thread_answer (tool.thread_answer() in an eval cell) accepts: confirm takes yes/no (any case, surrounding spaces ignored), input and editor take any text including empty, question and select take non-blank text. Without it the answer goes out in every text form at once, so a question, select, input or editor each reads its own and the text must be non-blank; a yes/no word also goes out as the confirm field, so an undeclared confirm reads yes/no too (any other text reads as no)."
-    })),
-    idempotency_key: IdempotencyKey
-  });
-  ThreadOutboxParams = _Object_({
-    binding_id: BindingId,
-    after_cursor: Optional(Integer({
-      minimum: 0,
-      description: "Read rows after this cursor; unset continues after the binding's acknowledged cursor."
-    })),
-    limit: Optional(Integer({ minimum: 1, maximum: 500, description: "Rows per read, default 100 and at most 500." })),
-    idempotency_key: IdempotencyKey
-  });
-  ThreadOutboxAckParams = _Object_({
-    binding_id: BindingId,
-    cursor: Integer({
-      minimum: 1,
-      description: "Every outbox row up to this cursor is marked delivered; an older cursor changes nothing."
-    }),
-    provider_message_id: Optional(String2({
-      minLength: 1,
-      maxLength: 256,
-      description: "Platform id of the message posted for the row at cursor; the first one for a milestone becomes the progress message later milestones edit."
-    })),
-    idempotency_key: IdempotencyKey
-  });
-  ThreadAnswerParams = _Object_({
-    binding_id: String2({
-      minLength: 1,
-      description: "Binding the answer arrived through; it must be the binding that asked the question."
-    }),
-    reply_token: String2({ minLength: 1, description: "reply_token of the question row being answered." }),
-    answer: RelayText,
     idempotency_key: IdempotencyKey
   });
 });
@@ -108933,7 +108924,7 @@ var init_metadata = __esm(() => {
     {
       name: "thread_send",
       label: "Send message to session",
-      description: "Delivers a message into another session that is already running, for when the user wants to talk to that session mid-task; its reply comes back through thread_read, and a bound chat thread's replies through thread_report and thread_answer (in an eval cell: tool.thread_read(), tool.thread_report(), tool.thread_answer())" + ROUTE_TO_TASK,
+      description: "Delivers a message into another session that is already running, for when the user wants to talk to that session mid-task; its reply comes back through thread_read (tool.thread_read() in an eval cell)" + ROUTE_TO_TASK,
       exposure: THREAD_TOOL_EXPOSURE
     },
     {
@@ -108976,30 +108967,6 @@ var init_metadata = __esm(() => {
       name: "thread_archive",
       label: "Archive session",
       description: "Archives or unarchives a session so the session list hides or shows it again, for when the user is finished with a session but wants to keep it",
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_report",
-      label: "Report to chat thread",
-      description: "Posts a milestone, result, question or completion from this session to its bound chat thread, for when the user wants progress relayed to that chat; replies flow back through thread_read, thread_report and thread_answer (in an eval cell: tool.thread_read(), tool.thread_report(), tool.thread_answer())",
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_outbox",
-      label: "Read chat outbox",
-      description: "Returns the reports waiting for a bound chat thread with a cursor, for when a connector collects what sessions posted",
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_outbox_ack",
-      label: "Acknowledge chat outbox",
-      description: "Marks outbox rows up to a cursor as posted to the chat, for when a connector confirms delivery",
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_answer",
-      label: "Answer relayed question",
-      description: "Resolves a question a session relayed to a chat thread with the answer that arrived there, for when a connector hands back a chat user's reply",
       exposure: THREAD_TOOL_EXPOSURE
     }
   ];
@@ -109174,8 +109141,14 @@ var init_session_state = __esm(() => {
 // packages/omo-senpi/src/components/thread/remote/remote-watch.ts
 var init_remote_watch = __esm(() => {
   init_device_service2();
+  init_ports();
   init_session_state();
 });
+// packages/omo-senpi/src/components/remote/port/lookup-gate.ts
+var init_lookup_gate = __esm(() => {
+  init_ports();
+});
+
 // packages/omo-senpi/src/components/remote/port/device-service.ts
 var READ_ONLY_RECORDS, MARKED_RECORDS, LOOKUP_NONE;
 var init_device_service3 = __esm(() => {
@@ -109184,6 +109157,7 @@ var init_device_service3 = __esm(() => {
   init_attach_pool();
   init_remote_watch();
   init_call_deadline();
+  init_lookup_gate();
   READ_ONLY_RECORDS = new Set([
     "get_state",
     "get_messages",
@@ -109286,6 +109260,9 @@ var init_follow = __esm(() => {
   RUN_OVER = new Set(["waiting_children", "waiting_background", "done", "failed", "cancelled"]);
 });
 
+// packages/omo-senpi/src/components/thread/gateway/hash-args.ts
+var init_hash_args = () => {};
+
 // packages/omo-senpi/src/components/thread/gateway/provenance-resolver.ts
 var init_provenance_resolver = () => {};
 // packages/omo-senpi/src/components/thread/gateway/constants.ts
@@ -109319,19 +109296,35 @@ var init_find_session = __esm(() => {
   ]);
 });
 
+// packages/omo-senpi/src/components/thread/remote/reopen-parked.ts
+var init_reopen_parked = __esm(() => {
+  init_device();
+  init_relay_session_host();
+  init_errors5();
+  init_find_session();
+});
+
+// packages/omo-senpi/src/components/thread/remote/receipt.ts
+var init_receipt = __esm(() => {
+  init_remote_ops();
+  init_outcome();
+});
+
 // packages/omo-senpi/src/components/thread/remote/relay-transport.ts
 var ADMIT_UNSUPPORTED, WAITS;
 var init_relay_transport = __esm(() => {
   init_ports();
   init_errors5();
-  init_bindings();
+  init_hash_args();
   init_provenance2();
   init_result2();
   init_remote_ops();
   init_device();
   init_outcome();
   init_find_session();
+  init_reopen_parked();
   init_call_deadline();
+  init_receipt();
   ADMIT_UNSUPPORTED = new Set([
     "method_unclassified",
     "delegation_unclassified",
@@ -109361,7 +109354,7 @@ var init_sessions = __esm(() => {
   init_port();
   init_relay_control();
   init_relay_session_host();
-  init_bindings();
+  init_hash_args();
   init_provenance_resolver();
   init_address_book();
   init_outcome();
@@ -109416,6 +109409,11 @@ var init_ladder = __esm(() => {
   init_errors5();
 });
 
+// packages/omo-senpi/src/components/thread/address/solo-retry.ts
+var init_solo_retry = __esm(() => {
+  init_call_deadline();
+});
+
 // packages/omo-senpi/src/components/thread/address/probe.ts
 var init_probe = __esm(() => {
   init_errors5();
@@ -109424,6 +109422,7 @@ var init_probe = __esm(() => {
   init_remote_ops();
   init_account();
   init_refusals();
+  init_solo_retry();
 });
 
 // packages/omo-senpi/src/components/thread/address/bare.ts
@@ -109479,10 +109478,11 @@ init_package();
 import { createInterface as createInterface2 } from "node:readline/promises";
 
 // packages/telemetry-core/src/install-disclosure.ts
+init_destinations();
 var TELEMETRY_PRIVACY_POLICY_URL = "https://github.com/code-yeongyu/oh-my-openagent/blob/dev/docs/legal/privacy-policy.md";
 var TELEMETRY_INSTALL_DISCLOSURE_LINES = [
   "OmO sends anonymous usage telemetry (no prompts, code, file paths, or account data) to improve the product.",
-  "The data goes to PostHog in the United States.",
+  `The data goes to ${TELEMETRY_DESTINATIONS.map((destination) => `${destination.label} (${destination.host})`).join(" and ")}.`,
   "Turn it off with DO_NOT_TRACK=1 (or OMO_DISABLE_TELEMETRY=1).",
   `Details: ${TELEMETRY_PRIVACY_POLICY_URL}`
 ];
@@ -131798,8 +131798,11 @@ function createSession(options) {
         return await locked(async () => {
           let current = null;
           let account;
+          let readSettled = false;
+          let storeUnavailable = false;
           try {
             current = await store.readAuthoritative();
+            readSettled = true;
             if (current !== null) {
               if (current.refreshState === "uncertain")
                 return false;
@@ -131814,15 +131817,21 @@ function createSession(options) {
           } catch (error) {
             if (error instanceof SessionEnded)
               return error.deviceRevoked;
+            if (!readSettled && error instanceof CredentialStoreError) {
+              storeUnavailable = true;
+              throw error;
+            }
             if (error instanceof SignInError)
               return false;
             throw error;
           } finally {
-            await writeSignedOutMarker(markerPath, current?.device.id ?? null);
-            const stored = current === null ? null : await store.read().catch(() => current);
-            if (stored !== null)
-              await beforeKeysDiscarded(discardedOf(stored.accountId === undefined && account !== undefined ? { ...stored, accountId: account } : stored, "logout"));
-            await store.clear();
+            if (!storeUnavailable) {
+              await writeSignedOutMarker(markerPath, current?.device.id ?? null);
+              const stored = current === null ? null : await store.read().catch(() => current);
+              if (stored !== null)
+                await beforeKeysDiscarded(discardedOf(stored.accountId === undefined && account !== undefined ? { ...stored, accountId: account } : stored, "logout"));
+              await store.clear();
+            }
           }
         });
       } finally {
@@ -132364,8 +132373,9 @@ async function run3(action, options, hooks = {}) {
       console.log(`This computer's earlier OmO device (id ${terminalText(replacedDeviceId)}) was signed out.`);
     await signedIn();
   } catch (error) {
-    console.error(controller.signal.aborted ? "Sign-in cancelled." : error instanceof SignInError ? error.message : "OmO sign-in stopped on an unexpected error. Run the command again, and report it with /bug if it keeps failing.");
-    process.exitCode = 1;
+    const storeUnavailable = action === "logout" && error instanceof CredentialStoreError;
+    console.error(controller.signal.aborted ? "Sign-in cancelled." : storeUnavailable ? "OmO could not read the credential store. Stored credentials and device keys were left untouched; run omo logout again when the keyring answers." : error instanceof SignInError ? error.message : "OmO sign-in stopped on an unexpected error. Run the command again, and report it with /bug if it keeps failing.");
+    process.exitCode = storeUnavailable ? 9 : 1;
   } finally {
     process.removeListener("SIGINT", cancel);
     process.removeListener("SIGTERM", cancel);
@@ -132646,7 +132656,7 @@ init_timers();
 // packages/omo-native/package.json
 var package_default4 = {
   name: "omo-ai",
-  version: "5.1.83",
+  version: "5.1.84",
   type: "module",
   description: "OmO Native - the standalone omo command with the OMO extension built in: bun add -g omo-ai",
   bin: {
@@ -132848,7 +132858,6 @@ init_address();
 init_errors5();
 // packages/omo-senpi/src/components/thread/gateway/store.ts
 init_constants6();
-init_provenance_resolver();
 
 // packages/omo-senpi/src/components/thread/gateway/session-args-schema.ts
 var TYPES = new Set(["object", "string", "number", "integer", "boolean", "array", "null"]);
@@ -132959,7 +132968,7 @@ var USAGE_ENTRIES = [
   },
   {
     verbs: ["send"],
-    text: `  send <session> <text> [--steer|--follow-up] [--no-wait]
+    text: `  send <session> <text|-> [--steer|--follow-up] [--no-wait]
                                            send a message and print the answer as it arrives (--steer: into the
                                            running turn; --no-wait: return once the session took it).
                                            Use the thread value from open --json, or <device>/<session>.`

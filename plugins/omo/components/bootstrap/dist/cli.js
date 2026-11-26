@@ -7899,7 +7899,7 @@ var OmoConfigLayerSchema = object({
 // ../../omo-config-core/src/schema/legacy-category-names.ts
 var LEGACY_CATEGORY_NAME_ALIASES = { deep: "deep-low" };
 function canonicalCategoryName(name) {
-  return Object.hasOwn(LEGACY_CATEGORY_NAME_ALIASES, name) ? LEGACY_CATEGORY_NAME_ALIASES[name] : name;
+  return Object.hasOwn(LEGACY_CATEGORY_NAME_ALIASES, name) ? LEGACY_CATEGORY_NAME_ALIASES[name] ?? name : name;
 }
 function isRecord7(value) {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -7954,7 +7954,7 @@ function canonicalizeLegacyCategoryNames(document) {
 
 // ../../omo-config-core/src/schema/legacy-harness-names.ts
 function canonicalHarnessName(name) {
-  return Object.hasOwn(OMO_CONFIG_LEGACY_HARNESS_ALIASES, name) ? OMO_CONFIG_LEGACY_HARNESS_ALIASES[name] : name;
+  return Object.hasOwn(OMO_CONFIG_LEGACY_HARNESS_ALIASES, name) ? OMO_CONFIG_LEGACY_HARNESS_ALIASES[name] ?? name : name;
 }
 function harnessBlockKey(harness) {
   return `[${harness}]`;

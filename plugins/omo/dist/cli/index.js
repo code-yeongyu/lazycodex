@@ -2132,7 +2132,7 @@ var package_default;
 var init_package = __esm(() => {
   package_default = {
     name: "oh-my-opencode",
-    version: "5.1.84",
+    version: "5.1.86",
     description: "The Best AI Agent Harness - Batteries-Included OpenCode Plugin with Multi-Model Orchestration, Parallel Background Agents, and Crafted LSP/AST Tools",
     main: "./dist/index.js",
     types: "dist/index.d.ts",
@@ -2326,8 +2326,9 @@ var init_package = __esm(() => {
     },
     homepage: "https://github.com/code-yeongyu/oh-my-openagent#readme",
     dependencies: {
-      "@opentui/solid": "^0.5.11",
+      "@opentui/solid": "^0.9.9",
       "detect-libc": "^2.1.2",
+      "solid-js": "^1.9.20",
       zod: "^4.6.6"
     },
     devDependencies: {
@@ -2337,11 +2338,10 @@ var init_package = __esm(() => {
       "@oh-my-opencode/agents-md-core": "workspace:*",
       "@oh-my-opencode/ast-grep-mcp": "workspace:*",
       "@oh-my-opencode/boulder-state": "workspace:*",
-      "@oh-my-opencode/device-service-core": "workspace:*",
       "@oh-my-opencode/claude-code-compat-core": "workspace:*",
       "@oh-my-opencode/comment-checker-core": "workspace:*",
       "@oh-my-opencode/delegate-core": "workspace:*",
-      "@oh-my-opencode/thread-address-core": "workspace:*",
+      "@oh-my-opencode/device-service-core": "workspace:*",
       "@oh-my-opencode/git-bash-mcp": "workspace:*",
       "@oh-my-opencode/hashline-core": "workspace:*",
       "@oh-my-opencode/isolation-core": "workspace:*",
@@ -2351,6 +2351,13 @@ var init_package = __esm(() => {
       "@oh-my-opencode/memory-core": "workspace:*",
       "@oh-my-opencode/model-core": "workspace:*",
       "@oh-my-opencode/omo-codex": "workspace:*",
+      "@oh-my-opencode/omo-computer-carriers": "workspace:*",
+      "@oh-my-opencode/omo-computer-engine": "workspace:*",
+      "@oh-my-opencode/omo-computer-hand": "workspace:*",
+      "@oh-my-opencode/omo-computer-prelude": "workspace:*",
+      "@oh-my-opencode/omo-computer-protocol": "workspace:*",
+      "@oh-my-opencode/omo-computer-sdk": "workspace:*",
+      "@oh-my-opencode/omo-computer-tool": "workspace:*",
       "@oh-my-opencode/omo-config-core": "workspace:*",
       "@oh-my-opencode/omo-opencode": "workspace:*",
       "@oh-my-opencode/omo-senpi": "workspace:*",
@@ -2363,25 +2370,19 @@ var init_package = __esm(() => {
       "@oh-my-opencode/senpi-desktop-sdk": "workspace:*",
       "@oh-my-opencode/senpi-desktop-service": "workspace:*",
       "@oh-my-opencode/senpi-desktop-tool": "workspace:*",
-      "@oh-my-opencode/omo-computer-protocol": "workspace:*",
-      "@oh-my-opencode/omo-computer-sdk": "workspace:*",
-      "@oh-my-opencode/omo-computer-engine": "workspace:*",
-      "@oh-my-opencode/omo-computer-hand": "workspace:*",
-      "@oh-my-opencode/omo-computer-carriers": "workspace:*",
-      "@oh-my-opencode/omo-computer-tool": "workspace:*",
-      "@oh-my-opencode/omo-computer-prelude": "workspace:*",
       "@oh-my-opencode/senpi-task": "workspace:*",
       "@oh-my-opencode/shared-skills": "workspace:*",
       "@oh-my-opencode/skills-loader-core": "workspace:*",
       "@oh-my-opencode/team-core": "workspace:*",
       "@oh-my-opencode/telemetry-core": "workspace:*",
+      "@oh-my-opencode/thread-address-core": "workspace:*",
       "@oh-my-opencode/tmux-core": "workspace:*",
       "@oh-my-opencode/utils": "workspace:*",
       "@opencode-ai/plugin": "1.18.31",
       "@opencode-ai/sdk": "1.18.31",
       "@opencode/plugin": "2.0.32",
-      "@opentui/core": "^0.5.11",
-      "@opentui/keymap": "^0.5.11",
+      "@opentui/core": "^0.9.9",
+      "@opentui/keymap": "^0.9.9",
       "@types/js-yaml": "^4.0.9",
       "@types/node": "26.6.2",
       "@types/picomatch": "^4.0.3",
@@ -2395,8 +2396,9 @@ var init_package = __esm(() => {
       "js-yaml": "^5.4.2",
       "jsonc-parser": "^3.3.1",
       knip: "6.43.0",
+      "libsodium-wrappers": "^0.8.4",
       "node-pty": "^1.1.0",
-      omowright: "^0.3.4",
+      omowright: "^0.3.10",
       "oxc-parser": "0.148.0",
       oxlint: "1.89.0",
       picocolors: "^1.1.1",
@@ -2406,18 +2408,18 @@ var init_package = __esm(() => {
       typescript: "^7.0.2"
     },
     optionalDependencies: {
-      "oh-my-opencode-darwin-arm64": "5.1.84",
-      "oh-my-opencode-darwin-x64": "5.1.84",
-      "oh-my-opencode-darwin-x64-baseline": "5.1.84",
-      "oh-my-opencode-linux-arm64": "5.1.84",
-      "oh-my-opencode-linux-arm64-musl": "5.1.84",
-      "oh-my-opencode-linux-x64": "5.1.84",
-      "oh-my-opencode-linux-x64-baseline": "5.1.84",
-      "oh-my-opencode-linux-x64-musl": "5.1.84",
-      "oh-my-opencode-linux-x64-musl-baseline": "5.1.84",
-      "oh-my-opencode-windows-arm64": "5.1.84",
-      "oh-my-opencode-windows-x64": "5.1.84",
-      "oh-my-opencode-windows-x64-baseline": "5.1.84"
+      "oh-my-opencode-darwin-arm64": "5.1.86",
+      "oh-my-opencode-darwin-x64": "5.1.86",
+      "oh-my-opencode-darwin-x64-baseline": "5.1.86",
+      "oh-my-opencode-linux-arm64": "5.1.86",
+      "oh-my-opencode-linux-arm64-musl": "5.1.86",
+      "oh-my-opencode-linux-x64": "5.1.86",
+      "oh-my-opencode-linux-x64-baseline": "5.1.86",
+      "oh-my-opencode-linux-x64-musl": "5.1.86",
+      "oh-my-opencode-linux-x64-musl-baseline": "5.1.86",
+      "oh-my-opencode-windows-arm64": "5.1.86",
+      "oh-my-opencode-windows-x64": "5.1.86",
+      "oh-my-opencode-windows-x64-baseline": "5.1.86"
     },
     overrides: {
       hono: "^4.13.8",
@@ -92986,7 +92988,7 @@ var package_default2;
 var init_package2 = __esm(() => {
   package_default2 = {
     name: "@oh-my-opencode/omo-codex",
-    version: "5.1.84",
+    version: "5.1.86",
     type: "module",
     private: true,
     description: "Codex harness adapter for oh-my-openagent. Vendored Codex plugin namespace (omo) + TypeScript installer + telemetry.",
@@ -94233,6 +94235,29 @@ var init_auto_update_checker = __esm(() => {
   init_hook();
   init_checker();
   init_cache();
+});
+
+// packages/device-service-core/src/local-only.ts
+function state3() {
+  const holder = globalThis;
+  holder[KEY2] ??= { marked: false };
+  return holder[KEY2];
+}
+function refuseIfLocalOnly(site) {
+  if (state3().marked)
+    throw new LocalOnlyNetworkRefused(site);
+}
+var KEY2, LocalOnlyNetworkRefused;
+var init_local_only = __esm(() => {
+  KEY2 = Symbol.for("omo.local-only-process.v1");
+  LocalOnlyNetworkRefused = class LocalOnlyNetworkRefused extends Error {
+    code = "local_only_network_refused";
+    site;
+    constructor(site) {
+      super(`a local-only omo remote command reached the network at ${site}`);
+      this.site = site;
+    }
+  };
 });
 
 // packages/device-service-core/src/local-api/errors.ts
@@ -98152,7 +98177,7 @@ var init_engine_endpoint = __esm(() => {
   NoPrimaryEndpointError = class NoPrimaryEndpointError extends NotSentError {
     constructor(device, listed) {
       super("unsupported", `${device} lists ${listed} engine endpoint(s) and names none as its own engine; nothing was opened`, {
-        action: `Start or restart omo on ${device}; if that does not help, update the device service on both devices.`
+        action: `On ${device} run \`omo host ensure\`; if it answers primary_without_product_plugin, run \`omo host handoff\` once that host's sessions are idle; if it refuses, save its output and \`omo host status --json\`, stop only the primary host (\`omo host stop\`; never \`--force\`, which ends its live sessions) and ensure again; with no \`omo host\` command (omob), restart that omo; if it still names no engine, update the device service on both devices.`
       });
     }
   };
@@ -98352,6 +98377,616 @@ var init_device_service2 = __esm(() => {
   init_timers();
   UPDATE_IN_FLIGHT_MAX_MS = 15 * 60000;
   UPDATE_IN_FLIGHT = new Set(["pending", "trial"]);
+});
+
+// packages/device-service-core/src/delivery-consumer.ts
+var init_delivery_consumer = __esm(() => {
+  init_client4();
+  init_background_transport();
+  init_device_service2();
+});
+
+// packages/device-service-core/src/account-state.ts
+var init_account_state = () => {};
+
+// packages/device-service-core/src/hand-device-keys.ts
+import { existsSync as existsSync65 } from "fs";
+var DEAD_ENDPOINT_CODES, connectFailure = (error) => {
+  const detail = error instanceof Error ? error.message : String(error);
+  if (error instanceof LocalApiError) {
+    if (error.code === "refused" || error.code === "server_proof_invalid")
+      return { cause: "refused", detail };
+    if (error.code === "insecure_state_dir")
+      return { cause: "unreadable", detail };
+    if (error.code === "handshake_timeout" || error.code === "request_timeout")
+      return { cause: "timed_out", detail };
+    return { cause: "failed", detail };
+  }
+  const code = error instanceof Error && "code" in error ? String(error.code) : "";
+  return { cause: DEAD_ENDPOINT_CODES.has(code) ? "dead_endpoint" : "failed", detail };
+}, connectOrNotRunning = async (connect, log) => {
+  try {
+    return await connect();
+  } catch (error) {
+    const { cause, detail } = connectFailure(error);
+    log?.(`OmO device service: ${cause}, treated as not running (${detail}).`);
+    return "not_running";
+  }
+}, adopted = (status) => status.device !== null && status.state !== "sign_in_required", handDeviceKeys = async (options) => {
+  if (!existsSync65(deviceServiceEndpointPath(options.stateDir)))
+    return "not_running";
+  const service = await connectOrNotRunning(options.connect, options.log);
+  if (service === "not_running")
+    return "not_running";
+  try {
+    if (options.when === "not_adopted" && adopted(await service.status()))
+      return "already_adopted";
+    await service.adopt(options.credential);
+    return "adopted";
+  } finally {
+    service.close();
+  }
+};
+var init_hand_device_keys = __esm(() => {
+  init_device_service2();
+  DEAD_ENDPOINT_CODES = new Set(["ENOENT", "ECONNREFUSED", "ECONNRESET", "EPIPE"]);
+});
+
+// packages/device-service-core/src/bootstrap.ts
+import { existsSync as existsSync66 } from "fs";
+var forgetDeviceService = async (options) => {
+  if (!existsSync66(deviceServiceEndpointPath(options.stateDir)))
+    return "not_running";
+  const service = await connectOrNotRunning(options.connect, options.log);
+  if (service === "not_running")
+    return "not_running";
+  try {
+    await service.forget();
+  } finally {
+    service.close();
+  }
+  return "forgotten";
+};
+var init_bootstrap = __esm(() => {
+  init_account_state();
+  init_device_service2();
+  init_hand_device_keys();
+  init_version2();
+});
+
+// packages/device-service-core/src/cold-wake/host.ts
+var UNREPAIRABLE;
+var init_host = __esm(() => {
+  UNREPAIRABLE = new Set(["EPERM", "EACCES", "EROFS"]);
+});
+
+// packages/device-service-core/src/cold-wake/pinned-host.ts
+var init_pinned_host = __esm(() => {
+  init_host();
+});
+
+// packages/device-service-core/src/cold-wake/session-host-unit.ts
+var init_session_host_unit = () => {};
+
+// packages/device-service-core/src/cold-wake/service-table.ts
+var SERVICE_TABLE_ENV = "OMO_RELAYD_SERVICES";
+var init_service_table = __esm(() => {
+  init_session_host_unit();
+});
+
+// packages/device-service-core/src/cold-wake/darwin.ts
+var TABLE_KEY;
+var init_darwin = __esm(() => {
+  init_host();
+  init_pinned_host();
+  init_service_table();
+  init_session_host_unit();
+  TABLE_KEY = `EnvironmentVariables.${SERVICE_TABLE_ENV}`;
+});
+
+// packages/device-service-core/src/cold-wake/linux.ts
+var init_linux = __esm(() => {
+  init_host();
+  init_pinned_host();
+  init_service_table();
+  init_session_host_unit();
+});
+
+// packages/device-service-core/src/cold-wake/readback.ts
+var init_readback = __esm(() => {
+  init_linux();
+  init_pinned_host();
+  init_service_table();
+  init_session_host_unit();
+});
+
+// packages/device-service-core/src/cold-wake/installed-unit.ts
+var init_installed_unit = () => {};
+
+// packages/device-service-core/src/cold-wake/refresh.ts
+var init_refresh = __esm(() => {
+  init_darwin();
+  init_host();
+  init_installed_unit();
+  init_linux();
+  init_session_host_unit();
+});
+
+// packages/device-service-core/src/cold-wake/index.ts
+var init_cold_wake = __esm(() => {
+  init_darwin();
+  init_linux();
+  init_readback();
+  init_refresh();
+  init_session_host_unit();
+});
+
+// packages/device-service-core/src/release/windows-dacl.ts
+var SID_TOKEN_SCRIPT, userSidToken = async (userSid, run = runPowerShell) => {
+  const { code, out } = await run(SID_TOKEN_SCRIPT, { LA_SID: userSid });
+  const match = code === 0 ? /^O:(S-1-\d+(?:-\d+)+|[A-Z]{2})$/.exec(out.trim()) : null;
+  return match?.[1];
+}, aliasedDaclVerdict = (dacl, userSid, kind, userAlias) => {
+  const asSid = (token) => userAlias !== undefined && token === userAlias ? userSid : token;
+  return exactDaclVerdict({ ...dacl, owner: asSid(dacl.owner), aces: dacl.aces.map((ace) => ({ ...ace, sid: asSid(ace.sid) })) }, userSid, kind);
+}, verifyExactDacl2 = async (path, userSid, kind, run = runPowerShell) => {
+  let dacl;
+  try {
+    dacl = await describeDacl(path, run);
+  } catch (error) {
+    if (error instanceof LocalApiError)
+      return false;
+    throw error;
+  }
+  return aliasedDaclVerdict(dacl, userSid, kind, await userSidToken(userSid, run));
+}, windowsSecureFile2 = (userSid, run = runPowerShell) => async (path, kind) => {
+  const target = kind === "dir" ? "dir" : "file";
+  await applyExactDacl(path, userSid, target, run);
+  if (!await verifyExactDacl2(path, userSid, target, run))
+    throw new LocalApiError("insecure_state_dir", "the DACL is not exactly one ACE for the user");
+};
+var init_windows_dacl = __esm(() => {
+  init_errors4();
+  init_dacl();
+  SID_TOKEN_SCRIPT = String.raw`
+$ErrorActionPreference = 'Stop'
+(New-Object System.Security.AccessControl.RawSecurityDescriptor("O:$env:LA_SID")).GetSddlForm('Owner')
+`;
+});
+
+// packages/device-service-core/src/release/release-assets.ts
+var MANIFEST = "latest.json", CHECKSUMS_MAX_BYTES, MANIFEST_MAX_BYTES, BINARY_MAX_BYTES, DEVICE_SERVICE_HOSTS, deviceServiceAssetName = (host) => host.startsWith("windows-") ? `omo-device-service-${host}.exe` : `omo-device-service-${host}`, RELEASE_FILES;
+var init_release_assets = __esm(() => {
+  init_version2();
+  CHECKSUMS_MAX_BYTES = 64 * 1024;
+  MANIFEST_MAX_BYTES = 4 * 1024;
+  BINARY_MAX_BYTES = 512 * 1024 * 1024;
+  DEVICE_SERVICE_HOSTS = [
+    "darwin-arm64",
+    "darwin-x64",
+    "linux-x64",
+    "linux-arm64",
+    "windows-x64",
+    "windows-arm64"
+  ];
+  RELEASE_FILES = new Set([MANIFEST, ...DEVICE_SERVICE_HOSTS.map(deviceServiceAssetName)]);
+});
+
+// packages/device-service-core/src/strict-ed25519/strict-ed25519.ts
+var P, L, mod = (n) => {
+  const r = n % P;
+  return r < 0n ? r + P : r;
+}, power = (base, exponent) => {
+  let result = 1n;
+  let b = mod(base);
+  for (let n = exponent;n > 0n; n >>= 1n) {
+    if (n & 1n)
+      result = mod(result * b);
+    b = mod(b * b);
+  }
+  return result;
+}, D, SQRT_MINUS_ONE, keyCache;
+var init_strict_ed25519 = __esm(() => {
+  P = (1n << 255n) - 19n;
+  L = (1n << 252n) + 27742317777372353535851937790883648493n;
+  D = mod(-121665n * power(121666n, P - 2n));
+  SQRT_MINUS_ONE = power(2n, (P - 1n) / 4n);
+  keyCache = new Map;
+});
+
+// packages/device-service-core/src/release/release-key.json
+var release_key_default;
+var init_release_key = __esm(() => {
+  release_key_default = {
+    alg: "Ed25519",
+    public_keys_hex: ["6c6781a91888e3e5be10d1b27466319a7d5adf2a7d2b254f4118eda9cbcb4465", "ca9407b484a30ac7f09cb152455176f1e03fc6ca3446ff930bc7587215759016"]
+  };
+});
+
+// packages/device-service-core/src/release/release-signature.ts
+var HEX_KEY, parseReleaseKeySet = (value) => {
+  if (typeof value !== "object" || value === null || Array.isArray(value))
+    throw new Error("release key: not an object");
+  if (Object.keys(value).toSorted().join(",") !== "alg,public_keys_hex")
+    throw new Error("release key: fields must be exactly alg and public_keys_hex");
+  const alg = Reflect.get(value, "alg");
+  const hexes = Reflect.get(value, "public_keys_hex");
+  if (alg !== "Ed25519")
+    throw new Error("release key: alg must be Ed25519");
+  if (!Array.isArray(hexes))
+    throw new Error("release key: public_keys_hex must be an array");
+  if (new Set(hexes).size !== hexes.length)
+    throw new Error("release key: public_keys_hex must not repeat a key");
+  return hexes.map((hex) => {
+    if (typeof hex !== "string" || !HEX_KEY.test(hex))
+      throw new Error("release key: each public_keys_hex entry must be 64 lowercase hex characters");
+    return hex;
+  });
+}, DEVICE_SERVICE_RELEASE_KEYS;
+var init_release_signature = __esm(() => {
+  init_strict_ed25519();
+  init_release_key();
+  HEX_KEY = /^[0-9a-f]{64}$/;
+  DEVICE_SERVICE_RELEASE_KEYS = parseReleaseKeySet(release_key_default);
+});
+
+// packages/device-service-core/src/release/acquire.ts
+var platformSecure;
+var init_acquire = __esm(() => {
+  init_access();
+  init_local_only();
+  init_dacl();
+  init_windows_dacl();
+  init_release_assets();
+  init_release_signature();
+  init_version2();
+  init_release_assets();
+  init_release_signature();
+  platformSecure = process.platform === "win32" ? async (path, kind, origin) => windowsSecureFile2(await currentUserSid())(path, kind, origin) : posixSecureFile;
+});
+
+// packages/device-service-core/src/install.ts
+var init_install = __esm(() => {
+  init_acquire();
+});
+// packages/device-service-core/src/registrant-watch.ts
+var init_registrant_watch = () => {};
+
+// packages/device-service-core/src/registrant.ts
+var NONE2;
+var init_registrant = __esm(() => {
+  init_device_service2();
+  init_registrant_watch();
+  NONE2 = Symbol("none registered");
+});
+
+// packages/device-service-core/src/index.ts
+var init_src6 = __esm(() => {
+  init_delivery_consumer();
+  init_account_state();
+  init_bootstrap();
+  init_hand_device_keys();
+  init_cold_wake();
+  init_install();
+  init_registrant();
+  init_timers();
+  init_acquire();
+  init_device_service2();
+});
+
+// packages/device-service-core/src/wire.ts
+var init_wire = __esm(() => {
+  init_errors4();
+});
+
+// packages/omo-senpi/src/components/thread/errors.ts
+function isThreadErrorCode(value) {
+  return typeof value === "string" && CODE_SET.has(value);
+}
+function threadToolFailure(code, message, nextAction, details) {
+  if (!isThreadErrorCode(code)) {
+    throw new Error(`unknown thread error code: ${String(code)}`);
+  }
+  return { code, message, next_action: nextAction, ...details === undefined ? {} : { details } };
+}
+var THREAD_ERROR_CODES, CODE_SET;
+var init_errors5 = __esm(() => {
+  THREAD_ERROR_CODES = [
+    "invalid_arguments",
+    "caller_context_missing",
+    "not_found",
+    "reply_target_mismatch",
+    "ambiguous_target",
+    "scope_denied",
+    "name_conflict",
+    "not_resumable",
+    "orphaned",
+    "foreign_live_owner",
+    "no_active_turn",
+    "turn_conflict",
+    "turn_active",
+    "not_steerable",
+    "message_too_large",
+    "queue_full",
+    "cursor_invalid",
+    "cursor_stale",
+    "idempotency_conflict",
+    "idempotency_in_progress",
+    "idempotency_uncertain",
+    "delivered_unconfirmed",
+    "prompt_not_started",
+    "approval_unavailable",
+    "approval_route_locked",
+    "partial_commit",
+    "unsupported",
+    "overloaded",
+    "transport_closed",
+    "host_unavailable",
+    "internal_error",
+    "model_not_found",
+    "model_ambiguous",
+    "thinking_level_unsupported",
+    "loop_detected",
+    "pair_loop_guard",
+    "chain_count_limit",
+    "device_offline",
+    "relay_requires_paid_plan",
+    "alias_taken",
+    "gateway_schema_too_new"
+  ];
+  CODE_SET = new Set(THREAD_ERROR_CODES);
+});
+
+// packages/omo-senpi/src/components/remote/codes.ts
+var REMOTE_CODES, ENGINE_CODES;
+var init_codes = __esm(() => {
+  init_wire();
+  init_errors5();
+  REMOTE_CODES = [
+    ...THREAD_ERROR_CODES,
+    "timeout",
+    "cancelled",
+    "session_ended",
+    "sender_not_allowed",
+    "local_only",
+    "host_not_answering",
+    "no_transport",
+    "device_offline",
+    "undelivered",
+    "transport_expired",
+    "unconfirmed",
+    "host_error"
+  ];
+  ENGINE_CODES = new Map([
+    ["model_unavailable", { code: "model_not_found" }],
+    ["invalid_level", { code: "thinking_level_unsupported" }],
+    ["worktree_failed", { code: "unsupported", details: { feature: "worktree" } }],
+    ["not_running", { code: "not_resumable" }],
+    ["handle_lost", { code: "not_found", details: { kind: "handle" } }]
+  ]);
+});
+
+// packages/omo-senpi/src/components/remote/connection-of.ts
+var lenders;
+var init_connection_of = __esm(() => {
+  lenders = new WeakMap;
+});
+
+// packages/omo-senpi/src/components/remote/deadlines.ts
+var init_deadlines = __esm(() => {
+  init_codes();
+});
+
+// packages/omo-senpi/src/components/remote/seams.ts
+var init_seams = __esm(() => {
+  init_codes();
+});
+
+// packages/omo-senpi/src/components/remote/resolve.ts
+var init_resolve = __esm(() => {
+  init_client5();
+  init_deadlines();
+  init_codes();
+  init_seams();
+});
+
+// packages/omo-senpi/src/components/remote/aliases.ts
+var init_aliases = __esm(() => {
+  init_codes();
+  init_deadlines();
+  init_resolve();
+  init_seams();
+});
+
+// packages/omo-senpi/src/components/thread/gateway/result.ts
+var init_result = __esm(() => {
+  init_errors5();
+});
+
+// packages/omo-senpi/src/components/thread/remote/outcome.ts
+var READ_UNCERTAIN, UNANSWERED, NOT_SIGNED_IN, ENGINE_NOT_READY;
+var init_outcome = __esm(() => {
+  init_errors5();
+  init_result();
+  READ_UNCERTAIN = {
+    request_gone: "retry",
+    no_receipt: "retry",
+    engine_restarted: "retry",
+    recipient_revoked: "retry",
+    transport_expired: "retry",
+    unconfirmed: "retry",
+    lease_expired: "retry",
+    cancelled: "retry",
+    hand_restarted: "retry",
+    result_expired: "retry",
+    record_too_large: "too_large",
+    result_undecodable: "retry"
+  };
+  UNANSWERED = new Set([
+    "closed",
+    "protocol_violation",
+    "internal",
+    "read_failed",
+    "request_timeout",
+    "handshake_timeout",
+    "attach_failed",
+    "reply_lost",
+    "delivered_unconfirmed",
+    "host_not_answering",
+    "peer_not_found",
+    "engine_stale",
+    ...Object.entries(READ_UNCERTAIN).filter(([, answer]) => answer === "retry").map(([reason]) => reason)
+  ]);
+  NOT_SIGNED_IN = new Set(["sign_in_required", "signed_out"]);
+  ENGINE_NOT_READY = new Set(["attach_required", "daemon_unavailable"]);
+});
+
+// packages/omo-senpi/src/components/thread/remote/attach-pool.ts
+var CATALOG_RECORD = "get_available_models", HELD_RECORDS;
+var init_attach_pool = __esm(() => {
+  HELD_RECORDS = new Set([CATALOG_RECORD, "get_protocol_info"]);
+});
+
+// packages/omo-senpi/src/components/thread/remote/ports.ts
+var init_ports = () => {};
+
+// packages/omo-senpi/src/components/thread/remote/session-state.ts
+var ACCESS_ENDED, ACCESS_REFUSED, SESSION_LEFT, SESSION_GONE;
+var init_session_state = __esm(() => {
+  ACCESS_ENDED = new Set([
+    "authorization_expired",
+    "peer_revoked",
+    "owner_transfer",
+    "service_disabled"
+  ]);
+  ACCESS_REFUSED = new Set([
+    "unauthenticated",
+    "forbidden",
+    "owner_transfer",
+    "signed_out",
+    "service_disabled",
+    "sign_in_required",
+    "plan_required",
+    "peer_not_found",
+    "peer_not_session_client",
+    "account_changed",
+    "device_changed",
+    "capability_missing",
+    "engine_too_old"
+  ]);
+  SESSION_LEFT = new Set(["session_closed", "session_replaced"]);
+  SESSION_GONE = new Set([
+    "session_not_found",
+    "unknown_session",
+    "session_identity_mismatch"
+  ]);
+});
+// packages/omo-senpi/src/components/thread/remote/remote-watch.ts
+var init_remote_watch = __esm(() => {
+  init_device_service2();
+  init_ports();
+  init_session_state();
+});
+
+// packages/omo-senpi/src/components/call-budget/call-deadline.ts
+import { AsyncLocalStorage as AsyncLocalStorage4 } from "async_hooks";
+var scope;
+var init_call_deadline = __esm(() => {
+  scope = new AsyncLocalStorage4;
+});
+// packages/omo-senpi/src/components/remote/port/lookup-gate.ts
+var init_lookup_gate = __esm(() => {
+  init_ports();
+});
+
+// packages/omo-senpi/src/components/remote/port/device-service.ts
+var READ_ONLY_RECORDS, MARKED_RECORDS, LOOKUP_NONE;
+var init_device_service3 = __esm(() => {
+  init_outcome();
+  init_device_service2();
+  init_attach_pool();
+  init_remote_watch();
+  init_call_deadline();
+  init_lookup_gate();
+  READ_ONLY_RECORDS = new Set([
+    "get_state",
+    "get_messages",
+    "get_entries",
+    "get_protocol_info"
+  ]);
+  MARKED_RECORDS = new Set(["admit_external_message"]);
+  LOOKUP_NONE = new Set(["session_not_found", "peer_not_found", "peer_not_session_client"]);
+});
+
+// packages/omo-senpi/src/components/remote/attach.ts
+var DIALOG_KINDS;
+var init_attach = __esm(() => {
+  init_device_service2();
+  init_outcome();
+  init_client5();
+  init_codes();
+  init_deadlines();
+  init_device_service3();
+  init_resolve();
+  init_seams();
+  DIALOG_KINDS = new Set(["select", "confirm", "input", "editor", "question"]);
+});
+
+// packages/omo-senpi/src/components/thread/address/refusals.ts
+var init_refusals = __esm(() => {
+  init_errors5();
+});
+
+// packages/omo-senpi/src/components/thread/remote/address-book.ts
+var REMOTE_NOT_SET_UP;
+var init_address_book = __esm(() => {
+  init_ports();
+  REMOTE_NOT_SET_UP = new Set(["not_configured", "disabled", "signed_out", "sign_in_required"]);
+});
+
+// packages/omo-senpi/src/components/thread/address/account.ts
+var NOT_SET_UP, lastListed;
+var init_account = __esm(() => {
+  init_remote_ops();
+  init_address_book();
+  NOT_SET_UP = new Set(["not_configured", "disabled", "signed_out", "sign_in_required"]);
+  lastListed = new WeakMap;
+});
+
+// packages/omo-senpi/src/components/thread/address/device.ts
+var init_device = __esm(() => {
+  init_errors5();
+  init_account();
+  init_refusals();
+});
+
+// packages/omo-senpi/src/components/thread/remote/remote-ops.ts
+var init_remote_ops = __esm(() => {
+  init_refusals();
+  init_device();
+  init_account();
+  init_outcome();
+});
+
+// packages/omo-senpi/src/components/remote/send-transcript.ts
+var awaiting, views;
+var init_send_transcript = __esm(() => {
+  init_remote_ops();
+  awaiting = new WeakMap;
+  views = new WeakMap;
+});
+
+// packages/omo-senpi/src/components/remote/follow.ts
+var RUN_OVER;
+var init_follow = __esm(() => {
+  init_outcome();
+  init_attach();
+  init_client5();
+  init_codes();
+  init_deadlines();
+  init_seams();
+  init_send_transcript();
+  RUN_OVER = new Set(["waiting_children", "waiting_background", "done", "failed", "cancelled"]);
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/system/memory/metrics.mjs
@@ -100680,7 +101315,7 @@ function IsExtendsTrueLike(value) {
 function Match3(result, true_, false_) {
   return IsExtendsTrueLike(result) ? true_(result.inferred) : false_();
 }
-var init_result = __esm(() => {
+var init_result2 = __esm(() => {
   init_guard2();
   init_memory3();
 });
@@ -100724,7 +101359,7 @@ var init_extends_right = __esm(() => {
   init_union();
   init_unknown();
   init_extends_left();
-  init_result();
+  init_result2();
   init_evaluate2();
   init_evaluate2();
 });
@@ -100738,7 +101373,7 @@ var init_any2 = __esm(() => {
   init_any();
   init_unknown();
   init_extends_right();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/array.mjs
@@ -100755,7 +101390,7 @@ var init_array2 = __esm(() => {
   init__immutable();
   init_extends_right();
   init_extends_left();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/bigint.mjs
@@ -100765,7 +101400,7 @@ function ExtendsBigInt(inferred, left, right) {
 var init_bigint3 = __esm(() => {
   init_bigint();
   init_extends_right();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/boolean.mjs
@@ -100775,7 +101410,7 @@ function ExtendsBoolean(inferred, left, right) {
 var init_boolean2 = __esm(() => {
   init_boolean();
   init_extends_right();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/parameters.mjs
@@ -100800,7 +101435,7 @@ var init_parameters = __esm(() => {
   init_infer();
   init__optional();
   init_extends_left();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/return_type.mjs
@@ -100810,7 +101445,7 @@ function ExtendsReturnType(inferred, left, right) {
 var init_return_type = __esm(() => {
   init_void();
   init_extends_left();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/constructor.mjs
@@ -100821,7 +101456,7 @@ var init_constructor2 = __esm(() => {
   init_any();
   init_constructor();
   init_unknown();
-  init_result();
+  init_result2();
   init_parameters();
   init_return_type();
 });
@@ -100832,7 +101467,7 @@ function ExtendsDependent(inferred, if_, then_, else_, right) {
 }
 var init_dependent2 = __esm(() => {
   init_extends_left();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/enum.mjs
@@ -100853,7 +101488,7 @@ var init_function2 = __esm(() => {
   init_any();
   init_function();
   init_unknown();
-  init_result();
+  init_result2();
   init_parameters();
   init_return_type();
 });
@@ -100866,7 +101501,7 @@ var init_integer3 = __esm(() => {
   init_integer();
   init_number();
   init_extends_right();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/intersect.mjs
@@ -100906,7 +101541,7 @@ var init_literal2 = __esm(() => {
   init_number();
   init_string();
   init_extends_right();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/never.mjs
@@ -100916,7 +101551,7 @@ function ExtendsNever(inferred, left, right) {
 var init_never2 = __esm(() => {
   init_infer();
   init_extends_right();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/null.mjs
@@ -100926,7 +101561,7 @@ function ExtendsNull(inferred, left, right) {
 var init_null2 = __esm(() => {
   init_null();
   init_extends_right();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/number.mjs
@@ -100936,7 +101571,7 @@ function ExtendsNumber(inferred, left, right) {
 var init_number3 = __esm(() => {
   init_number();
   init_extends_right();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/object.mjs
@@ -100998,7 +101633,7 @@ var init_object2 = __esm(() => {
   init_union();
   init_extends_left();
   init_extends_right();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/record.mjs
@@ -101018,7 +101653,7 @@ var init_record2 = __esm(() => {
   init_object();
   init_record();
   init_extends_left();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/string.mjs
@@ -101028,7 +101663,7 @@ function ExtendsString(inferred, left, right) {
 var init_string3 = __esm(() => {
   init_string();
   init_extends_right();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/symbol.mjs
@@ -101038,7 +101673,7 @@ function ExtendsSymbol(inferred, left, right) {
 var init_symbol2 = __esm(() => {
   init_symbol();
   init_extends_right();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/template_literal.mjs
@@ -101092,7 +101727,7 @@ var init_inference = __esm(() => {
   init_union();
   init_infer();
   init_rest();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/tuple.mjs
@@ -101149,7 +101784,7 @@ var init_tuple2 = __esm(() => {
   init_tuple();
   init_extends_left();
   init_extends_right();
-  init_result();
+  init_result2();
   init_instantiate27();
   init_instantiate27();
   init_inference();
@@ -101163,7 +101798,7 @@ var init_undefined2 = __esm(() => {
   init_undefined();
   init_void();
   init_extends_right();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/union.mjs
@@ -101181,7 +101816,7 @@ var init_union2 = __esm(() => {
   init_guard2();
   init_union();
   init_extends_left();
-  init_result();
+  init_result2();
   init_inference();
 });
 
@@ -101194,7 +101829,7 @@ var init_unknown2 = __esm(() => {
   init_unknown();
   init_infer();
   init_extends_right();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/void.mjs
@@ -101204,7 +101839,7 @@ function ExtendsVoid(inferred, left, right) {
 var init_void2 = __esm(() => {
   init_void();
   init_extends_right();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/extends_left.mjs
@@ -101260,7 +101895,7 @@ var init_extends_left = __esm(() => {
   init_unknown();
   init_union();
   init_void();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/interface/instantiate.mjs
@@ -101499,7 +102134,7 @@ var init_extends2 = __esm(() => {
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/extends/index.mjs
 var init_extends3 = __esm(() => {
   init_extends2();
-  init_result();
+  init_result2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/type/engine/evaluate/compare.mjs
@@ -103878,154 +104513,103 @@ var init_permission_presets = __esm(() => {
   PERMISSION_PRESETS = ["full-access", "workspace", "accept-edits", "auto", "read-only", "ask"];
 });
 
-// packages/omo-senpi/src/components/thread/remote/ports.ts
-var init_ports = () => {};
+// packages/omo-senpi/src/components/thread/addressing.ts
+var init_addressing = __esm(() => {
+  init_errors5();
+});
 
-// packages/omo-senpi/src/components/thread/errors.ts
-function isThreadErrorCode(value) {
-  return typeof value === "string" && CODE_SET.has(value);
-}
-function threadToolFailure(code, message, nextAction, details) {
-  if (!isThreadErrorCode(code)) {
-    throw new Error(`unknown thread error code: ${String(code)}`);
-  }
-  return { code, message, next_action: nextAction, ...details === undefined ? {} : { details } };
-}
-var THREAD_ERROR_CODES, CODE_SET;
-var init_errors5 = __esm(() => {
-  THREAD_ERROR_CODES = [
-    "invalid_arguments",
-    "caller_context_missing",
-    "not_found",
-    "reply_target_mismatch",
-    "ambiguous_target",
-    "scope_denied",
-    "name_conflict",
-    "not_resumable",
-    "orphaned",
-    "foreign_live_owner",
-    "no_active_turn",
-    "turn_conflict",
-    "turn_active",
-    "not_steerable",
-    "message_too_large",
-    "queue_full",
-    "cursor_invalid",
-    "cursor_stale",
-    "idempotency_conflict",
-    "idempotency_in_progress",
-    "idempotency_uncertain",
-    "delivered_unconfirmed",
-    "prompt_not_started",
-    "approval_unavailable",
-    "approval_route_locked",
-    "partial_commit",
-    "unsupported",
-    "overloaded",
-    "transport_closed",
-    "host_unavailable",
-    "internal_error",
-    "model_not_found",
-    "model_ambiguous",
-    "thinking_level_unsupported",
-    "loop_detected",
-    "pair_loop_guard",
-    "chain_count_limit",
-    "device_offline",
-    "relay_requires_paid_plan",
-    "alias_taken",
-    "gateway_schema_too_new"
+// packages/omo-senpi/src/components/thread/session-facts.ts
+var SESSION_FACTS_WINDOW_BYTES, SESSION_FACTS_LAST_LINE_MAX_BYTES;
+var init_session_facts = __esm(() => {
+  SESSION_FACTS_WINDOW_BYTES = 64 * 1024;
+  SESSION_FACTS_LAST_LINE_MAX_BYTES = SESSION_FACTS_WINDOW_BYTES * 4;
+});
+// packages/omo-senpi/src/components/thread/address-book.ts
+var init_address_book2 = __esm(() => {
+  init_addressing();
+  init_session_facts();
+});
+
+// packages/omo-senpi/src/components/thread/contracts/send-result-order.ts
+var init_send_result_order = () => {};
+
+// packages/omo-senpi/src/components/thread/metadata.ts
+var THREAD_TOOL_EXPOSURE = "eval", ROUTE_TO_TASK = "; to spawn a child task instead, use task.", THREAD_TOOL_METADATA;
+var init_metadata = __esm(() => {
+  THREAD_TOOL_METADATA = [
+    {
+      name: "thread_create",
+      label: "Create session",
+      description: "Starts a fresh agent session that runs alongside this one, for when the user wants a second session working in parallel" + ROUTE_TO_TASK,
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_list",
+      label: "List sessions",
+      description: "Shows every addressable session on this device and the account's other devices with its id, name, status and device, plus the account's devices, for when the user needs a valid target address before acting on a session" + ROUTE_TO_TASK,
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_read",
+      label: "Read session",
+      description: "Returns the transcript and latest output of another session, for when the user asks what another session said or produced" + ROUTE_TO_TASK,
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_send",
+      label: "Send message to session",
+      description: "Delivers a message into another session that is already running, for when the user wants to talk to that session mid-task; its reply comes back through thread_read (tool.thread_read() in an eval cell)" + ROUTE_TO_TASK,
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_interrupt",
+      label: "Interrupt session turn",
+      description: "Stops the turn running in another session, and the background jobs that turn started, for when the user wants to halt a session that is going down the wrong path; the result's background lists what was stopped" + ROUTE_TO_TASK,
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_close",
+      label: "Close session",
+      description: "Closes a session. Omit thread or pass self to close this session. thread accepts the thread value of a thread_list row (tool.thread_list() in an eval cell), an alias, or a unique name; the result is closed true or false plus a reason. A thread with messages it has not read is refused, naming them; pass force: true to close it anyway (dropped_deliveries lists them)" + ROUTE_TO_TASK,
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_handoff",
+      label: "Hand off session",
+      description: "Moves the current request to an old session that has the context, for when the user says to hand this off or reopen that earlier conversation" + ROUTE_TO_TASK,
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_rename",
+      label: "Rename session",
+      description: "Renames a session's label, for when the user asks to call a session something clearer. Omit thread or pass self to rename this session. thread accepts the thread value of a thread_list row (tool.thread_list() in an eval cell), an alias, or a unique name; a miss names the thread value to pass",
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_set_model",
+      label: "Switch session model",
+      description: "Moves a session onto a different model, for when the user asks to switch that session to another model or a cheaper one",
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_set_reasoning",
+      label: "Set session reasoning level",
+      description: "Sets how much reasoning a session applies, for when the user asks to raise or lower the thinking effort of a session",
+      exposure: THREAD_TOOL_EXPOSURE
+    },
+    {
+      name: "thread_archive",
+      label: "Archive session",
+      description: "Archives or unarchives a session so the session list hides or shows it again, for when the user is finished with a session but wants to keep it",
+      exposure: THREAD_TOOL_EXPOSURE
+    }
   ];
-  CODE_SET = new Set(THREAD_ERROR_CODES);
 });
 
-// packages/omo-senpi/src/components/thread/initial-skills.ts
-var init_initial_skills = () => {};
-
-// packages/omo-senpi/src/components/thread/gateway/result.ts
-var init_result2 = __esm(() => {
-  init_errors5();
-});
-
-// packages/omo-senpi/src/components/thread/remote/outcome.ts
-var READ_UNCERTAIN, UNANSWERED, NOT_SIGNED_IN, ENGINE_NOT_READY;
-var init_outcome = __esm(() => {
-  init_errors5();
-  init_result2();
-  READ_UNCERTAIN = {
-    request_gone: "retry",
-    no_receipt: "retry",
-    engine_restarted: "retry",
-    recipient_revoked: "retry",
-    transport_expired: "retry",
-    unconfirmed: "retry",
-    lease_expired: "retry",
-    cancelled: "retry",
-    hand_restarted: "retry",
-    result_expired: "retry",
-    record_too_large: "too_large",
-    result_undecodable: "retry"
-  };
-  UNANSWERED = new Set([
-    "closed",
-    "protocol_violation",
-    "internal",
-    "read_failed",
-    "request_timeout",
-    "handshake_timeout",
-    "attach_failed",
-    "reply_lost",
-    "delivered_unconfirmed",
-    "host_not_answering",
-    "peer_not_found",
-    "engine_stale",
-    ...Object.entries(READ_UNCERTAIN).filter(([, answer]) => answer === "retry").map(([reason]) => reason)
-  ]);
-  NOT_SIGNED_IN = new Set(["sign_in_required", "signed_out"]);
-  ENGINE_NOT_READY = new Set(["attach_required", "daemon_unavailable"]);
-});
-
-// packages/omo-senpi/src/components/thread/address/refusals.ts
-var init_refusals = __esm(() => {
-  init_errors5();
-});
-
-// packages/omo-senpi/src/components/thread/remote/address-book.ts
-var REMOTE_NOT_SET_UP;
-var init_address_book = __esm(() => {
-  init_ports();
-  REMOTE_NOT_SET_UP = new Set(["not_configured", "disabled", "signed_out", "sign_in_required"]);
-});
-
-// packages/omo-senpi/src/components/thread/address/account.ts
-var NOT_SET_UP, lastListed;
-var init_account = __esm(() => {
-  init_remote_ops();
-  init_address_book();
-  NOT_SET_UP = new Set(["not_configured", "disabled", "signed_out", "sign_in_required"]);
-  lastListed = new WeakMap;
-});
-
-// packages/omo-senpi/src/components/thread/address/device.ts
-var init_device = __esm(() => {
-  init_errors5();
-  init_account();
-  init_refusals();
-});
-
-// packages/omo-senpi/src/components/thread/remote/remote-ops.ts
-var init_remote_ops = __esm(() => {
-  init_refusals();
-  init_device();
-  init_account();
-  init_outcome();
-});
-
-// packages/omo-senpi/src/components/call-budget/call-deadline.ts
-import { AsyncLocalStorage as AsyncLocalStorage4 } from "async_hooks";
-var scope;
-var init_call_deadline = __esm(() => {
-  scope = new AsyncLocalStorage4;
+// packages/omo-senpi/src/components/thread/thread-link.ts
+var THREAD_LINK_SCHEME = "omo-thread", PREFIX;
+var init_thread_link = __esm(() => {
+  PREFIX = `${THREAD_LINK_SCHEME}://v1/`;
 });
 
 // packages/omo-senpi/src/components/thread/contracts/create-params.ts
@@ -104109,6 +104693,8 @@ var init_params = __esm(() => {
       Literal("opening"),
       Literal("running"),
       Literal("idle"),
+      Literal("held"),
+      Literal("unknown"),
       Literal("inactive"),
       Literal("archived")
     ]), {
@@ -105422,7 +106008,7 @@ function DynamicRef(stack, dynamicRef) {
   const fragmentTarget = RefInternal(stack.context, fragmentRoot, stack.lexicalBase, dynamicRef.$dynamicRef);
   return IsUndefined(fragmentTarget) ? DynamicRefWhenNotFound(stack, dynamicRef) : DynamicRefWhenFound(stack, dynamicRef, fragmentTarget);
 }
-var init_resolve = __esm(() => {
+var init_resolve2 = __esm(() => {
   init_guard2();
   init_pointer2();
   init_types11();
@@ -105430,8 +106016,8 @@ var init_resolve = __esm(() => {
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/schema/resolve/index.mjs
-var init_resolve2 = __esm(() => {
-  init_resolve();
+var init_resolve3 = __esm(() => {
+  init_resolve2();
 });
 
 // node_modules/.bun/typebox@1.3.34/node_modules/typebox/build/schema/engine/dynamicRef.mjs
@@ -105448,7 +106034,7 @@ function ErrorDynamicRef(stack, context, schemaPath, instancePath, schema, value
 var init_dynamicRef2 = __esm(() => {
   init_types11();
   init__functions();
-  init_resolve2();
+  init_resolve3();
   init_schema4();
 });
 
@@ -106547,7 +107133,7 @@ function ErrorRecursiveRef(stack, context, schemaPath, instancePath, schema, val
 var init_recursiveRef2 = __esm(() => {
   init_types11();
   init__functions();
-  init_resolve2();
+  init_resolve3();
   init_schema4();
 });
 
@@ -106575,7 +107161,7 @@ function ErrorRef(stack, context, schemaPath, instancePath, schema, value) {
 var init_ref4 = __esm(() => {
   init__functions();
   init_types11();
-  init_resolve2();
+  init_resolve3();
   init__context();
   init_guard2();
   init_schema4();
@@ -106834,7 +107420,7 @@ var init_intern = __esm(() => {
   init_types11();
   init__stack();
   init_guard2();
-  init_resolve2();
+  init_resolve3();
   registry2 = new Map;
   resolved = new Map;
 });
@@ -106965,7 +107551,7 @@ var init_schema6 = __esm(() => {
   init_intern2();
   init_meta2();
   init_pointer2();
-  init_resolve2();
+  init_resolve3();
   init_static3();
   init_types11();
   init_build2();
@@ -108752,146 +109338,8 @@ var init_thread_state = __esm(() => {
   RETRY_WAIT_KINDS = new Set(["rate_limit", "retry"]);
 });
 
-// packages/omo-senpi/src/components/thread/control/port.ts
-var REFUSAL;
-var init_port = __esm(() => {
-  init_errors5();
-  init_thread_state();
-  REFUSAL = Symbol.for("omo.thread.control.refusal");
-});
-
-// packages/omo-senpi/src/components/thread/control/close-ladder.ts
-var SESSION_GONE;
-var init_close_ladder = __esm(() => {
-  init_call_deadline();
-  init_port();
-  SESSION_GONE = new Set([
-    "unknown_session",
-    "route_unlisted",
-    "session_identity_mismatch",
-    "session_not_attached",
-    "not_attached"
-  ]);
-});
-
-// packages/omo-senpi/src/components/thread/worktree/failures.ts
-var init_failures = __esm(() => {
-  init_errors5();
-});
-
-// packages/omo-senpi/src/components/thread/control/open-reply.ts
-var init_open_reply = __esm(() => {
-  init_errors5();
-  init_outcome();
-  init_failures();
-});
-// packages/omo-senpi/src/components/thread/worktree/remote-worktree.ts
-var init_remote_worktree = __esm(() => {
-  init_close_ladder();
-  init_open_reply();
-  init_port();
-  init_errors5();
-  init_outcome();
-  init_remote_ops();
-  init_failures();
-});
-
-// packages/omo-senpi/src/components/thread/thread-link.ts
-var THREAD_LINK_SCHEME = "omo-thread", PREFIX;
-var init_thread_link = __esm(() => {
-  PREFIX = `${THREAD_LINK_SCHEME}://v1/`;
-});
-
-// packages/omo-senpi/src/components/thread/addressing.ts
-var init_addressing = __esm(() => {
-  init_errors5();
-});
-
-// packages/omo-senpi/src/components/thread/session-facts.ts
-var SESSION_FACTS_WINDOW_BYTES, SESSION_FACTS_LAST_LINE_MAX_BYTES;
-var init_session_facts = __esm(() => {
-  SESSION_FACTS_WINDOW_BYTES = 64 * 1024;
-  SESSION_FACTS_LAST_LINE_MAX_BYTES = SESSION_FACTS_WINDOW_BYTES * 4;
-});
-
-// packages/omo-senpi/src/components/thread/address-book.ts
-var init_address_book2 = __esm(() => {
-  init_addressing();
-  init_session_facts();
-});
-
-// packages/omo-senpi/src/components/thread/metadata.ts
-var THREAD_TOOL_EXPOSURE = "eval", ROUTE_TO_TASK = "; to spawn a child task instead, use task.", THREAD_TOOL_METADATA;
-var init_metadata = __esm(() => {
-  THREAD_TOOL_METADATA = [
-    {
-      name: "thread_create",
-      label: "Create session",
-      description: "Starts a fresh agent session that runs alongside this one, for when the user wants a second session working in parallel" + ROUTE_TO_TASK,
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_list",
-      label: "List sessions",
-      description: "Shows every addressable session on this device and the account's other devices with its id, name, status and device, plus the account's devices, for when the user needs a valid target address before acting on a session" + ROUTE_TO_TASK,
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_read",
-      label: "Read session",
-      description: "Returns the transcript and latest output of another session, for when the user asks what another session said or produced" + ROUTE_TO_TASK,
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_send",
-      label: "Send message to session",
-      description: "Delivers a message into another session that is already running, for when the user wants to talk to that session mid-task; its reply comes back through thread_read (tool.thread_read() in an eval cell)" + ROUTE_TO_TASK,
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_interrupt",
-      label: "Interrupt session turn",
-      description: "Stops the turn running in another session, and the background jobs that turn started, for when the user wants to halt a session that is going down the wrong path; the result's background lists what was stopped" + ROUTE_TO_TASK,
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_close",
-      label: "Close session",
-      description: "Closes a session. Omit thread or pass self to close this session. thread accepts the thread value of a thread_list row (tool.thread_list() in an eval cell), an alias, or a unique name; the result is closed true or false plus a reason. A thread with messages it has not read is refused, naming them; pass force: true to close it anyway (dropped_deliveries lists them)" + ROUTE_TO_TASK,
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_handoff",
-      label: "Hand off session",
-      description: "Moves the current request to an old session that has the context, for when the user says to hand this off or reopen that earlier conversation" + ROUTE_TO_TASK,
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_rename",
-      label: "Rename session",
-      description: "Renames a session's label, for when the user asks to call a session something clearer. Omit thread or pass self to rename this session. thread accepts the thread value of a thread_list row (tool.thread_list() in an eval cell), an alias, or a unique name; a miss names the thread value to pass",
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_set_model",
-      label: "Switch session model",
-      description: "Moves a session onto a different model, for when the user asks to switch that session to another model or a cheaper one",
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_set_reasoning",
-      label: "Set session reasoning level",
-      description: "Sets how much reasoning a session applies, for when the user asks to raise or lower the thinking effort of a session",
-      exposure: THREAD_TOOL_EXPOSURE
-    },
-    {
-      name: "thread_archive",
-      label: "Archive session",
-      description: "Archives or unarchives a session so the session list hides or shows it again, for when the user is finished with a session but wants to keep it",
-      exposure: THREAD_TOOL_EXPOSURE
-    }
-  ];
-});
+// packages/omo-senpi/src/components/thread/tools/row-liveness.ts
+var init_row_liveness = () => {};
 
 // packages/omo-senpi/src/components/thread/tools/internals.ts
 function failure3(code, message, next, details) {
@@ -108900,36 +109348,26 @@ function failure3(code, message, next, details) {
 var init_internals = __esm(() => {
   init_address_book2();
   init_addressing();
+  init_send_result_order();
   init_errors5();
   init_metadata();
   init_session_facts();
   init_thread_link();
   init_thread_state();
-});
-
-// packages/omo-senpi/src/components/thread/control/session-host.ts
-var init_session_host = __esm(() => {
-  init_internals();
-});
-
-// packages/omo-senpi/src/components/thread/control/relay-session-host.ts
-var init_relay_session_host = __esm(() => {
-  init_ports();
-  init_errors5();
-  init_initial_skills();
-  init_outcome();
-  init_remote_ops();
-  init_device();
-  init_remote_worktree();
-  init_open_reply();
-  init_thread_link();
-  init_thread_state();
-  init_session_host();
+  init_row_liveness();
 });
 
 // packages/omo-senpi/src/components/thread/tools/model-match.ts
 var init_model_match = __esm(() => {
   init_internals();
+});
+
+// packages/omo-senpi/src/components/thread/control/port.ts
+var REFUSAL;
+var init_port = __esm(() => {
+  init_errors5();
+  init_thread_state();
+  REFUSAL = Symbol.for("omo.thread.control.refusal");
 });
 
 // packages/omo-senpi/src/components/thread/control/operations.ts
@@ -108981,6 +109419,20 @@ var init_transcript_tail = __esm(() => {
   kept = new WeakMap;
   unpaged = new WeakMap;
 });
+
+// packages/omo-senpi/src/components/thread/control/close-ladder.ts
+var SESSION_GONE2;
+var init_close_ladder = __esm(() => {
+  init_call_deadline();
+  init_port();
+  SESSION_GONE2 = new Set([
+    "unknown_session",
+    "route_unlisted",
+    "session_identity_mismatch",
+    "session_not_attached",
+    "not_attached"
+  ]);
+});
 // packages/omo-senpi/src/components/thread/control/wait-settled.ts
 var IN_PROGRESS, RUN_RECORDS;
 var init_wait_settled = __esm(() => {
@@ -108999,6 +109451,58 @@ var init_wait_settled = __esm(() => {
     "auto_retry_start",
     "auto_retry_end"
   ]);
+});
+
+// packages/omo-senpi/src/components/thread/initial-skills.ts
+var init_initial_skills = () => {};
+
+// packages/omo-senpi/src/components/thread/worktree/failures.ts
+var init_failures = __esm(() => {
+  init_errors5();
+});
+
+// packages/omo-senpi/src/components/thread/control/open-reply.ts
+var init_open_reply = __esm(() => {
+  init_errors5();
+  init_outcome();
+  init_failures();
+});
+// packages/omo-senpi/src/components/thread/worktree/remote-worktree.ts
+var init_remote_worktree = __esm(() => {
+  init_close_ladder();
+  init_open_reply();
+  init_port();
+  init_errors5();
+  init_outcome();
+  init_remote_ops();
+  init_failures();
+});
+
+// packages/omo-senpi/src/components/thread/remote/listing-liveness.ts
+var init_listing_liveness = __esm(() => {
+  init_row_liveness();
+  init_thread_state();
+});
+
+// packages/omo-senpi/src/components/thread/control/session-host.ts
+var init_session_host = __esm(() => {
+  init_internals();
+});
+
+// packages/omo-senpi/src/components/thread/control/relay-session-host.ts
+var init_relay_session_host = __esm(() => {
+  init_ports();
+  init_errors5();
+  init_initial_skills();
+  init_outcome();
+  init_remote_ops();
+  init_device();
+  init_remote_worktree();
+  init_open_reply();
+  init_thread_link();
+  init_thread_state();
+  init_listing_liveness();
+  init_session_host();
 });
 
 // packages/omo-senpi/src/components/thread/tools/thread-row.ts
@@ -109020,165 +109524,6 @@ var init_relay_control = __esm(() => {
   init_wait_settled();
   init_relay_session_host();
   init_thread_row();
-});
-
-// packages/omo-senpi/src/components/thread/remote/attach-pool.ts
-var CATALOG_RECORD = "get_available_models", HELD_RECORDS;
-var init_attach_pool = __esm(() => {
-  HELD_RECORDS = new Set([CATALOG_RECORD, "get_protocol_info"]);
-});
-
-// packages/omo-senpi/src/components/thread/remote/session-state.ts
-var ACCESS_ENDED, ACCESS_REFUSED, SESSION_LEFT, SESSION_GONE2;
-var init_session_state = __esm(() => {
-  ACCESS_ENDED = new Set([
-    "authorization_expired",
-    "peer_revoked",
-    "owner_transfer",
-    "service_disabled"
-  ]);
-  ACCESS_REFUSED = new Set([
-    "unauthenticated",
-    "forbidden",
-    "owner_transfer",
-    "signed_out",
-    "service_disabled",
-    "sign_in_required",
-    "plan_required",
-    "peer_not_found",
-    "peer_not_session_client",
-    "account_changed",
-    "device_changed",
-    "capability_missing",
-    "engine_too_old"
-  ]);
-  SESSION_LEFT = new Set(["session_closed", "session_replaced"]);
-  SESSION_GONE2 = new Set([
-    "session_not_found",
-    "unknown_session",
-    "session_identity_mismatch"
-  ]);
-});
-// packages/omo-senpi/src/components/thread/remote/remote-watch.ts
-var init_remote_watch = __esm(() => {
-  init_device_service2();
-  init_ports();
-  init_session_state();
-});
-// packages/omo-senpi/src/components/remote/port/lookup-gate.ts
-var init_lookup_gate = __esm(() => {
-  init_ports();
-});
-
-// packages/omo-senpi/src/components/remote/port/device-service.ts
-var READ_ONLY_RECORDS, MARKED_RECORDS, LOOKUP_NONE;
-var init_device_service3 = __esm(() => {
-  init_outcome();
-  init_device_service2();
-  init_attach_pool();
-  init_remote_watch();
-  init_call_deadline();
-  init_lookup_gate();
-  READ_ONLY_RECORDS = new Set([
-    "get_state",
-    "get_messages",
-    "get_entries",
-    "get_protocol_info"
-  ]);
-  MARKED_RECORDS = new Set(["admit_external_message"]);
-  LOOKUP_NONE = new Set(["session_not_found", "peer_not_found", "peer_not_session_client"]);
-});
-
-// packages/device-service-core/src/wire.ts
-var init_wire = __esm(() => {
-  init_errors4();
-});
-
-// packages/omo-senpi/src/components/remote/codes.ts
-var REMOTE_CODES, ENGINE_CODES;
-var init_codes = __esm(() => {
-  init_wire();
-  init_errors5();
-  REMOTE_CODES = [
-    ...THREAD_ERROR_CODES,
-    "timeout",
-    "cancelled",
-    "session_ended",
-    "sender_not_allowed",
-    "local_only",
-    "host_not_answering",
-    "no_transport",
-    "device_offline",
-    "undelivered",
-    "transport_expired",
-    "unconfirmed",
-    "host_error"
-  ];
-  ENGINE_CODES = new Map([
-    ["model_unavailable", { code: "model_not_found" }],
-    ["invalid_level", { code: "thinking_level_unsupported" }],
-    ["worktree_failed", { code: "unsupported", details: { feature: "worktree" } }],
-    ["not_running", { code: "not_resumable" }],
-    ["handle_lost", { code: "not_found", details: { kind: "handle" } }]
-  ]);
-});
-
-// packages/omo-senpi/src/components/remote/connection-of.ts
-var lenders;
-var init_connection_of = __esm(() => {
-  lenders = new WeakMap;
-});
-
-// packages/omo-senpi/src/components/remote/deadlines.ts
-var init_deadlines = __esm(() => {
-  init_codes();
-});
-
-// packages/omo-senpi/src/components/remote/seams.ts
-var init_seams = __esm(() => {
-  init_codes();
-});
-
-// packages/omo-senpi/src/components/remote/resolve.ts
-var init_resolve3 = __esm(() => {
-  init_client5();
-  init_deadlines();
-  init_codes();
-  init_seams();
-});
-
-// packages/omo-senpi/src/components/remote/aliases.ts
-var init_aliases = __esm(() => {
-  init_codes();
-  init_deadlines();
-  init_resolve3();
-  init_seams();
-});
-
-// packages/omo-senpi/src/components/remote/attach.ts
-var DIALOG_KINDS;
-var init_attach = __esm(() => {
-  init_device_service2();
-  init_outcome();
-  init_client5();
-  init_codes();
-  init_deadlines();
-  init_device_service3();
-  init_resolve3();
-  init_seams();
-  DIALOG_KINDS = new Set(["select", "confirm", "input", "editor", "question"]);
-});
-
-// packages/omo-senpi/src/components/remote/follow.ts
-var RUN_OVER;
-var init_follow = __esm(() => {
-  init_outcome();
-  init_attach();
-  init_client5();
-  init_codes();
-  init_deadlines();
-  init_seams();
-  RUN_OVER = new Set(["waiting_children", "waiting_background", "done", "failed", "cancelled"]);
 });
 
 // packages/omo-senpi/src/components/thread/gateway/hash-args.ts
@@ -109238,7 +109583,7 @@ var init_relay_transport = __esm(() => {
   init_errors5();
   init_hash_args();
   init_provenance2();
-  init_result2();
+  init_result();
   init_remote_ops();
   init_device();
   init_outcome();
@@ -109286,9 +109631,10 @@ var init_sessions = __esm(() => {
   init_codes();
   init_deadlines();
   init_device_service3();
-  init_resolve3();
+  init_resolve();
   init_seams();
   init_client_message_id();
+  init_send_transcript();
   NO_SESSION = new Set(["unknown_session", "session_not_found"]);
 });
 // packages/omo-senpi/src/components/remote/unknown-device.ts
@@ -109305,7 +109651,7 @@ var init_client5 = __esm(() => {
   init_codes();
   init_deadlines();
   init_follow();
-  init_resolve3();
+  init_resolve();
   init_seams();
   init_sessions();
   init_unknown_device();
@@ -109387,6 +109733,54 @@ var init_address = __esm(() => {
   init_device();
   init_refusals();
   init_resolve4();
+});
+
+// packages/omo-senpi/src/components/remote/device-address.ts
+var init_device_address = __esm(() => {
+  init_address();
+  init_errors5();
+});
+
+// packages/omo-senpi/src/components/remote/port/sessions-port.ts
+var init_sessions_port = __esm(() => {
+  init_connection_of();
+  init_device_service3();
+});
+
+// packages/omo-senpi/src/components/remote/person-surface.ts
+var init_person_surface = __esm(() => {
+  init_sessions_port();
+});
+
+// packages/omo-senpi/src/components/remote/relay-availability.ts
+var init_relay_availability = __esm(() => {
+  init_remote_ops();
+});
+
+// packages/omo-senpi/src/components/remote/local-service.ts
+var init_local_service = __esm(() => {
+  init_device_service2();
+});
+
+// packages/omo-senpi/src/components/remote/port/thread-runtime.ts
+var init_thread_runtime = __esm(() => {
+  init_factories();
+  init_sessions_port();
+});
+
+// packages/omo-senpi/src/components/remote/index.ts
+var init_remote = __esm(() => {
+  init_codes();
+  init_factories();
+  init_seams();
+  init_address();
+  init_device_address();
+  init_person_surface();
+  init_relay_availability();
+  init_account_state();
+  init_device_service2();
+  init_local_service();
+  init_thread_runtime();
 });
 
 // packages/omo-opencode/src/cli/cli-program.ts
@@ -110699,25 +111093,30 @@ async function rewriteCachedManifestRoot(pluginRoot, fromRoot, toRoot) {
 }
 
 // packages/omo-codex/src/install/codex-cache-payload.ts
-import { cp as cp2, lstat as lstat5, mkdtemp, readdir as readdir4, rename, rm as rm4 } from "fs/promises";
+import { cp as cp2, lstat as lstat5, mkdtemp, readdir as readdir4, rename, rm as rm4, stat as stat4 } from "fs/promises";
 import { join as join31, relative as relative4, sep as sep4 } from "path";
 var NPM_BIN_PATH_SEGMENT = `${sep4}node_modules${sep4}.bin${sep4}`;
+var isNpmBinEntry = (pluginRoot, path) => `${sep4}${relative4(pluginRoot, path)}`.includes(NPM_BIN_PATH_SEGMENT);
 async function finalizeCachedPluginPayload(pluginRoot) {
-  await materializeDirectory(pluginRoot);
+  await materializeDirectory(pluginRoot, pluginRoot);
   const unsupported = await unsupportedEntries(pluginRoot, pluginRoot);
-  if (unsupported.length > 0) {
-    throw new Error(`Codex plugin contains unsupported entry types: ${unsupported.sort().join(", ")}`);
-  }
+  if (unsupported.length > 0)
+    throw unsupportedEntryError(unsupported);
 }
-async function materializeDirectory(directory) {
+var unsupportedEntryError = (paths) => new Error(`Codex plugin contains unsupported entry types: ${[...paths].sort().join(", ")}`);
+async function materializeDirectory(pluginRoot, directory) {
   for (const name of await readdir4(directory)) {
     const path = join31(directory, name);
     let entry = await lstat5(path);
-    if (path.includes(NPM_BIN_PATH_SEGMENT) && !entry.isFile() && !entry.isDirectory()) {
+    if (isNpmBinEntry(pluginRoot, path) && !entry.isFile() && !entry.isDirectory()) {
       await rm4(path, { recursive: true, force: true });
       continue;
     }
     if (entry.isSymbolicLink()) {
+      if (await stat4(path).catch(() => {
+        return;
+      }) === undefined)
+        throw unsupportedEntryError([relative4(pluginRoot, path)]);
       const staging = await mkdtemp(join31(directory, ".omo-materialize-"));
       try {
         const copyPath = join31(staging, "entry");
@@ -110725,7 +111124,7 @@ async function materializeDirectory(directory) {
           recursive: true,
           dereference: true,
           filter: async (source) => {
-            if (!source.includes(NPM_BIN_PATH_SEGMENT))
+            if (!isNpmBinEntry(pluginRoot, source))
               return true;
             const sourceEntry = await lstat5(source);
             return sourceEntry.isFile() || sourceEntry.isDirectory();
@@ -110739,7 +111138,7 @@ async function materializeDirectory(directory) {
       entry = await lstat5(path);
     }
     if (entry.isDirectory())
-      await materializeDirectory(path);
+      await materializeDirectory(pluginRoot, path);
   }
 }
 async function unsupportedEntries(root, directory) {
@@ -111033,7 +111432,7 @@ function repoRootForCodexPluginSource(sourcePath) {
   return dirname13(packagesRoot);
 }
 // packages/omo-codex/src/install/codex-cache-prune.ts
-import { lstat as lstat6, readdir as readdir6, rm as rm6, stat as stat4 } from "fs/promises";
+import { lstat as lstat6, readdir as readdir6, rm as rm6, stat as stat5 } from "fs/promises";
 import { join as join34 } from "path";
 async function pruneMarketplaceCache(input) {
   const cacheRoot = join34(input.codexHome, "plugins", "cache", input.marketplaceName);
@@ -111089,7 +111488,7 @@ async function isBrokenCacheSymlink(path) {
     throw error;
   }
   try {
-    await stat4(path);
+    await stat5(path);
     return false;
   } catch (error) {
     if (isNodeErrorWithCode(error) && error.code === "ENOENT")
@@ -111098,7 +111497,7 @@ async function isBrokenCacheSymlink(path) {
   }
 }
 // packages/omo-codex/src/install/codex-cached-marketplace-manifest.ts
-import { mkdir as mkdir4, rename as rename3, rm as rm7, stat as stat5, writeFile as writeFile5 } from "fs/promises";
+import { mkdir as mkdir4, rename as rename3, rm as rm7, stat as stat6, writeFile as writeFile5 } from "fs/promises";
 import { join as join35 } from "path";
 async function writeCachedMarketplaceManifest(input) {
   const marketplaceDir = join35(input.marketplaceRoot, ".agents", "plugins");
@@ -111127,7 +111526,7 @@ async function writeCachedMarketplaceManifest(input) {
 }
 async function isDirectory2(path) {
   try {
-    return (await stat5(path)).isDirectory();
+    return (await stat6(path)).isDirectory();
   } catch (error) {
     if (error instanceof Error && "code" in error && error.code === "ENOENT")
       return false;
@@ -115514,7 +115913,7 @@ function installLocalLauncher(options) {
 // packages/omo-senpi/src/install/plugin-artifacts.ts
 import { createHash as createHash7 } from "crypto";
 import { constants as constants9 } from "fs";
-import { access as access3, readFile as readFile30, stat as stat6 } from "fs/promises";
+import { access as access3, readFile as readFile30, stat as stat7 } from "fs/promises";
 import { dirname as dirname25, join as join66 } from "path";
 
 // packages/memory-core/src/personas/manifest.ts
@@ -115661,6 +116060,7 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
   join66("extensions", "omo-telemetry-posthog.js"),
   join66("extensions", "omo-telemetry-otlp.js"),
   join66("extensions", "omo-memory-sync.js"),
+  join66("extensions", "omo-memory-sync-rpc.js"),
   join66("extensions", "loro_wasm_bg.wasm"),
   join66("extensions", "CaseFolding.txt"),
   join66("extensions", "omo-thread-client.js"),
@@ -115683,7 +116083,8 @@ var REQUIRED_PLUGIN_ARTIFACTS = [
   join66("skills", "coding-agent-sessions", "SKILL.md"),
   join66("skills", "debugging", "SKILL.md"),
   join66("skills", "frontend", "SKILL.md"),
-  join66("skills", "git-master", "SKILL.md"),
+  join66("skills", "git", "SKILL.md"),
+  join66("skills", "github", "SKILL.md"),
   join66("skills", "init-deep", "SKILL.md"),
   join66("skills", "lsp-setup", "SKILL.md"),
   join66("skills", "programming", "SKILL.md"),
@@ -115752,7 +116153,7 @@ async function verifyAstGrepRuntimeIntegrity(pluginPath, platform) {
   const manifestPath = join66(dirname25(runtimeEntry), "manifest.json");
   let runtimeStat;
   try {
-    runtimeStat = await stat6(runtimeEntry);
+    runtimeStat = await stat7(runtimeEntry);
     if (!runtimeStat.isFile())
       throw new Error("runtime is not a file");
     await access3(runtimeEntry, constants9.R_OK | constants9.X_OK);
@@ -119999,6 +120400,7 @@ var BuiltinSkillNameSchema = _enum([
   "playwright",
   "dev-browser",
   "frontend",
+  "git",
   "git-master",
   "review-work",
   "remove-ai-slops",
@@ -125436,7 +125838,7 @@ function resolveLatestVersion(input) {
 
 // packages/omo-opencode/src/cli/doctor/checks/codex-components.ts
 init_src();
-import { readdir as readdir16, readFile as readFile32, stat as stat7 } from "fs/promises";
+import { readdir as readdir16, readFile as readFile32, stat as stat8 } from "fs/promises";
 import { homedir as homedir27 } from "os";
 import { dirname as dirname40, isAbsolute as isAbsolute15, join as join100, relative as relative10, resolve as resolve28, sep as sep11 } from "path";
 var CODEX_COMPONENTS_CHECK_ID = "codex-components";
@@ -125701,7 +126103,7 @@ async function readJson2(path) {
 }
 async function fileSize(path) {
   try {
-    const stats = await stat7(path);
+    const stats = await stat8(path);
     return stats.isFile() ? stats.size : undefined;
   } catch {
     return;
@@ -128452,7 +128854,7 @@ var {
   realpath: realpath2,
   rm: rm16,
   rmdir: rmdir2,
-  stat: stat8,
+  stat: stat9,
   statfs,
   unlink: unlink3
 } = promises;
@@ -128801,7 +129203,7 @@ async function locateHelper(candidates, verify) {
 // packages/omo-opencode/src/cli/service-auth/keychain-helper/pin.ts
 import { createHash as createHash11 } from "crypto";
 import { readdirSync as readdirSync15, rmSync as rmSync9 } from "fs";
-import { chmod as chmod3, copyFile as copyFile5, constants as constants14, mkdir as mkdir11, readFile as readFile35, rename as rename9, rm as rm17, stat as stat9 } from "fs/promises";
+import { chmod as chmod3, copyFile as copyFile5, constants as constants14, mkdir as mkdir11, readFile as readFile35, rename as rename9, rm as rm17, stat as stat10 } from "fs/promises";
 import { tmpdir as tmpdir6 } from "os";
 import { basename as basename15, join as join108 } from "path";
 var DIR_PREFIX = "omo-keychain-";
@@ -128848,7 +129250,7 @@ async function defaultPinDir() {
 }
 async function fileVerdict(path, verify) {
   try {
-    if (!(await stat9(path)).isFile())
+    if (!(await stat10(path)).isFile())
       return "absent";
   } catch {
     return "absent";
@@ -128857,7 +129259,7 @@ async function fileVerdict(path, verify) {
 }
 var pinned = new Map;
 async function sourceIdentity(source) {
-  const info = await stat9(source);
+  const info = await stat10(source);
   return `${source}\x00${info.dev}\x00${info.ino}\x00${info.size}\x00${info.mtimeMs}\x00${info.ctimeMs}`;
 }
 async function copyAndVerify(source, verify, dir) {
@@ -128946,7 +129348,7 @@ async function pinVerifiedCopy(source, verify, dir) {
 }
 
 // packages/omo-opencode/src/cli/service-auth/keychain-helper/signature.ts
-import { stat as stat10 } from "fs/promises";
+import { stat as stat11 } from "fs/promises";
 init_bun_spawn_shim();
 var KEYCHAIN_HELPER_REQUIREMENT = 'identifier "com.mengmota.omo-keychain-helper" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] ' + 'and certificate leaf[field.1.2.840.113635.100.6.1.13] and certificate leaf[subject.OU] = "523JNR86LZ"';
 var STRICT_ALL_ARCHITECTURES = 1 << 4 | 1 << 0;
@@ -129017,7 +129419,7 @@ var verifyWithSecurityFramework = async (path, requirement) => {
 };
 async function fileIdentity(path) {
   try {
-    const info = await stat10(path);
+    const info = await stat11(path);
     if (!info.isFile())
       return null;
     return `${path}\x00${info.dev}\x00${info.ino}\x00${info.size}\x00${info.mtimeMs}\x00${info.ctimeMs}`;
@@ -129470,7 +129872,7 @@ import { dirname as dirname43 } from "path";
 
 // packages/team-core/src/team-state-store/lock-record.ts
 import { randomUUID as randomUUID6 } from "crypto";
-import { readFile as readFile36, stat as stat11 } from "fs/promises";
+import { readFile as readFile36, stat as stat12 } from "fs/promises";
 
 // packages/memory-core/src/locks/process-identity.ts
 import { execFile as execFile8 } from "child_process";
@@ -129569,9 +129971,9 @@ function errorCode(error) {
     return;
   return typeof error.code === "string" ? error.code : undefined;
 }
-async function execFileText(command, args) {
+async function execFileText(command, args, env) {
   return await new Promise((resolve) => {
-    execFile8(command, args, { encoding: "utf8", timeout: 2000, windowsHide: true }, (error, stdout) => {
+    execFile8(command, args, { encoding: "utf8", timeout: 2000, windowsHide: true, env }, (error, stdout) => {
       if (error !== null) {
         resolve(null);
         return;
@@ -129640,12 +130042,16 @@ async function readProcessStartIdentity(pid) {
     const startSeconds = await readDarwinProcessStartSeconds(pid);
     if (startSeconds !== null)
       return `proc-start-epoch:${startSeconds}`;
-    const value = await execFileText("/bin/ps", ["-o", "lstart=", "-p", String(pid)]);
-    return value === null ? null : `ps-lstart:${value.replace(/\s+/g, " ")}`;
+    return await readPsLstartIdentity(pid);
   }
   if (process.platform === "win32")
     return await readWin32StartIdentity(pid);
   return null;
+}
+async function readPsLstartIdentity(pid, exec = execFileText) {
+  const env = { ...process.env, TZ: "UTC", LC_ALL: "C", LANG: "C" };
+  const value = await exec("/bin/ps", ["-o", "lstart=", "-p", String(pid)], env);
+  return value === null ? null : `ps-lstart-utc:${value.replace(/\s+/g, " ")}`;
 }
 async function getProcessCommandName(pid) {
   let argv0;
@@ -129667,9 +130073,35 @@ function identityScheme(identity) {
   const separator = identity.indexOf(":");
   return separator <= 0 ? null : identity.slice(0, separator);
 }
+var LSTART_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+var LSTART_C_RENDERING = /^[A-Z][a-z]{2} ([A-Z][a-z]{2}) (\d{1,2}) (\d{2}):(\d{2}):(\d{2}) (\d{4})$/;
+function lstartWallClockMs(rendering) {
+  const match = LSTART_C_RENDERING.exec(rendering);
+  if (match === null)
+    return null;
+  const [, month, day, hours, minutes, seconds, year] = match;
+  const monthIndex = LSTART_MONTHS.indexOf(month ?? "");
+  if (monthIndex < 0)
+    return null;
+  return Date.UTC(Number(year), monthIndex, Number(day), Number(hours), Number(minutes), Number(seconds));
+}
+var MIN_ZONE_OFFSET_MS = -12 * 3600000;
+var MAX_ZONE_OFFSET_MS = 14 * 3600000;
+var ZONE_OFFSET_STEP_MS = 15 * 60000;
+function legacyPsLstartConflict(recorded, actual) {
+  const recordedWall = lstartWallClockMs(recorded.slice("ps-lstart:".length));
+  const actualUtc = lstartWallClockMs(actual.slice("ps-lstart-utc:".length));
+  if (recordedWall === null || actualUtc === null)
+    return false;
+  const offset = recordedWall - actualUtc;
+  return offset < MIN_ZONE_OFFSET_MS || offset > MAX_ZONE_OFFSET_MS || offset % ZONE_OFFSET_STEP_MS !== 0;
+}
 function startIdentitiesConflict(recorded, actual) {
   const recordedScheme = identityScheme(recorded);
-  if (recordedScheme === null || recordedScheme !== identityScheme(actual))
+  const actualScheme = identityScheme(actual);
+  if (recordedScheme === "ps-lstart" && actualScheme === "ps-lstart-utc")
+    return legacyPsLstartConflict(recorded, actual);
+  if (recordedScheme === null || recordedScheme !== actualScheme)
     return false;
   return recorded !== actual;
 }
@@ -129889,7 +130321,7 @@ function parseLockHolder(content) {
 async function readLockRecord(lockPath) {
   try {
     const content = await readFile36(lockPath, "utf8");
-    const { mtimeMs } = await stat11(lockPath);
+    const { mtimeMs } = await stat12(lockPath);
     return { content, modifiedAtEpochMs: mtimeMs };
   } catch (error) {
     if (!(error instanceof Error))
@@ -131213,28 +131645,8 @@ ${key.name}`;
 }
 
 // packages/omo-opencode/src/cli/service-auth/session.ts
+init_local_only();
 import { homedir as homedir34 } from "os";
-
-// packages/device-service-core/src/local-only.ts
-var KEY2 = Symbol.for("omo.local-only-process.v1");
-function state3() {
-  const holder = globalThis;
-  holder[KEY2] ??= { marked: false };
-  return holder[KEY2];
-}
-
-class LocalOnlyNetworkRefused extends Error {
-  code = "local_only_network_refused";
-  site;
-  constructor(site) {
-    super(`a local-only omo remote command reached the network at ${site}`);
-    this.site = site;
-  }
-}
-function refuseIfLocalOnly(site) {
-  if (state3().marked)
-    throw new LocalOnlyNetworkRefused(site);
-}
 
 // packages/memory-core/src/sync/contract-version.ts
 var SYNC_CONTRACT_VERSION = "1.44.0";
@@ -131246,6 +131658,7 @@ var syncRequestHeaders = (token) => ({
 });
 
 // packages/omo-opencode/src/cli/service-auth/protocol-request.ts
+init_local_only();
 init_zod();
 class InvalidApiResponse extends SignInError {
   status;
@@ -132381,207 +132794,25 @@ function configureServiceAuthCommands(program, open = serviceAccountsOpen(), hoo
 }
 
 // packages/omo-native/device-service-handoff.ts
+init_src6();
+init_hand_device_keys();
+init_local_only();
 import { existsSync as existsSync67 } from "fs";
-
-// packages/device-service-core/src/index.ts
-init_device_service2();
-
-// packages/device-service-core/src/delivery-consumer.ts
-init_client4();
-init_background_transport();
-init_device_service2();
-// packages/device-service-core/src/bootstrap.ts
-import { existsSync as existsSync66 } from "fs";
-init_device_service2();
-
-// packages/device-service-core/src/hand-device-keys.ts
-init_device_service2();
-import { existsSync as existsSync65 } from "fs";
-var DEAD_ENDPOINT_CODES = new Set(["ENOENT", "ECONNREFUSED", "ECONNRESET", "EPIPE"]);
-var connectFailure = (error) => {
-  const detail = error instanceof Error ? error.message : String(error);
-  if (error instanceof LocalApiError) {
-    if (error.code === "refused" || error.code === "server_proof_invalid")
-      return { cause: "refused", detail };
-    if (error.code === "insecure_state_dir")
-      return { cause: "unreadable", detail };
-    if (error.code === "handshake_timeout" || error.code === "request_timeout")
-      return { cause: "timed_out", detail };
-    return { cause: "failed", detail };
-  }
-  const code = error instanceof Error && "code" in error ? String(error.code) : "";
-  return { cause: DEAD_ENDPOINT_CODES.has(code) ? "dead_endpoint" : "failed", detail };
-};
-var connectOrNotRunning = async (connect, log) => {
-  try {
-    return await connect();
-  } catch (error) {
-    const { cause, detail } = connectFailure(error);
-    log?.(`OmO device service: ${cause}, treated as not running (${detail}).`);
-    return "not_running";
-  }
-};
-var adopted = (status) => status.device !== null && status.state !== "sign_in_required";
-var handDeviceKeys = async (options) => {
-  if (!existsSync65(deviceServiceEndpointPath(options.stateDir)))
-    return "not_running";
-  const service = await connectOrNotRunning(options.connect, options.log);
-  if (service === "not_running")
-    return "not_running";
-  try {
-    if (options.when === "not_adopted" && adopted(await service.status()))
-      return "already_adopted";
-    await service.adopt(options.credential);
-    return "adopted";
-  } finally {
-    service.close();
-  }
-};
-
-// packages/device-service-core/src/bootstrap.ts
-init_version2();
-var forgetDeviceService = async (options) => {
-  if (!existsSync66(deviceServiceEndpointPath(options.stateDir)))
-    return "not_running";
-  const service = await connectOrNotRunning(options.connect, options.log);
-  if (service === "not_running")
-    return "not_running";
-  try {
-    await service.forget();
-  } finally {
-    service.close();
-  }
-  return "forgotten";
-};
-// packages/device-service-core/src/cold-wake/host.ts
-var UNREPAIRABLE = new Set(["EPERM", "EACCES", "EROFS"]);
-
-// packages/device-service-core/src/cold-wake/service-table.ts
-var SERVICE_TABLE_ENV = "OMO_RELAYD_SERVICES";
-
-// packages/device-service-core/src/cold-wake/darwin.ts
-var TABLE_KEY = `EnvironmentVariables.${SERVICE_TABLE_ENV}`;
-// packages/device-service-core/src/release/acquire.ts
-init_access();
-init_dacl();
-
-// packages/device-service-core/src/release/windows-dacl.ts
-init_errors4();
-init_dacl();
-var SID_TOKEN_SCRIPT = String.raw`
-$ErrorActionPreference = 'Stop'
-(New-Object System.Security.AccessControl.RawSecurityDescriptor("O:$env:LA_SID")).GetSddlForm('Owner')
-`;
-var userSidToken = async (userSid, run = runPowerShell) => {
-  const { code, out } = await run(SID_TOKEN_SCRIPT, { LA_SID: userSid });
-  const match = code === 0 ? /^O:(S-1-\d+(?:-\d+)+|[A-Z]{2})$/.exec(out.trim()) : null;
-  return match?.[1];
-};
-var aliasedDaclVerdict = (dacl, userSid, kind, userAlias) => {
-  const asSid = (token) => userAlias !== undefined && token === userAlias ? userSid : token;
-  return exactDaclVerdict({ ...dacl, owner: asSid(dacl.owner), aces: dacl.aces.map((ace) => ({ ...ace, sid: asSid(ace.sid) })) }, userSid, kind);
-};
-var verifyExactDacl2 = async (path, userSid, kind, run = runPowerShell) => {
-  let dacl;
-  try {
-    dacl = await describeDacl(path, run);
-  } catch (error) {
-    if (error instanceof LocalApiError)
-      return false;
-    throw error;
-  }
-  return aliasedDaclVerdict(dacl, userSid, kind, await userSidToken(userSid, run));
-};
-var windowsSecureFile2 = (userSid, run = runPowerShell) => async (path, kind) => {
-  const target = kind === "dir" ? "dir" : "file";
-  await applyExactDacl(path, userSid, target, run);
-  if (!await verifyExactDacl2(path, userSid, target, run))
-    throw new LocalApiError("insecure_state_dir", "the DACL is not exactly one ACE for the user");
-};
-
-// packages/device-service-core/src/release/release-assets.ts
-init_version2();
-var MANIFEST = "latest.json";
-var CHECKSUMS_MAX_BYTES = 64 * 1024;
-var MANIFEST_MAX_BYTES = 4 * 1024;
-var BINARY_MAX_BYTES = 512 * 1024 * 1024;
-var DEVICE_SERVICE_HOSTS = [
-  "darwin-arm64",
-  "darwin-x64",
-  "linux-x64",
-  "linux-arm64",
-  "windows-x64",
-  "windows-arm64"
-];
-var deviceServiceAssetName = (host) => host.startsWith("windows-") ? `omo-device-service-${host}.exe` : `omo-device-service-${host}`;
-var RELEASE_FILES = new Set([MANIFEST, ...DEVICE_SERVICE_HOSTS.map(deviceServiceAssetName)]);
-
-// packages/device-service-core/src/strict-ed25519/strict-ed25519.ts
-var P = (1n << 255n) - 19n;
-var L = (1n << 252n) + 27742317777372353535851937790883648493n;
-var mod = (n) => {
-  const r = n % P;
-  return r < 0n ? r + P : r;
-};
-var power = (base, exponent) => {
-  let result = 1n;
-  let b = mod(base);
-  for (let n = exponent;n > 0n; n >>= 1n) {
-    if (n & 1n)
-      result = mod(result * b);
-    b = mod(b * b);
-  }
-  return result;
-};
-var D = mod(-121665n * power(121666n, P - 2n));
-var SQRT_MINUS_ONE = power(2n, (P - 1n) / 4n);
-var keyCache = new Map;
-// packages/device-service-core/src/release/release-key.json
-var release_key_default = {
-  alg: "Ed25519",
-  public_keys_hex: ["6c6781a91888e3e5be10d1b27466319a7d5adf2a7d2b254f4118eda9cbcb4465", "ca9407b484a30ac7f09cb152455176f1e03fc6ca3446ff930bc7587215759016"]
-};
-
-// packages/device-service-core/src/release/release-signature.ts
-var HEX_KEY = /^[0-9a-f]{64}$/;
-var parseReleaseKeySet = (value) => {
-  if (typeof value !== "object" || value === null || Array.isArray(value))
-    throw new Error("release key: not an object");
-  if (Object.keys(value).toSorted().join(",") !== "alg,public_keys_hex")
-    throw new Error("release key: fields must be exactly alg and public_keys_hex");
-  const alg = Reflect.get(value, "alg");
-  const hexes = Reflect.get(value, "public_keys_hex");
-  if (alg !== "Ed25519")
-    throw new Error("release key: alg must be Ed25519");
-  if (!Array.isArray(hexes))
-    throw new Error("release key: public_keys_hex must be an array");
-  if (new Set(hexes).size !== hexes.length)
-    throw new Error("release key: public_keys_hex must not repeat a key");
-  return hexes.map((hex) => {
-    if (typeof hex !== "string" || !HEX_KEY.test(hex))
-      throw new Error("release key: each public_keys_hex entry must be 64 lowercase hex characters");
-    return hex;
-  });
-};
-var DEVICE_SERVICE_RELEASE_KEYS = parseReleaseKeySet(release_key_default);
-
-// packages/device-service-core/src/release/acquire.ts
-init_version2();
-var platformSecure = process.platform === "win32" ? async (path, kind, origin) => windowsSecureFile2(await currentUserSid())(path, kind, origin) : posixSecureFile;
-// packages/device-service-core/src/registrant.ts
-init_device_service2();
-var NONE2 = Symbol("none registered");
-
-// packages/device-service-core/src/index.ts
-init_timers();
 // packages/omo-native/package.json
 var package_default4 = {
   name: "omo-ai",
-  version: "5.1.84",
+  version: "5.1.86",
   type: "module",
   description: "OmO Native - the standalone omo command with the OMO extension built in: bun add -g omo-ai",
   bin: {
     omo: "bin/omo.js"
+  },
+  exports: {
+    "./remote": {
+      types: "./bin/lib/remote-sdk.generated.d.ts",
+      default: "./bin/lib/remote-sdk.generated.js"
+    },
+    "./package.json": "./package.json"
   },
   files: [
     "bin",
@@ -132680,7 +132911,7 @@ function cliDeviceServiceHandoff(options) {
 }
 
 // packages/omo-native/remote-entry.ts
-init_device_service2();
+init_remote();
 
 // packages/memory-core/src/journal/fsync.ts
 var SKIPPABLE_SYNC_CODES = new Set(["ENOENT", "EISDIR", "EPERM", "EACCES", "EINVAL"]);
@@ -132694,7 +132925,7 @@ var ED25519_PKCS8_PREFIX = hexBytes("302e020100300506032b657004220420");
 var ED25519_SPKI_PREFIX = hexBytes("302a300506032b6570032100");
 // packages/memory-core/src/sync/crypto/anchor.ts
 var anchors = new WeakSet;
-var candidates = new WeakSet;
+var candidates2 = new WeakSet;
 var bootstraps = new WeakSet;
 
 // packages/memory-core/src/sync/crypto/strict-ed25519/strict-ed25519.ts
@@ -132740,6 +132971,12 @@ var refreshAttemptSchema = object({
   state: _enum(["ready", "sent_unknown", "successor_received_uncommitted", "exhausted"])
 });
 
+// packages/omo-native/remote-bootstrap.ts
+init_src6();
+
+// packages/omo-native/remote-cold-wake.ts
+init_src6();
+
 // packages/omo-native/remote-session-args.ts
 init_fields();
 
@@ -132762,72 +132999,8 @@ var VERBS = [
   ...SESSION_VERBS
 ];
 
-// packages/omo-native/remote-session-verbs.ts
-init_relay_session_host();
-init_operations();
-init_relay_control();
-init_device_service3();
-
-// packages/omo-senpi/src/components/remote/index.ts
-init_codes();
-init_factories();
-init_seams();
-init_address();
-
-// packages/omo-senpi/src/components/remote/device-address.ts
-init_address();
-init_errors5();
-// packages/omo-senpi/src/components/thread/gateway/store.ts
-init_constants6();
-
-// packages/omo-senpi/src/components/thread/gateway/session-args-schema.ts
-var TYPES = new Set(["object", "string", "number", "integer", "boolean", "array", "null"]);
-var ANNOTATIONS = new Set(["title", "description", "default", "examples"]);
-var COUNTS = ["minLength", "maxLength", "minItems", "maxItems"];
-var BOUNDS2 = ["minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum"];
-var KEYWORDS = new Set([
-  "type",
-  "properties",
-  "required",
-  "additionalProperties",
-  "enum",
-  "const",
-  "pattern",
-  "items",
-  "anyOf",
-  ...COUNTS,
-  ...BOUNDS2,
-  ...ANNOTATIONS
-]);
-
-// packages/omo-native/remote-session-verbs.ts
-init_provenance_resolver();
-init_relay_transport();
-
-// packages/omo-senpi/src/components/thread/gateway/engine.ts
-init_addressing();
-init_errors5();
-init_fields();
-init_constants6();
-init_result2();
-init_provenance_resolver();
-
-// packages/omo-senpi/src/components/thread/gateway/local-transport.ts
-init_errors5();
-
-// packages/omo-native/remote-session-verbs.ts
-init_address_book();
-init_this_device();
-init_thread_link();
-init_thread_row();
-
-// packages/omo-native/bin/lib/package-paths.js
-import { fileURLToPath as fileURLToPath9 } from "url";
-var packageRoot = fileURLToPath9(new URL("../..", import.meta.url));
-
-// packages/omo-native/remote-session-verbs.ts
-init_remote_ops();
-var NO_SUCH_SESSION = new Set(["session_not_found", "unknown_session"]);
+// packages/omo-native/remote-cli.ts
+init_remote();
 
 // packages/omo-native/remote-attach-presentation.ts
 init_outcome();
@@ -132837,7 +133010,18 @@ var FORWARD_WAIT_MS = 60 * 60000;
 var MAX_LINE_CHARS = 64 * 1024 * 1024;
 
 // packages/omo-native/remote-local.ts
-init_device_service2();
+init_remote();
+
+// packages/omo-native/remote-session-verbs.ts
+init_remote();
+
+// packages/omo-native/remote-session-answer.ts
+var NO_SUCH_SESSION = new Set(["session_not_found", "unknown_session"]);
+
+// packages/omo-native/remote-session-open.ts
+init_remote();
+
+// packages/omo-native/remote-local.ts
 var READ_VERBS = new Set(["status", "devices", "sessions", "disable", "control", "wake"]);
 
 // packages/omo-native/remote-usage.ts
@@ -132909,10 +133093,6 @@ var USAGE_ENTRIES = [
 ];
 var REMOTE_USAGE = [USAGE_HEAD, ...USAGE_ENTRIES.map((entry) => entry.text)].join(`
 `);
-
-// packages/omo-native/remote-cli.ts
-init_device_service3();
-
 // packages/omo-native/remote-entry.ts
 var testSkipKey = Symbol.for("omo.test.skipRemoteLoginSetup");
 
@@ -133371,7 +133551,7 @@ function linkedWorktrees(records) {
 }
 // packages/omo-opencode/src/cli/worktree-sweep/sweep.ts
 import { existsSync as existsSync70 } from "fs";
-import { stat as stat12 } from "fs/promises";
+import { stat as stat13 } from "fs/promises";
 import os7 from "os";
 import { normalize as normalize2 } from "path";
 
@@ -133443,7 +133623,7 @@ async function isOlderThan(worktreePath, days, now) {
   if (days <= 0)
     return false;
   try {
-    const stats = await stat12(worktreePath);
+    const stats = await stat13(worktreePath);
     return now - stats.mtimeMs > days * DAY_MS;
   } catch {
     return false;
